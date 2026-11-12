@@ -1,0 +1,90 @@
+name: Render test (manual)
+
+# Manual only (Actions tab, Run workflow). Renders one show with tools/render.mjs and uploads the MP4 and its
+# render.json as an artifact. Uses no secrets, does not push, cannot change the repo. UNTESTED: it has not run yet.
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Show folder name under shows/"
+        required: true
+        default: demo-sky
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      SLUG: ${{ inputs.slug }}
+
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: "20"
+
+      - name: Machine info
+        run: |
+          echo "CPUs usable by this job: $(nproc)"
+          free -h
+          node -v
+
+      - name: Install the kit's packages
+        run: npm ci
+
+      - name: Install Chromium with system libraries (Playwright build, used as the browser)
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/pw"
+          npm install --prefix "$RUNNER_TEMP/pw" --no-audit --no-fund playwright@1.55.0
+          "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium
+          P=$(node -e "console.log(require(process.env.RUNNER_TEMP + '/pw/node_modules/playwright').chromium.executablePath())")
+          test -x "$P"
+          echo "CHROME_PATH=$P" >> "$GITHUB_ENV"
+          "$P" --version || true
+
+      - name: Make sure ffmpeg is installed
+        run: |
+          if ! command -v ffmpeg >/dev/null 2>&1 || ! command -v ffprobe >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y ffmpeg
+          fi
+          ffmpeg -version 2>&1 | head -n 1 || true
+
+      - name: Render the show (2 chunks)
+        run: |
+          set -o pipefail
+          node tools/render.mjs "$SLUG" --chunks 2 2>&1 | tee render.log
+
+      - name: Write the timing to the step summary
+        if: always()
+        run: |
+          {
+            echo "## Render result"
+            echo '```'
+            grep RENDER_DONE render.log || echo "RENDER_DONE line not found (see the render step log)"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload the video and its report
+        uses: actions/upload-artifact@v7
+        with:
+          name: render-${{ inputs.slug }}
+          path: |
+            shows/${{ inputs.slug }}/out/${{ inputs.slug }}.mp4
+            shows/${{ inputs.slug }}/out/${{ inputs.slug }}.render.json
+          retention-days: 3
+          if-no-files-found: error
+
+      - name: Stop any Chrome left running
+        if: always()
+        run: |
+          if [ -n "$CHROME_PATH" ]; then pkill -f "$CHROME_PATH" || true; fi

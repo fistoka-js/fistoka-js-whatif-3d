@@ -61,6 +61,7 @@ export async function openSession() {
 
   return {
     url: server.url, openShow,
+    browser,                            // exposed so the renderer can force-kill a Chrome that will not close
     newPage: () => browser.newPage(),   // a blank page (for example to lay out a contact sheet)
     async close() { await browser.close().catch(() => {}); await server.close(); },
   };
