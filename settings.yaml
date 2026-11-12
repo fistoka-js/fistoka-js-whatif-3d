@@ -1,0 +1,17 @@
+# Non-secret settings. Never put keys, tokens or passwords in this file.
+
+# The YouTube channel ID (starts with UC...) that videos may be uploaded to.
+# Leave empty until the new channel exists: while empty, every upload is refused.
+# How to find it: docs/CHANNEL_SETUP.md
+channel_id: ""
+
+# How the writer asks the language model: "api" (needs ANTHROPIC_API_KEY, costs money)
+# or "files" (free; a person or Claude Code writes the reply files). See docs/WRITER.md.
+llm_mode: api
+
+# Add a line to the video description saying the voice is synthetic.
+synthetic_voice_note: false
+synthetic_voice_note_text: "The narration in this video is synthetic (computer-generated) speech."
+
+# Most topics one run will try (a topic that fails or cannot be shown does not stop the next one).
+max_topics_per_run: 3

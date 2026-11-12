@@ -169,7 +169,9 @@ def mix(video_path, voice_path, timeline_path, out_path, music_path=None,
     cmd = [ff, "-y", "-hide_banner", "-v", "error"]
     for args in inputs:
         cmd += args
-    cmd += ["-/filter_complex", str(script_path), "-map", "[out]",
+    # The filter text is passed inline (works on every ffmpeg version). The same text is also
+    # saved in script_path above, only so a person can read it when debugging.
+    cmd += ["-filter_complex", ";".join(steps), "-map", "[out]",
             "-c:a", "pcm_f32le", str(premix)]
     logged(cmd)
 

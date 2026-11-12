@@ -1,0 +1,117 @@
+name: Produce a video from the queue
+
+# UNTESTED until the repo is pushed to GitHub and run once by hand.
+# Manual trigger only (Actions tab, Run workflow). No schedule.
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: "Upload the finished video to YouTube (private)? Needs the secrets and channel_id in settings.yaml."
+        type: boolean
+        default: false
+      topic:
+        description: "Optional topic text. Empty = take the oldest topic in queue/pending/."
+        type: string
+        default: ""
+
+# contents: write is needed to commit the queue state back.
+permissions:
+  contents: write
+
+# One run at a time; a running upload is never cancelled.
+concurrency:
+  group: produce-whatif
+  cancel-in-progress: false
+
+jobs:
+  produce:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v7
+        with:
+          node-version: "20"
+
+      - name: Install ffmpeg (Ubuntu package)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          ffmpeg -version | head -n 1 || true
+
+      - name: Install packages
+        run: |
+          npm ci
+          pip install -r pipeline/requirements.txt
+
+      - name: Install Chromium with system libraries
+        run: |
+          set -o pipefail
+          mkdir -p "$RUNNER_TEMP/pw"
+          npm install --prefix "$RUNNER_TEMP/pw" --no-audit --no-fund playwright@1.55.0
+          "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium
+          P=$(node -e "console.log(require(process.env.RUNNER_TEMP + '/pw/node_modules/playwright').chromium.executablePath())")
+          test -x "$P"
+          echo "CHROME_PATH=$P" >> "$GITHUB_ENV"
+
+      - name: Fast tests
+        run: |
+          npm test
+          python -m pytest tests/py -q -m "not network"
+
+      # Secrets appear ONLY in this step. The YouTube login is written to a file git ignores.
+      - name: Run the pipeline
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_TOKEN_B64: ${{ secrets.YOUTUBE_TOKEN_B64 }}
+          VERTICALS_SKILL_DIR: ${{ github.workspace }}/.verticals
+          TOPIC: ${{ inputs.topic }}
+          DO_UPLOAD: ${{ inputs.upload }}
+        run: |
+          args=()
+          if [ -n "$TOPIC" ]; then args+=(--topic "$TOPIC"); fi
+          if [ "$DO_UPLOAD" != "true" ]; then args+=(--no-upload); fi
+          if [ "$DO_UPLOAD" = "true" ]; then
+            mkdir -p .verticals
+            echo "$YOUTUBE_TOKEN_B64" | base64 -d > .verticals/youtube_token.json
+          fi
+          set +e
+          python -m pipeline.run "${args[@]}"
+          code=$?
+          echo "pipeline exit code: $code"
+          # 0 = made a video; 5 = queue was empty. Anything else is a problem worth a red run.
+          if [ "$code" -ne 0 ] && [ "$code" -ne 5 ]; then exit "$code"; fi
+
+      - name: Save the video and reports
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: produced
+          path: |
+            shows/*/out/*-final.mp4
+            shows/*/review.md
+            shows/*/out/qa-sheet.jpg
+            shows/*/out/run.log
+          retention-days: 7
+          if-no-files-found: warn
+
+      # Stage queue files by name only. Moved files show up as deleted + added, so list both.
+      - name: Commit queue state
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git ls-files -m -d -o --exclude-standard -- queue | while IFS= read -r f; do git add -- "$f"; done
+          git diff --staged --quiet || git commit -m "Auto: queue state update from workflow run"
+          git pull --rebase origin ${{ github.ref_name }}
+          git push

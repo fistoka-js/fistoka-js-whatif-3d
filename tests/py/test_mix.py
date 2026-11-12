@@ -134,4 +134,4 @@ def test_music_level_gap(work):
 def test_command_logged(outputs):
     out, _, _ = outputs
     log = Path(str(out) + ".ffmpeg.log").read_text()
-    assert "-/filter_complex" in log and "loudnorm" in log and "-c:v copy" in log
+    assert "-filter_complex" in log and "loudnorm" in log and "-c:v copy" in log

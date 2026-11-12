@@ -54,4 +54,4 @@ Inputs: `timeline.json` = `{"duration", "shots": [{id,start,end}], "events": [{"
 - Sfx RMS, not true LUFS; very short sounds are approximate.
 - `loudnorm` linear mode needs headroom; very peaky mixes fall back to dynamic mode.
 - Edge TTS needs internet and is an unofficial service; it can change.
-- Needs ffmpeg 7+ (uses `-/filter_complex`).
+- Works with the ffmpeg that Ubuntu ships (the filter text is passed inline).
