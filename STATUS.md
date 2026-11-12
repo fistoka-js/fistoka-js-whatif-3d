@@ -1,7 +1,7 @@
 # STATUS
 
 Last updated: 2026-11-12, about 16:40 UTC. Task numbers match PLAN.md.
-Paused near the 5-hour usage limit (84% at last reading; weekly 49%). It resets at 20:40 UTC on 12 Nov.
+Paused near the 5-hour usage limit (87%; weekly 63%). It resets at 01:40 UTC on 13 Nov. The weekly allowance resets 16 Nov 09:00 UTC; about a quarter of it is left before the 90% stop line.
 
 ## Done (all committed; nothing pushed)
 - Audit, plan, contract: `AUDIT.md`, `PLAN.md`, `docs/SPEC.md`. Items for Jacob: `DECISIONS-FOR-JACOB.md`.
@@ -23,9 +23,17 @@ In `E:\Youtube Project\whatif-3d\shows\`:
 - Jacob: the pictures do not match the script well; not as good as the chameleon video. I agree after comparing all three at one frame per second (frames only, no listening). The samples are slideshows of objects; the chameleon video follows one changing mechanism. Details: PLAN.md, "Round 2 finding".
 - My earlier "6 out of 10" was too kind, and the automatic picture check's "pass" on sky-blue shows that check does not measure this.
 
+## Round 2 so far (committed)
+- Engine: shared values ("dials") that several things follow, subjects that persist across shots, changes that run from one spoken word to another, a "dive" transition. VERIFIED by me on a demo sheet.
+- The approved video's own mechanisms are now props: `lattice`, `layer_stack`, `light_wave`, `tuner`. I compared their sheet with the approved frames.
+- New checker rules (`--story-rules`): every sentence needs a visible change, nothing may sit still over 3.5 s. Both first samples (moon-gone, sky-blue) FAIL them, as they should.
+- **Acceptance test: the chameleon video rebuilt in the new kit** from a show file. `shows\chameleon\out\chameleon-final.mp4` (61 s, -16 LUFS, with sound effects, no music). Compare its frames `shows\chameleon\out\compare\remake-sheet-1..4.jpg` with the originals in `E:\Youtube Project\_fable_work\watch\cham\`. My view from 0-40 s (OPINION): same subject, same changes on the same words, same colour journey; visibly simpler: smaller hero chameleon, no leaf backdrop, camera cuts where the original glides, a haze band at the top of the background, small flat X and ? icons. 40-61 s I have not looked at myself; the helper calls it "close". Nobody has listened to it.
+- VERIFIED: 271 kit tests and 150 Python tests pass.
+
 ## Not done
-- **Round 2** (rewritten): engine additions (shared values, subjects that persist across shots, changes that run from word to word), the chameleon video's mechanisms ported in, the chameleon video rebuilt in the new kit as the acceptance test, checker rules that fail a slideshow, and a writer that plans script and pictures together. Brief: `docs/briefs/round2-improvements.md`. **Next step. Nothing of it is built yet.**
-- Then three new sample videos, then task 9 docs.
+- **Round 2 part 3b**: fix the gaps the rebuild exposed (hero size, camera glide, a crash when a prop is added mid-scene, icon size, background haze). Listed in `docs/briefs/round2-improvements.md`. **Next step.**
+- **Round 2 part 5**: the writer still produces slideshows. It does not yet know about dials or persistent subjects, and does not turn the story rules on. Until this is done, automatic videos look like the first two samples.
+- Three new sample videos, then task 9 docs.
 - A real paid run (needs Jacob), a real GitHub run (needs a push), a real upload (needs the second channel).
 
 ## Known problems
@@ -42,4 +50,4 @@ In `E:\Youtube Project\whatif-3d\shows\`:
 - Both this repo and the old 3D repo exist only on this PC (DECISIONS-FOR-JACOB.md items 1 and 2).
 
 ## How to continue
-Say: "Continue with docs/briefs/round2-improvements.md (parts 1 to 5), then three samples, then task 9. Read STATUS.md, PLAN.md (Round 2 finding) and docs/HELPER-RULES.md first."
+Say: "Continue round 2 from part 3b, then part 5, then three samples, then task 9. Read STATUS.md and docs/briefs/round2-improvements.md first."

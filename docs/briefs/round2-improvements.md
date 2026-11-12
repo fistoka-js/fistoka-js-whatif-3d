@@ -60,6 +60,19 @@ No browser needed; computed from the resolved show and the words:
 5. Worked examples in the prompt: the chameleon remake, plus one new show built the same way by the helper and checked with eyes.
 6. Re-test with fresh agents in `files` mode on 2 topics, as before.
 
+## Progress (2026-11-12, evening)
+
+Parts 1, 2, 3 and 4 are DONE and committed. `shows/chameleon/` is the approved video rebuilt as a show file: it validates with `--story-rules`, passes the picture checks, and its 1-frame-per-second sheets are in `shows/chameleon/out/compare/remake-sheet-1..4.jpg` (originals: `E:\Youtube Project\_fable_work\watch\cham\cham-sheet-1..4.jpg`). The lead compared 0-40 s by eye: same subject, same changes on the same words, same colour journey. It is a simpler version, not identical.
+
+### Part 3b — gaps the rebuild exposed (do these before part 5; owner: engine + the named props + their tests + SPEC)
+1. **Bug:** a prop first declared in a `continue` shot crashes the page ("reading 'since'"). Fix and add a test. (Workaround in use: declare every prop in the run's first shot and `appear` it later.)
+2. **Size on screen:** the camera always fits the focus props, so a hero cannot be made larger; the rebuild uses hidden `ball` props as framing targets, and the hero chameleon is about 60% of the original's height. Add a camera number `fill` (0.5-1.3, default by framing) or allow framing to target a named prop "at N% of frame height", and make the picture check accept a large hero that stays above the caption zone. Then remove the hidden balls from `shows/chameleon/show.json` and bring the hero to the original's size (compare with cham-sheet-1 and -4).
+3. **Camera glide:** a `continue` shot always cuts. Add `"camera": {..., "glide": 1.2}`: the camera moves smoothly from the previous shot's pose to the new one over that many seconds. Use it in the rebuild where the original flies (15-22 s, 29-38 s).
+4. **Icons:** allow `size` (so the big prohibition sign and big "?" of the original are possible), an `until` that may end in a later shot of the same run, and let the `color` action grey an icon.
+5. **Studio backdrop:** a lighter haze band shows near the top (see remake sheets); the original is a plain dark colour with a soft gradient. Add a `haze` param (default as now) and use `haze: 0` in the rebuild.
+6. **Lattice:** in the original the spread lattice is seen from the front as separate columns (cham-sheet-2, 29-38 s); in the rebuild it stays in 3/4 view and reads as a blob. Drive `tilt` in the show so it matches.
+7. Re-make the comparison sheets and the final video afterwards.
+
 ## Lower priority (only after parts 1-5)
 The earlier list: video length, prop fixes (`wave`, `sun`, `planet` tilt, `particles`, `heart`, `bird`, `bomb_blast`, `magnet`), hidden-prop check, picture check waiting for memory, `--topic` queue handling, empty system section in the fact-check prompt, validator hint for `offset` beside `at`.
 
