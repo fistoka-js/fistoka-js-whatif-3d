@@ -1,0 +1,4 @@
+{"duration": 5.0,
+ "shots": [{"id": "a", "start": 0, "end": 2.5}, {"id": "b", "start": 2.5, "end": 5.0}],
+ "events": [{"t": 3.2, "sfx": "pop"}, {"t": 3.3, "sfx": "tick"}, {"t": 2.5, "sfx": "whoosh"},
+            {"t": 3.8, "sfx": "pop"}, {"t": 4.5, "sfx": "chime"}]}

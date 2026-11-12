@@ -1,0 +1,10 @@
+file,how made,licence,sha256
+whoosh.wav,"synthesised with numpy: filtered noise, cutoff sweeps up then down","own work, made by pipeline/sfx.py",aefff4201cfe15504483bd18413b7fcedaaf66dce58068be0d3c81317a228d45
+pop.wav,synthesised with numpy: sine with a quick pitch drop 600 to 300 Hz,"own work, made by pipeline/sfx.py",0e32df34e744bea795f4525168068c80ec92bd51b5816858c8afe4409c258a7e
+tick.wav,synthesised with numpy: very short 1.8 kHz sine blip,"own work, made by pipeline/sfx.py",7c9a454e129ff696dbee9095d399873169bbb14c6bfc49e44a612e13ae5e1410
+chime.wav,synthesised with numpy: two soft bell notes G5 and D6,"own work, made by pipeline/sfx.py",33d1bf325e5d71b4425e045cc0dc0eb479d6b3118659fe35e7c63da3d1cde2fc
+shimmer.wav,synthesised with numpy: five high sines with slow tremolo,"own work, made by pipeline/sfx.py",a309a886e4aa13a9fc84bd5854fe74b68d0aba1191a3bcfd83e6f6ca42379ca9
+rumble.wav,synthesised with numpy: low-passed noise plus 48 Hz sine,"own work, made by pipeline/sfx.py",c5751db6db50ddec06de35debdba5e044ba36611957ed1fc458c8c8da8407de8
+buzz.wav,"synthesised with numpy: two clashing low buzzes, soft low-passed","own work, made by pipeline/sfx.py",caa501d606c41845a1df284ed3062e8d267b661290c3b68c696cae546b2c3be3
+rise.wav,synthesised with numpy: sine glide 220 to 880 Hz plus rising airy noise,"own work, made by pipeline/sfx.py",dbc43946a7d6fe5ec0ae0652275e4b16faa35949ba9cebca8fd709abfce4306e
+thud.wav,synthesised with numpy: pitch-dropping low sine plus soft knock,"own work, made by pipeline/sfx.py",b2357f45ac2a6c379bf7225702283dc28f7494c6dd092c10ca5b90356b483cbc

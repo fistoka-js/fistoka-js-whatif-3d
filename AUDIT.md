@@ -63,6 +63,7 @@ VERIFIED:
 
 - `kit/README.md` is 1,323 lines (184 KB). `kit/reports/stage2-report.md` is 3,547 lines. A weaker model cannot hold these in its head, and neither can a person.
 - About 9,000 lines of code and 12,000 lines of tests for two videos.
+- The old kit's test suite, run on my clean copy of the committed state: 833 tests, 830 pass, 3 fail, 8 minutes. The 3 failures are all "file must match byte for byte" checks (the three.js checksum, a pinned text file, the generated schema). REASONED, not proven: these come from Windows line-ending conversion when I copied the repo, not from real faults. One test alone draws all 1,831 frames and takes 3 minutes.
 - The pixel-exact regression against the chameleon was the right tool for stages 1-2, but it now forces every change to keep chameleon quirks alive.
 - The mandatory fixer/skeptic loop (up to 8 rounds per commit) produced careful code and very slow progress: one stage took about 6 hours by Jacob's account; the repo history shows stage 2 spanning 4 Nov to 9 Nov.
 - Code style is very defensive (for example an edit-distance spelling helper inside the timeline). Each piece is fine; the total is heavy.
