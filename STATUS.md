@@ -1,6 +1,6 @@
 # STATUS
 
-Last updated: 2026-11-12, about 16:40 UTC. Task numbers match PLAN.md.
+Last updated: 2026-11-12, about 21:30 UTC. Task numbers match PLAN.md.
 Paused near the 5-hour usage limit (87%; weekly 63%). It resets at 01:40 UTC on 13 Nov. The weekly allowance resets 16 Nov 09:00 UTC; about a quarter of it is left before the 90% stop line.
 
 ## Done (all committed; nothing pushed)
