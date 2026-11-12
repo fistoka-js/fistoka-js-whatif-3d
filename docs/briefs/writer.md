@@ -4,6 +4,16 @@ For a helper agent. Read `docs/HELPER-RULES.md` first and obey it exactly. Then 
 
 You own: `pipeline/llm.py`, `pipeline/writer.py`, `pipeline/prompts/**`, `pipeline/catalog_text.py`, `pipeline/fallback.py`, `tests/py/test_writer*.py`, `tests/py/test_fallback.py`, `tests/py/test_catalog_text.py`, `docs/WRITER.md`. Do not edit anything else. No paid API call may happen in your session: everything is tested with a fake LLM.
 
+## Reuse what already works (do this first)
+
+Script writing and fact checking already run in production in Jacob's stock-footage pipeline. A read-only copy of that code is at `E:\Youtube Project\_fable_work\ref-head\verticals\`: `draft.py` (see `generate_draft`: the script prompt and its JSON parsing), `fact_check.py` (`audit_script`, `flagged_claims`, `build_corrections_block`: a second LLM call audits the script's claims and can trigger one redraft), `script_clean.py`, `retry.py`, `llm.py`, and `tests/test_draft.py`, `tests/test_fact_check.py` beside them. Read these before writing anything.
+
+- **Fact check:** copy `fact_check.py` into `pipeline/` with as few changes as possible (it takes the LLM call as an argument), and bring its tests along. Keep its behaviour: flagged claims → one redraft with the corrections block → remaining flags are written into the review file under "NEEDS FACT CHECK".
+- **Script prompt:** do NOT copy `draft.py` whole (it drags in niche profiles, stock-footage search terms, thumbnails and `config.py`, which reads a key file you must never open). Instead carry over the wording of its script instructions that Jacob's channel already relies on (hook, tone, structure, word limits, the JSON reply shape and its tolerant parsing), and add what the 3D kit needs (the rules listed under step 1 below).
+- **Research:** `research.py` calls Tavily with a key from a config file. Leave research OUT (no key files, no paid services). The audit then runs without research text; check how `build_audit_prompt` behaves with an empty research text and adapt minimally. Note this difference in `docs/WRITER.md`.
+- **Keys:** the only key is `ANTHROPIC_API_KEY` from the environment. Do not port `config.py`.
+- In your report, list what you reused verbatim, what you adapted, and what you left out.
+
 ## What it does
 
 `python -m pipeline.writer --topic "What if the Moon disappeared?" --slug moon-gone [--mode api|files]`

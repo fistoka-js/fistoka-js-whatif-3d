@@ -20,3 +20,4 @@ config.json
 # music files stay local until each has a licence record (see assets/music/README.md)
 assets/music/*.mp3
 shows/zz-*/
+assets/music/_local-review-only/
