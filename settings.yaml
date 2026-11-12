@@ -7,7 +7,7 @@ channel_id: ""
 
 # How the writer asks the language model: "api" (needs ANTHROPIC_API_KEY, costs money)
 # or "files" (free; a person or Claude Code writes the reply files). See docs/WRITER.md.
-llm_mode: api
+llm_mode: files
 
 # Add a line to the video description saying the voice is synthetic.
 synthetic_voice_note: false

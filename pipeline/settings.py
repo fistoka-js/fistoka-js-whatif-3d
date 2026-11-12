@@ -6,7 +6,7 @@ import yaml
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULTS = {
     "channel_id": "",                 # the ONLY channel uploads may go to; empty = uploads refused
-    "llm_mode": "api",                # api or files (see docs/WRITER.md)
+    "llm_mode": "files",               # api or files (see docs/WRITER.md)
     "synthetic_voice_note": False,    # add the note below to the video description
     "synthetic_voice_note_text": "The narration in this video is synthetic (computer-generated) speech.",
     "max_topics_per_run": 3,

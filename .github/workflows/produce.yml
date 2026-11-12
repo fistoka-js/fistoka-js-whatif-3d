@@ -86,7 +86,7 @@ jobs:
             echo "$YOUTUBE_TOKEN_B64" | base64 -d > .verticals/youtube_token.json
           fi
           set +e
-          python -m pipeline.run "${args[@]}"
+          python -m pipeline.run --llm api "${args[@]}"
           code=$?
           echo "pipeline exit code: $code"
           # 0 = made a video; 5 = queue was empty. Anything else is a problem worth a red run.
