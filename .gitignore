@@ -1,0 +1,21 @@
+node_modules/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# renders and scratch
+shows/*/out/
+out/
+tmp/
+# local-only and secrets: never commit
+CLAUDE.md
+.claude/
+.verticals/
+client_secret*.json
+*token*.json
+config.json
+.env
+.env.*
+*.key
+# music files stay local until each has a licence record (see assets/music/README.md)
+assets/music/*.mp3

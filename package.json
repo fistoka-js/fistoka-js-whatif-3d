@@ -1,0 +1,19 @@
+{
+  "name": "whatif-3d",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "3D explainer / what-if video kit: show files in, vertical videos out.",
+  "scripts": {
+    "test": "node --test tests/",
+    "validate": "node tools/validate.mjs",
+    "serve": "node tools/serve.mjs",
+    "catalog": "node tools/catalog.mjs",
+    "gallery": "node tools/gallery.mjs"
+  },
+  "dependencies": {
+    "three": "0.160.0",
+    "puppeteer-core": "23.11.1",
+    "pngjs": "7.0.0"
+  }
+}
