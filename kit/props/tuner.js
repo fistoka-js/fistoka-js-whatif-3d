@@ -4,7 +4,7 @@
 // unless a colour is given.
 
 import * as THREE from 'three';
-import { spectrumColor } from './lib/spectrum.js';
+import { wavelengthColor } from '../engine/palette.js';
 
 export const meta = {
   name: 'tuner',
@@ -37,7 +37,7 @@ export function build(params, ctx) {
   // Colour strip: a flat strip whose vertex colours run along the spectrum.
   const STEPS = 48, stripGeo = new THREE.PlaneGeometry(2.2, 0.2, STEPS, 1), c = new THREE.Color(), cols = [];
   const pos = stripGeo.attributes.position;
-  for (let i = 0; i < pos.count; i++) { spectrumColor(pos.getX(i) / 2.2 + 0.5, c); cols.push(c.r, c.g, c.b); }
+  for (let i = 0; i < pos.count; i++) { c.set(wavelengthColor(pos.getX(i) / 2.2 + 0.5)); cols.push(c.r, c.g, c.b); }
   stripGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
   mesh(stripGeo, keep(new THREE.MeshBasicMaterial({ vertexColors: true, toneMapped: false })), 0, -1.1, 0.36);
   const cursor = mesh(new THREE.BoxGeometry(0.05, 0.38, 0.02), keep(new THREE.MeshBasicMaterial({ color: 0xffffff })), 0, -1.1, 0.38);
@@ -62,7 +62,7 @@ export function build(params, ctx) {
     bounds,
     update(t, state) {
       const v = Math.min(1, Math.max(0, state.params.value));
-      if (fixed) col.setHex(given); else spectrumColor(v, col);
+      if (fixed) col.setHex(given); else col.set(wavelengthColor(v));
       tipMat.color.copy(col); tipMat.emissive.copy(col);
       cursor.position.x = (v - 0.5) * 2.2 * 0.9;
       knob.rotation.z = -(v - 0.5) * 4;

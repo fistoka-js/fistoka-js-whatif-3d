@@ -1,0 +1,1362 @@
+{
+ "format": 1,
+ "title": "How Chameleons Really Change Colour (rebuilt in the 3D kit)",
+ "voice": {
+  "audio": "voice.mp3",
+  "words": "words.json"
+ },
+ "dials": {
+  "surround": {
+   "start": 0,
+   "keys": [
+    {
+     "at": {
+      "phrase": "chameleons",
+      "edge": "end",
+      "offset": 0.08
+     },
+     "to": 0.5,
+     "over": 0.45
+    },
+    {
+     "at": {
+      "phrase": "That's",
+      "offset": -0.3
+     },
+     "to": 1,
+     "over": 0.4
+    },
+    {
+     "at": {
+      "phrase": "they actually",
+      "offset": -0.2
+     },
+     "to": 0.5,
+     "over": 0.4
+    },
+    {
+     "at": "So why",
+     "to": 0,
+     "over": 0.7
+    }
+   ]
+  },
+  "skin": {
+   "start": 0,
+   "keys": [
+    {
+     "at": "to match",
+     "to": 1,
+     "over": 0.5
+    },
+    {
+     "at": {
+      "phrase": "That's",
+      "offset": -0.3
+     },
+     "to": 0,
+     "over": 0.4
+    }
+   ]
+  },
+  "wavelength": {
+   "start": 0.1,
+   "keys": [
+    {
+     "at": {
+      "phrase": "reflect",
+      "edge": "end"
+     },
+     "to": 0.06,
+     "over": 0.86
+    },
+    {
+     "at": {
+      "phrase": "wavelengths",
+      "edge": "end"
+     },
+     "to": 0.3,
+     "over": 1.1
+    },
+    {
+     "at": {
+      "phrase": "warm up",
+      "edge": "end"
+     },
+     "to": 0.46,
+     "over": 1.78
+    },
+    {
+     "at": {
+      "phrase": "Bigger",
+      "edge": "start"
+     },
+     "to": 0.5,
+     "over": 1.26
+    },
+    {
+     "at": {
+      "phrase": "longer",
+      "edge": "end"
+     },
+     "to": 0.56,
+     "over": 0.86
+    },
+    {
+     "at": {
+      "phrase": "yellow",
+      "edge": "end"
+     },
+     "to": 0.78,
+     "over": 0.48
+    },
+    {
+     "at": {
+      "phrase": "orange",
+      "edge": "end"
+     },
+     "to": 1,
+     "over": 0.5
+    },
+    {
+     "at": {
+      "phrase": "red",
+      "edge": "end"
+     },
+     "to": 0.6,
+     "over": 0.75
+    },
+    {
+     "at": {
+      "phrase": "tuning",
+      "edge": "end"
+     },
+     "to": 0.25,
+     "over": 0.9
+    },
+    {
+     "at": {
+      "phrase": "antenna",
+      "edge": "end",
+      "offset": -0.08
+     },
+     "to": 0.7,
+     "over": 0.75
+    },
+    {
+     "at": {
+      "phrase": "broadcast",
+      "edge": "end"
+     },
+     "to": 0.4,
+     "over": 0.65
+    },
+    {
+     "at": {
+      "phrase": "different",
+      "edge": "end",
+      "offset": -0.02
+     },
+     "to": 0.9,
+     "over": 0.3
+    },
+    {
+     "at": "No paint",
+     "to": 0.5,
+     "over": 0.7
+    },
+    {
+     "at": "No dye",
+     "to": 0.05,
+     "over": 0.7
+    },
+    {
+     "at": "Just physics",
+     "to": 0.4,
+     "over": 1
+    }
+   ]
+  },
+  "rival": {
+   "start": 0,
+   "keys": [
+    {
+     "at": {
+      "phrase": "fight",
+      "offset": -0.14
+     },
+     "to": 1,
+     "over": 0.35
+    },
+    {
+     "at": "and regulate",
+     "to": 0,
+     "over": 0.5
+    }
+   ]
+  },
+  "top": {
+   "start": 0,
+   "keys": [
+    {
+     "at": "emotions",
+     "to": 1,
+     "over": 1.4
+    },
+    {
+     "at": "fight",
+     "to": 2,
+     "over": 1.2
+    },
+    {
+     "at": "body temperature",
+     "to": 3,
+     "over": 0.6
+    },
+    {
+     "at": "Without",
+     "to": 4,
+     "over": 0.8
+    },
+    {
+     "at": "lose their",
+     "to": 5,
+     "over": 1.0
+    }
+   ]
+  },
+  "bottom": {
+   "start": 0,
+   "keys": [
+    {
+     "at": "shift",
+     "to": 1,
+     "over": 1.0
+    },
+    {
+     "at": "communicate",
+     "to": 2,
+     "over": 1.4
+    },
+    {
+     "at": "fight",
+     "to": 3,
+     "over": 1.2
+    },
+    {
+     "at": "regulate",
+     "to": 4,
+     "over": 1.0
+    },
+    {
+     "at": "lose their",
+     "to": 5,
+     "over": 1.0
+    }
+   ]
+  },
+  "finale": {
+   "start": 0.35,
+   "keys": [
+    {
+     "at": "elegant",
+     "to": 0.65,
+     "over": 1.4
+    },
+    {
+     "at": "What other",
+     "to": 1,
+     "over": 0.9
+    },
+    {
+     "at": "blow your",
+     "to": 0.7,
+     "over": 0.9
+    }
+   ]
+  }
+ },
+ "shots": [
+  {
+   "id": "myth",
+   "env": {
+    "type": "studio",
+    "floor": false,
+    "color": {
+     "dial": "surround",
+     "colors": [
+      "#2f7d3a",
+      "#d9722a",
+      "#6a3fb0"
+     ]
+    }
+   },
+   "props": [
+    {
+     "id": "hero",
+     "type": "chameleon",
+     "at": [
+      0,
+      -0.15,
+      0
+     ],
+     "size": 1.05,
+     "rotate": [
+      0,
+      -35,
+      55
+     ],
+     "color": {
+      "dial": "skin",
+      "colors": [
+       "#4faa4a",
+       "#d9937a"
+      ]
+     }
+    },
+    {
+     "id": "cam",
+     "type": "ball",
+     "at": [
+      0,
+      0,
+      0
+     ],
+     "size": 1.0,
+     "hidden": true
+    }
+   ],
+   "camera": {
+    "focus": [
+     "cam"
+    ],
+    "framing": "close",
+    "angle": "front",
+    "move": "drift",
+    "amount": 0.3
+   },
+   "actions": [
+    {
+     "at": "That's",
+     "do": "pulse",
+     "prop": "hero",
+     "strength": 0.4
+    },
+    {
+     "at": "That's",
+     "do": "icon",
+     "name": "x",
+     "place": [
+      -0.55,
+      0.75,
+      0.6
+     ],
+     "until": "So why"
+    },
+    {
+     "at": "So why",
+     "do": "icon",
+     "name": "question",
+     "place": [
+      0.55,
+      0.85,
+      0.6
+     ],
+     "until": {
+      "phrase": "it?",
+      "edge": "end"
+     }
+    },
+    {
+     "at": "they really",
+     "do": "pulse",
+     "prop": "hero",
+     "strength": 0.4
+    }
+   ]
+  },
+  {
+   "id": "skin",
+   "start": "Inside a chameleon's",
+   "env": {
+    "type": "studio",
+    "floor": false,
+    "color": "#14283a"
+   },
+   "props": [
+    {
+     "id": "stack",
+     "type": "layer_stack",
+     "at": "center",
+     "size": 1.5,
+     "rotate": [
+      10,
+      0,
+      0
+     ],
+     "reveal": 0.3,
+     "granules": 0
+    }
+   ],
+   "camera": {
+    "focus": [
+     "stack"
+    ],
+    "framing": "close",
+    "angle": "three-quarter",
+    "move": "drift",
+    "amount": 0.4
+   },
+   "actions": [
+    {
+     "at": "Inside a",
+     "do": "set",
+     "prop": "stack",
+     "param": "reveal",
+     "to": 1,
+     "until": {
+      "phrase": "special cells",
+      "edge": "end"
+     }
+    }
+   ]
+  },
+  {
+   "id": "granules",
+   "start": "Some contain",
+   "continue": true,
+   "camera": {
+    "focus": [
+     "stack"
+    ],
+    "framing": "close",
+    "angle": "high",
+    "move": "push_in",
+    "amount": 0.4
+   },
+   "actions": [
+    {
+     "at": "spread out",
+     "do": "set",
+     "prop": "stack",
+     "param": "granules",
+     "to": 1,
+     "over": 0.7
+    },
+    {
+     "at": "pull together",
+     "do": "set",
+     "prop": "stack",
+     "param": "granules",
+     "to": 0,
+     "over": 0.7
+    },
+    {
+     "at": "darker",
+     "do": "set",
+     "prop": "stack",
+     "param": "shade",
+     "to": 1,
+     "over": 0.5
+    },
+    {
+     "at": "lighter",
+     "do": "set",
+     "prop": "stack",
+     "param": "shade",
+     "to": 0,
+     "over": 0.5
+    }
+   ]
+  },
+  {
+   "id": "crystal-layer",
+   "start": "But here's",
+   "continue": true,
+   "camera": {
+    "focus": [
+     "stack"
+    ],
+    "framing": "close",
+    "angle": "low",
+    "move": "push_in",
+    "amount": 0.7
+   },
+   "actions": [
+    {
+     "at": "But here's",
+     "do": "set",
+     "prop": "stack",
+     "param": "focus",
+     "to": 2,
+     "over": 0.8
+    }
+   ]
+  },
+  {
+   "id": "lattice-in",
+   "start": "deeper layers",
+   "transition": "dive",
+   "env": {
+    "type": "studio",
+    "floor": false,
+    "color": {
+     "dial": "wavelength",
+     "colors": [
+      "#0a4a5a",
+      "#0d5a2c",
+      "#5a5a10",
+      "#5a2c0a",
+      "#4a0808"
+     ]
+    }
+   },
+   "props": [
+    {
+     "id": "lat",
+     "type": "lattice",
+     "at": [
+      0,
+      -0.5,
+      0
+     ],
+     "size": 3.2,
+     "tilt": 0.3,
+     "spacing": {
+      "dial": "wavelength",
+      "to": [
+       0,
+       1
+      ]
+     },
+     "color": {
+      "dial": "wavelength",
+      "colors": "spectrum"
+     }
+    },
+    {
+     "id": "small",
+     "type": "chameleon",
+     "at": [
+      0,
+      1.2,
+      0
+     ],
+     "size": 1.8,
+     "color": {
+      "dial": "wavelength",
+      "colors": "spectrum"
+     }
+    },
+    {
+     "id": "inwave",
+     "type": "light_wave",
+     "from": [
+      -1.0,
+      1.7,
+      0.3
+     ],
+     "to": [
+      -0.45,
+      0.25,
+      0.3
+     ],
+     "color": "white",
+     "wavelength": 0.45,
+     "progress": 0
+    },
+    {
+     "id": "outwave",
+     "type": "light_wave",
+     "from": [
+      0.35,
+      0.2,
+      0.3
+     ],
+     "to": [
+      1.05,
+      1.6,
+      0.3
+     ],
+     "progress": 0,
+     "color": {
+      "dial": "wavelength",
+      "colors": "spectrum"
+     },
+     "wavelength": {
+      "dial": "wavelength",
+      "to": [
+       0.15,
+       0.95
+      ]
+     }
+    },
+    {
+     "id": "inwave2",
+     "type": "light_wave",
+     "from": [
+      -1.0,
+      1.7,
+      0.3
+     ],
+     "to": [
+      -0.45,
+      0.25,
+      0.3
+     ],
+     "color": "white",
+     "wavelength": 0.45,
+     "progress": 0
+    },
+    {
+     "id": "outwave2",
+     "type": "light_wave",
+     "from": [
+      0.35,
+      0.2,
+      0.3
+     ],
+     "to": [
+      1.05,
+      1.6,
+      0.3
+     ],
+     "progress": 0,
+     "color": {
+      "dial": "wavelength",
+      "colors": "spectrum"
+     },
+     "wavelength": {
+      "dial": "wavelength",
+      "to": [
+       0.15,
+       0.95
+      ]
+     }
+    },
+    {
+     "id": "cam",
+     "type": "ball",
+     "at": [
+      0,
+      0.3,
+      0
+     ],
+     "size": 2.2,
+     "hidden": true
+    },
+    {
+     "id": "cam2",
+     "type": "ball",
+     "at": [
+      0,
+      0.3,
+      0
+     ],
+     "size": 2.35,
+     "hidden": true
+    },
+    {
+     "id": "cam3",
+     "type": "ball",
+     "at": [
+      0,
+      0.3,
+      0
+     ],
+     "size": 2.7,
+     "hidden": true
+    }
+   ],
+   "camera": {
+    "focus": [
+     "cam"
+    ],
+    "framing": "medium",
+    "angle": "front",
+    "move": "pull_out",
+    "amount": 0.35
+   },
+   "actions": [
+    {
+     "at": "deeper layers",
+     "do": "appear",
+     "prop": "lat",
+     "style": "grow",
+     "over": 1.3
+    },
+    {
+     "at": "microscopic structures",
+     "do": "set",
+     "prop": "lat",
+     "param": "tilt",
+     "to": 0.9,
+     "over": 1.8
+    }
+   ]
+  },
+  {
+   "id": "relaxed",
+   "start": "When a chameleon",
+   "continue": true,
+   "camera": {
+    "focus": [
+     "cam"
+    ],
+    "framing": "medium",
+    "angle": "front",
+    "move": "drift",
+    "amount": 0.3
+   },
+   "actions": [
+    {
+     "at": "When a chameleon",
+     "do": "appear",
+     "prop": "small",
+     "style": "grow",
+     "over": 0.9
+    },
+    {
+     "at": "close together",
+     "do": "appear",
+     "prop": "inwave",
+     "style": "fade",
+     "over": 0.4
+    },
+    {
+     "at": "close together",
+     "do": "set",
+     "prop": "inwave",
+     "param": "progress",
+     "to": 1,
+     "over": 0.9
+    },
+    {
+     "at": "and reflect",
+     "do": "appear",
+     "prop": "outwave",
+     "style": "fade",
+     "over": 0.4
+    },
+    {
+     "at": "and reflect",
+     "do": "set",
+     "prop": "outwave",
+     "param": "progress",
+     "to": 1,
+     "over": 0.9
+    },
+    {
+     "at": {
+      "phrase": "greens",
+      "edge": "end",
+      "offset": -0.2
+     },
+     "do": "disappear",
+     "prop": "inwave",
+     "style": "fade",
+     "over": 0.35
+    },
+    {
+     "at": {
+      "phrase": "greens",
+      "edge": "end",
+      "offset": -0.2
+     },
+     "do": "disappear",
+     "prop": "outwave",
+     "style": "fade",
+     "over": 0.35
+    }
+   ]
+  },
+  {
+   "id": "excited",
+   "start": "But when",
+   "continue": true,
+   "camera": {
+    "focus": [
+     "cam2"
+    ],
+    "framing": "medium",
+    "angle": "front",
+    "move": "drift",
+    "amount": 0.4
+   },
+   "actions": [
+    {
+     "at": "gets excited",
+     "do": "set",
+     "prop": "lat",
+     "param": "shake",
+     "to": 0.6,
+     "over": 0.7
+    },
+    {
+     "at": "gets excited",
+     "do": "shake",
+     "prop": "small",
+     "strength": 0.2,
+     "for": 3
+    },
+    {
+     "at": "the crystals spread",
+     "do": "set",
+     "prop": "lat",
+     "param": "shake",
+     "to": 0,
+     "over": 0.8
+    },
+    {
+     "at": "But when",
+     "do": "set",
+     "prop": "lat",
+     "param": "tilt",
+     "to": 0.45,
+     "over": 1.2
+    }
+   ]
+  },
+  {
+   "id": "bigger",
+   "start": "Bigger gaps",
+   "continue": true,
+   "camera": {
+    "focus": [
+     "cam3"
+    ],
+    "framing": "medium",
+    "angle": "front",
+    "move": "pull_out",
+    "amount": 0.4
+   },
+   "actions": [
+    {
+     "at": "Bigger gaps",
+     "do": "appear",
+     "prop": "inwave2",
+     "style": "fade",
+     "over": 0.3
+    },
+    {
+     "at": "Bigger gaps",
+     "do": "set",
+     "prop": "inwave2",
+     "param": "progress",
+     "to": 1,
+     "over": 0.9
+    },
+    {
+     "at": "Bigger gaps",
+     "do": "appear",
+     "prop": "outwave2",
+     "style": "fade",
+     "over": 0.3
+    },
+    {
+     "at": "Bigger gaps",
+     "do": "set",
+     "prop": "outwave2",
+     "param": "progress",
+     "to": 1,
+     "over": 0.9
+    },
+    {
+     "at": {
+      "phrase": "red",
+      "edge": "end",
+      "offset": -0.3
+     },
+     "do": "disappear",
+     "prop": "inwave2",
+     "style": "fade",
+     "over": 0.3
+    },
+    {
+     "at": {
+      "phrase": "red",
+      "edge": "end",
+      "offset": -0.3
+     },
+     "do": "disappear",
+     "prop": "outwave2",
+     "style": "fade",
+     "over": 0.3
+    },
+    {
+     "at": "Bigger gaps",
+     "do": "set",
+     "prop": "lat",
+     "param": "tilt",
+     "to": 0.7,
+     "over": 1.2
+    }
+   ]
+  },
+  {
+   "id": "tuner",
+   "start": "It's like tuning",
+   "env": {
+    "type": "studio",
+    "floor": false,
+    "color": {
+     "dial": "wavelength",
+     "colors": [
+      "#0a4a5a",
+      "#0d5a2c",
+      "#5a5a10",
+      "#5a2c0a",
+      "#4a0808"
+     ]
+    }
+   },
+   "props": [
+    {
+     "id": "tune",
+     "type": "tuner",
+     "at": "center",
+     "size": 1.7,
+     "value": {
+      "dial": "wavelength",
+      "to": [
+       0,
+       1
+      ]
+     }
+    },
+    {
+     "id": "paint",
+     "type": "box",
+     "at": [
+      -0.85,
+      0.55,
+      0.5
+     ],
+     "size": 0.55,
+     "color": "#d33a3a"
+    },
+    {
+     "id": "dye",
+     "type": "water_drop",
+     "at": [
+      0.85,
+      0.55,
+      0.5
+     ],
+     "size": 0.55,
+     "color": "#7a4fd0"
+    },
+    {
+     "id": "atom",
+     "type": "atom",
+     "at": [
+      0,
+      1.7,
+      0
+     ],
+     "size": 0.6
+    }
+   ],
+   "camera": {
+    "focus": [
+     "tune"
+    ],
+    "framing": "close",
+    "angle": "front",
+    "move": "push_in",
+    "amount": 0.3
+   },
+   "actions": [
+    {
+     "at": "It's like tuning",
+     "do": "appear",
+     "prop": "tune",
+     "style": "grow",
+     "over": 0.8
+    }
+   ]
+  },
+  {
+   "id": "no-paint",
+   "start": "No paint",
+   "continue": true,
+   "camera": {
+    "focus": [
+     "tune",
+     "paint",
+     "dye"
+    ],
+    "framing": "close",
+    "angle": "front",
+    "move": "drift",
+    "amount": 0.3
+   },
+   "actions": [
+    {
+     "at": "No paint",
+     "do": "appear",
+     "prop": "paint",
+     "style": "pop"
+    },
+    {
+     "at": {
+      "phrase": "paint",
+      "edge": "end"
+     },
+     "do": "icon",
+     "name": "x",
+     "prop": "paint"
+    },
+    {
+     "at": {
+      "phrase": "paint",
+      "edge": "end"
+     },
+     "do": "shake",
+     "prop": "paint",
+     "strength": 0.4,
+     "for": 0.6
+    },
+    {
+     "at": "No dye",
+     "do": "appear",
+     "prop": "dye",
+     "style": "pop"
+    },
+    {
+     "at": {
+      "phrase": "dye",
+      "edge": "start"
+     },
+     "do": "icon",
+     "name": "x",
+     "prop": "dye"
+    },
+    {
+     "at": {
+      "phrase": "dye",
+      "edge": "start"
+     },
+     "do": "shake",
+     "prop": "dye",
+     "strength": 0.4,
+     "for": 0.6
+    },
+    {
+     "at": "Just physics",
+     "do": "appear",
+     "prop": "atom",
+     "style": "pop"
+    },
+    {
+     "at": {
+      "phrase": "physics",
+      "edge": "end",
+      "offset": 0.05
+     },
+     "do": "disappear",
+     "prop": "tune",
+     "style": "shrink",
+     "over": 0.4
+    },
+    {
+     "at": {
+      "phrase": "physics",
+      "edge": "end",
+      "offset": 0.05
+     },
+     "do": "disappear",
+     "prop": "paint",
+     "style": "shrink",
+     "over": 0.4
+    },
+    {
+     "at": {
+      "phrase": "physics",
+      "edge": "end",
+      "offset": 0.05
+     },
+     "do": "disappear",
+     "prop": "dye",
+     "style": "shrink",
+     "over": 0.4
+    },
+    {
+     "at": {
+      "phrase": "physics",
+      "edge": "end",
+      "offset": 0.05
+     },
+     "do": "disappear",
+     "prop": "atom",
+     "style": "shrink",
+     "over": 0.4
+    }
+   ]
+  },
+  {
+   "id": "emotions",
+   "start": "Chameleons shift",
+   "env": {
+    "type": "studio",
+    "floor": false,
+    "color": {
+     "dial": "rival",
+     "colors": [
+      "#10161c",
+      "#4a0a10"
+     ]
+    }
+   },
+   "props": [
+    {
+     "id": "ctop",
+     "type": "chameleon",
+     "at": [
+      0,
+      1.15,
+      0
+     ],
+     "size": 2.0,
+     "color": {
+      "dial": "top",
+      "from": [
+       0,
+       5
+      ],
+      "colors": [
+       "#c0e050",
+       "#e5b535",
+       "#f06a3a",
+       "#3a4a30",
+       "#58b050",
+       "#7d8790"
+      ]
+     }
+    },
+    {
+     "id": "cbot",
+     "type": "chameleon",
+     "at": [
+      0,
+      -1.25,
+      0
+     ],
+     "size": 2.0,
+     "rotate": [
+      0,
+      180,
+      0
+     ],
+     "color": {
+      "dial": "bottom",
+      "from": [
+       0,
+       5
+      ],
+      "colors": [
+       "#40c0d0",
+       "#70d040",
+       "#c0d030",
+       "#e8a030",
+       "#40d060",
+       "#7d8790"
+      ]
+     }
+    },
+    {
+     "id": "bolt1",
+     "type": "lightning",
+     "at": [
+      -0.35,
+      -0.05,
+      0.4
+     ],
+     "size": 0.9,
+     "color": "#ffb020"
+    },
+    {
+     "id": "bolt2",
+     "type": "lightning",
+     "at": [
+      0.3,
+      -0.05,
+      0.4
+     ],
+     "size": 0.9,
+     "color": "#ffb020"
+    },
+    {
+     "id": "sunp",
+     "type": "sun",
+     "at": [
+      -0.85,
+      1.6,
+      0.5
+     ],
+     "size": 0.55
+    },
+    {
+     "id": "cam",
+     "type": "ball",
+     "at": [
+      0,
+      0,
+      0
+     ],
+     "size": 1.9,
+     "hidden": true
+    }
+   ],
+   "camera": {
+    "focus": [
+     "cam"
+    ],
+    "framing": "medium",
+    "angle": "front",
+    "move": "drift",
+    "amount": 0.3
+   },
+   "actions": [
+    {
+     "at": "attract mates",
+     "do": "icon",
+     "name": "heart",
+     "place": [
+      0,
+      0.45,
+      0.6
+     ],
+     "until": "fight"
+    },
+    {
+     "at": "mates",
+     "do": "icon",
+     "name": "heart",
+     "place": [
+      -0.45,
+      -0.1,
+      0.6
+     ],
+     "until": "fight"
+    },
+    {
+     "at": {
+      "phrase": "mates",
+      "edge": "end"
+     },
+     "do": "icon",
+     "name": "heart",
+     "place": [
+      0.4,
+      -0.35,
+      0.6
+     ],
+     "until": "fight"
+    },
+    {
+     "at": "fight rivals",
+     "do": "appear",
+     "prop": "bolt1",
+     "style": "pop"
+    },
+    {
+     "at": "rivals",
+     "do": "appear",
+     "prop": "bolt2",
+     "style": "pop"
+    },
+    {
+     "at": "body temperature",
+     "do": "appear",
+     "prop": "sunp",
+     "style": "pop"
+    },
+    {
+     "at": "lose their",
+     "do": "color",
+     "prop": "bolt1",
+     "to": "grey",
+     "over": 1.0
+    },
+    {
+     "at": "lose their",
+     "do": "color",
+     "prop": "bolt2",
+     "to": "grey",
+     "over": 1.0
+    },
+    {
+     "at": "lose their",
+     "do": "color",
+     "prop": "sunp",
+     "to": "grey",
+     "over": 1.0
+    },
+    {
+     "at": "lose their",
+     "do": "shake",
+     "prop": "ctop",
+     "strength": 0.1,
+     "for": 0.5
+    },
+    {
+     "at": "lose their",
+     "do": "shake",
+     "prop": "cbot",
+     "strength": 0.1,
+     "for": 0.5
+    }
+   ]
+  },
+  {
+   "id": "finale",
+   "start": "It's one",
+   "env": {
+    "type": "space",
+    "nebula": "none"
+   },
+   "props": [
+    {
+     "id": "last",
+     "type": "chameleon",
+     "at": "center",
+     "size": 1.6,
+     "rotate": [
+      0,
+      -35,
+      55
+     ],
+     "color": {
+      "dial": "finale",
+      "colors": "spectrum"
+     }
+    }
+   ],
+   "camera": {
+    "focus": [
+     "last"
+    ],
+    "framing": "close",
+    "angle": "front",
+    "move": "orbit",
+    "amount": 0.3
+   },
+   "actions": [
+    {
+     "at": "elegant light",
+     "do": "pulse",
+     "prop": "last",
+     "strength": 0.3
+    },
+    {
+     "at": "What other",
+     "do": "text",
+     "text": "?",
+     "style": "stamp",
+     "pos": "top"
+    }
+   ]
+  }
+ ]
+}
