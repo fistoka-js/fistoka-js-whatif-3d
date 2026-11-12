@@ -39,6 +39,16 @@ Things only you can decide or do. Nothing here blocks the build; work continues 
 - **What:** the step where Claude writes the script and the show file is built and tested with fakes only. Real cost per video is an estimate ($0.05-0.12) until one real run.
 - **Steps:** will be a single command here when the writer is ready (see STATUS.md).
 
+### 7a. Which model writes the videos (this sets the cost per video)
+- **What:** estimates from the measured prompt sizes (not from a real run): about **$0.13 per video on Sonnet** (plus about $0.07 for each repair round, worst case about $0.45), or about **$0.007 on Haiku**. Sonnet is above your "few cents" target; Haiku is far below it but may write weaker shows.
+- **Options:** (a) Sonnet for everything; (b) Haiku for the script and fact check, Sonnet only for the show file (roughly $0.08-0.10); (c) Haiku for everything; (d) no API at all: "files" mode, where a Claude Code session on your subscription answers the prompt files (free per video, but someone has to start it).
+- **Recommendation:** start with (d) for the first handful of videos so you can judge quality at zero cost, then run one paid test each of (b) and (c) and compare. 13 videos a month on Sonnet would be about $1.70-2.50.
+- **Where:** `settings.yaml`, section `writer`. Details: `docs/WRITER.md`.
+
+### 7b. Keep each video's script and show file in the repo?
+- **What:** the GitHub workflow commits only the topic queue back. The script, voice and show file of each video would exist only in a download that GitHub deletes after 7 days.
+- **Recommendation:** yes, commit `shows/<slug>/` (small text files plus one MP3 of about 1 MB) so any video can be re-rendered or fixed later. It is a small workflow change; say the word.
+
 ### 8. Second YouTube channel
 - **What:** private uploads need the new channel, its login token stored as GitHub secrets, and its channel ID in the config (the wrong-channel guard refuses to upload without it).
 - **Steps:** will be in `docs/CHANNEL_SETUP.md` when the upload step is ready.
