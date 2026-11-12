@@ -1,0 +1,613 @@
+{
+  "format": 1,
+  "title": "What if Earth had rings like Saturn?",
+  "voice": {
+    "audio": "voice.mp3",
+    "words": "words.json"
+  },
+  "shots": [
+    {
+      "id": "hook",
+      "env": {
+        "type": "space",
+        "nebula": "purple"
+      },
+      "props": [
+        {
+          "id": "earth",
+          "type": "planet",
+          "look": "earth",
+          "at": "center",
+          "size": 1.3
+        },
+        {
+          "id": "band",
+          "type": "ring",
+          "style": "flat",
+          "tilt": 72,
+          "thickness": 0.06,
+          "color": "#f1e2b8",
+          "at": "center",
+          "size": 2.7
+        }
+      ],
+      "camera": {
+        "move": "push_in",
+        "angle": "three-quarter",
+        "amount": 0.6
+      },
+      "actions": [
+        {
+          "at": "rings like Saturn",
+          "do": "appear",
+          "prop": "band",
+          "style": "grow",
+          "over": 0.6
+        }
+      ]
+    },
+    {
+      "id": "night-arch",
+      "start": "Look up",
+      "env": {
+        "type": "sky",
+        "time": "night",
+        "ground": "grass",
+        "clouds": 0.2
+      },
+      "props": [
+        {
+          "id": "arch",
+          "type": "ring",
+          "style": "flat",
+          "tilt": 10,
+          "thickness": 0.08,
+          "color": "#fff0c8",
+          "at": [
+            0,
+            -0.6,
+            -2.5
+          ],
+          "size": 5
+        },
+        {
+          "id": "kid",
+          "type": "person",
+          "pose": "stand",
+          "color": "orange",
+          "at": [
+            0.35,
+            0,
+            0.9
+          ],
+          "size": 0.9
+        }
+      ],
+      "camera": {
+        "move": "rise",
+        "angle": "low",
+        "framing": "wide",
+        "focus": [
+          "kid"
+        ],
+        "amount": 0.4
+      },
+      "actions": [
+        {
+          "at": "glowing arch",
+          "do": "pulse",
+          "prop": "kid",
+          "strength": 0.15
+        },
+        {
+          "at": "whole sky",
+          "do": "shake",
+          "strength": 0.3,
+          "for": 0.5
+        }
+      ]
+    },
+    {
+      "id": "daytime",
+      "start": "You would see",
+      "env": {
+        "type": "sky",
+        "time": "day",
+        "ground": "ocean",
+        "clouds": 0.5
+      },
+      "props": [
+        {
+          "id": "arch",
+          "type": "ring",
+          "style": "flat",
+          "tilt": 10,
+          "thickness": 0.05,
+          "color": "white",
+          "at": [
+            0,
+            -0.6,
+            -2.5
+          ],
+          "size": 5
+        },
+        {
+          "id": "boat",
+          "type": "ship",
+          "style": "sail",
+          "color": "red",
+          "at": [
+            -0.35,
+            0,
+            0.8
+          ],
+          "size": 0.9
+        }
+      ],
+      "camera": {
+        "move": "pan",
+        "angle": "front",
+        "framing": "wide",
+        "focus": [
+          "boat"
+        ],
+        "amount": 0.5
+      },
+      "actions": [
+        {
+          "at": "daytime",
+          "do": "text",
+          "text": "EVEN BY DAY",
+          "style": "title",
+          "pos": "top"
+        },
+        {
+          "at": "pale and enormous",
+          "do": "pulse",
+          "prop": "boat",
+          "strength": 0.15
+        }
+      ]
+    },
+    {
+      "id": "ice-rock",
+      "start": "The rings would",
+      "transition": "dip",
+      "env": {
+        "type": "space",
+        "nebula": "blue"
+      },
+      "props": [
+        {
+          "id": "earth",
+          "type": "planet",
+          "look": "earth",
+          "at": "center",
+          "size": 1.1
+        },
+        {
+          "id": "bits",
+          "type": "particles",
+          "shape": "ring",
+          "count": 500,
+          "color": "white",
+          "color2": "#9a8a78",
+          "mix": 0.45,
+          "dot": 0.035,
+          "at": "center",
+          "size": 2.6,
+          "speed": 0.4
+        }
+      ],
+      "camera": {
+        "move": "orbit",
+        "angle": "high",
+        "amount": 0.5
+      },
+      "actions": [
+        {
+          "at": "ice and rock",
+          "do": "label",
+          "prop": "bits",
+          "text": "ICE + ROCK",
+          "side": "right"
+        },
+        {
+          "at": "equator",
+          "do": "set",
+          "prop": "bits",
+          "param": "speed",
+          "to": 1.2,
+          "over": 0.8
+        }
+      ]
+    },
+    {
+      "id": "shadow",
+      "start": "Their shadow",
+      "env": {
+        "type": "space",
+        "nebula": "none"
+      },
+      "props": [
+        {
+          "id": "earth",
+          "type": "planet",
+          "look": "earth",
+          "at": [
+            -0.35,
+            0,
+            0
+          ],
+          "size": 1.2
+        },
+        {
+          "id": "band",
+          "type": "ring",
+          "style": "flat",
+          "tilt": 78,
+          "thickness": 0.06,
+          "color": "#f1e2b8",
+          "at": [
+            -0.35,
+            0,
+            0
+          ],
+          "size": 2.4
+        },
+        {
+          "id": "temp",
+          "type": "thermometer",
+          "at": [
+            1.05,
+            0,
+            0.2
+          ],
+          "size": 0.75,
+          "level": 0.7
+        }
+      ],
+      "camera": {
+        "move": "drift",
+        "angle": "front",
+        "amount": 0.5
+      },
+      "actions": [
+        {
+          "at": "half the planet",
+          "do": "color",
+          "prop": "earth",
+          "to": "#5f7590",
+          "over": 1.0
+        },
+        {
+          "at": "colder",
+          "do": "appear",
+          "prop": "temp",
+          "style": "pop"
+        },
+        {
+          "at": "colder",
+          "do": "set",
+          "prop": "temp",
+          "param": "level",
+          "to": 0.15,
+          "over": 1.2
+        },
+        {
+          "at": "darker winters",
+          "do": "label",
+          "prop": "temp",
+          "text": "COLDER WINTERS",
+          "side": "top"
+        }
+      ]
+    },
+    {
+      "id": "satellites",
+      "start": "Satellites would",
+      "env": {
+        "type": "space",
+        "nebula": "red"
+      },
+      "props": [
+        {
+          "id": "sat",
+          "type": "satellite",
+          "at": [
+            -0.2,
+            0.15,
+            0
+          ],
+          "size": 1.0
+        },
+        {
+          "id": "debris",
+          "type": "asteroid",
+          "count": 24,
+          "at": [
+            0.6,
+            -0.1,
+            -0.3
+          ],
+          "size": 1.5
+        }
+      ],
+      "camera": {
+        "move": "push_in",
+        "angle": "three-quarter",
+        "amount": 0.5
+      },
+      "actions": [
+        {
+          "at": "real problem",
+          "do": "icon",
+          "prop": "sat",
+          "name": "warning",
+          "until": "smashed"
+        },
+        {
+          "at": "crossed the rings",
+          "do": "appear",
+          "prop": "debris",
+          "style": "fly_in",
+          "from": "far-right",
+          "over": 0.8
+        },
+        {
+          "at": "smashed",
+          "do": "shake",
+          "prop": "sat",
+          "strength": 0.8,
+          "for": 0.6
+        },
+        {
+          "at": "smashed",
+          "do": "icon",
+          "prop": "sat",
+          "name": "x"
+        },
+        {
+          "at": "countless fragments",
+          "do": "disappear",
+          "prop": "sat",
+          "style": "shrink",
+          "over": 0.6
+        }
+      ]
+    },
+    {
+      "id": "launch",
+      "start": "So rockets",
+      "env": {
+        "type": "sky",
+        "time": "day",
+        "ground": "ice",
+        "clouds": 0.3
+      },
+      "props": [
+        {
+          "id": "rocket",
+          "type": "rocket",
+          "color": "red",
+          "at": [
+            0,
+            0.55,
+            0
+          ],
+          "size": 1.0,
+          "thrust": 0
+        }
+      ],
+      "camera": {
+        "move": "rise",
+        "angle": "low",
+        "framing": "medium",
+        "amount": 0.6
+      },
+      "actions": [
+        {
+          "at": "rockets",
+          "do": "set",
+          "prop": "rocket",
+          "param": "thrust",
+          "to": 1,
+          "over": 0.5
+        },
+        {
+          "at": "launch",
+          "do": "move",
+          "prop": "rocket",
+          "to": [
+            0,
+            1.6,
+            0
+          ],
+          "over": 2.2,
+          "ease": "in"
+        },
+        {
+          "at": "far north",
+          "do": "text",
+          "text": "FAR NORTH",
+          "style": "title",
+          "pos": "top"
+        }
+      ]
+    },
+    {
+      "id": "ring-rain",
+      "start": "And here's",
+      "transition": "dip",
+      "env": {
+        "type": "space",
+        "nebula": "teal"
+      },
+      "props": [
+        {
+          "id": "saturn",
+          "type": "planet",
+          "look": "gas",
+          "rings": true,
+          "at": "center",
+          "size": 1.5
+        },
+        {
+          "id": "rain",
+          "type": "arrow",
+          "from": [
+            1.2,
+            1.0,
+            0.3
+          ],
+          "to": "saturn",
+          "color": "cyan",
+          "length": 0
+        }
+      ],
+      "camera": {
+        "move": "orbit",
+        "angle": "three-quarter",
+        "amount": 0.4
+      },
+      "actions": [
+        {
+          "at": "strange part",
+          "do": "icon",
+          "prop": "saturn",
+          "name": "question",
+          "until": "Saturn's rings"
+        },
+        {
+          "at": "raining down",
+          "do": "set",
+          "prop": "rain",
+          "param": "length",
+          "to": 1,
+          "over": 0.8
+        },
+        {
+          "at": "raining down",
+          "do": "label",
+          "prop": "saturn",
+          "text": "RING RAIN",
+          "side": "left"
+        }
+      ]
+    },
+    {
+      "id": "gone",
+      "start": "Scientists think",
+      "env": {
+        "type": "space",
+        "nebula": "purple",
+        "stars": 1.5
+      },
+      "props": [
+        {
+          "id": "saturn",
+          "type": "planet",
+          "look": "gas",
+          "at": "center",
+          "size": 1.3
+        },
+        {
+          "id": "band",
+          "type": "ring",
+          "style": "flat",
+          "tilt": 70,
+          "thickness": 0.07,
+          "color": "#e8d4a0",
+          "at": "center",
+          "size": 2.6
+        }
+      ],
+      "camera": {
+        "move": "pull_out",
+        "angle": "front",
+        "amount": 0.5
+      },
+      "actions": [
+        {
+          "at": "few hundred",
+          "do": "count",
+          "from": 0,
+          "to": 300,
+          "unit": "M YEARS",
+          "pos": "top",
+          "over": 1.4
+        },
+        {
+          "at": "mostly gone",
+          "do": "disappear",
+          "prop": "band",
+          "style": "shrink",
+          "over": 1.6
+        }
+      ]
+    },
+    {
+      "id": "enjoy",
+      "start": "So enjoy",
+      "env": {
+        "type": "sky",
+        "time": "sunset",
+        "ground": "grass",
+        "clouds": 0.3
+      },
+      "props": [
+        {
+          "id": "arch",
+          "type": "ring",
+          "style": "flat",
+          "tilt": 10,
+          "thickness": 0.08,
+          "color": "#ffd9a0",
+          "at": [
+            0,
+            -0.6,
+            -2.5
+          ],
+          "size": 5
+        },
+        {
+          "id": "sitter",
+          "type": "person",
+          "pose": "sit",
+          "color": "teal",
+          "at": [
+            -0.3,
+            0,
+            0.9
+          ],
+          "size": 0.8
+        }
+      ],
+      "camera": {
+        "move": "rise",
+        "angle": "low",
+        "framing": "wide",
+        "focus": [
+          "sitter"
+        ],
+        "amount": 0.4
+      },
+      "actions": [
+        {
+          "at": "enjoy the view",
+          "do": "bob",
+          "prop": "sitter",
+          "height": 0.04,
+          "period": 2
+        },
+        {
+          "at": "Follow",
+          "do": "text",
+          "text": "FOLLOW FOR MORE",
+          "style": "title",
+          "pos": "top"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,662 @@
+[
+ {
+  "text": "Why",
+  "start": 0.1,
+  "end": 0.201
+ },
+ {
+  "text": "does",
+  "start": 0.212,
+  "end": 0.368
+ },
+ {
+  "text": "ice",
+  "start": 0.379,
+  "end": 0.547
+ },
+ {
+  "text": "float,",
+  "start": 0.558,
+  "end": 0.904
+ },
+ {
+  "text": "when",
+  "start": 1.183,
+  "end": 1.317
+ },
+ {
+  "text": "most",
+  "start": 1.328,
+  "end": 1.562
+ },
+ {
+  "text": "solids",
+  "start": 1.574,
+  "end": 1.975
+ },
+ {
+  "text": "sink",
+  "start": 1.987,
+  "end": 2.288
+ },
+ {
+  "text": "in",
+  "start": 2.299,
+  "end": 2.355
+ },
+ {
+  "text": "their",
+  "start": 2.366,
+  "end": 2.489
+ },
+ {
+  "text": "own",
+  "start": 2.5,
+  "end": 2.634
+ },
+ {
+  "text": "liquid?",
+  "start": 2.645,
+  "end": 3.002
+ },
+ {
+  "text": "Drop",
+  "start": 3.371,
+  "end": 3.56
+ },
+ {
+  "text": "a",
+  "start": 3.571,
+  "end": 3.627
+ },
+ {
+  "text": "block",
+  "start": 3.638,
+  "end": 3.951
+ },
+ {
+  "text": "of",
+  "start": 3.962,
+  "end": 4.04
+ },
+ {
+  "text": "solid",
+  "start": 4.051,
+  "end": 4.431
+ },
+ {
+  "text": "wax",
+  "start": 4.442,
+  "end": 4.777
+ },
+ {
+  "text": "into",
+  "start": 4.788,
+  "end": 4.933
+ },
+ {
+  "text": "melted",
+  "start": 4.944,
+  "end": 5.301
+ },
+ {
+  "text": "wax,",
+  "start": 5.312,
+  "end": 5.77
+ },
+ {
+  "text": "and",
+  "start": 6.016,
+  "end": 6.116
+ },
+ {
+  "text": "it",
+  "start": 6.127,
+  "end": 6.194
+ },
+ {
+  "text": "sinks",
+  "start": 6.205,
+  "end": 6.574
+ },
+ {
+  "text": "straight",
+  "start": 6.585,
+  "end": 6.953
+ },
+ {
+  "text": "to",
+  "start": 6.964,
+  "end": 7.042
+ },
+ {
+  "text": "the",
+  "start": 7.054,
+  "end": 7.132
+ },
+ {
+  "text": "bottom.",
+  "start": 7.143,
+  "end": 7.467
+ },
+ {
+  "text": "But",
+  "start": 7.846,
+  "end": 7.924
+ },
+ {
+  "text": "ice",
+  "start": 7.935,
+  "end": 8.069
+ },
+ {
+  "text": "bobs",
+  "start": 8.08,
+  "end": 8.315
+ },
+ {
+  "text": "right",
+  "start": 8.326,
+  "end": 8.471
+ },
+ {
+  "text": "back",
+  "start": 8.482,
+  "end": 8.705
+ },
+ {
+  "text": "up.",
+  "start": 8.716,
+  "end": 8.895
+ },
+ {
+  "text": "The",
+  "start": 9.275,
+  "end": 9.33
+ },
+ {
+  "text": "secret",
+  "start": 9.341,
+  "end": 9.721
+ },
+ {
+  "text": "is",
+  "start": 9.888,
+  "end": 9.978
+ },
+ {
+  "text": "the",
+  "start": 9.989,
+  "end": 10.067
+ },
+ {
+  "text": "water",
+  "start": 10.078,
+  "end": 10.368
+ },
+ {
+  "text": "molecule.",
+  "start": 10.379,
+  "end": 10.904
+ },
+ {
+  "text": "It",
+  "start": 11.272,
+  "end": 11.339
+ },
+ {
+  "text": "is",
+  "start": 11.35,
+  "end": 11.451
+ },
+ {
+  "text": "shaped",
+  "start": 11.462,
+  "end": 11.808
+ },
+ {
+  "text": "like",
+  "start": 11.819,
+  "end": 11.931
+ },
+ {
+  "text": "a",
+  "start": 11.942,
+  "end": 11.998
+ },
+ {
+  "text": "tiny",
+  "start": 12.009,
+  "end": 12.377
+ },
+ {
+  "text": "boomerang:",
+  "start": 12.388,
+  "end": 12.969
+ },
+ {
+  "text": "one",
+  "start": 13.248,
+  "end": 13.393
+ },
+ {
+  "text": "oxygen,",
+  "start": 13.404,
+  "end": 13.884
+ },
+ {
+  "text": "two",
+  "start": 14.141,
+  "end": 14.297
+ },
+ {
+  "text": "hydrogens.",
+  "start": 14.308,
+  "end": 14.911
+ },
+ {
+  "text": "In",
+  "start": 15.279,
+  "end": 15.413
+ },
+ {
+  "text": "liquid",
+  "start": 15.424,
+  "end": 15.681
+ },
+ {
+  "text": "water,",
+  "start": 15.692,
+  "end": 16.049
+ },
+ {
+  "text": "these",
+  "start": 16.395,
+  "end": 16.562
+ },
+ {
+  "text": "molecules",
+  "start": 16.574,
+  "end": 17.087
+ },
+ {
+  "text": "tumble",
+  "start": 17.098,
+  "end": 17.422
+ },
+ {
+  "text": "around",
+  "start": 17.433,
+  "end": 17.868
+ },
+ {
+  "text": "and",
+  "start": 18.091,
+  "end": 18.192
+ },
+ {
+  "text": "pack",
+  "start": 18.203,
+  "end": 18.594
+ },
+ {
+  "text": "closely",
+  "start": 18.605,
+  "end": 19.018
+ },
+ {
+  "text": "together.",
+  "start": 19.029,
+  "end": 19.475
+ },
+ {
+  "text": "But",
+  "start": 19.855,
+  "end": 19.933
+ },
+ {
+  "text": "when",
+  "start": 19.944,
+  "end": 20.078
+ },
+ {
+  "text": "water",
+  "start": 20.089,
+  "end": 20.379
+ },
+ {
+  "text": "freezes,",
+  "start": 20.391,
+  "end": 20.893
+ },
+ {
+  "text": "they",
+  "start": 21.094,
+  "end": 21.194
+ },
+ {
+  "text": "lock",
+  "start": 21.205,
+  "end": 21.473
+ },
+ {
+  "text": "into",
+  "start": 21.484,
+  "end": 21.685
+ },
+ {
+  "text": "a",
+  "start": 21.696,
+  "end": 21.741
+ },
+ {
+  "text": "neat",
+  "start": 21.752,
+  "end": 22.087
+ },
+ {
+  "text": "hexagon",
+  "start": 22.098,
+  "end": 22.634
+ },
+ {
+  "text": "pattern,",
+  "start": 22.645,
+  "end": 23.025
+ },
+ {
+  "text": "with",
+  "start": 23.292,
+  "end": 23.437
+ },
+ {
+  "text": "empty",
+  "start": 23.56,
+  "end": 23.783
+ },
+ {
+  "text": "space",
+  "start": 23.795,
+  "end": 24.163
+ },
+ {
+  "text": "in",
+  "start": 24.174,
+  "end": 24.23
+ },
+ {
+  "text": "the",
+  "start": 24.241,
+  "end": 24.297
+ },
+ {
+  "text": "middle.",
+  "start": 24.308,
+  "end": 24.587
+ },
+ {
+  "text": "That",
+  "start": 24.955,
+  "end": 25.123
+ },
+ {
+  "text": "open",
+  "start": 25.134,
+  "end": 25.357
+ },
+ {
+  "text": "pattern",
+  "start": 25.368,
+  "end": 25.681
+ },
+ {
+  "text": "makes",
+  "start": 25.692,
+  "end": 25.937
+ },
+ {
+  "text": "ice",
+  "start": 26.038,
+  "end": 26.25
+ },
+ {
+  "text": "about",
+  "start": 26.261,
+  "end": 26.496
+ },
+ {
+  "text": "nine",
+  "start": 26.507,
+  "end": 26.808
+ },
+ {
+  "text": "percent",
+  "start": 26.819,
+  "end": 27.254
+ },
+ {
+  "text": "less",
+  "start": 27.266,
+  "end": 27.511
+ },
+ {
+  "text": "dense",
+  "start": 27.522,
+  "end": 27.757
+ },
+ {
+  "text": "than",
+  "start": 27.768,
+  "end": 27.913
+ },
+ {
+  "text": "water.",
+  "start": 27.924,
+  "end": 28.315
+ },
+ {
+  "text": "So",
+  "start": 28.694,
+  "end": 28.85
+ },
+ {
+  "text": "it",
+  "start": 28.862,
+  "end": 28.929
+ },
+ {
+  "text": "floats,",
+  "start": 28.94,
+  "end": 29.42
+ },
+ {
+  "text": "and",
+  "start": 29.621,
+  "end": 29.754
+ },
+ {
+  "text": "most",
+  "start": 29.766,
+  "end": 30.0
+ },
+ {
+  "text": "of",
+  "start": 30.011,
+  "end": 30.067
+ },
+ {
+  "text": "an",
+  "start": 30.078,
+  "end": 30.167
+ },
+ {
+  "text": "iceberg",
+  "start": 30.179,
+  "end": 30.58
+ },
+ {
+  "text": "hides",
+  "start": 30.591,
+  "end": 30.915
+ },
+ {
+  "text": "below",
+  "start": 30.926,
+  "end": 31.183
+ },
+ {
+  "text": "the",
+  "start": 31.194,
+  "end": 31.261
+ },
+ {
+  "text": "surface.",
+  "start": 31.272,
+  "end": 31.83
+ },
+ {
+  "text": "That",
+  "start": 32.21,
+  "end": 32.321
+ },
+ {
+  "text": "matters",
+  "start": 32.333,
+  "end": 32.656
+ },
+ {
+  "text": "for",
+  "start": 32.667,
+  "end": 32.79
+ },
+ {
+  "text": "life.",
+  "start": 32.801,
+  "end": 33.17
+ },
+ {
+  "text": "Lakes",
+  "start": 33.538,
+  "end": 33.772
+ },
+ {
+  "text": "freeze",
+  "start": 33.783,
+  "end": 34.174
+ },
+ {
+  "text": "from",
+  "start": 34.185,
+  "end": 34.297
+ },
+ {
+  "text": "the",
+  "start": 34.308,
+  "end": 34.386
+ },
+ {
+  "text": "top",
+  "start": 34.397,
+  "end": 34.665
+ },
+ {
+  "text": "down,",
+  "start": 34.676,
+  "end": 35.045
+ },
+ {
+  "text": "and",
+  "start": 35.402,
+  "end": 35.458
+ },
+ {
+  "text": "the",
+  "start": 35.469,
+  "end": 35.58
+ },
+ {
+  "text": "ice",
+  "start": 35.592,
+  "end": 35.848
+ },
+ {
+  "text": "works",
+  "start": 35.859,
+  "end": 36.105
+ },
+ {
+  "text": "like",
+  "start": 36.116,
+  "end": 36.239
+ },
+ {
+  "text": "a",
+  "start": 36.25,
+  "end": 36.295
+ },
+ {
+  "text": "lid,",
+  "start": 36.306,
+  "end": 36.641
+ },
+ {
+  "text": "keeping",
+  "start": 36.92,
+  "end": 37.266
+ },
+ {
+  "text": "fish",
+  "start": 37.277,
+  "end": 37.556
+ },
+ {
+  "text": "alive",
+  "start": 37.567,
+  "end": 38.002
+ },
+ {
+  "text": "in",
+  "start": 38.013,
+  "end": 38.08
+ },
+ {
+  "text": "the",
+  "start": 38.092,
+  "end": 38.181
+ },
+ {
+  "text": "water",
+  "start": 38.192,
+  "end": 38.527
+ },
+ {
+  "text": "underneath.",
+  "start": 38.538,
+  "end": 39.062
+ },
+ {
+  "text": "Follow",
+  "start": 39.464,
+  "end": 39.665
+ },
+ {
+  "text": "for",
+  "start": 39.676,
+  "end": 39.799
+ },
+ {
+  "text": "more",
+  "start": 39.81,
+  "end": 40.1
+ },
+ {
+  "text": "everyday",
+  "start": 40.234,
+  "end": 40.558
+ },
+ {
+  "text": "science.",
+  "start": 40.569,
+  "end": 41.071
+ }
+]

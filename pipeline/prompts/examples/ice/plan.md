@@ -1,0 +1,10 @@
+- hook (S1): the question as a picture: an ice block floating high, a rock resting on the seabed. Bob on "Why does ice", question icon on "float", pulse the rock on "sink".
+- wax (S2): melted wax = glowing dots (particles) in an orange studio with no floor; a wax block (box) drops in and sinks on "sinks". One label.
+- ice-up (S3, starts on "But ice bobs"): the ice block shoots up on "bobs" with ease "back". It travels far, so its size is raised.
+- molecule (S4-S5, starts mid-sentence on "the water molecule"): one h2o molecule, close framing, orbit. Label "H2O", spin on "boomerang", a title for the formula.
+- liquid (S6): many small balls tumbling; speed up on "tumble around", spread down on "pack closely".
+- hexagon (S7): a title "FREEZING" on "water freezes" (until the label comes); a ring of molecules seen from the top (angle "top") grows in on "lock into"; label, then a question icon placed in the empty middle.
+- density (S8): a two-bar chart grows on "open pattern"; a count to 9 on "nine percent".
+- iceberg (S9): the iceberg prop shows the hidden bulk by itself; one label.
+- lake (S10-S11): fish under an ice lid that drops in on "top down"; heart icon on the fish on "keeping fish alive".
+- outro (S12): the channel mascot changes colour; title text.

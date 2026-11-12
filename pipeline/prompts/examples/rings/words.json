@@ -1,0 +1,672 @@
+[
+ {
+  "text": "What",
+  "start": 0.089,
+  "end": 0.167
+ },
+ {
+  "text": "if",
+  "start": 0.179,
+  "end": 0.279
+ },
+ {
+  "text": "Earth",
+  "start": 0.29,
+  "end": 0.458
+ },
+ {
+  "text": "had",
+  "start": 0.469,
+  "end": 0.647
+ },
+ {
+  "text": "rings",
+  "start": 0.658,
+  "end": 0.893
+ },
+ {
+  "text": "like",
+  "start": 0.904,
+  "end": 1.027
+ },
+ {
+  "text": "Saturn?",
+  "start": 1.038,
+  "end": 1.462
+ },
+ {
+  "text": "Look",
+  "start": 1.819,
+  "end": 1.975
+ },
+ {
+  "text": "up",
+  "start": 1.987,
+  "end": 2.098
+ },
+ {
+  "text": "at",
+  "start": 2.109,
+  "end": 2.199
+ },
+ {
+  "text": "night,",
+  "start": 2.21,
+  "end": 2.5
+ },
+ {
+  "text": "and",
+  "start": 2.779,
+  "end": 2.835
+ },
+ {
+  "text": "a",
+  "start": 2.846,
+  "end": 2.902
+ },
+ {
+  "text": "glowing",
+  "start": 2.913,
+  "end": 3.337
+ },
+ {
+  "text": "arch",
+  "start": 3.348,
+  "end": 3.605
+ },
+ {
+  "text": "would",
+  "start": 3.616,
+  "end": 3.75
+ },
+ {
+  "text": "stretch",
+  "start": 3.761,
+  "end": 4.152
+ },
+ {
+  "text": "across",
+  "start": 4.163,
+  "end": 4.509
+ },
+ {
+  "text": "the",
+  "start": 4.52,
+  "end": 4.587
+ },
+ {
+  "text": "whole",
+  "start": 4.598,
+  "end": 4.821
+ },
+ {
+  "text": "sky.",
+  "start": 4.833,
+  "end": 5.268
+ },
+ {
+  "text": "You",
+  "start": 5.636,
+  "end": 5.692
+ },
+ {
+  "text": "would",
+  "start": 5.703,
+  "end": 5.804
+ },
+ {
+  "text": "see",
+  "start": 5.815,
+  "end": 5.993
+ },
+ {
+  "text": "it",
+  "start": 6.004,
+  "end": 6.071
+ },
+ {
+  "text": "in",
+  "start": 6.083,
+  "end": 6.15
+ },
+ {
+  "text": "the",
+  "start": 6.161,
+  "end": 6.239
+ },
+ {
+  "text": "daytime",
+  "start": 6.25,
+  "end": 6.685
+ },
+ {
+  "text": "too,",
+  "start": 6.696,
+  "end": 7.031
+ },
+ {
+  "text": "pale",
+  "start": 7.377,
+  "end": 7.779
+ },
+ {
+  "text": "and",
+  "start": 7.935,
+  "end": 8.002
+ },
+ {
+  "text": "enormous.",
+  "start": 8.013,
+  "end": 8.583
+ },
+ {
+  "text": "The",
+  "start": 8.951,
+  "end": 9.018
+ },
+ {
+  "text": "rings",
+  "start": 9.029,
+  "end": 9.297
+ },
+ {
+  "text": "would",
+  "start": 9.308,
+  "end": 9.408
+ },
+ {
+  "text": "be",
+  "start": 9.42,
+  "end": 9.509
+ },
+ {
+  "text": "made",
+  "start": 9.52,
+  "end": 9.71
+ },
+ {
+  "text": "of",
+  "start": 9.721,
+  "end": 9.81
+ },
+ {
+  "text": "ice",
+  "start": 9.877,
+  "end": 10.179
+ },
+ {
+  "text": "and",
+  "start": 10.19,
+  "end": 10.301
+ },
+ {
+  "text": "rock,",
+  "start": 10.312,
+  "end": 10.659
+ },
+ {
+  "text": "circling",
+  "start": 10.915,
+  "end": 11.328
+ },
+ {
+  "text": "above",
+  "start": 11.339,
+  "end": 11.641
+ },
+ {
+  "text": "the",
+  "start": 11.652,
+  "end": 11.719
+ },
+ {
+  "text": "equator.",
+  "start": 11.73,
+  "end": 12.243
+ },
+ {
+  "text": "Their",
+  "start": 12.612,
+  "end": 12.701
+ },
+ {
+  "text": "shadow",
+  "start": 12.712,
+  "end": 13.091
+ },
+ {
+  "text": "would",
+  "start": 13.103,
+  "end": 13.225
+ },
+ {
+  "text": "fall",
+  "start": 13.237,
+  "end": 13.516
+ },
+ {
+  "text": "across",
+  "start": 13.527,
+  "end": 13.85
+ },
+ {
+  "text": "half",
+  "start": 13.862,
+  "end": 14.062
+ },
+ {
+  "text": "the",
+  "start": 14.074,
+  "end": 14.152
+ },
+ {
+  "text": "planet,",
+  "start": 14.163,
+  "end": 14.52
+ },
+ {
+  "text": "so",
+  "start": 14.877,
+  "end": 14.978
+ },
+ {
+  "text": "some",
+  "start": 14.989,
+  "end": 15.134
+ },
+ {
+  "text": "places",
+  "start": 15.145,
+  "end": 15.513
+ },
+ {
+  "text": "would",
+  "start": 15.525,
+  "end": 15.658
+ },
+ {
+  "text": "probably",
+  "start": 15.67,
+  "end": 16.049
+ },
+ {
+  "text": "get",
+  "start": 16.06,
+  "end": 16.228
+ },
+ {
+  "text": "colder,",
+  "start": 16.239,
+  "end": 16.708
+ },
+ {
+  "text": "darker",
+  "start": 16.942,
+  "end": 17.232
+ },
+ {
+  "text": "winters.",
+  "start": 17.243,
+  "end": 17.69
+ },
+ {
+  "text": "Satellites",
+  "start": 18.069,
+  "end": 18.571
+ },
+ {
+  "text": "would",
+  "start": 18.583,
+  "end": 18.672
+ },
+ {
+  "text": "have",
+  "start": 18.683,
+  "end": 18.772
+ },
+ {
+  "text": "a",
+  "start": 18.784,
+  "end": 18.828
+ },
+ {
+  "text": "real",
+  "start": 18.839,
+  "end": 19.074
+ },
+ {
+  "text": "problem.",
+  "start": 19.085,
+  "end": 19.487
+ },
+ {
+  "text": "Any",
+  "start": 19.855,
+  "end": 20.056
+ },
+ {
+  "text": "orbit",
+  "start": 20.067,
+  "end": 20.357
+ },
+ {
+  "text": "that",
+  "start": 20.368,
+  "end": 20.48
+ },
+ {
+  "text": "crossed",
+  "start": 20.491,
+  "end": 20.848
+ },
+ {
+  "text": "the",
+  "start": 20.859,
+  "end": 20.926
+ },
+ {
+  "text": "rings",
+  "start": 20.938,
+  "end": 21.205
+ },
+ {
+  "text": "would",
+  "start": 21.216,
+  "end": 21.328
+ },
+ {
+  "text": "get",
+  "start": 21.339,
+  "end": 21.473
+ },
+ {
+  "text": "smashed",
+  "start": 21.484,
+  "end": 22.009
+ },
+ {
+  "text": "by",
+  "start": 22.02,
+  "end": 22.176
+ },
+ {
+  "text": "countless",
+  "start": 22.188,
+  "end": 22.623
+ },
+ {
+  "text": "fragments.",
+  "start": 22.634,
+  "end": 23.27
+ },
+ {
+  "text": "So",
+  "start": 23.65,
+  "end": 23.761
+ },
+ {
+  "text": "rockets",
+  "start": 23.772,
+  "end": 24.085
+ },
+ {
+  "text": "would",
+  "start": 24.096,
+  "end": 24.23
+ },
+ {
+  "text": "launch",
+  "start": 24.241,
+  "end": 24.487
+ },
+ {
+  "text": "from",
+  "start": 24.498,
+  "end": 24.632
+ },
+ {
+  "text": "far",
+  "start": 24.643,
+  "end": 24.888
+ },
+ {
+  "text": "north",
+  "start": 24.9,
+  "end": 25.223
+ },
+ {
+  "text": "or",
+  "start": 25.335,
+  "end": 25.424
+ },
+ {
+  "text": "far",
+  "start": 25.435,
+  "end": 25.67
+ },
+ {
+  "text": "south",
+  "start": 25.681,
+  "end": 25.971
+ },
+ {
+  "text": "instead.",
+  "start": 25.982,
+  "end": 26.384
+ },
+ {
+  "text": "And",
+  "start": 26.752,
+  "end": 26.819
+ },
+ {
+  "text": "here's",
+  "start": 26.83,
+  "end": 27.054
+ },
+ {
+  "text": "the",
+  "start": 27.065,
+  "end": 27.143
+ },
+ {
+  "text": "strange",
+  "start": 27.154,
+  "end": 27.466
+ },
+ {
+  "text": "part.",
+  "start": 27.478,
+  "end": 27.812
+ },
+ {
+  "text": "Rings",
+  "start": 28.181,
+  "end": 28.404
+ },
+ {
+  "text": "don't",
+  "start": 28.415,
+  "end": 28.605
+ },
+ {
+  "text": "last",
+  "start": 28.616,
+  "end": 28.862
+ },
+ {
+  "text": "forever.",
+  "start": 28.873,
+  "end": 29.308
+ },
+ {
+  "text": "Saturn's",
+  "start": 29.676,
+  "end": 30.078
+ },
+ {
+  "text": "rings",
+  "start": 30.089,
+  "end": 30.379
+ },
+ {
+  "text": "are",
+  "start": 30.391,
+  "end": 30.525
+ },
+ {
+  "text": "slowly",
+  "start": 30.536,
+  "end": 31.016
+ },
+ {
+  "text": "raining",
+  "start": 31.027,
+  "end": 31.373
+ },
+ {
+  "text": "down",
+  "start": 31.384,
+  "end": 31.719
+ },
+ {
+  "text": "onto",
+  "start": 31.73,
+  "end": 31.886
+ },
+ {
+  "text": "the",
+  "start": 31.897,
+  "end": 31.975
+ },
+ {
+  "text": "planet.",
+  "start": 31.987,
+  "end": 32.411
+ },
+ {
+  "text": "Scientists",
+  "start": 32.79,
+  "end": 33.326
+ },
+ {
+  "text": "think",
+  "start": 33.337,
+  "end": 33.527
+ },
+ {
+  "text": "they",
+  "start": 33.538,
+  "end": 33.638
+ },
+ {
+  "text": "could",
+  "start": 33.65,
+  "end": 33.761
+ },
+ {
+  "text": "be",
+  "start": 33.772,
+  "end": 33.862
+ },
+ {
+  "text": "mostly",
+  "start": 33.873,
+  "end": 34.286
+ },
+ {
+  "text": "gone",
+  "start": 34.297,
+  "end": 34.654
+ },
+ {
+  "text": "in",
+  "start": 34.665,
+  "end": 34.766
+ },
+ {
+  "text": "a",
+  "start": 34.777,
+  "end": 34.821
+ },
+ {
+  "text": "few",
+  "start": 34.833,
+  "end": 35.078
+ },
+ {
+  "text": "hundred",
+  "start": 35.089,
+  "end": 35.391
+ },
+ {
+  "text": "million",
+  "start": 35.402,
+  "end": 35.725
+ },
+ {
+  "text": "years.",
+  "start": 35.737,
+  "end": 36.183
+ },
+ {
+  "text": "So",
+  "start": 36.551,
+  "end": 36.708
+ },
+ {
+  "text": "enjoy",
+  "start": 36.719,
+  "end": 37.031
+ },
+ {
+  "text": "the",
+  "start": 37.042,
+  "end": 37.121
+ },
+ {
+  "text": "view",
+  "start": 37.132,
+  "end": 37.377
+ },
+ {
+  "text": "while",
+  "start": 37.388,
+  "end": 37.567
+ },
+ {
+  "text": "it",
+  "start": 37.578,
+  "end": 37.645
+ },
+ {
+  "text": "lasts.",
+  "start": 37.656,
+  "end": 38.147
+ },
+ {
+  "text": "Follow",
+  "start": 38.549,
+  "end": 38.728
+ },
+ {
+  "text": "for",
+  "start": 38.739,
+  "end": 38.85
+ },
+ {
+  "text": "more",
+  "start": 38.862,
+  "end": 39.029
+ },
+ {
+  "text": "what",
+  "start": 39.04,
+  "end": 39.174
+ },
+ {
+  "text": "ifs.",
+  "start": 39.185,
+  "end": 39.487
+ }
+]

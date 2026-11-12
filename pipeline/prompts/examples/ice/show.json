@@ -1,0 +1,564 @@
+{
+  "format": 1,
+  "title": "Why does ice float?",
+  "voice": {
+    "audio": "voice.mp3",
+    "words": "words.json"
+  },
+  "shots": [
+    {
+      "id": "hook",
+      "env": {
+        "type": "underwater",
+        "depth": "shallow",
+        "seabed": true
+      },
+      "props": [
+        {
+          "id": "ice",
+          "type": "box",
+          "color": "#dff6ff",
+          "finish": "glossy",
+          "width": 1,
+          "height": 0.6,
+          "depth": 0.8,
+          "round": 0.25,
+          "at": [
+            -0.45,
+            1.0,
+            0
+          ],
+          "size": 1.0
+        },
+        {
+          "id": "stone",
+          "type": "rock",
+          "color": "#6b6f78",
+          "at": [
+            0.5,
+            0,
+            0.2
+          ],
+          "size": 1.0
+        }
+      ],
+      "camera": {
+        "move": "push_in",
+        "angle": "low",
+        "amount": 0.5
+      },
+      "actions": [
+        {
+          "at": "Why does ice",
+          "do": "bob",
+          "prop": "ice",
+          "height": 0.06,
+          "period": 2.2
+        },
+        {
+          "at": "float",
+          "do": "icon",
+          "prop": "ice",
+          "name": "question",
+          "until": "most solids"
+        },
+        {
+          "at": "sink",
+          "do": "pulse",
+          "prop": "stone",
+          "strength": 0.2
+        }
+      ]
+    },
+    {
+      "id": "wax",
+      "start": "Drop a block",
+      "env": {
+        "type": "studio",
+        "color": "orange",
+        "floor": false
+      },
+      "props": [
+        {
+          "id": "melted",
+          "type": "particles",
+          "shape": "box",
+          "count": 140,
+          "look": "dots",
+          "color": "#ffd27a",
+          "dot": 0.07,
+          "at": [
+            0,
+            -0.3,
+            0
+          ],
+          "size": 2.0,
+          "speed": 0.3
+        },
+        {
+          "id": "block",
+          "type": "box",
+          "color": "#f5e2b0",
+          "finish": "matte",
+          "width": 0.8,
+          "height": 0.5,
+          "depth": 0.6,
+          "round": 0.15,
+          "at": [
+            0,
+            1.0,
+            0.2
+          ],
+          "size": 0.55
+        }
+      ],
+      "camera": {
+        "move": "drift",
+        "angle": "front",
+        "amount": 0.5
+      },
+      "actions": [
+        {
+          "at": "Drop a block",
+          "do": "appear",
+          "prop": "block",
+          "style": "drop"
+        },
+        {
+          "at": "solid wax",
+          "do": "label",
+          "prop": "block",
+          "text": "SOLID WAX",
+          "side": "right",
+          "until": "sinks"
+        },
+        {
+          "at": "sinks",
+          "do": "move",
+          "prop": "block",
+          "to": [
+            0,
+            -0.7,
+            0.2
+          ],
+          "over": 1.0,
+          "ease": "in_out"
+        }
+      ]
+    },
+    {
+      "id": "ice-up",
+      "start": "But ice bobs",
+      "env": {
+        "type": "underwater",
+        "depth": "shallow",
+        "seabed": false
+      },
+      "props": [
+        {
+          "id": "ice",
+          "type": "box",
+          "color": "#dff6ff",
+          "finish": "glossy",
+          "width": 1,
+          "height": 0.6,
+          "depth": 0.8,
+          "round": 0.25,
+          "at": [
+            0,
+            -0.6,
+            0
+          ],
+          "size": 1.2
+        }
+      ],
+      "camera": {
+        "move": "still",
+        "angle": "front",
+        "framing": "medium"
+      },
+      "actions": [
+        {
+          "at": "bobs",
+          "do": "move",
+          "prop": "ice",
+          "to": [
+            0,
+            0.6,
+            0
+          ],
+          "over": 0.9,
+          "ease": "back"
+        },
+        {
+          "at": "back up",
+          "do": "bob",
+          "prop": "ice",
+          "height": 0.07,
+          "period": 1.6
+        }
+      ]
+    },
+    {
+      "id": "molecule",
+      "start": "the water molecule",
+      "transition": "dip",
+      "env": {
+        "type": "micro",
+        "tint": "cool"
+      },
+      "props": [
+        {
+          "id": "h2o",
+          "type": "molecule",
+          "formula": "h2o",
+          "at": "center",
+          "size": 1.3
+        }
+      ],
+      "camera": {
+        "move": "orbit",
+        "angle": "three-quarter",
+        "framing": "close",
+        "amount": 0.5
+      },
+      "actions": [
+        {
+          "at": "water molecule",
+          "do": "label",
+          "prop": "h2o",
+          "text": "H2O",
+          "side": "top",
+          "until": "boomerang"
+        },
+        {
+          "at": "boomerang",
+          "do": "spin",
+          "prop": "h2o",
+          "speed": 0.25
+        },
+        {
+          "at": "one oxygen",
+          "do": "text",
+          "text": "1 OXYGEN + 2 HYDROGEN",
+          "style": "title",
+          "pos": "top"
+        }
+      ]
+    },
+    {
+      "id": "liquid",
+      "start": "In liquid water",
+      "env": {
+        "type": "studio",
+        "color": "blue",
+        "floor": false
+      },
+      "props": [
+        {
+          "id": "water",
+          "type": "particles",
+          "shape": "sphere",
+          "count": 90,
+          "color": "#7fd8ff",
+          "color2": "white",
+          "mix": 0.3,
+          "dot": 0.11,
+          "at": "center",
+          "size": 1.8,
+          "speed": 0.8
+        }
+      ],
+      "camera": {
+        "move": "pan",
+        "angle": "front",
+        "amount": 0.6
+      },
+      "actions": [
+        {
+          "at": "tumble around",
+          "do": "set",
+          "prop": "water",
+          "param": "speed",
+          "to": 2.2,
+          "over": 0.6
+        },
+        {
+          "at": "pack closely",
+          "do": "set",
+          "prop": "water",
+          "param": "spread",
+          "to": 0.6,
+          "over": 1.0
+        },
+        {
+          "at": "pack closely",
+          "do": "label",
+          "prop": "water",
+          "text": "PACKED TIGHT",
+          "side": "top"
+        }
+      ]
+    },
+    {
+      "id": "hexagon",
+      "start": "But when water freezes",
+      "env": {
+        "type": "micro",
+        "tint": "cool"
+      },
+      "props": [
+        {
+          "id": "lattice",
+          "type": "particles",
+          "shape": "ring",
+          "count": 22,
+          "color": "white",
+          "color2": "#7fd8ff",
+          "mix": 0.5,
+          "dot": 0.15,
+          "at": "center",
+          "size": 2.2,
+          "speed": 0,
+          "seed": 3
+        }
+      ],
+      "camera": {
+        "move": "rise",
+        "angle": "top",
+        "framing": "medium",
+        "amount": 0.4
+      },
+      "actions": [
+        {
+          "at": "water freezes",
+          "do": "text",
+          "text": "FREEZING",
+          "style": "title",
+          "pos": "top",
+          "until": "hexagon pattern"
+        },
+        {
+          "at": "lock into",
+          "do": "appear",
+          "prop": "lattice",
+          "style": "grow",
+          "over": 0.7
+        },
+        {
+          "at": "hexagon pattern",
+          "do": "label",
+          "prop": "lattice",
+          "text": "OPEN RINGS",
+          "side": "top"
+        },
+        {
+          "at": "empty space",
+          "do": "icon",
+          "place": "center",
+          "name": "question"
+        }
+      ]
+    },
+    {
+      "id": "density",
+      "start": "That open pattern",
+      "env": {
+        "type": "studio",
+        "color": "indigo",
+        "floor": true
+      },
+      "props": [
+        {
+          "id": "chart",
+          "type": "bars",
+          "values": [
+            100,
+            91
+          ],
+          "colors": [
+            "blue",
+            "#dff6ff"
+          ],
+          "at": "center",
+          "size": 1.4,
+          "grow": 0
+        }
+      ],
+      "camera": {
+        "move": "push_in",
+        "angle": "three-quarter",
+        "amount": 0.5
+      },
+      "actions": [
+        {
+          "at": "open pattern",
+          "do": "set",
+          "prop": "chart",
+          "param": "grow",
+          "to": 1,
+          "over": 1.2
+        },
+        {
+          "at": "nine percent",
+          "do": "count",
+          "from": 0,
+          "to": 9,
+          "unit": "% LIGHTER",
+          "pos": "top",
+          "over": 1.0
+        },
+        {
+          "at": "less dense",
+          "do": "set",
+          "prop": "chart",
+          "param": "highlight",
+          "to": 1,
+          "over": 0.3
+        }
+      ]
+    },
+    {
+      "id": "iceberg",
+      "start": "So it floats",
+      "env": {
+        "type": "sky",
+        "time": "day",
+        "ground": "ocean",
+        "clouds": 0.4
+      },
+      "props": [
+        {
+          "id": "berg",
+          "type": "iceberg",
+          "at": "center",
+          "size": 1.5
+        }
+      ],
+      "camera": {
+        "move": "pan",
+        "angle": "front",
+        "amount": 0.5
+      },
+      "actions": [
+        {
+          "at": "most of an iceberg",
+          "do": "label",
+          "prop": "berg",
+          "text": "MOSTLY BELOW",
+          "side": "right"
+        },
+        {
+          "at": "below the surface",
+          "do": "pulse",
+          "prop": "berg",
+          "strength": 0.12
+        }
+      ]
+    },
+    {
+      "id": "lake",
+      "start": "That matters",
+      "transition": "dip",
+      "env": {
+        "type": "underwater",
+        "depth": "deep",
+        "seabed": true
+      },
+      "props": [
+        {
+          "id": "fish",
+          "type": "fish",
+          "count": 7,
+          "color": "orange",
+          "at": [
+            0,
+            0.35,
+            0
+          ],
+          "size": 1.1
+        },
+        {
+          "id": "lid",
+          "type": "box",
+          "color": "#e6f7ff",
+          "finish": "glossy",
+          "width": 1,
+          "height": 0.08,
+          "depth": 0.7,
+          "round": 0.1,
+          "at": [
+            0,
+            1.25,
+            0
+          ],
+          "size": 2.0
+        }
+      ],
+      "camera": {
+        "move": "drift",
+        "angle": "low",
+        "amount": 0.6
+      },
+      "actions": [
+        {
+          "at": "top down",
+          "do": "appear",
+          "prop": "lid",
+          "style": "drop",
+          "over": 0.6
+        },
+        {
+          "at": "like a lid",
+          "do": "label",
+          "prop": "lid",
+          "text": "ICE LID",
+          "side": "top"
+        },
+        {
+          "at": "keeping fish alive",
+          "do": "icon",
+          "prop": "fish",
+          "name": "heart"
+        }
+      ]
+    },
+    {
+      "id": "outro",
+      "start": "Follow for more",
+      "env": {
+        "type": "studio",
+        "color": "purple"
+      },
+      "props": [
+        {
+          "id": "mascot",
+          "type": "chameleon",
+          "at": "center",
+          "size": 1.1
+        }
+      ],
+      "camera": {
+        "move": "push_in",
+        "angle": "three-quarter",
+        "amount": 0.4
+      },
+      "actions": [
+        {
+          "at": "Follow",
+          "do": "color",
+          "prop": "mascot",
+          "to": "yellow",
+          "over": 0.8
+        },
+        {
+          "at": "everyday science",
+          "do": "text",
+          "text": "FOLLOW FOR MORE",
+          "style": "title",
+          "pos": "top"
+        }
+      ]
+    }
+  ]
+}

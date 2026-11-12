@@ -1,0 +1,10 @@
+- hook (S1, 1.8 s): Earth, then a ring band grows round it on "rings like Saturn". Space, push_in.
+- night-arch (S2): what you would SEE: an arch across a night sky over a child. The arch is a backdrop (big, z -2.5, no actions on it); camera focus on the child, who pulses on "glowing arch"; a soft camera shake on "whole sky". No label: the picture says it.
+- daytime (S3): same idea, new place and time: ocean by day, a sailing ship as the subject (camera focus), pan. The arch is a backdrop again, so the overlay is a title text, not a label on the arch.
+- ice-rock (S4): what rings are made of: particles in a ring shape around Earth, white mixed with grey. Orbit from high. Label "ICE + ROCK" on its words.
+- shadow (S5): Earth goes darker on "half the planet"; a thermometer pops in and drops on "colder". Three props, so sizes raised and kept close.
+- satellites (S6-S7): a warning icon on "real problem", debris flies in on "crossed the rings", shake + x icon on "smashed", the satellite shrinks away.
+- launch (S8): rocket on an ice field (far north); it floats, so it is lifted to y 0.55; thrust on, then it moves up on "launch". Camera rise, low angle.
+- ring-rain (S9-S11): Saturn; a question icon on "strange part", an arrow grows toward Saturn on "raining down".
+- gone (S12): a ringless gas planet with a separate ring prop that shrinks away on "mostly gone"; a count to 300 on "few hundred".
+- enjoy (S13-S14): back to an arch at sunset over a sitting person (backdrop trick again, new colours, camera rise because the previous shot pulled out); title text on "Follow".
