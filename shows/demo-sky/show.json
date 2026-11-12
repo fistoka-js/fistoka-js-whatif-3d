@@ -1,0 +1,208 @@
+{
+  "format": 1,
+  "title": "Why is the sky blue?",
+  "voice": { "audio": "voice.mp3", "words": "words.json" },
+  "style": { "accent": "#ffe14d" },
+  "shots": [
+    {
+      "id": "myth",
+      "env": { "type": "sky", "time": "day", "ground": "ocean", "clouds": 0.6 },
+      "props": [
+        { "id": "sunlight", "type": "beam", "from": [-1.5, 2.3, -0.8], "to": [0, 0.05, 0.2], "color": "#fff3d6", "width": 0.07, "progress": 0 },
+        { "id": "bounce", "type": "beam", "from": [0, 0.05, 0.2], "to": [1.4, 2.3, -0.8], "color": "blue", "width": 0.07, "progress": 0 },
+        { "id": "buoy", "type": "ball", "at": [0, 0, 0.2], "size": 0.4, "color": "red", "finish": "glossy" }
+      ],
+      "camera": { "move": "rise", "angle": "low", "framing": "medium", "amount": 0.6 },
+      "actions": [
+        { "at": "sky is blue", "do": "set", "prop": "sunlight", "param": "progress", "to": 1, "over": 0.8 },
+        { "at": "reflects", "do": "set", "prop": "bounce", "param": "progress", "to": 1, "over": 0.6 },
+        { "at": "ocean", "do": "label", "prop": "bounce", "text": "REFLECTED?", "side": "right" },
+        { "at": "completely", "do": "icon", "prop": "bounce", "name": "x" },
+        { "at": "wrong", "do": "text", "text": "WRONG", "style": "stamp", "pos": "middle" },
+        { "at": "wrong", "do": "shake", "strength": 0.6, "for": 0.5 },
+        { "at": "wrong", "do": "disappear", "prop": "bounce", "style": "fade", "over": 0.6 }
+      ]
+    },
+    {
+      "id": "no-blue",
+      "start": "What if sunlight",
+      "transition": "dip",
+      "env": { "type": "space", "nebula": "blue" },
+      "props": [
+        { "id": "sun", "type": "sun", "at": [-1.1, 0.55, -0.4], "size": 0.9 },
+        { "id": "earth", "type": "planet", "look": "earth", "at": [0.9, -0.4, 0.2], "size": 1.1, "atmosphere": 0.9 },
+        { "id": "light", "type": "beam", "from": "sun", "to": "earth", "width": 0.08, "progress": 0 },
+        { "id": "red", "type": "beam", "from": "sun", "to": [1.5, 1.15, 0], "color": "red", "progress": 0 },
+        { "id": "orange", "type": "beam", "from": "sun", "to": [1.6, 0.72, 0], "color": "orange", "progress": 0 },
+        { "id": "yellow", "type": "beam", "from": "sun", "to": [1.65, 0.3, 0], "color": "yellow", "progress": 0 },
+        { "id": "green", "type": "beam", "from": "sun", "to": [1.6, -0.12, 0], "color": "green", "progress": 0 },
+        { "id": "blue", "type": "beam", "from": "sun", "to": [1.5, -0.55, 0], "color": "blue", "progress": 0 },
+        { "id": "violet", "type": "beam", "from": "sun", "to": [1.35, -0.95, 0], "color": "purple", "progress": 0 }
+      ],
+      "camera": { "move": "push_in", "angle": "three-quarter", "amount": 0.4 },
+      "actions": [
+        { "at": "What if", "do": "appear", "prop": "sun", "style": "grow", "over": 0.6 },
+        { "at": "sunlight", "do": "set", "prop": "light", "param": "progress", "to": 1, "over": 0.5 },
+        { "at": "no blue", "do": "color", "prop": "light", "to": "orange" },
+        { "at": "no blue", "do": "set", "prop": "earth", "param": "atmosphere", "to": 0.05, "over": 1.2 },
+        { "at": "alien", "do": "color", "prop": "earth", "to": "#ff9a5a", "over": 0.6 },
+        { "at": "alien", "do": "icon", "prop": "earth", "name": "question", "until": "Here's" },
+        { "at": "Here's", "do": "disappear", "prop": "earth", "style": "shrink" },
+        { "at": "Here's", "do": "disappear", "prop": "light", "style": "fade" },
+        { "at": "actually happening", "do": "set", "prop": "sun", "param": "brightness", "to": 1.6, "over": 0.8 },
+        { "at": "every", "do": "sfx", "name": "rise" },
+        { "at": "every", "do": "set", "prop": "red", "param": "progress", "to": 1, "over": 0.5 },
+        { "at": { "phrase": "every", "offset": 0.12 }, "do": "set", "prop": "orange", "param": "progress", "to": 1, "over": 0.5 },
+        { "at": { "phrase": "every", "offset": 0.24 }, "do": "set", "prop": "yellow", "param": "progress", "to": 1, "over": 0.5 },
+        { "at": { "phrase": "every", "offset": 0.36 }, "do": "set", "prop": "green", "param": "progress", "to": 1, "over": 0.5 },
+        { "at": { "phrase": "every", "offset": 0.48 }, "do": "set", "prop": "blue", "param": "progress", "to": 1, "over": 0.5 },
+        { "at": { "phrase": "every", "offset": 0.6 }, "do": "set", "prop": "violet", "param": "progress", "to": 1, "over": 0.5 },
+        { "at": "rainbow", "do": "text", "text": "EVERY COLOUR", "style": "title", "pos": "top" }
+      ]
+    },
+    {
+      "id": "molecules",
+      "start": "When it enters",
+      "env": { "type": "space", "nebula": "teal" },
+      "props": [
+        { "id": "air", "type": "particles", "shape": "sphere", "count": 110, "color": "cyan", "color2": "white", "mix": 0.35, "dot": 0.08, "size": 2.3, "speed": 0.2 },
+        { "id": "ray", "type": "beam", "from": [-2.2, 0.5, 0], "to": "air", "progress": 0 },
+        { "id": "s1", "type": "beam", "from": "air", "to": [1.7, 1.25, 0.2], "color": "#bfe0ff", "width": 0.05, "progress": 0 },
+        { "id": "s2", "type": "beam", "from": "air", "to": [1.8, -0.6, 0.4], "color": "#bfe0ff", "width": 0.05, "progress": 0 },
+        { "id": "s3", "type": "beam", "from": "air", "to": [-0.4, 1.8, -0.3], "color": "#bfe0ff", "width": 0.05, "progress": 0 },
+        { "id": "s4", "type": "beam", "from": "air", "to": [-0.9, -1.6, 0.5], "color": "#bfe0ff", "width": 0.05, "progress": 0 }
+      ],
+      "camera": { "move": "orbit", "angle": "front", "amount": 0.5 },
+      "actions": [
+        { "at": "When it enters", "do": "appear", "prop": "air", "style": "fade", "over": 0.6 },
+        { "at": "enters", "do": "set", "prop": "ray", "param": "progress", "to": 1, "over": 0.7 },
+        { "at": "gas molecules", "do": "label", "prop": "air", "text": "GAS MOLECULES", "side": "top" },
+        { "at": "scatter", "do": "set", "prop": "air", "param": "speed", "to": 1.2, "over": 0.6 },
+        { "at": "scatter", "do": "set", "prop": "s1", "param": "progress", "to": 1, "over": 0.5 },
+        { "at": { "phrase": "scatter", "offset": 0.15 }, "do": "set", "prop": "s2", "param": "progress", "to": 1, "over": 0.5 },
+        { "at": { "phrase": "scatter", "offset": 0.3 }, "do": "set", "prop": "s3", "param": "progress", "to": 1, "over": 0.5 },
+        { "at": { "phrase": "scatter", "offset": 0.45 }, "do": "set", "prop": "s4", "param": "progress", "to": 1, "over": 0.5 },
+        { "at": "all directions", "do": "pulse", "prop": "air", "strength": 0.15 },
+        { "at": "not equally", "do": "icon", "place": [1.15, 0.95, 0.2], "name": "warning" }
+      ]
+    },
+    {
+      "id": "blue-scatters",
+      "start": "Blue light has",
+      "env": { "type": "studio", "color": "purple", "floor": false },
+      "props": [
+        { "id": "air", "type": "particles", "shape": "box", "count": 70, "color": "white", "dot": 0.09, "size": 2.0, "speed": 0.4 },
+        { "id": "blue-in", "type": "beam", "from": [-1.9, 0.35, 0], "to": [-0.2, 0.35, 0], "color": "blue", "progress": 0 },
+        { "id": "red-in", "type": "beam", "from": [-1.9, -0.35, 0], "to": [1.9, -0.35, 0], "color": "red", "progress": 0 },
+        { "id": "b1", "type": "beam", "from": [-0.2, 0.35, 0], "to": [0.6, 1.4, 0.3], "color": "blue", "width": 0.05, "progress": 0 },
+        { "id": "b2", "type": "beam", "from": [-0.2, 0.35, 0], "to": [1.3, 0.9, -0.4], "color": "blue", "width": 0.05, "progress": 0 },
+        { "id": "b3", "type": "beam", "from": [-0.2, 0.35, 0], "to": [-1.0, 1.3, 0.5], "color": "blue", "width": 0.05, "progress": 0 }
+      ],
+      "camera": { "move": "pan", "angle": "high", "amount": 0.5 },
+      "actions": [
+        { "at": "Blue light", "do": "set", "prop": "blue-in", "param": "progress", "to": 1, "over": 0.6 },
+        { "at": "Blue light", "do": "label", "prop": "blue-in", "text": "BLUE", "side": "top", "until": "shorter wavelength" },
+        { "at": "shorter wavelength", "do": "set", "prop": "red-in", "param": "progress", "to": 1, "over": 1.0 },
+        { "at": "shorter wavelength", "do": "label", "prop": "red-in", "text": "RED", "side": "top", "until": "so it gets" },
+        { "at": "scattered", "do": "set", "prop": "b1", "param": "progress", "to": 1, "over": 0.4 },
+        { "at": { "phrase": "scattered", "offset": 0.15 }, "do": "set", "prop": "b2", "param": "progress", "to": 1, "over": 0.4 },
+        { "at": { "phrase": "scattered", "offset": 0.3 }, "do": "set", "prop": "b3", "param": "progress", "to": 1, "over": 0.4 },
+        { "at": "far more", "do": "count", "from": 1, "to": 5.5, "decimals": 1, "unit": "× MORE", "pos": "top", "over": 1.2 }
+      ]
+    },
+    {
+      "id": "pinball",
+      "start": "Think of it",
+      "env": { "type": "studio", "color": "indigo" },
+      "props": [
+        { "id": "photon", "type": "ball", "at": [-0.9, 0, 0.7], "size": 0.32, "color": "blue", "finish": "glossy" },
+        { "id": "bump-a", "type": "box", "at": [-0.5, 0, -0.6], "size": 0.55, "color": "pink", "width": 0.55, "depth": 0.55, "round": 0.3, "finish": "glossy" },
+        { "id": "bump-b", "type": "box", "at": [0.7, 0, -0.3], "size": 0.55, "color": "pink", "width": 0.55, "depth": 0.55, "round": 0.3, "finish": "glossy" },
+        { "id": "bump-c", "type": "box", "at": [0.1, 0, 0.5], "size": 0.55, "color": "pink", "width": 0.55, "depth": 0.55, "round": 0.3, "finish": "glossy" }
+      ],
+      "camera": { "move": "still", "angle": "top", "framing": "medium" },
+      "actions": [
+        { "at": "Think of it", "do": "appear", "prop": "bump-a", "style": "drop", "over": 0.6 },
+        { "at": { "phrase": "Think of it", "offset": 0.15 }, "do": "appear", "prop": "bump-b", "style": "drop", "over": 0.6 },
+        { "at": { "phrase": "Think of it", "offset": 0.3 }, "do": "appear", "prop": "bump-c", "style": "drop", "over": 0.6 },
+        { "at": "pinball", "do": "appear", "prop": "photon", "style": "pop" },
+        { "at": "pinball", "do": "sfx", "name": "none" },
+        { "at": "pinball machine", "do": "text", "text": "PINBALL", "style": "title", "pos": "top", "until": "flooding" },
+        { "at": "blue bounces", "do": "move", "prop": "photon", "toward": "bump-a", "amount": 0.7, "over": 0.45, "ease": "linear" },
+        { "at": "bounces", "do": "pulse", "prop": "bump-a", "strength": 0.3 },
+        { "at": "bounces", "do": "glow", "prop": "bump-a", "to": 1.2, "over": 0.2 },
+        { "at": "bounces", "do": "move", "prop": "photon", "to": [0.4, 0, -0.25], "over": 0.4, "ease": "linear" },
+        { "at": "everywhere", "do": "shake", "prop": "bump-b", "strength": 0.6, "for": 0.4 },
+        { "at": "everywhere", "do": "glow", "prop": "bump-b", "to": 1.2, "over": 0.2 },
+        { "at": "everywhere", "do": "move", "prop": "photon", "to": [0.1, 0, 0.25], "over": 0.5, "ease": "linear" },
+        { "at": "flooding", "do": "glow", "prop": "bump-c", "to": 1.2, "over": 0.2 },
+        { "at": "flooding", "do": "spin", "prop": "bump-c", "speed": 0.6 },
+        { "at": "flooding", "do": "color", "prop": "bump-a", "to": "blue" },
+        { "at": "entire", "do": "color", "prop": "bump-b", "to": "blue" },
+        { "at": "entire", "do": "scale", "prop": "photon", "to": 1.6, "over": 0.5 },
+        { "at": "sky", "do": "disappear", "prop": "photon", "style": "fly_out", "to": "top-right", "over": 0.6 }
+      ]
+    },
+    {
+      "id": "red-through",
+      "start": "Red light is",
+      "env": { "type": "sky", "time": "sunset", "ground": "desert", "clouds": 0.4 },
+      "props": [
+        { "id": "air", "type": "particles", "shape": "box", "count": 50, "color": "cyan", "dot": 0.07, "size": 1.8, "at": [0, 1.0, 0], "speed": 0.4 },
+        { "id": "red", "type": "beam", "from": [-1.9, 0.85, -0.3], "to": [1.9, 1.1, 0.3], "color": "red", "width": 0.09, "progress": 0 },
+        { "id": "rock", "type": "box", "at": [-1.1, 0, 0.6], "size": 0.8, "color": "#8a6a5a", "width": 1, "height": 0.6, "depth": 0.8, "round": 0.3 }
+      ],
+      "camera": { "move": "drift", "angle": "front", "amount": 0.6 },
+      "actions": [
+        { "at": "Red light", "do": "set", "prop": "red", "param": "progress", "to": 1, "over": 1.4, "ease": "linear" },
+        { "at": "much less", "do": "label", "prop": "red", "text": "BARELY SCATTERED", "side": "top", "until": "That's also" },
+        { "at": "straight through", "do": "icon", "prop": "red", "name": "check", "until": "That's also" },
+        { "at": "sunsets are red", "do": "text", "text": "SUNSETS", "style": "title", "pos": "top" },
+        { "at": "sunsets are red", "do": "glow", "prop": "red", "to": 1.0 },
+        { "at": "low on the horizon", "do": "focus", "props": ["red", "rock"], "framing": "wide", "over": 1.5 }
+      ]
+    },
+    {
+      "id": "long-path",
+      "start": "light travels",
+      "transition": "dip",
+      "env": { "type": "space", "nebula": "red" },
+      "props": [
+        { "id": "earth", "type": "planet", "look": "earth", "at": [0.3, -0.5, 0], "size": 1.8, "atmosphere": 1.1, "seed": 4 },
+        { "id": "sun", "type": "sun", "at": [-2.2, 0.55, -0.6], "size": 0.55 },
+        { "id": "path", "type": "beam", "from": "sun", "to": [2.0, 0.42, 0.3], "progress": 0, "width": 0.07 },
+        { "id": "to-eye", "type": "arrow", "from": [0.9, 0.55, 0.4], "to": [1.5, -0.3, 1.1], "color": "orange", "length": 0 }
+      ],
+      "camera": { "move": "pull_out", "angle": "front", "amount": 0.5 },
+      "actions": [
+        { "at": "light travels", "do": "set", "prop": "path", "param": "progress", "to": 1, "over": 1.2 },
+        { "at": "much more atmosphere", "do": "label", "prop": "path", "text": "LONG PATH", "side": "top" },
+        { "at": "atmosphere", "do": "text", "text": "38× MORE AIR", "style": "number", "pos": "top", "until": "By then" },
+        { "at": "scattered away", "do": "color", "prop": "path", "to": "orange", "over": 1.0 },
+        { "at": "red and orange", "do": "color", "prop": "path", "to": "red", "over": 0.8 },
+        { "at": "reach your eyes", "do": "set", "prop": "to-eye", "param": "length", "to": 1, "over": 0.6 }
+      ]
+    },
+    {
+      "id": "the-air",
+      "start": "So, the sky",
+      "env": { "type": "space", "nebula": "blue" },
+      "props": [
+        { "id": "earth", "type": "planet", "look": "earth", "at": "center", "size": 1.4, "atmosphere": 0.15, "seed": 2 },
+        { "id": "moon", "type": "planet", "look": "moon", "at": [1.3, 0.5, -0.3], "size": 0.3 }
+      ],
+      "camera": { "move": "drift", "angle": "side", "amount": 0.7 },
+      "actions": [
+        { "at": "So, the sky", "do": "appear", "prop": "moon", "style": "fly_in", "from": "far-right", "over": 0.9 },
+        { "at": "not blue", "do": "icon", "place": "top-left", "name": "x", "until": "It is blue" },
+        { "at": "the ocean", "do": "orbit", "prop": "moon", "around": "earth", "period": 9, "tilt": 12 },
+        { "at": "It is blue", "do": "bob", "prop": "earth", "height": 0.04, "period": 3 },
+        { "at": "air itself", "do": "set", "prop": "earth", "param": "atmosphere", "to": 1.3, "over": 1.0 },
+        { "at": "air itself", "do": "scale", "prop": "earth", "to": 1.12, "over": 1.0 },
+        { "at": "air itself", "do": "label", "prop": "earth", "text": "THE AIR ITSELF", "side": "top", "until": "Subscribe" },
+        { "at": "Subscribe", "do": "text", "text": "SUBSCRIBE", "style": "title", "pos": "top" },
+        { "at": "discoveries", "do": "icon", "prop": "earth", "name": "heart" }
+      ]
+    }
+  ]
+}
