@@ -1,7 +1,7 @@
 # STATUS
 
 Last updated: 2026-11-12, about 16:40 UTC. Task numbers match PLAN.md.
-Paused near the 5-hour usage limit (74% at last reading; weekly 48%). It resets at 20:40 UTC on 12 Nov.
+Paused near the 5-hour usage limit (84% at last reading; weekly 49%). It resets at 20:40 UTC on 12 Nov.
 
 ## Done (all committed; nothing pushed)
 - Audit, plan, contract: `AUDIT.md`, `PLAN.md`, `docs/SPEC.md`. Items for Jacob: `DECISIONS-FOR-JACOB.md`.
@@ -19,9 +19,13 @@ In `E:\Youtube Project\whatif-3d\shows\`:
 - My honest view (OPINION): about 6 out of 10. Good: varied environments, solid 3D objects, clean labels, correct narration. Weak: both are under 40 s; some shots do not show what is being said (no picture of light scattering in the sky; Earth's tilt is not visible); the short blue wave is ugly; the big white sun is a blob; the last Moon shot hides the person behind the ground. Nobody has listened to the audio; only the levels were measured.
 - The old kit's sky-blue for comparison: `E:\Youtube Project\_fable_work\out\sky-blue-head.mp4`.
 
+## Jacob's verdict on the first samples, and what changes
+- Jacob: the pictures do not match the script well; not as good as the chameleon video. I agree after comparing all three at one frame per second (frames only, no listening). The samples are slideshows of objects; the chameleon video follows one changing mechanism. Details: PLAN.md, "Round 2 finding".
+- My earlier "6 out of 10" was too kind, and the automatic picture check's "pass" on sky-blue shows that check does not measure this.
+
 ## Not done
-- **Round 2 improvements** (prompt recipes, prop fixes, longer scripts, robustness), then three better sample videos. Brief ready: `docs/briefs/round2-improvements.md`. **Next step.**
-- **Task 9, docs** for a weaker model: README, the rest of AUTHORING, one-page HOW-IT-WORKS, ASKING-CLAUDE, KNOWN-PROBLEMS.
+- **Round 2** (rewritten): engine additions (shared values, subjects that persist across shots, changes that run from word to word), the chameleon video's mechanisms ported in, the chameleon video rebuilt in the new kit as the acceptance test, checker rules that fail a slideshow, and a writer that plans script and pictures together. Brief: `docs/briefs/round2-improvements.md`. **Next step. Nothing of it is built yet.**
+- Then three new sample videos, then task 9 docs.
 - A real paid run (needs Jacob), a real GitHub run (needs a push), a real upload (needs the second channel).
 
 ## Known problems
@@ -38,4 +42,4 @@ In `E:\Youtube Project\whatif-3d\shows\`:
 - Both this repo and the old 3D repo exist only on this PC (DECISIONS-FOR-JACOB.md items 1 and 2).
 
 ## How to continue
-Say: "Continue with docs/briefs/round2-improvements.md, then task 9. Read STATUS.md and docs/HELPER-RULES.md first."
+Say: "Continue with docs/briefs/round2-improvements.md (parts 1 to 5), then three samples, then task 9. Read STATUS.md, PLAN.md (Round 2 finding) and docs/HELPER-RULES.md first."

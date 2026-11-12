@@ -55,3 +55,19 @@ Order: 1 and 2 run now, in parallel (they share no files). 3, 4, 5 start when 1 
 - Voice, render, mix, sound effects: free.
 - LLM: script (about 1 call) + show file (about 1-2 calls of roughly 6k tokens in, 2-3k out). REASONED estimate: **$0.05-0.12 per video on a Sonnet-class model**, less on Haiku. Not measured: needs one paid test run that only Jacob can approve.
 - GitHub minutes: to be measured in task 3; budget allows about 150 minutes per video.
+
+## Round 2 finding (2026-11-12): the kit can show things, but not yet explain them
+
+Jacob watched the first two sample videos and said the pictures do not match the script well and they are not as good as the chameleon video. I compared all three at one frame per second (frames only; I did not listen). VERIFIED by looking:
+
+- **Chameleon:** one subject (the crystal lattice) stays on screen for 20 seconds and changes on each clause. A single number, keyed at 13 spoken words in the prototype's code, drives the lattice spacing, its colour, the small chameleon's skin, the light wave and the background.
+- **Our samples:** a new object for each sentence, which then sits still for 4 to 6 seconds (a person standing while the narrator talks about stars; a white sun; a bar chart; a sailboat for "why is the sky blue"). The scripts have the same fault: a list of separate facts, not one chain of cause and effect.
+- The automatic picture check gave sky-blue a "pass". It checks framing and collisions, not whether the picture follows the words.
+
+**What I got wrong:** I measured the kit by how many topics need no new code. That is only half the test. The other half is whether the kit can do what the approved video does. It cannot yet: the show format has no way to keep a subject across shots, no shared value that several things follow, and no change that runs from one word to another.
+
+**Decision:** add those three things to the engine (additions, not another restart; the props, environments, render, audio and pipeline all stay), port the chameleon video's own mechanisms (lattice, skin layers, light wave, tuner) from the old kit, and prove it by **rebuilding the chameleon video in the new kit and comparing it second by second with the approved one**. Then teach the writer to plan script and pictures together around one mechanism, and add checker rules that fail a slideshow. Full brief: `docs/briefs/round2-improvements.md`.
+
+**Honest limit:** the chameleon video's quality came from code written for that one topic. A kit gets close only for topics whose central mechanism exists as a prop. Topics without one should be set aside, not faked with icons. See DECISIONS-FOR-JACOB.md item 7c.
+
+Order now: round 2 parts 1-5 → three new samples → task 9 docs.

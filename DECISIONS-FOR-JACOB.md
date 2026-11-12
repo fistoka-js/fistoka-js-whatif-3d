@@ -29,7 +29,8 @@ Things only you can decide or do. Nothing here blocks the build; work continues 
 
 ### 5. Final loudness target
 - **What:** the chameleon voice measures -32 LUFS (very quiet); the Pexels pipeline finishes at about -20; YouTube's own reference is about -14.
-- **Recommendation:** -16 LUFS for every video (set in `pipeline/mix.py`). Your ears decide; it is one number.
+- **New evidence:** your own `loudness_check\loudness_after.mp3` measures -20 LUFS (the "before" file is -27), so -20 is what you approved by ear for the Pexels channel. The six music audition files all measure about -27.
+- **Recommendation:** the kit is set to -16 LUFS (a little louder than your Pexels videos; YouTube turns loud videos down to about -14 but does not turn quiet ones up). If you prefer to match the Pexels channel, change one number, `target_lufs` in `pipeline/mix.py`, to -20.
 
 ### 6. Keep videos at 60 seconds or less
 - **What:** YouTube blocks monetisation of Shorts longer than 60 s that contain claimed music. Your brief said 40-70 s.
@@ -44,6 +45,11 @@ Things only you can decide or do. Nothing here blocks the build; work continues 
 - **Options:** (a) Sonnet for everything; (b) Haiku for the script and fact check, Sonnet only for the show file (roughly $0.08-0.10); (c) Haiku for everything; (d) no API at all: "files" mode, where a Claude Code session on your subscription answers the prompt files (free per video, but someone has to start it).
 - **Recommendation:** start with (d) for the first handful of videos so you can judge quality at zero cost, then run one paid test each of (b) and (c) and compare. 13 videos a month on Sonnet would be about $1.70-2.50.
 - **Where:** `settings.yaml`, section `writer`. Details: `docs/WRITER.md`.
+
+### 7c. What should happen when a topic needs a mechanism the kit does not have?
+- **What:** chameleon-level videos need a moving model of the thing being explained (the crystal lattice, the skin layers). The kit will have a growing set of these, but never all of them. A topic without one comes out as a slideshow of objects, which is what you saw.
+- **Options:** (a) the automatic pipeline skips such topics and lists what is missing in `queue/needs-props/`; (b) a Claude Code session on your subscription (Sonnet or Opus, which can look at pictures) builds the missing mechanism as one new prop file, about 100-200 lines, then the topic runs; (c) the paid API writes the mechanism code blind, with no eyes. I do not recommend (c): the props in this kit only became good after 2-4 rounds of looking at pictures.
+- **Recommendation:** (a) for the automatic runs plus (b) as a regular short session ("build the two most-requested mechanisms"). This means fully automatic videos only for topics the kit can already explain. It is the honest price of the quality you asked for.
 
 ### 7b. Keep each video's script and show file in the repo?
 - **What:** the GitHub workflow commits only the topic queue back. The script, voice and show file of each video would exist only in a download that GitHub deletes after 7 days.
