@@ -38,4 +38,4 @@ Work paused here because the 5-hour Claude usage window reached 87% (weekly: 25%
 
 ## How to continue (for Jacob, or any model picking this up)
 Say: "Continue PLAN.md from task 3. Read STATUS.md, docs/SPEC.md and docs/HELPER-RULES.md first."
-Tasks 3, 4 and 5 can run in parallel (they share no files). The "how to add a prop" recipe is in docs/SPEC.md.
+Tasks 3, 4 and 5 can run in parallel (they share no files). The "how to add a prop" recipe is in docs/AUTHORING.md.
