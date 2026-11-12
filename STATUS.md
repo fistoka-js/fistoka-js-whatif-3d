@@ -1,41 +1,46 @@
 # STATUS
 
-Last updated: 2026-11-11, about 23:30 local (04:30 UTC 12 Nov). Task numbers match PLAN.md.
-Work paused here because the 5-hour Claude usage window reached 87% (weekly: 25%). The window resets at 08:10 UTC on 12 Nov (about 03:10 local).
+Last updated: 2026-11-12, about 11:15 UTC. Task numbers match PLAN.md.
+Paused because the 5-hour Claude usage window is near its limit (85% at last reading; weekly 37%). It resets at 15:20 UTC on 12 Nov.
 
-## Done
-- Audit: `AUDIT.md`. Decision and plan: `PLAN.md`. Contract: `docs/SPEC.md`. Items for Jacob: `DECISIONS-FOR-JACOB.md`.
-- **Task 1, engine core** (commit `55f24da`). A page that plays any show file; shots, phrase anchors, 18 actions, a camera that frames props by itself above the captions, captions, labels/text/counters/icons, a checker with readable errors, tools for stills, timeline and catalogue. Starter catalogue: 7 props (ball, box, planet with 6 looks, sun, particles, arrow, beam) and 3 environments (space, studio, sky).
-  - VERIFIED by me: 81 of 81 tests pass; the demo show passes the checker; I looked at the demo contact sheet.
-  - Helper's measurement, not re-run by me: 56 to 102 ms per frame at 1080x1920 with software graphics (about 10-18 frames a second, faster than the old kit); frames are pixel-identical between runs.
-- **Task 2, audio** (commit `ac00cac`). Edge voice with exact word times (no Whisper), 9 own-made sound effects, mix to -16 LUFS, mux without re-encoding the video. VERIFIED by me: 28 tests pass.
+## Done (all committed; nothing pushed)
+- Audit, plan, contract: `AUDIT.md`, `PLAN.md`, `docs/SPEC.md`. Items for Jacob: `DECISIONS-FOR-JACOB.md`.
+- **Task 1, engine.** Plays any show file: shots, phrase anchors, 18 actions, self-framing camera, captions, labels that avoid each other, text, counters, icons, a checker with readable errors.
+- **Task 2, audio.** Edge voice with exact word times, 9 own-made sound effects, mix to -16 LUFS.
+- **Task 3, render.** `node tools/render.mjs <slug>` makes a 1080x1920 MP4 with voice. Gallery tool makes picture sheets of every prop.
+- **Task 4, catalogue.** 61 props and 7 environments. I looked at every batch's picture sheet.
+- **Task 5, picture checks.** `node tools/qa.mjs <slug>`: black or frozen picture, things out of frame, subject too small, text collisions, pacing, video size/length/loudness. Gives pass, warn or fail with a fix hint per finding.
+- VERIFIED by me with nothing else running: 227 of 227 kit tests pass; 28 of 28 audio tests pass; the demo show passes the checker; picture checks on the demo give "warn" with 0 fails.
+
+## Measured
+- Render of the 54.7 s demo at 1080x1920: 76 s on this PC. Limited to 2 CPUs (a stand-in for a private-repo GitHub runner): about 126 s. Limited to 4 CPUs: about 92 s. Helper's measurements; the CPU limit leaked slightly, so a real runner may be a bit slower. The old kit's figure was about 24 minutes.
+- Not measured: anything on a real GitHub runner (needs a push).
 
 ## Not started
-- Task 3: full video render tool (MP4) and prop gallery tool. **Next step.**
-- Task 4: the prop library (about 30 more props, more environments).
-- Task 5: automatic picture checks (QA).
-- Task 6: the writer (topic → script → show file) with repair loop.
-- Task 7: pipeline runner, private upload with wrong-channel guard, GitHub workflow.
-- Task 8: finished sample videos.
-- Task 9: README, authoring guide, one-page "how it works", "how to ask Sonnet or Opus".
+- **Task 6, the writer** (topic → script → voice → show file, with repair loop and a free "files" mode that needs no API key). Brief ready: `docs/briefs/writer.md`. **Next step.**
+- **Task 7, runner + private upload with wrong-channel guard + workflow.** Brief ready: `docs/briefs/runner-upload.md`.
+- **Task 8, finished sample videos** with music and sound effects. None exists yet.
+- **Task 9, docs** for a weaker model: README, the rest of AUTHORING, one-page HOW-IT-WORKS, ASKING-CLAUDE, KNOWN-PROBLEMS.
 
 ## What you can look at now
-- New kit, demo "Why is the sky blue?" as a grid of frames (stills only, no video yet):
-  `E:\Youtube Project\whatif-3d\shows\demo-sky\out\stills\sheet.jpg`
-- Old kit, same topic, for comparison: `E:\Youtube Project\_fable_work\out\sky-blue-head-sheet.jpg` and the video `sky-blue-head.mp4` beside it.
-- To watch the demo play with sound in a browser: in a terminal, `cd "E:\Youtube Project\whatif-3d"`, then `node tools/serve.mjs`, and open the address it prints followed by `/kit/index.html?show=shows/demo-sky`.
+- Every prop and environment as pictures: `docs\gallery\props-1.jpg` (and -2, -3, ...) and `docs\gallery\envs.jpg`. These were made before the last framing change; regenerate with `node tools/gallery.mjs`.
+- Larger views of each batch: `shows\zz-a\out\stills\sheet.jpg` (space, physics), `zz-b` (nature, places), `zz-c` (people, body, animals, the chameleon), `zz-d` (machines, charts, new environments).
+- A real video from the new kit: `shows\demo-sky\out\demo-sky.mp4`. Caveats: it is a feature test, not a finished explainer; it was rendered before the framing polish; it has voice only (no music or effects) and the voice is the quiet -32 LUFS file, so it plays quietly.
+- The list of everything the kit can show: `docs\CATALOG.md`.
 
 ## Known problems
-- **No finished video exists yet from the new kit.** Only stills.
-- The demo is a feature test, not a finished explainer: with 7 props it uses balls and boxes as stand-ins (a red ball on the sea, pink boxes for "pinball").
-- Labels do not yet avoid each other or the props. Wide layouts leave the lower half of the frame empty. The grass ground is plain; the sunset desert is very orange. (Helper's list; the last two I have not looked at closely.)
+- **No finished, mixed sample video yet.**
+- No show has yet been written by an LLM from a topic; the writer is not built.
+- Weak props (my view from the sheets): heart looks like a valentine, bird flock, plant cell, bomb blast, magnet field lines (dotted), palm tree, plain rocks, asteroid cluster.
+- Props that float (plane, submarine, blast) sink half into the ground on ground environments unless the show lifts them. The writer's prompt must say so, or the engine should handle it.
+- Picture checks cannot see fading (a half-faded label counts as visible) and use boxes larger than the real shapes.
+- A changing heart rate mid-shot makes the beat skip once.
 - Nobody has listened to the sound effects.
 - `pipeline/mix.py` needs ffmpeg 7 or newer; GitHub's Ubuntu runners may ship an older one (unchecked).
 - Music loops with a hard cut if the track is shorter than the video.
 - No paid LLM call has been made; cost per video ($0.05-0.12) is an estimate.
-- GitHub runner render time is not re-measured.
-- Nothing is pushed. Both this repo and the old 3D repo exist only on this PC (DECISIONS-FOR-JACOB.md items 1 and 2).
+- Both this repo and the old 3D repo exist only on this PC (DECISIONS-FOR-JACOB.md items 1 and 2).
 
-## How to continue (for Jacob, or any model picking this up)
-Say: "Continue PLAN.md from task 3. Read STATUS.md, docs/SPEC.md and docs/HELPER-RULES.md first."
-Tasks 3, 4 and 5 can run in parallel (they share no files). The "how to add a prop" recipe is in docs/AUTHORING.md.
+## How to continue
+Say: "Continue PLAN.md from task 6. Read STATUS.md, docs/SPEC.md and docs/HELPER-RULES.md first."
+Tasks 6 and 7 can run in parallel (briefs are in `docs/briefs/`). Task 8 needs task 6.

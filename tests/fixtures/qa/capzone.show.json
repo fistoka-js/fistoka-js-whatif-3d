@@ -1,0 +1,74 @@
+{
+ "format": 1,
+ "title": "qa fixture",
+ "voice": {
+  "audio": "voice.mp3",
+  "words": "words.json"
+ },
+ "shots": [
+  {
+   "id": "one",
+   "env": {
+    "type": "studio",
+    "color": "teal"
+   },
+   "props": [
+    {
+     "id": "earth",
+     "type": "planet",
+     "look": "earth",
+     "at": [
+      0,
+      0.5,
+      0
+     ],
+     "size": 1.0
+    },
+    {
+     "id": "low",
+     "type": "planet",
+     "look": "mars",
+     "at": [
+      0,
+      -1.0,
+      0
+     ],
+     "size": 0.8
+    }
+   ],
+   "actions": [],
+   "camera": {
+    "move": "still",
+    "focus": [
+     "earth"
+    ],
+    "framing": "medium"
+   }
+  },
+  {
+   "id": "two",
+   "start": "What if sunlight",
+   "env": {
+    "type": "studio",
+    "color": "teal"
+   },
+   "props": [
+    {
+     "id": "ball",
+     "type": "ball",
+     "at": "center",
+     "size": 1.0
+    }
+   ],
+   "actions": [
+    {
+     "at": "blue",
+     "do": "text",
+     "text": "NO BLUE",
+     "style": "title",
+     "pos": "top"
+    }
+   ]
+  }
+ ]
+}

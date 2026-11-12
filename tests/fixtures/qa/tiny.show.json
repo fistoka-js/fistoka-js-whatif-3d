@@ -1,0 +1,61 @@
+{
+ "format": 1,
+ "title": "qa fixture",
+ "voice": {
+  "audio": "voice.mp3",
+  "words": "words.json"
+ },
+ "shots": [
+  {
+   "id": "one",
+   "env": {
+    "type": "studio",
+    "color": "teal"
+   },
+   "props": [
+    {
+     "id": "dot",
+     "type": "ball",
+     "at": "center",
+     "size": 0.08
+    }
+   ],
+   "actions": [
+    {
+     "at": "reflects",
+     "do": "pulse",
+     "prop": "dot"
+    }
+   ],
+   "camera": {
+    "move": "push_in",
+    "framing": "wide"
+   }
+  },
+  {
+   "id": "two",
+   "start": "What if sunlight",
+   "env": {
+    "type": "studio",
+    "color": "teal"
+   },
+   "props": [
+    {
+     "id": "ball",
+     "type": "ball",
+     "at": "center",
+     "size": 1.0
+    }
+   ],
+   "actions": [
+    {
+     "at": "blue",
+     "do": "text",
+     "text": "NO BLUE",
+     "style": "title",
+     "pos": "top"
+    }
+   ]
+  }
+ ]
+}
