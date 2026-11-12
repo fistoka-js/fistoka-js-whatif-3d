@@ -4,12 +4,13 @@
 // Exports: meta, build(params, ctx).
 
 import * as THREE from 'three';
-import { gradientDome, pointLayer, lightRig } from './lib/parts.js';
+import { gradientDome, paintDome, pointLayer, lightRig } from './lib/parts.js';
 
 export const meta = {
   name: 'studio',
   summary: 'A clean coloured studio backdrop with a soft floor. The default look for explaining an object.',
   ground: params => params.floor,
+  dialParams: ['color'],          // the backdrop colour can follow a dial (setColors below)
   params: {
     color: { type: 'color', default: 'teal', doc: 'backdrop colour' },
     floor: { type: 'bool', default: true, doc: 'show a floor (props stand on it); false = props float' },
@@ -77,12 +78,41 @@ function vignetteTexture() {
   return VIGNETTE;
 }
 
+// Every colour of the room, from the backdrop colour (0xRRGGBB). One place, so a colour that follows a dial repaints the same way.
+function roomColors(color) {
+  // The backdrop: muted version of the colour, darker toward the floor and the top, a bright band behind the subject.
+  const base = new THREE.Color(color).lerp(new THREE.Color(0x203040), 0.35).getHex();
+  return {
+    base, dome: [[-1, shade(base, 0.25)], [-0.05, shade(base, 0.55)], [0.08, tint(base, 0.08)], [0.45, shade(base, 0.62)], [1, shade(base, 0.3)]],
+    floorMid: shade(base, 0.42), floorEdge: shade(base, 0.2), horizon: tint(base, 0.55),
+    fill: tint(base, 0.5), sky: tint(base, 0.4), ground: shade(base, 0.4), fog: shade(base, 0.55), background: shade(base, 0.5),
+  };
+}
+
+// Floor colours: a soft pool of light in the middle, darker toward the edges (vertex colours by distance).
+function paintFloor(geo, rc, s) {
+  const pos = geo.attributes.position, cols = geo.attributes.color.array;
+  const mid = new THREE.Color(rc.floorMid), edge = new THREE.Color(rc.floorEdge), c = new THREE.Color();
+  for (let i = 0; i < pos.count; i++) {
+    const r = Math.hypot(pos.getX(i), pos.getZ(i)) / s;
+    c.copy(mid).lerp(edge, Math.min(1, Math.pow(r / 7, 0.8))).toArray(cols, i * 3);
+  }
+  geo.attributes.color.needsUpdate = true;
+}
+
+// Horizon ring colours: clear at the top, brightest at its foot (vertex alpha).
+function paintHorizon(geo, rc, H) {
+  const pos = geo.attributes.position, cols = geo.attributes.color.array, c = new THREE.Color(rc.horizon);
+  for (let i = 0; i < pos.count; i++) { const top = pos.getY(i) > H / 2; c.toArray(cols, i * 4); cols[i * 4 + 3] = top ? 0 : 0.5; }
+  geo.attributes.color.needsUpdate = true;
+}
+
 export function build(params, ctx) {
   const s = ctx.scale;
-  // The backdrop: muted version of the colour, darker toward the floor and the top, a bright band behind the subject.
-  const base = new THREE.Color(ctx.color(params.color)).lerp(new THREE.Color(0x203040), 0.35).getHex();
+  let rc = roomColors(ctx.color(params.color));
+  const base = rc.base;
   const group = new THREE.Group();
-  const dome = gradientDome([[-1, shade(base, 0.25)], [-0.05, shade(base, 0.55)], [0.08, tint(base, 0.08)], [0.45, shade(base, 0.62)], [1, shade(base, 0.3)]]);
+  const dome = gradientDome(rc.dome);
   group.add(dome);
 
   // Floor: a big disc in the backdrop colour; fog melts its far edge into the backdrop (no visible horizon line).
@@ -91,13 +121,8 @@ export function build(params, ctx) {
     // A soft pool of light in the middle of the floor, darker toward the edges (vertex colours by distance).
     const floorGeo = new THREE.RingGeometry(0.001, 60 * s, 64, 24);
     floorGeo.rotateX(-Math.PI / 2);
-    const pos = floorGeo.attributes.position, cols = new Float32Array(pos.count * 3);
-    const mid = new THREE.Color(shade(base, 0.42)), edge = new THREE.Color(shade(base, 0.2)), c = new THREE.Color();
-    for (let i = 0; i < pos.count; i++) {
-      const r = Math.hypot(pos.getX(i), pos.getZ(i)) / s;
-      c.copy(mid).lerp(edge, Math.min(1, Math.pow(r / 7, 0.8))).toArray(cols, i * 3);
-    }
-    floorGeo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+    floorGeo.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(floorGeo.attributes.position.count * 3), 3));
+    paintFloor(floorGeo, rc, s);
     // A faint tile grid: gives the floor a surface, so depth and camera motion read even from above.
     const grid = gridTexture();
     grid.repeat.set(120 / 0.4, 120 / 0.4); // the disc UVs span its diameter (120 * s); cells are 0.4 * s wide
@@ -108,12 +133,12 @@ export function build(params, ctx) {
 
   // A soft glow where the floor meets the backdrop: a ring that is clear at the bottom and brightest at its foot (vertex alpha).
   let horizon = null;
+  const H = 5 * s;
   if (params.floor) {
-    const R = 52 * s, H = 5 * s, geo = new THREE.CylinderGeometry(R, R, H, 48, 1, true);
+    const R = 52 * s, geo = new THREE.CylinderGeometry(R, R, H, 48, 1, true);
     geo.translate(0, H / 2, 0);
-    const pos = geo.attributes.position, cols = new Float32Array(pos.count * 4), c = new THREE.Color(tint(base, 0.55));
-    for (let i = 0; i < pos.count; i++) { const top = pos.getY(i) > H / 2; c.toArray(cols, i * 4); cols[i * 4 + 3] = top ? 0 : 0.5; }
-    geo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 4));
+    geo.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(geo.attributes.position.count * 4), 4));
+    paintHorizon(geo, rc, H);
     horizon = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ vertexColors: true, transparent: true, side: THREE.BackSide, depthWrite: false, fog: false }));
     horizon.renderOrder = -4;
     group.add(horizon);
@@ -136,14 +161,27 @@ export function build(params, ctx) {
   const toCam = new THREE.Vector3();
 
   const lights = lightRig({
-    key: [0xfff4e6, 2.4, [-3, 5, 4]], fill: [tint(base, 0.5), 0.8, [5, 1, 3]], rim: [0xffffff, 2.4, [2, 4, -5]],
-    sky: tint(base, 0.4), ground: shade(base, 0.4), hemi: 0.9,
+    key: [0xfff4e6, 2.4, [-3, 5, 4]], fill: [rc.fill, 0.8, [5, 1, 3]], rim: [0xffffff, 2.4, [2, 4, -5]],
+    sky: rc.sky, ground: rc.ground, hemi: 0.9,
   });
-  const fog = new THREE.Fog(shade(base, 0.55), 10 * s, 40 * s);
+  const fog = new THREE.Fog(rc.fog, 10 * s, 40 * s);
+  let painted = ctx.color(params.color);
 
-  return {
+  const env = {
     object: group, lights, fog,
-    background: shade(base, 0.5),
+    background: rc.background,
+    // The backdrop colour follows a dial: repaint the room (only when the colour really changed).
+    setColors(cols) {
+      if (cols.color === undefined || cols.color === painted) return;
+      painted = cols.color;
+      rc = roomColors(painted);
+      paintDome(dome, rc.dome);
+      if (floor) paintFloor(floor.geometry, rc, s);
+      if (horizon) paintHorizon(horizon.geometry, rc, H);
+      lights[1].color.setHex(rc.fill); lights[3].color.setHex(rc.sky); lights[3].groundColor.setHex(rc.ground);
+      fog.color.setHex(rc.fog);
+      env.background = rc.background;
+    },
     update(t, cam) {
       dome.position.fromArray(cam.position);
       // Haze starts a little behind the subject, whatever the camera distance.
@@ -157,4 +195,5 @@ export function build(params, ctx) {
       vignette.lookAt(cam.position[0], cam.position[1], cam.position[2]);
     },
   };
+  return env;
 }

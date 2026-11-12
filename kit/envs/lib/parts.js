@@ -1,5 +1,5 @@
 // Building blocks shared by the environments: gradient dome, star/mote layers, the three-light rig.
-// Exports: gradientDome(colors, radius), pointLayer(opts), lightRig(opts), motes(rng, opts).
+// Exports: gradientDome(colors, radius), paintDome(mesh, colors), pointLayer(opts), lightRig(opts), motes(rng, opts).
 // Every env uses these so that each one has a background with depth, haze, parallax layers and key/fill/rim lights.
 
 import * as THREE from 'three';
@@ -9,7 +9,18 @@ import { glowTexture } from '../../engine/materials.js';
 // It follows the camera (see env update) so it always looks infinitely far away. Not affected by fog.
 export function gradientDome(stops, radius = 500) {
   const geo = new THREE.SphereGeometry(radius, 48, 32);
-  const pos = geo.attributes.position, cols = new Float32Array(pos.count * 3);
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(new Float32Array(geo.attributes.position.count * 3), 3));
+  const mat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.renderOrder = -10;
+  paintDome(mesh, stops);
+  return mesh;
+}
+
+// (Re)colours a gradientDome with new stops; used when an environment colour follows a dial.
+export function paintDome(mesh, stops) {
+  const geo = mesh.geometry, pos = geo.attributes.position, cols = geo.attributes.color.array;
+  const radius = geo.parameters.radius;
   const c = new THREE.Color(), a = new THREE.Color(), b = new THREE.Color();
   for (let i = 0; i < pos.count; i++) {
     const y = pos.getY(i) / radius;
@@ -20,11 +31,7 @@ export function gradientDome(stops, radius = 500) {
     c.copy(a.setHex(c0)).lerp(b.setHex(c1), k * k * (3 - 2 * k));
     c.toArray(cols, i * 3);
   }
-  geo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
-  const mat = new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide, fog: false, depthWrite: false });
-  const mesh = new THREE.Mesh(geo, mat);
-  mesh.renderOrder = -10;
-  return mesh;
+  geo.attributes.color.needsUpdate = true;
 }
 
 // Points with a soft round sprite. opts: { rng, count, place(rng) -> [x,y,z], size, colors: [hex], opacity, fog, additive }

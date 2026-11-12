@@ -44,6 +44,19 @@ All numbers in boxes are pixels of the 540x960 sampling size.
 | `video-loudness` | WARN | integrated loudness (ffmpeg ebur128) outside -18..-13 LUFS; the measured value is in `qa.json` under `measured.video.lufs` |
 | `show-invalid`, `video-missing`, `video-unreadable`, `page-problem` | FAIL / WARN | the show does not validate, `--video` file missing/unreadable, or the page logged an error |
 
+## Story rules (no browser)
+
+With `--story-rules` (default: `STORY_RULES_DEFAULT` in `tools/lib/story-rules.mjs`, now off; `--no-story-rules` turns them off),
+`qa.mjs` also reports the story rules of SPEC §14, the same ones `node tools/validate.mjs shows/<slug> --story-rules` prints:
+
+| code | level | meaning |
+|---|---|---|
+| `story-coverage` | FAIL | a spoken sentence (`. ? !`; under 1 s joined to the next) in which no prop state change starts and no dial bound to a visible prop moves |
+| `story-stillness` | FAIL / WARN | a stretch of the narration over 3.5 s (FAIL) or 2.5 s (WARN) in which no prop changes (camera, spin, bob, orbit and overlays do not count) |
+| `story-subject` | WARN | more than 6 scenes (shots without `"continue"`), or no prop on screen for 30% of the video |
+
+Example (the committed sky-blue sample): `FAIL shot "violet" at 24.8 s: the sentence "Then why isn't the sky violet?" (24.81-26.39 s) has no visible change ...`.
+
 ## How the page is used
 
 Only the documented hooks: `__ready`/`__error` (via `openShow`), `__boxes(t)` (props, labels, texts, counts, icons, caption), and the

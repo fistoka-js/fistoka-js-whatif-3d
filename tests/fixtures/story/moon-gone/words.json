@@ -1,0 +1,657 @@
+[
+ {
+  "text": "What",
+  "start": 0.089,
+  "end": 0.167
+ },
+ {
+  "text": "if",
+  "start": 0.179,
+  "end": 0.257
+ },
+ {
+  "text": "the",
+  "start": 0.268,
+  "end": 0.335
+ },
+ {
+  "text": "Moon",
+  "start": 0.346,
+  "end": 0.614
+ },
+ {
+  "text": "vanished",
+  "start": 0.625,
+  "end": 0.971
+ },
+ {
+  "text": "tonight?",
+  "start": 0.982,
+  "end": 1.362
+ },
+ {
+  "text": "The",
+  "start": 1.741,
+  "end": 1.786
+ },
+ {
+  "text": "first",
+  "start": 1.797,
+  "end": 2.054
+ },
+ {
+  "text": "thing",
+  "start": 2.065,
+  "end": 2.199
+ },
+ {
+  "text": "you",
+  "start": 2.21,
+  "end": 2.288
+ },
+ {
+  "text": "would",
+  "start": 2.299,
+  "end": 2.422
+ },
+ {
+  "text": "notice",
+  "start": 2.433,
+  "end": 2.757
+ },
+ {
+  "text": "is",
+  "start": 2.768,
+  "end": 2.857
+ },
+ {
+  "text": "the",
+  "start": 2.868,
+  "end": 2.935
+ },
+ {
+  "text": "sky.",
+  "start": 2.946,
+  "end": 3.348
+ },
+ {
+  "text": "Without",
+  "start": 3.728,
+  "end": 4.029
+ },
+ {
+  "text": "moonlight,",
+  "start": 4.04,
+  "end": 4.531
+ },
+ {
+  "text": "nights",
+  "start": 4.866,
+  "end": 5.123
+ },
+ {
+  "text": "would",
+  "start": 5.134,
+  "end": 5.257
+ },
+ {
+  "text": "be",
+  "start": 5.268,
+  "end": 5.368
+ },
+ {
+  "text": "much",
+  "start": 5.379,
+  "end": 5.658
+ },
+ {
+  "text": "darker,",
+  "start": 5.67,
+  "end": 6.105
+ },
+ {
+  "text": "and",
+  "start": 6.373,
+  "end": 6.417
+ },
+ {
+  "text": "the",
+  "start": 6.429,
+  "end": 6.484
+ },
+ {
+  "text": "stars",
+  "start": 6.496,
+  "end": 6.864
+ },
+ {
+  "text": "would",
+  "start": 6.875,
+  "end": 6.975
+ },
+ {
+  "text": "shine",
+  "start": 6.987,
+  "end": 7.266
+ },
+ {
+  "text": "brighter.",
+  "start": 7.277,
+  "end": 7.701
+ },
+ {
+  "text": "Then",
+  "start": 8.08,
+  "end": 8.159
+ },
+ {
+  "text": "the",
+  "start": 8.17,
+  "end": 8.27
+ },
+ {
+  "text": "oceans",
+  "start": 8.281,
+  "end": 8.616
+ },
+ {
+  "text": "would",
+  "start": 8.627,
+  "end": 8.739
+ },
+ {
+  "text": "change.",
+  "start": 8.75,
+  "end": 9.208
+ },
+ {
+  "text": "The",
+  "start": 9.587,
+  "end": 9.632
+ },
+ {
+  "text": "Moon",
+  "start": 9.643,
+  "end": 9.855
+ },
+ {
+  "text": "pulls",
+  "start": 9.866,
+  "end": 10.156
+ },
+ {
+  "text": "on",
+  "start": 10.167,
+  "end": 10.279
+ },
+ {
+  "text": "our",
+  "start": 10.29,
+  "end": 10.402
+ },
+ {
+  "text": "seas",
+  "start": 10.413,
+  "end": 10.859
+ },
+ {
+  "text": "and",
+  "start": 10.993,
+  "end": 11.105
+ },
+ {
+  "text": "makes",
+  "start": 11.116,
+  "end": 11.328
+ },
+ {
+  "text": "the",
+  "start": 11.339,
+  "end": 11.406
+ },
+ {
+  "text": "tides.",
+  "start": 11.417,
+  "end": 11.886
+ },
+ {
+  "text": "Without",
+  "start": 12.266,
+  "end": 12.567
+ },
+ {
+  "text": "it,",
+  "start": 12.578,
+  "end": 12.69
+ },
+ {
+  "text": "only",
+  "start": 13.091,
+  "end": 13.259
+ },
+ {
+  "text": "the",
+  "start": 13.27,
+  "end": 13.359
+ },
+ {
+  "text": "Sun's",
+  "start": 13.371,
+  "end": 13.661
+ },
+ {
+  "text": "weaker",
+  "start": 13.672,
+  "end": 13.996
+ },
+ {
+  "text": "pull",
+  "start": 14.007,
+  "end": 14.241
+ },
+ {
+  "text": "would",
+  "start": 14.252,
+  "end": 14.375
+ },
+ {
+  "text": "remain,",
+  "start": 14.386,
+  "end": 14.81
+ },
+ {
+  "text": "and",
+  "start": 15.145,
+  "end": 15.201
+ },
+ {
+  "text": "tides",
+  "start": 15.212,
+  "end": 15.536
+ },
+ {
+  "text": "would",
+  "start": 15.547,
+  "end": 15.659
+ },
+ {
+  "text": "shrink",
+  "start": 15.67,
+  "end": 16.071
+ },
+ {
+  "text": "to",
+  "start": 16.15,
+  "end": 16.25
+ },
+ {
+  "text": "less",
+  "start": 16.261,
+  "end": 16.585
+ },
+ {
+  "text": "than",
+  "start": 16.596,
+  "end": 16.708
+ },
+ {
+  "text": "half",
+  "start": 16.719,
+  "end": 16.975
+ },
+ {
+  "text": "their",
+  "start": 16.987,
+  "end": 17.121
+ },
+ {
+  "text": "size.",
+  "start": 17.132,
+  "end": 17.623
+ },
+ {
+  "text": "Coasts",
+  "start": 17.991,
+  "end": 18.359
+ },
+ {
+  "text": "and",
+  "start": 18.426,
+  "end": 18.527
+ },
+ {
+  "text": "the",
+  "start": 18.538,
+  "end": 18.605
+ },
+ {
+  "text": "creatures",
+  "start": 18.616,
+  "end": 19.051
+ },
+ {
+  "text": "living",
+  "start": 19.062,
+  "end": 19.33
+ },
+ {
+  "text": "there",
+  "start": 19.341,
+  "end": 19.431
+ },
+ {
+  "text": "would",
+  "start": 19.442,
+  "end": 19.542
+ },
+ {
+  "text": "struggle.",
+  "start": 19.554,
+  "end": 19.967
+ },
+ {
+  "text": "The",
+  "start": 20.346,
+  "end": 20.424
+ },
+ {
+  "text": "biggest",
+  "start": 20.435,
+  "end": 20.725
+ },
+ {
+  "text": "effect",
+  "start": 20.737,
+  "end": 21.049
+ },
+ {
+  "text": "would",
+  "start": 21.06,
+  "end": 21.172
+ },
+ {
+  "text": "come",
+  "start": 21.183,
+  "end": 21.328
+ },
+ {
+  "text": "slowly.",
+  "start": 21.339,
+  "end": 21.786
+ },
+ {
+  "text": "The",
+  "start": 22.165,
+  "end": 22.221
+ },
+ {
+  "text": "Moon",
+  "start": 22.232,
+  "end": 22.466
+ },
+ {
+  "text": "helps",
+  "start": 22.478,
+  "end": 22.723
+ },
+ {
+  "text": "keep",
+  "start": 22.734,
+  "end": 22.98
+ },
+ {
+  "text": "Earth's",
+  "start": 23.091,
+  "end": 23.493
+ },
+ {
+  "text": "tilt",
+  "start": 23.504,
+  "end": 23.75
+ },
+ {
+  "text": "steady,",
+  "start": 23.761,
+  "end": 24.152
+ },
+ {
+  "text": "and",
+  "start": 24.475,
+  "end": 24.565
+ },
+ {
+  "text": "that",
+  "start": 24.576,
+  "end": 24.732
+ },
+ {
+  "text": "tilt",
+  "start": 24.743,
+  "end": 24.944
+ },
+ {
+  "text": "gives",
+  "start": 24.955,
+  "end": 25.201
+ },
+ {
+  "text": "us",
+  "start": 25.212,
+  "end": 25.346
+ },
+ {
+  "text": "regular",
+  "start": 25.357,
+  "end": 25.714
+ },
+ {
+  "text": "seasons.",
+  "start": 25.725,
+  "end": 26.239
+ },
+ {
+  "text": "Without",
+  "start": 26.618,
+  "end": 26.908
+ },
+ {
+  "text": "it,",
+  "start": 26.92,
+  "end": 27.031
+ },
+ {
+  "text": "the",
+  "start": 27.288,
+  "end": 27.366
+ },
+ {
+  "text": "tilt",
+  "start": 27.377,
+  "end": 27.612
+ },
+ {
+  "text": "could",
+  "start": 27.623,
+  "end": 27.779
+ },
+ {
+  "text": "probably",
+  "start": 27.79,
+  "end": 28.203
+ },
+ {
+  "text": "wobble",
+  "start": 28.214,
+  "end": 28.638
+ },
+ {
+  "text": "over",
+  "start": 28.65,
+  "end": 28.873
+ },
+ {
+  "text": "millions",
+  "start": 28.884,
+  "end": 29.386
+ },
+ {
+  "text": "of",
+  "start": 29.397,
+  "end": 29.453
+ },
+ {
+  "text": "years,",
+  "start": 29.464,
+  "end": 29.9
+ },
+ {
+  "text": "and",
+  "start": 30.123,
+  "end": 30.201
+ },
+ {
+  "text": "the",
+  "start": 30.212,
+  "end": 30.279
+ },
+ {
+  "text": "climate",
+  "start": 30.29,
+  "end": 30.692
+ },
+ {
+  "text": "could",
+  "start": 30.703,
+  "end": 30.837
+ },
+ {
+  "text": "swing",
+  "start": 30.848,
+  "end": 31.161
+ },
+ {
+  "text": "wildly.",
+  "start": 31.172,
+  "end": 31.607
+ },
+ {
+  "text": "Earth",
+  "start": 31.975,
+  "end": 32.132
+ },
+ {
+  "text": "would",
+  "start": 32.143,
+  "end": 32.266
+ },
+ {
+  "text": "survive,",
+  "start": 32.277,
+  "end": 32.801
+ },
+ {
+  "text": "but",
+  "start": 33.047,
+  "end": 33.181
+ },
+ {
+  "text": "life",
+  "start": 33.192,
+  "end": 33.426
+ },
+ {
+  "text": "would",
+  "start": 33.438,
+  "end": 33.527
+ },
+ {
+  "text": "have",
+  "start": 33.538,
+  "end": 33.705
+ },
+ {
+  "text": "to",
+  "start": 33.717,
+  "end": 33.817
+ },
+ {
+  "text": "adapt.",
+  "start": 33.828,
+  "end": 34.286
+ },
+ {
+  "text": "We",
+  "start": 34.665,
+  "end": 34.766
+ },
+ {
+  "text": "rely",
+  "start": 34.777,
+  "end": 35.156
+ },
+ {
+  "text": "on",
+  "start": 35.167,
+  "end": 35.257
+ },
+ {
+  "text": "our",
+  "start": 35.268,
+  "end": 35.379
+ },
+ {
+  "text": "giant",
+  "start": 35.391,
+  "end": 35.748
+ },
+ {
+  "text": "companion",
+  "start": 35.759,
+  "end": 36.272
+ },
+ {
+  "text": "more",
+  "start": 36.429,
+  "end": 36.629
+ },
+ {
+  "text": "than",
+  "start": 36.641,
+  "end": 36.752
+ },
+ {
+  "text": "we",
+  "start": 36.763,
+  "end": 36.853
+ },
+ {
+  "text": "think.",
+  "start": 36.864,
+  "end": 37.266
+ },
+ {
+  "text": "Follow",
+  "start": 37.667,
+  "end": 37.846
+ },
+ {
+  "text": "for",
+  "start": 37.857,
+  "end": 37.969
+ },
+ {
+  "text": "more",
+  "start": 37.98,
+  "end": 38.147
+ },
+ {
+  "text": "what",
+  "start": 38.158,
+  "end": 38.292
+ },
+ {
+  "text": "ifs.",
+  "start": 38.304,
+  "end": 38.605
+ }
+]

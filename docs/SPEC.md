@@ -54,7 +54,7 @@ Imports of three.js use the bare name `three` (and `three/addons/...`). The page
         { "id": "moon",  "type": "planet", "look": "moon",  "at": [0.9, 0.3, -0.2], "size": 0.35 }
       ],
       "camera": { "move": "orbit", "focus": ["earth", "moon"], "framing": "medium", "angle": "front", "amount": 0.5 },
-      "transition": "cut",                     // "cut" (default) or "dip" (quick dip through the env colour)
+      "transition": "cut",                     // "cut" (default), "dip" (quick dip through the env colour) or "dive" (§13)
       "actions": [
         { "at": "vanished", "do": "disappear", "prop": "moon", "style": "pop" },
         { "at": "tides", "do": "label", "prop": "earth", "text": "TIDES SHRINK" }
@@ -69,6 +69,7 @@ Rules:
 - Shot `start` times must increase. A shot should last 1.5 s to 12 s (shorter or longer is an error; over 9 s is a warning).
 - `words.json` is `[{"text": "What", "start": 0.10, "end": 0.31}, ...]` (seconds), in spoken order.
 - Unknown fields are errors everywhere (catches typos), with a "did you mean" hint.
+- Optional: top-level `"dials"` and bindings (§12); a shot's `"continue": true` (§13).
 
 ## 4. Anchors (when things happen)
 
@@ -86,7 +87,7 @@ An action's time must fall inside its shot. Error messages for a phrase that is 
 - `at` is a slot name or `[x, y, z]`. Slots: `center` [0,0,0], `left` [-0.8,0,0], `right` [0.8,0,0], `top` [0,0.9,0], `bottom` [0,-0.9,0], `top-left`, `top-right`, `bottom-left`, `bottom-right`, `front` [0,0,0.8], `back` [0,0,-1.2], `far-left` [-1.6,0,0], `far-right` [1.6,0,0]. In environments with a ground, y = 0 is where things rest on the ground unless the prop's meta says `floats: true`.
 - Every prop is built to fit inside a unit box (largest side = 1); `size` (default 1) scales it. The engine measures the built object (skipping parts marked `noBounds`: glows, halos, air shells) and centres and scales it, so a prop file cannot get this wrong. A prop whose parts move (particles) returns its own `bounds` box instead.
 - On a ground, a prop that does not float stands with its base at `at`'s y (the engine lifts it by half its height) and gets a soft blob shadow, offset away from the key light.
-- Optional per-prop: `rotate: [xDeg, yDeg, zDeg]`, `hidden: true`. A prop whose first presence action is `appear` starts hidden automatically. Animatable params may also be given on the prop as starting values (e.g. `"progress": 0`).
+- Optional per-prop: `rotate: [xDeg, yDeg, zDeg]`, `hidden: true`, `glow` (starting glow 0..2, default 0). A prop whose first presence action is `appear` starts hidden automatically. Animatable params may also be given on the prop as starting values (e.g. `"progress": 0`).
 - **Stage-space props** (meta `stageSpace: true`, e.g. `arrow`, `beam`) are drawn between their own points: params of type `point` (a slot, `[x,y,z]` or a prop id in the shot). They have no `at`/`size`/`rotate`, are not normalised, and cannot `move`, `scale`, `spin`, `orbit`, `bob`, `shake` or `pulse` (actions marked `placedOnly`). A point that names a prop follows that prop and stops at its surface.
 
 ## 6. Camera
@@ -128,7 +129,8 @@ The value of every animated property at time `t` is computed by folding the prop
 | `focus` | re-aim camera | `props`, `framing` |
 | `sfx` | force or silence a sound | `name` (a file in assets/sfx) or `"none"` |
 
-`over` is allowed only on actions that have a duration (not `spin`, `orbit`, `bob`, `shake`, `sfx`). The exact fields, types and defaults are in the `meta` of `kit/actions/actions.js` and in the generated docs/CATALOG.md.
+`over` is allowed only on actions that have a duration (not `spin`, `orbit`, `bob`, `shake`, `sfx`).
+**Ramps between words:** `move`, `scale`, `color`, `glow` and `set` accept `"until": <anchor>` instead of `over`: the change runs from `at` until that moment (giving both is an error; `until` must come after `at`). The `until` phrase is searched from the action's own time. A ramp may run on into the continuing shots of its scene (§13); past the scene's end it is cut off with a warning. Example: `{ "at": "sits low", "do": "move", "prop": "sun", "to": "bottom", "until": "more atmosphere" }`. The exact fields, types and defaults are in the `meta` of `kit/actions/actions.js` and in the generated docs/CATALOG.md.
 
 Labels, text, counters and icons are HTML overlays positioned from 3D points each frame (crisp text, and the QA tool can read their boxes). They stay inside the safe rectangle (never in the caption zone); long text shrinks to fit. Labels avoid collisions (`chooseLabelPlacement` in `engine/overlay.js`): each label picks its side once, from the picture a moment (0.25 s) after it starts, and keeps it for its whole life. It tries the `side` asked for (auto: beside the prop, on the side with room), then the other sides, then slides along the side and moves further away; it must not cover its prop, other labels, texts, counters or icons that are on screen at the same time, and must stay inside the safe rectangle. While a `title` text is on screen the top band (7.5% to 19% of the height) is closed to labels. A long label wraps to at most two lines (half the frame width) and shrinks to as little as 70% of its size rather than overflow. Captions are also HTML.
 
@@ -173,6 +175,7 @@ Extra meta flags: `stageSpace: true` (see §5). `params.color` is the base colou
 
 ### Environment: `kit/envs/<name>.js`
 `meta` (name, summary, params, `ground: true | false | (params) => bool`) and `build(params, ctx)` (ctx: { THREE, mat, rng, scale (≈ the shot's subject radius), color }) → `{ object, lights, fog, background, update(t, cam) }`. `lights[0]` must be the key light (blob shadows fall away from it); there must be at least key, fill and rim directional lights. `background` is a 0xRRGGBB number (used by the "dip" transition). `cam` = { position, target, distance }; things meant to be infinitely far (dome, far stars) follow `cam.position`.
+Optional: `meta.dialParams: ['color']` lists params that may follow a dial (§12); the env then returns `setColors({ name: 0xRRGGBB })`, which repaints from the colour alone (pure; it may update `background`). Today: `studio.color`, `lab.color`.
 
 ### Types (`engine/types.js`)
 `number {min,max}`, `int`, `bool`, `color` (#rgb/#rrggbb or a palette name), `enum {values}`, `string {max}`, `place` (slot or [x,y,z]), `point` (slot, [x,y,z] or a prop id in the shot), `anchor`, `propId`, `list {of,min,max}`. One function `check(value, typeSpec, path, ctx)` → list of `{path, message, hint}`; `checkFields(obj, specs, path)` adds unknown-field ("did you mean") and required-field checks. Messages are written for a person: what was given, what is allowed, and the nearest valid name.
@@ -182,6 +185,7 @@ Extra meta flags: `stageSpace: true` (see §5). `params.color` is the base colou
 
 ### Validator (`tools/validate.mjs`)
 `node tools/validate.mjs shows/<slug>` checks the show against the catalogue and the words file without a browser. Prints every problem as `ERROR shots[2].actions[1].prop: "mooon" is not a prop in this shot (props here: earth, moon). Did you mean "moon"?`. Exit 0 = ok (warnings allowed), 1 = errors, 2 = bad command. `--json` prints machine-readable results for the repair loop.
+`--story-rules` / `--no-story-rules` turn the story rules (§14) on or off; the default is `STORY_RULES_DEFAULT` in `tools/lib/story-rules.mjs` (now off, see §14).
 
 ### Other tools
 - `serve.mjs`: static server on 127.0.0.1, `--port` (default: a free port, printed).
@@ -206,3 +210,48 @@ All browser tools use puppeteer-core with the installed Chrome (`CHROME_PATH` en
 ## 11. Tests
 
 `node --test "tests/*.test.mjs"` (Node 24 does not accept a bare folder: `node --test tests/` fails with "Cannot find module"). Only `tests/browser.test.mjs` opens Chrome; it skips itself when Chrome is missing or under 2 GB of memory is free.
+
+## 12. Dials and bindings
+
+A **dial** is a named show-level number that changes when words are spoken (`engine/dials.js`). A **binding** makes a value follow a dial, so several things change together, as a pure function of t.
+
+```jsonc
+"dials": { "red": { "start": 0, "keys": [ { "at": "no blue", "to": 1, "over": 1.5 }, { "at": "sunsets are red", "to": 1 }, { "at": "air itself", "to": 0, "hold": true } ] } },
+// in a shot:
+"env":   { "type": "studio", "color": { "dial": "red", "colors": "spectrum" } },
+"props": [ { "id": "earth", "type": "planet", "atmosphere": { "dial": "red", "to": [1.5, 0.3] }, "color": { "dial": "red", "colors": ["#a8d8ff", "#ff8a5a"] } } ]
+```
+
+- Dial: `start` (default 0) and `keys` (at least one). Key fields: `at` (anchor, required), `to` (number, required), `over` s or `until` anchor, `ease` `smooth` (default, smoothstep) | `linear`, `hold: true` (jump at once).
+- A key **starts** moving the dial at its `at` time, from the dial's value at that moment, and arrives at `to` when the next key starts (default), after `over`, or at `until`. The last key's default is 1 s. Before the first key the dial is at `start`. Folding as in §7: same t, same value.
+- Key anchors are searched in spoken order: the first key from 0 s, each later key from just after the previous key (so the same word keyed twice means its next occurrence). `{"shot": ...}` is not allowed. A key that resolves before the previous one (with `{time}` or a negative `offset`) is an error.
+- Binding forms (`from`, default `[0, 1]`, is the dial range; outside it the value is clamped to the ends):
+  - number: `{"dial": d, "from": [0, 1], "to": [low, high]}` (both ends inside the target's range);
+  - position `at`: `{"dial": d, "to": ["left", [0.5, 0, 0]]}`;
+  - colour: `{"dial": d, "colors": ["#hex", ...]}` (2+ stops, evenly spaced, mixed in RGB) or `"colors": "spectrum"` (`palette.wavelengthColor`: 0 blue ... 1 red, the approved chameleon rule).
+- What can follow a dial: a prop's animatable params, `color` (props with a colour param), `glow`, `size`, `at`; an environment param listed in its `meta.dialParams`. Anything else (build-time params) is an error: "only animatable params, colour, glow, size and position can follow a dial".
+- Build-time values: the prop's `build()` and the env's `build()` get the bound value at the scene start; the state then follows the dial (`propAt` reads it every t; the stage calls `env.setColors`). A bound `size` is built at its largest (`p.size` = the larger `to`; the scale channel = value / p.size), so framing holds the whole range.
+- An action that changes a bound value (`set` on a bound param, `color`, `glow`, `scale` on a bound size, `move`/`orbit` on a bound `at`) is an error: change the dial instead.
+- A dial key is not a sound event.
+
+## 13. Continuing shots and the dive transition
+
+A **scene** is a shot plus the shots after it that have `"continue": true`. Example: `{ "id": "close", "start": "Here's what's", "continue": true, "camera": { "focus": ["earth"], "framing": "close" }, "actions": [ ... ] }`.
+
+- A continuing shot keeps the scene: the same environment (giving `env` is an error), and every earlier prop with its current state. It gives its own `camera` and `transition`, may add props (new ids only; an id already in the scene is an error) and actions, and its actions may target any prop of the scene declared so far.
+- State: a prop's value at t is the fold of all actions of the scene from the scene start up to t (`shot.scene.actions`), so a tween may run on across the cut. A prop added by a continuing shot is not there before that shot starts (`prop.since`). A shot without `continue` starts afresh.
+- Camera: frames `focus` if given, else the scene's props that are visible at some moment of this shot (a non-continuing shot still frames all its props, as before).
+- Resolved shape: `shot.props` = the scene's props declared up to this shot; `shot.actions` = this shot's own actions (labels and sounds stay per shot); `shot.scene = { first, start, props, actions }`; `shot.continue`. The stage builds one THREE scene per scene (env and props shared, seeded by the first shot's id and each prop's declaring shot), and local time `t - scene start` drives env and prop `update`, so nothing jumps at a cut.
+- `"transition": "dive"` (not on the first shot): the camera of the shot before moves toward its target over its last 0.4 s (distance down to 15%), and the dive shot starts at 30% of its distance and eases back over 0.9 s (`DIVE_OUT`, `DIVE_IN` in `engine/state.js`). Use it to zoom into the subject (animal → skin → crystal).
+
+## 14. Story rules (does the picture follow the words?)
+
+`tools/lib/story-rules.mjs`, from the resolved show only (no browser). Run by `validate.mjs` and `qa.mjs` when on (`--story-rules`); problem paths start with `story.`; in QA they are codes `story-coverage`, `story-stillness`, `story-subject`.
+
+- **Sentences**: the words split after a word ending in `.`, `?` or `!`; a sentence spoken in under 1 s is joined to the next (the last to the one before). A sentence runs from its first word to the next sentence's first word.
+- **A change** = an action on a prop other than label/text/icon/count/focus/sfx and other than the idle motions spin/bob/orbit, lasting from its `at` for its `over` (shake: `for`; at least 0.3 s); or a dial that is moving (a key's ramp, or 0.3 s after a step) while a prop bound to it is visible. Camera moves, overlays and environment colour do not count.
+- **Sentence coverage** (ERROR): every sentence has a change *starting* in it, or a bound dial moving during it. The message quotes the sentence and its times and says what would satisfy it.
+- **Stillness** (ERROR over 3.5 s, else WARNING over 2.5 s): stretches of the narration (first word to last word) with no change. Each stretch over 3.5 s is one error, with its times and words.
+- **Subject persistence** (WARNING): more than 6 scenes (§13), or no prop (scene + id) visible for 30% of the video.
+- Thresholds are the `STORY` table. Calibration fixtures in `tests/fixtures/story/`: `moon-gone`, `sky-blue` (committed samples, must fail), `mechanism` (one subject, one dial, must pass).
+- **Default off** (`STORY_RULES_DEFAULT = false`): with it on, 20 pytest tests fail, because the writer's fallback show, its test shows and the two prompt examples are slideshows and `pipeline/writer.py` calls the validator with no flag. The writer should pass `--story-rules` for LLM shows (not for the fallback) when Part 5 lands; then flip the default if wanted.

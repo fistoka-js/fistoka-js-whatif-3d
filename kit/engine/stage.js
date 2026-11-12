@@ -3,6 +3,7 @@
 // Exports: buildStage(show, catalog, renderer) -> { render(t), shotIndexAt(t), propRect(id), project(xyz), dipAt(t),
 //          warmUp(), camera, shots }, buildProp(p, shot, catalog, accent, scale), measure(inst).
 // Every value that affects pixels is set from scratch each frame from the pure state (engine/state.js).
+// A scene (a shot and the continuing shots after it) is built once; its shots share the env and props.
 
 import * as THREE from 'three';
 import * as mat from './materials.js';
@@ -10,6 +11,7 @@ import { makeShotState } from './state.js';
 import { makeRng, hashString } from './rng.js';
 import { parseColor } from './palette.js';
 import { effectiveRadius } from './camera.js';
+import { bindingAt } from './dials.js';
 
 const DEG = Math.PI / 180;
 
@@ -60,8 +62,17 @@ export function buildProp(p, shot, catalog, accent, scale = 1) {
 
 export function buildStage(show, catalog, renderer) {
   const camera = new THREE.PerspectiveCamera(40, 9 / 16, 0.05, 2000);
+  // One THREE scene per scene of the show (a shot plus the "continue" shots after it, SPEC §13), built at its first shot.
+  // Each shot keeps its own state (camera); the props are shared, so a subject stays put across a camera change.
+  const runs = new Map();
   const shots = show.shots.map(shot => {
     const state = makeShotState(shot, catalog);
+    const first = shot.scene ? shot.scene.first : shot.index;
+    if (!runs.has(first)) runs.set(first, buildRun(shot, state));
+    return { shot, state, ...runs.get(first) };
+  });
+
+  function buildRun(shot, state) {
     const scale = effectiveRadius(state.baseFocus.radius, shot.camera.framing);
     const scene = new THREE.Scene();
     const envMod = catalog.envs[shot.env.type];
@@ -71,7 +82,9 @@ export function buildStage(show, catalog, renderer) {
     });
     scene.add(env.object, ...env.lights);
     scene.fog = env.fog || null;
-    const props = shot.props.map(p => buildProp(p, shot, catalog, show.accent, scale));
+    // Every prop of the scene (the last shot of the scene lists them all); each is built with its own shot's id as seed.
+    const all = show.shots.filter(s => (s.scene ? s.scene.first : s.index) === shot.index).pop().props;
+    const props = all.map(p => buildProp(p, { id: p.declaredIn || shot.id }, catalog, show.accent, scale));
     for (const pr of props) {
       scene.add(pr.wrapper);
       if (shot.env.ground && !pr.p.stageSpace) {
@@ -85,8 +98,8 @@ export function buildStage(show, catalog, renderer) {
     // Ground direction of blob shadows: away from the key light (the env's first light), kept short.
     const key = env.lights[0].position;
     const shadowDir = [-key.x / Math.max(key.y, 1) * 0.5, -key.z / Math.max(key.y, 1) * 0.5];
-    return { shot, state, scene, env, props, shadowDir, byId: new Map(props.map(x => [x.p.id, x])) };
-  });
+    return { scene, env, props, shadowDir, byId: new Map(props.map(x => [x.p.id, x])), runStart: shot.start, frameRadius: state.baseFocus.radius };
+  }
 
   const shotIndexAt = t => {
     let i = 0;
@@ -98,7 +111,7 @@ export function buildStage(show, catalog, renderer) {
 
   // Sets every prop of shot s for time t (all values from the pure state).
   function poseProps(s, t) {
-    const tl = t - s.shot.start;
+    const tl = t - s.runStart; // time since the scene began (continuous across continuing shots)
     for (const pr of s.props) {
       const st = s.state.propAt(pr.p.id, t);
       const w = pr.wrapper;
@@ -121,7 +134,7 @@ export function buildStage(show, catalog, renderer) {
         pr.shadow.visible = st.visible;
         // The shadow falls away from the key light: offset by the prop's centre height along the light's ground direction.
         const lift = height + 2 * pr.halfHeight * k;
-        pr.shadow.position.set(w.position.x + s.shadowDir[0] * lift, 0.004 * s.state.baseFocus.radius, w.position.z + s.shadowDir[1] * lift);
+        pr.shadow.position.set(w.position.x + s.shadowDir[0] * lift, 0.004 * s.frameRadius, w.position.z + s.shadowDir[1] * lift);
         pr.shadow.scale.setScalar(pr.footprint * k * (1.5 + height * 0.4));
         pr.shadow.material.opacity = 0.65 * st.opacity / (1 + height * 1.5 / Math.max(k, 0.05));
       }
@@ -143,7 +156,13 @@ export function buildStage(show, catalog, renderer) {
     camera.setViewOffset(size.x, size.y, 0, pose.viewOffsetY * size.y, size.x, size.y);
     camera.updateProjectionMatrix();
     camera.updateMatrixWorld(true);
-    s.env.update(t - s.shot.start, { position: pose.position, target: pose.target, distance: pose.distance });
+    // Environment colours that follow a dial (SPEC §12): the env repaints itself only when the colour changes.
+    if (s.env.setColors && Object.keys(s.shot.env.bind || {}).length) {
+      const cols = {};
+      for (const [k, b] of Object.entries(s.shot.env.bind)) cols[k] = bindingAt(b, show.dials, t);
+      s.env.setColors(cols);
+    }
+    s.env.update(t - s.runStart, { position: pose.position, target: pose.target, distance: pose.distance });
     poseProps(s, t);
     s.scene.updateMatrixWorld(true);
     renderer.render(s.scene, camera);

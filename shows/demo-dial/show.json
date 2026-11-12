@@ -1,0 +1,69 @@
+{
+  "format": 1,
+  "title": "Demo: one dial drives the sky (dials, bindings, continuing shots, dive, until)",
+  "voice": { "audio": "voice.mp3", "words": "words.json" },
+  "dials": {
+    "red": {
+      "start": 0,
+      "keys": [
+        { "at": "no blue", "to": 1, "over": 1.5 },
+        { "at": "actually happening", "to": 0, "over": 1.5 },
+        { "at": "Red light", "to": 0.5, "over": 2 },
+        { "at": "sunsets are red", "to": 1, "over": 2.5 },
+        { "at": "air itself", "to": 0, "over": 1.5 }
+      ]
+    }
+  },
+  "shots": [
+    {
+      "id": "sky",
+      "env": { "type": "studio", "floor": false, "color": { "dial": "red", "colors": "spectrum" } },
+      "props": [
+        { "id": "earth", "type": "planet", "look": "earth", "size": 1.2,
+          "atmosphere": { "dial": "red", "to": [1.5, 0.3] },
+          "color": { "dial": "red", "colors": ["#a8d8ff", "#ff8a5a"] } },
+        { "id": "sun", "type": "sun", "at": [-0.9, 0.8, -0.3], "size": 0.5,
+          "brightness": { "dial": "red", "to": [1.4, 0.6] },
+          "color": { "dial": "red", "colors": ["#fff4c8", "#ff5a2a"] } }
+      ],
+      "camera": { "move": "drift", "framing": "medium" },
+      "actions": [
+        { "at": "reflects the ocean", "do": "pulse", "prop": "earth" }
+      ]
+    },
+    {
+      "id": "close",
+      "start": "Here's what's",
+      "continue": true,
+      "camera": { "focus": ["earth"], "framing": "close", "angle": "three-quarter", "move": "orbit" },
+      "actions": [
+        { "at": "Sunlight contains", "do": "move", "prop": "sun", "to": [0.9, 0.8, -0.3], "until": "rainbow" }
+      ]
+    },
+    {
+      "id": "into-air",
+      "start": "but not equally",
+      "continue": true,
+      "transition": "dive",
+      "camera": { "focus": ["earth"], "framing": "close", "angle": "front", "move": "push_in" },
+      "actions": [
+        { "at": "pinball", "do": "pulse", "prop": "earth" }
+      ]
+    },
+    {
+      "id": "sunset",
+      "start": "Red light is",
+      "continue": true,
+      "camera": { "framing": "wide", "angle": "front", "move": "drift" },
+      "actions": [
+        { "at": "sits low", "do": "move", "prop": "sun", "to": [0.9, -0.5, -0.3], "until": "more atmosphere" }
+      ]
+    },
+    {
+      "id": "back",
+      "start": "most of the blue",
+      "continue": true,
+      "camera": { "framing": "medium", "angle": "high", "move": "rise" }
+    }
+  ]
+}

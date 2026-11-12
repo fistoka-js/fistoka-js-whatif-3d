@@ -10,6 +10,7 @@ export const meta = {
   name: 'lab',
   summary: 'A dark neutral lab / showroom with a faint grid floor and a spotlight pool. For machines, objects and charts.',
   ground: true,
+  dialParams: ['color'],          // the accent colour can follow a dial (setColors below)
   params: { color: { type: 'color', default: 'cyan', doc: 'accent colour of the grid, wall glow and rim light' } },
 };
 
@@ -58,8 +59,20 @@ export function build(params, ctx) {
     sky: 0x9aa6ba, ground: 0x1a2030, hemi: 1.0,
   });
   const fog = new THREE.Fog(0x0b0e15, 10 * s, 60 * s);
+  let painted = accent.getHex();
   return {
     object: group, lights, fog, background: 0x0b0e15,
+    // The accent colour follows a dial: grid, wall glow, light strips and the fill and rim lights (the dust keeps its colour).
+    setColors(cols) {
+      if (cols.color === undefined || cols.color === painted) return;
+      painted = cols.color;
+      accent.setHex(painted);
+      floor.material.uniforms.uAccent.value.copy(accent);
+      wall.material.color.setHex(painted);
+      stripMat.color.setHex(dim(0.9));
+      lights[1].color.setHex(dim(0.8));
+      lights[2].color.copy(accent).lerp(new THREE.Color(0xffffff), 0.3);
+    },
     update(t, cam) {
       far.position.fromArray(cam.position);
       fog.near = cam.distance * 2.2; fog.far = cam.distance * 9;

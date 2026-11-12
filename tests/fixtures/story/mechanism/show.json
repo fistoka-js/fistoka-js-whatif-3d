@@ -1,0 +1,34 @@
+{
+  "format": 1,
+  "title": "Mechanism fixture: one subject, one dial moving through every sentence",
+  "voice": { "audio": "voice.mp3", "words": "words.json" },
+  "dials": {
+    "heat": {
+      "start": 0,
+      "keys": [
+        { "at": "Everyone says", "to": 0.3 },
+        { "at": "completely wrong", "to": 0.6 },
+        { "at": "What if sunlight", "to": 0.2 },
+        { "at": "totally alien", "to": 0.9 },
+        { "at": "actually happening", "to": 0.4 },
+        { "at": "every color", "to": 1 }
+      ]
+    }
+  },
+  "shots": [
+    {
+      "id": "planet",
+      "env": { "type": "studio", "color": { "dial": "heat", "colors": ["#203a60", "#7a2a20"] } },
+      "props": [
+        { "id": "earth", "type": "planet", "look": "earth", "atmosphere": { "dial": "heat", "to": [0, 1.5] }, "color": { "dial": "heat", "colors": "spectrum" } }
+      ],
+      "camera": { "move": "orbit", "framing": "medium" }
+    },
+    {
+      "id": "closer",
+      "start": "Here's what's",
+      "continue": true,
+      "camera": { "move": "push_in", "framing": "close" }
+    }
+  ]
+}

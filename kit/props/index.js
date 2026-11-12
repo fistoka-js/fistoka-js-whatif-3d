@@ -63,5 +63,9 @@ import * as phone from './phone.js';
 import * as gear from './gear.js';
 import * as bomb_blast from './bomb_blast.js';
 import * as shield_dome from './shield_dome.js';
+import * as lattice from './lattice.js';
+import * as layer_stack from './layer_stack.js';
+import * as light_wave from './light_wave.js';
+import * as tuner from './tuner.js';
 
-export const PROPS = { ball, box, planet, sun, particles, arrow, beam, mountain, volcano, cloud, black_hole, asteroid, comet, rocket, satellite, galaxy, atom, molecule, wave, magnet, lightning, ring, tree, city, house, rock, island, iceberg, fire, water_drop, crystal, person, terrain, crowd, chameleon, brain, heart, eye, virus, cell, dna, fish, bird, skeleton_bone, dinosaur, car, plane, ship, submarine, lightbulb, battery, thermometer, clock, bars, gauge, coin_stack, scale_balance, phone, gear, bomb_blast, shield_dome };
+export const PROPS = { ball, box, planet, sun, particles, arrow, beam, mountain, volcano, cloud, black_hole, asteroid, comet, rocket, satellite, galaxy, atom, molecule, wave, magnet, lightning, ring, tree, city, house, rock, island, iceberg, fire, water_drop, crystal, person, terrain, crowd, chameleon, brain, heart, eye, virus, cell, dna, fish, bird, skeleton_bone, dinosaur, car, plane, ship, submarine, lightbulb, battery, thermometer, clock, bars, gauge, coin_stack, scale_balance, phone, gear, bomb_blast, shield_dome, lattice, layer_stack, light_wave, tuner };

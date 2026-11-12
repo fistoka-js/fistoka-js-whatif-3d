@@ -14,6 +14,7 @@ Fields every prop has:
 | `size` | number 0.05..6; default 1 | size (1 = fits a unit box) |
 | `rotate` | list of number -360..360; default [0,0,0] | turn [x, y, z] in degrees |
 | `hidden` | true or false; default false | start hidden |
+| `glow` | number 0..2; default 0 | starting glow (0 = none) |
 
 Props with stageSpace: true are drawn between their own points (from/to); they have no at, size or rotate, and cannot move, scale, spin, orbit, bob, shake or pulse.
 
@@ -848,6 +849,76 @@ Animatable with `set` (also usable as a starting value):
 
 - `strength` 0..1, default 1: how strong the shield is (0 = invisible, 1 = bright)
 
+### lattice
+
+3D grid of glowing balls joined by faint lines. Animate spacing, shake, tilt. Crystals, solids.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `count` | whole number 3..5; default 4 | balls per side |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#35c6e8" | ball colour |
+
+Animatable with `set` (also usable as a starting value):
+
+- `spacing` 0..1, default 0.1: gap: 0 tight block, 1 spread wide
+- `shake` 0..1, default 0: vibration (0 = still)
+- `tilt` 0..1, default 0: view: 0 three-quarter, 1 square-on
+
+### layer_stack
+
+Stacked see-through slabs with name plates; they slide in, granules spread, layers shade and glow. Skin, rock layers.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `names` | list of text (up to 24 characters); default ["EPIDERMIS","PIGMENT CELLS","NANOCRYSTAL LAYER","DARK PIGMENT"] | layer names, top to bottom (plate text) |
+| `colors` | list of colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default ["#8ee59a","#e0a030","#3fb5d6","#3a2a22"] | layer colours, top to bottom |
+| `pigment_layer` | whole number 0..4; default 1 | layer (0 = top) with the granules |
+| `crystal_layer` | whole number -1..4; default 2 | layer with glowing crystal blocks (-1 = none) |
+
+Animatable with `set` (also usable as a starting value):
+
+- `reveal` 0..1, default 1: slabs slide in one by one (0 = none, 1 = all)
+- `granules` 0..1, default 0.3: granules: 0 = together, 1 = spread
+- `shade` 0..1, default 0: pigment and top layers: 0 = light, 1 = dark
+- `focus` -1..4, default -1: layer (0 = top) that brightens while others dim; -1 = none
+
+### light_wave
+
+A wavy beaded wave from one point to another. Animate progress, wavelength, amplitude. Light, signals.
+
+Floats: yes. Stage-space: drawn between its points.
+
+| field | type | what |
+|---|---|---|
+| `from` | point: a slot, [x, y, z], or the id of a prop in this shot; default "left" | start (slot, [x,y,z] or prop id) |
+| `to` | point: a slot, [x, y, z], or the id of a prop in this shot; default "right" | end (slot, [x,y,z] or prop id) |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "white" | bead colour |
+
+Animatable with `set` (also usable as a starting value):
+
+- `progress` 0..1, default 1: how far the wave has grown (0..1)
+- `wavelength` 0..1, default 0.32: crest spacing: 0 short, 1 long
+- `amplitude` 0..1, default 0.5: wiggle height (0 = straight)
+
+### tuner
+
+Antenna on a tuning box: colour dial, knob, glowing tip, pulsing rings. Radio, signals, tuning.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent) | tip and ring colour; omit to follow the dial value |
+| `rings` | whole number 2..10; default 7 | broadcast rings at once |
+
+Animatable with `set` (also usable as a starting value):
+
+- `value` 0..1, default 0.5: dial: marker, knob and tip/ring colour; 0 blue end, 1 red end
+
 ## Environments
 
 ### space
@@ -868,6 +939,8 @@ A clean coloured studio backdrop with a soft floor. The default look for explain
 |---|---|---|
 | `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "teal" | backdrop colour |
 | `floor` | true or false; default true | show a floor (props stand on it); false = props float |
+
+Can follow a dial: `color`
 
 ### sky
 
@@ -903,6 +976,8 @@ A dark neutral lab / showroom with a faint grid floor and a spotlight pool. For 
 | field | type | what |
 |---|---|---|
 | `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "cyan" | accent colour of the grid, wall glow and rim light |
+
+Can follow a dial: `color`
 
 ### planet_surface
 
@@ -953,6 +1028,7 @@ Move a prop to a place, or toward another prop. (prop: required; default over 1.
 | `toward` | the id of a prop in this shot | another prop to move toward |
 | `amount` | number 0..1; default 0.75 | with "toward": how much of the way to go |
 | `ease` | one of: in_out \| out \| in \| linear \| back \| bounce; default "in_out" | easing curve |
+| `until` | anchor: "spoken phrase" \| {phrase, edge, offset} \| {time} \| {shot} | arrive when this is spoken (instead of over) |
 
 ### scale
 
@@ -962,6 +1038,7 @@ Change a prop's size (to = multiple of its starting size). (prop: required; defa
 |---|---|---|
 | `to` | number 0.05..10; required | size multiplier |
 | `ease` | one of: in_out \| out \| in \| linear \| back \| bounce; default "in_out" | easing curve |
+| `until` | anchor: "spoken phrase" \| {phrase, edge, offset} \| {time} \| {shot} | arrive when this is spoken (instead of over) |
 
 ### color
 
@@ -970,6 +1047,7 @@ Tint a prop's main colour. (prop: required; default over 0.8 s)
 | field | type | what |
 |---|---|---|
 | `to` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); required | new colour |
+| `until` | anchor: "spoken phrase" \| {phrase, edge, offset} \| {time} \| {shot} | arrive when this is spoken (instead of over) |
 
 ### spin
 
@@ -1024,6 +1102,7 @@ Change how much a prop glows (0 = none). (prop: required; default over 0.6 s)
 | field | type | what |
 |---|---|---|
 | `to` | number 0..2; required | glow amount |
+| `until` | anchor: "spoken phrase" \| {phrase, edge, offset} \| {time} \| {shot} | arrive when this is spoken (instead of over) |
 
 ### set
 
@@ -1034,6 +1113,7 @@ Animate one of the prop's own numbers (see the prop's "animatable" list). (prop:
 | `param` | text (up to 40 characters); required | the animatable param name |
 | `to` | number -inf..inf; required | its new value |
 | `ease` | one of: in_out \| out \| in \| linear \| back \| bounce; default "in_out" | easing curve |
+| `until` | anchor: "spoken phrase" \| {phrase, edge, offset} \| {time} \| {shot} | arrive when this is spoken (instead of over) |
 
 ### label
 
@@ -1125,6 +1205,25 @@ Force a sound here, or "none" to silence the automatic sound at this moment. (pr
 - `pan`: slides sideways past the subject
 - `still`: almost still (a tiny breathing motion)
 
+## Dials, bindings and continuing shots
+
+Top-level "dials": named numbers that change when words are spoken, e.g. {"spacing": {"start": 0, "keys": [{"at": "sit close", "to": 0.2}, {"at": "spread apart", "to": 1}]}}. A key starts moving the dial at its phrase and arrives when the next key starts (or after "over" s, or at "until"; the last key takes 1 s). Before the first key the dial is at "start". Keys are searched in spoken order.
+
+Fields of a dial key:
+
+| field | type | what |
+|---|---|---|
+| `at` | anchor: "spoken phrase" \| {phrase, edge, offset} \| {time} \| {shot}; required | when the dial starts moving to this key (searched from the previous key) |
+| `to` | number -1000..1000; required | the value it moves to |
+| `over` | number 0..20 | seconds to get there (default: until the next key starts; the last key 1 s) |
+| `until` | anchor: "spoken phrase" \| {phrase, edge, offset} \| {time} \| {shot} | arrive when this is spoken (instead of over) |
+| `ease` | one of: smooth \| linear; default "smooth" | smooth = ease in and out; linear = steady |
+| `hold` | true or false; default false | true = jump to the value at "at" (a step, no ramp) |
+
+Instead of a plain value, a prop's animatable param, "color", "glow", "size" or "at" (and an environment param listed under dialParams) may follow a dial. Numbers: {"dial": "spacing", "from": [0, 1], "to": [0.4, 1.6]}; "at": {"dial": "d", "to": ["left", "right"]}; colours: {"dial": "spacing", "colors": ["#35c6e8", "#ffe14d", "#ff3b3b"]} (evenly spaced) or "colors": "spectrum" (blue to red). "from" (default [0, 1]) is the dial range mapped onto "to"/"colors". Bind one dial to several things so they change together. A bound value cannot also be changed by an action.
+
+A shot with "continue": true keeps the scene of the shot before it: the same environment (give no "env") and the same props in their current state. It gives a new "camera", may add props and actions, and its actions may use the earlier props. Its camera frames the props visible in it unless "focus" is given. Use it to keep one subject on screen while the camera changes.
+
 ## Places, colours, anchors
 
 Slots: `center` [0, 0, 0], `left` [-0.8, 0, 0], `right` [0.8, 0, 0], `top` [0, 0.9, 0], `bottom` [0, -0.9, 0], `top-left` [-0.8, 0.9, 0], `top-right` [0.8, 0.9, 0], `bottom-left` [-0.8, -0.9, 0], `bottom-right` [0.8, -0.9, 0], `front` [0, 0, 0.8], `back` [0, 0, -1.2], `far-left` [-1.6, 0, 0], `far-right` [1.6, 0, 0]
@@ -1133,4 +1232,4 @@ Colour names: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink
 
 Anchors: anchor: "spoken phrase" | {phrase, edge, offset} | {time} | {shot}
 
-Transitions: `cut` hard cut (default); `dip` quick dip through the new shot's environment colour
+Transitions: `cut` hard cut (default); `dip` quick dip through the new shot's environment colour; `dive` the camera pushes into the subject at the end of the shot before; this shot starts close and pulls back

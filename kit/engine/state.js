@@ -12,6 +12,7 @@ import { resolvePlace } from './places.js';
 import { parseColor } from './palette.js';
 import { hashString } from './rng.js';
 import { lerp3, ease, progress } from './tween.js';
+import { bindingAt } from './dials.js';
 
 // Value of one channel at t. segs: sorted list of { a, entry }. base: value before any action.
 function channelAt(segs, base, t, ctx) {
@@ -27,19 +28,29 @@ function channelAt(segs, base, t, ctx) {
 // How far (as a share of the subject's size, per side) free beam/arrow end points may pull the frame outward.
 const STAGE_REACH = 0.12;
 const MIN_FRAME_RADIUS = 0.3;
+// The dive transition: seconds of push-in at the end of the shot before, and of pull-back at the start of the dive shot.
+export const DIVE_OUT = 0.4, DIVE_IN = 0.9;
 
 export function makeShotState(shot, catalog) {
   const actions = catalog.actions;
-  const props = new Map(shot.props.map(p => [p.id, p]));
+  // A continuing shot sees its whole scene: the props and actions of the earlier shots of the run (SPEC §13).
+  const scene = shot.scene || { props: shot.props, actions: shot.actions };
+  const dials = shot.dials || {};
+  const props = new Map(scene.props.map(p => [p.id, p]));
   const channels = new Map();   // propId -> { channelName: [segments] }
   const effects = new Map();    // propId -> [segments]
   const focusSegs = [], cameraShakes = [];
-  for (const p of shot.props) { channels.set(p.id, {}); effects.set(p.id, []); }
+  for (const p of scene.props) { channels.set(p.id, {}); effects.set(p.id, []); }
+  // The camera's own actions (focus, camera shake) belong to this shot only.
   for (const a of shot.actions) {
     const entry = actions[a.do];
     if (entry.kind === 'camera') focusSegs.push(a);
     else if (entry.kind === 'effect' && !a.prop) cameraShakes.push({ a, entry });
-    else if (entry.kind === 'effect') effects.get(a.prop).push({ a, entry });
+  }
+  for (const a of scene.actions) {
+    const entry = actions[a.do];
+    if (entry.kind === 'camera' || (entry.kind === 'effect' && !a.prop)) continue;
+    if (entry.kind === 'effect') effects.get(a.prop).push({ a, entry });
     else if (entry.kind === 'channel') {
       const name = entry.channel === 'param' ? 'param:' + a.param : entry.channel;
       const ch = channels.get(a.prop);
@@ -55,10 +66,12 @@ export function makeShotState(shot, catalog) {
     return {
       presence: { shown: !p.startsHidden, opacity: 1, scaleMul: 1, fly: null },
       position: p.at, scale: 1, rotation: [0, 0, 0],
-      color: parseColor(p.params.color) ?? 0xffffff, glow: 0, params,
+      color: parseColor(p.params.color) ?? 0xffffff, glow: p.glow || 0, params,
     };
   }
-  const bases = new Map(shot.props.map(p => [p.id, baseOf(p)]));
+  const bases = new Map(scene.props.map(p => [p.id, baseOf(p)]));
+  // A value that follows a dial (SPEC §12); actions cannot change bound values (show.js refuses them).
+  const bound = (p, field, t) => (p.bind && p.bind[field] ? bindingAt(p.bind[field], dials, t) : null);
   const grounded = p => !!(shot.env && shot.env.ground) && !p.floats && !p.stageSpace;
 
   let depth = 0; // guards against two props orbiting each other forever
@@ -73,13 +86,16 @@ export function makeShotState(shot, catalog) {
     const p = props.get(id), base = bases.get(id), ch = channels.get(id);
     const ctx = { positionOf, base, seed: hashString(shot.id + ':' + id) % 1000 };
     const at = (name, b) => (ch[name] ? channelAt(ch[name], b, t, ctx) : b);
-    const presence = at('presence', base.presence);
-    let position = at('position', base.position);
+    // A prop added by a continuing shot is not there before that shot starts.
+    const presence = p.since !== undefined && t < p.since - 1e-6 ? { shown: false, opacity: 0, scaleMul: 1, fly: null } : at('presence', base.presence);
+    let position = bound(p, 'at', t) || at('position', base.position);
     if (presence.fly && !steady) {
       const from = presence.fly.relative ? [position[0] + presence.fly.from[0], position[1] + presence.fly.from[1], position[2] + presence.fly.from[2]] : presence.fly.from;
       position = lerp3(from, position, presence.fly.k);
     }
-    let scale = at('scale', base.scale) * (steady ? 1 : presence.scaleMul);
+    // A bound size: p.size is the largest it gets, so the scale is the dial's size over that.
+    const scaleBase = p.bind && p.bind.size ? bindingAt(p.bind.size, dials, t) / p.size : at('scale', base.scale);
+    let scale = scaleBase * (steady ? 1 : presence.scaleMul);
     const offset = [0, 0, 0];
     for (const { a, entry } of effects.get(id)) {
       if (a.t0 > t || steady) continue;
@@ -90,13 +106,13 @@ export function makeShotState(shot, catalog) {
     const lift = grounded(p) ? 0.5 * p.size * scale : 0;
     position = [position[0] + offset[0], position[1] + offset[1] + lift, position[2] + offset[2]];
     const params = {};
-    for (const name of Object.keys(base.params)) params[name] = at('param:' + name, base.params[name]);
+    for (const name of Object.keys(base.params)) params[name] = bound(p, name, t) ?? at('param:' + name, base.params[name]);
     const rot = at('rotation', base.rotation);
     return {
       visible: presence.shown && presence.opacity > 0.001,
       opacity: presence.opacity, position, scale,
       rotation: [p.rotate[0] + rot[0], p.rotate[1] + rot[1], p.rotate[2] + rot[2]],
-      color: at('color', base.color), glow: at('glow', base.glow), params,
+      color: bound(p, 'color', t) ?? at('color', base.color), glow: bound(p, 'glow', t) ?? at('glow', base.glow), params,
       points: pointsOf(p, t),
     };
   }
@@ -139,7 +155,7 @@ export function makeShotState(shot, catalog) {
     if (frameCache.has(key)) return frameCache.get(key);
     const times = [];
     for (let i = 0; i <= 16; i++) times.push(t0 + ((t1 - t0) * i) / 16);
-    for (const a of shot.actions) if (a.t0 >= t0 && a.t0 <= t1) times.push(a.t0, Math.min(t1, a.t0 + a.over));
+    for (const a of scene.actions) if (a.t0 >= t0 && a.t0 <= t1) times.push(a.t0, Math.min(t1, a.t0 + a.over));
     // Extents along the camera's screen axes (right, up) and its depth axis (dir), for the shot's camera angle.
     // Solid props set the frame first. Free-standing beams and arrows (when the shot has no `focus` list) only count up to STAGE_REACH of the subject's
     // size beyond it (min one unit), so a long ray never shrinks the real subject to a speck; its far end may leave the frame.
@@ -171,7 +187,12 @@ export function makeShotState(shot, catalog) {
     return out;
   }
 
-  const allIds = shot.props.map(p => p.id);
+  // Default framing: all props; in a continuing shot, the scene's props that are visible at some moment of this shot.
+  const allIds = shot.continue ? visibleIds() : scene.props.map(p => p.id);
+  function visibleIds() {
+    const ids = scene.props.filter(p => { for (let i = 0; i <= 16; i++) if (propAt(p.id, shot.start + ((shot.end - shot.start) * i) / 16).visible) return true; return false; }).map(p => p.id);
+    return ids.length ? ids : scene.props.map(p => p.id);
+  }
   // Without a `focus` list, free beams and arrows are clamped (see frameOf); listing them in `focus` frames them in full.
   const baseFocus = frameOf(shot.camera.focus || allIds, shot.start, shot.end, !shot.camera.focus);
   const camSeed = hashString(shot.id) % 1000;
@@ -194,6 +215,15 @@ export function makeShotState(shot, catalog) {
       for (let k = 0; k < 3; k++) shake[k] += e.offset[k] * 1.5;
     }
     const pose = cameraPoseAt({ ...shot.camera, framing: 'medium' }, focus, shot, t, shake);
+    // dive (SPEC §13): the camera pushes into the subject over the last DIVE_OUT s of the shot before a dive shot,
+    // and a dive shot starts close and pulls back over its first DIVE_IN s. A distance multiplier toward the target.
+    let k = 1;
+    if (shot.diveOut && t > shot.end - DIVE_OUT) k *= 1 - 0.85 * ease('in', progress(t, shot.end - DIVE_OUT, DIVE_OUT));
+    if (shot.transition === 'dive' && t < shot.start + DIVE_IN) k *= 0.3 + 0.7 * ease('out', progress(t, shot.start, DIVE_IN));
+    if (k !== 1) {
+      for (let i = 0; i < 3; i++) pose.position[i] = pose.target[i] + (pose.position[i] - pose.target[i]) * k;
+      pose.distance *= k;
+    }
     // On a ground, never go below it: lift the camera to just above the surface (it keeps looking at the subject).
     const floor = 0.3 + 0.03 * pose.distance;
     if (shot.env && shot.env.ground && pose.position[1] < floor) pose.position[1] = floor;

@@ -25,6 +25,8 @@ export const SFX_NAMES = ['whoosh', 'pop', 'buzz', 'chime', 'rumble', 'tick', 's
 export const ICON_NAMES = ['x', 'check', 'question', 'warning', 'heart', 'bolt'];
 const EASE_FIELD = { type: 'enum', values: ['in_out', 'out', 'in', 'linear', 'back', 'bounce'], default: 'in_out', doc: 'easing curve' };
 const UNTIL_FIELD = { type: 'anchor', default: null, doc: 'when it goes away (default: end of the shot)' };
+// On a ramp (move, scale, color, glow, set): arrive when this is spoken, instead of after "over" seconds.
+const RAMP_UNTIL = { type: 'anchor', default: null, doc: 'arrive when this is spoken (instead of over)' };
 
 // Fields every action may have. "prop" and "over" are only allowed when the entry says so (see show.js).
 export const COMMON_FIELDS = {
@@ -80,6 +82,7 @@ export const ACTIONS = {
       toward: { type: 'propId', default: null, doc: 'another prop to move toward' },
       amount: { type: 'number', min: 0, max: 1, default: 0.75, doc: 'with "toward": how much of the way to go' },
       ease: EASE_FIELD,
+      until: RAMP_UNTIL,
     },
     validate(a) {
       if ((a.to === null) === (a.toward === null)) return [{ field: 'to', message: 'give exactly one of "to" (a place) or "toward" (a prop id).' }];
@@ -94,13 +97,13 @@ export const ACTIONS = {
   scale: {
     doc: 'Change a prop\'s size (to = multiple of its starting size).',
     prop: 'required', over: 0.8, kind: 'channel', channel: 'scale', placedOnly: true,
-    fields: { to: { type: 'number', min: 0.05, max: 10, required: true, doc: 'size multiplier' }, ease: EASE_FIELD },
+    fields: { to: { type: 'number', min: 0.05, max: 10, required: true, doc: 'size multiplier' }, ease: EASE_FIELD, until: RAMP_UNTIL },
     value: (a, t, from) => lerp(from, a.to, ease(a.ease, k(a, t))),
   },
   color: {
     doc: 'Tint a prop\'s main colour.',
     prop: 'required', over: 0.8, kind: 'channel', channel: 'color',
-    fields: { to: { type: 'color', required: true, doc: 'new colour' } },
+    fields: { to: { type: 'color', required: true, doc: 'new colour' }, until: RAMP_UNTIL },
     value: (a, t, from) => mixColor(from, parseColor(a.to), ease('in_out', k(a, t))),
   },
   spin: {
@@ -173,7 +176,7 @@ export const ACTIONS = {
   glow: {
     doc: 'Change how much a prop glows (0 = none).',
     prop: 'required', over: 0.6, kind: 'channel', channel: 'glow',
-    fields: { to: { type: 'number', min: 0, max: 2, required: true, doc: 'glow amount' } },
+    fields: { to: { type: 'number', min: 0, max: 2, required: true, doc: 'glow amount' }, until: RAMP_UNTIL },
     value: (a, t, from) => lerp(from, a.to, ease('in_out', k(a, t))),
   },
   set: {
@@ -183,6 +186,7 @@ export const ACTIONS = {
       param: { type: 'string', max: 40, required: true, doc: 'the animatable param name' },
       to: { type: 'number', required: true, doc: 'its new value' },
       ease: EASE_FIELD,
+      until: RAMP_UNTIL,
     },
     value: (a, t, from) => lerp(from, a.to, ease(a.ease, k(a, t))),
   },
