@@ -133,6 +133,721 @@ Animatable with `set` (also usable as a starting value):
 - `progress` 0..1, default 1: how far the beam has travelled (0 = not yet, 1 = all the way)
 - `brightness` 0..2, default 1: how bright
 
+### mountain
+
+A chunky low-poly mountain with a snow cap; styles rock, snow, desert; 1 to 3 peaks. Good for places.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `style` | one of: rock \| snow \| desert; default "rock" | rock = grey with snow cap, snow = mostly white, desert = orange sandstone |
+| `peaks` | whole number 1..3; default 1 | how many peaks (1 = a single mountain) |
+| `seed` | whole number 0..999; default 1 | which variant of the shape |
+
+### volcano
+
+A volcano cone with a glowing crater. Animate "eruption" for a lava fountain, smoke and lava streaks.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#9a6448" | rock colour of the cone |
+| `seed` | whole number 0..999; default 1 | which variant of the shape |
+
+Animatable with `set` (also usable as a starting value):
+
+- `eruption` 0..1, default 0.3: 0 = sleeping (glowing crater), 1 = full eruption
+
+### cloud
+
+A puffy low-poly cloud, fair or storm. Animate "rain" 0..1 to make it rain. For weather and water cycle.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `style` | one of: fair \| storm; default "fair" | white fair-weather cloud or dark storm cloud |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent) | override the cloud colour |
+| `seed` | whole number 0..999; default 1 | which variant of the puffs |
+
+Animatable with `set` (also usable as a starting value):
+
+- `rain` 0..1, default 0: how hard it rains (0 = dry)
+
+### black_hole
+
+A black hole: dark sphere, glowing swirling accretion disc, light ring. Animate "disc" to feed it.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "orange" | colour of the disc glow (inner edge stays near white) |
+| `tilt` | number 0..90; default 72 | how much the disc leans back (0 = face-on, 90 = edge-on) |
+
+Animatable with `set` (also usable as a starting value):
+
+- `disc` 0..1.5, default 1: disc brightness and width (0 = bare black sphere)
+
+### asteroid
+
+A lumpy cratered rock that tumbles; "count" up to 40 makes an asteroid field or cluster.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `count` | whole number 1..40; default 1 | how many rocks (1 = a single big asteroid) |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#8d7f72" | rock colour |
+| `seed` | whole number 0..999; default 3 | which lumpy shape / arrangement |
+
+### comet
+
+An icy comet head with a long glowing tail. Param "angle" sets the tail direction; animate "tail" length.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `angle` | number -180..180; default 160 | tail direction on screen in degrees (0 = right, 90 = up, 180 = left) |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#7fd8ff" | tail glow colour |
+| `seed` | whole number 0..999; default 5 | which lumpy head |
+
+Animatable with `set` (also usable as a starting value):
+
+- `tail` 0..1.5, default 1: tail length (0 = none, 1 = normal)
+
+### rocket
+
+A chunky cartoon rocket with fins and a window. Animate "thrust" 0..1 to light the flame.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "red" | colour of the nose and fins |
+| `body` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#f2f5fa" | colour of the body |
+
+Animatable with `set` (also usable as a starting value):
+
+- `thrust` 0..1, default 0.6: engine flame (0 = off, 1 = full blast)
+
+### satellite
+
+A satellite: gold body, two solar panels, a dish and antenna. Turns slowly.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#ffc44d" | body colour |
+| `panels` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#2f6bd8" | solar panel colour |
+| `turn` | number -1..1; default 0.06 | turns per second |
+
+### galaxy
+
+A spiral galaxy of glowing points with a bright core. Params: arms, colours, seed. Turns slowly.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `arms` | whole number 1..6; default 3 | number of spiral arms |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#6aa8ff" | colour of the outer arms |
+| `core` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#ffd9a0" | colour of the bright core |
+| `seed` | whole number 0..999; default 2 | which random arrangement |
+| `turn` | number -1..1; default 0.03 | turns per second |
+
+### atom
+
+An atom: clustered nucleus and electrons orbiting on tilted rings. Param "electrons" 1..8.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `electrons` | whole number 1..8; default 3 | how many electrons (the nucleus grows to match) |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "cyan" | electron and ring colour |
+| `seed` | whole number 0..999; default 4 | how the nucleus balls are packed |
+
+### molecule
+
+A ball-and-stick molecule: h2o, co2, o2, n2, ch4, o3, or a nacl salt crystal chunk. Gentle wobble.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `formula` | one of: h2o \| co2 \| o2 \| n2 \| ch4 \| nacl \| o3; default "h2o" | which molecule |
+
+### wave
+
+A thick glowing sine wave that travels. Animate "wavelength" and "amplitude" (light, sound, radio).
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "cyan" | wave colour |
+| `speed` | number -3..3; default 0.6 | how fast it travels (cycles per second; negative = leftward) |
+| `thickness` | number 0.02..0.12; default 0.05 | tube radius |
+
+Animatable with `set` (also usable as a starting value):
+
+- `wavelength` 0.1..1.5, default 0.4: length of one wave as a fraction of the prop width (small = tight, many humps)
+- `amplitude` 0..0.5, default 0.2: height of the humps
+
+### magnet
+
+A red and blue bar or horseshoe magnet with flowing bead field lines. Animate "field" 0..1.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `shape` | one of: bar \| horseshoe; default "bar" | bar magnet or horseshoe (U) magnet |
+
+Animatable with `set` (also usable as a starting value):
+
+- `field` 0..1, default 1: strength of the field lines (0 = hidden)
+
+### lightning
+
+A jagged glowing lightning bolt, top to bottom. Animate "flash" 0..1 for the strike.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#9fd0ff" | glow colour (the core stays near white) |
+| `seed` | whole number 0..999; default 8 | which jagged shape |
+
+Animatable with `set` (also usable as a starting value):
+
+- `flash` 0..1, default 1: strike brightness (0 = off, 1 = full flash with flicker)
+
+### ring
+
+An orbit-path ring around something: tube or flat band, tilted, solid or dashed. Radius comes from size.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#9fd0ff" | ring colour |
+| `style` | one of: tube \| flat; default "tube" | round tube or flat band |
+| `tilt` | number 0..90; default 65 | degrees the ring leans back (0 = facing the camera, 90 = edge-on) |
+| `dashed` | true or false; default false | broken into dashes that slowly travel round |
+| `thickness` | number 0.01..0.1; default 0.025 | how thick the tube or band is |
+
+### tree
+
+A chunky low-poly tree: round, pine, palm or bare. Good for forests, seasons, deforestation, carbon.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `style` | one of: round \| pine \| palm \| bare; default "round" | kind of tree |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent) | tint the leaves (bare tree: the wood); default natural colours |
+| `seed` | whole number 0..999; default 1 | which variant of the shape |
+
+### city
+
+A city block of buildings with lit windows; styles modern or old. Animate "lights" for night falling.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `style` | one of: modern \| old; default "modern" | modern glass towers or old brick houses with pitched roofs |
+| `seed` | whole number 0..999; default 1 | which arrangement of buildings |
+
+Animatable with `set` (also usable as a starting value):
+
+- `lights` 0..1, default 0.7: how many windows are lit (0 = none, 1 = most)
+
+### house
+
+A simple low-poly house with roof, chimney, door and windows. For homes, energy, insulation, neighbourhoods.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#f4e3c3" | wall colour |
+| `roof` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#d6513f" | roof colour |
+
+Animatable with `set` (also usable as a starting value):
+
+- `glow` 0..1, default 0: warm light in the windows (0 = off)
+
+### rock
+
+A chunky faceted boulder or a little group of rocks. For geology, erosion, mining, landscapes.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#8d8a86" | rock colour |
+| `count` | whole number 1..6; default 1 | how many boulders (1 = one big rock) |
+| `seed` | whole number 0..999; default 1 | which variant of the shape |
+
+### island
+
+A round island with a beach and optional palm on a disc of water. A "little world" base for other props.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#5cbf4a" | grass colour |
+| `palm` | true or false; default true | a palm tree on the island |
+| `seed` | whole number 0..999; default 1 | which variant of the shape |
+
+### iceberg
+
+An iceberg: small white tip above water, big blue bulk below. Animate "melt" to shrink it. Climate stories.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `water` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#2f9be0" | colour of the water block |
+| `seed` | whole number 0..999; default 1 | which variant of the shape |
+
+Animatable with `set` (also usable as a starting value):
+
+- `melt` 0..1, default 0: 0 = full size, 1 = almost melted away
+
+### fire
+
+A campfire with layered flickering flames, logs, stones and a glow. Animate "size". For heat, energy, combustion.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#ff5a1f" | outer flame colour (inner layers are warmer) |
+
+Animatable with `set` (also usable as a starting value):
+
+- `size` 0.1..1.8, default 1: flame size (0.1 = embers, 1 = campfire, 1.8 = blaze)
+
+### water_drop
+
+A glossy teardrop of water (any colour), optionally with a splash ripple. For rain, water, liquids.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#3da5ff" | colour of the liquid |
+| `splash` | true or false; default false | show a pool, ripple rings and small droplets under the drop |
+
+### crystal
+
+A cluster of faceted translucent crystals with a twinkling glint (any colour). For minerals, gems, energy.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#a35bff" | crystal colour |
+| `seed` | whole number 0..999; default 1 | which variant of the cluster |
+
+### person
+
+A friendly cartoon person for scale. Poses: stand, walk, wave, sit, float. Param color = shirt.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "blue" | shirt colour |
+| `skin` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#f0b98d" | skin colour (hands, face, arms) |
+| `pose` | one of: stand \| walk \| wave \| sit \| float; default "stand" | stand, walk (in place), wave, sit on the ground, or float like an astronaut (use in space or with no floor) |
+
+### terrain
+
+A square slab of land with hills and a soil cross-section: grass, desert, ice, rock or ocean. A base for other props.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `style` | one of: grass \| desert \| ice \| rock \| ocean; default "grass" | surface; ocean = waves over a seabed |
+| `seed` | whole number 0..999; default 1 | which landscape |
+
+### crowd
+
+A crowd of tiny people on a disc (10..300). Animate count_shown 0..1 to make them appear or vanish.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `count` | whole number 10..300; default 80 | how many people |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent) | one shirt colour for everyone; default = a mix of colours |
+| `seed` | whole number 0..999; default 3 | which random arrangement |
+
+Animatable with `set` (also usable as a starting value):
+
+- `count_shown` 0..1, default 1: share of the crowd that is present (0 = nobody, 1 = everyone)
+
+### chameleon
+
+The channel mascot: a chameleon on a branch with swivelling eyes. Use the color action to change its colour.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#4faa4a" | skin colour (the "color" action changes it) |
+| `branch` | true or false; default true | show the branch it grips |
+
+### brain
+
+A stylised brain with folds. Animate "activity" 0..1 for glowing pulses. Good for thinking, memory, sleep.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#f4a0b5" | brain colour |
+| `glow` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "gold" | colour of the activity pulses |
+
+Animatable with `set` (also usable as a starting value):
+
+- `activity` 0..1, default 0.4: brain activity: 0 = calm, 1 = pulses firing everywhere
+
+### heart
+
+A stylised anatomical heart with vessels that beats (lub-dub). Animate "rate" 0..1 for a faster pulse.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#e8404f" | heart colour |
+
+Animatable with `set` (also usable as a starting value):
+
+- `rate` 0..1, default 0.3: heart rate: 0 = about 40 beats a minute, 1 = about 180
+
+### eye
+
+A glossy eyeball with iris and pupil. Animate pupil 0..1 (size) and look -1..1 (left/right). Param color = iris.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#3d9be0" | iris colour |
+
+Animatable with `set` (also usable as a starting value):
+
+- `pupil` 0..1, default 0.5: pupil size: 0 = tiny (bright light), 1 = wide open (dark)
+- `look` -1..1, default 0: where it looks: -1 = left, 0 = at you, 1 = right
+
+### virus
+
+A round virus with spike proteins, slowly tumbling. Good for disease, infection, immunity stories.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#7cd36b" | colour of the virus body |
+| `spikes` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#ff5a5f" | colour of the spike knobs |
+| `count` | whole number 12..90; default 48 | how many spikes |
+
+### cell
+
+A see-through cell with organelles inside. kind: animal, plant or bacteria. Good for biology, disease, growth.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `kind` | one of: animal \| plant \| bacteria; default "animal" | which kind of cell |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent) | membrane colour; default depends on kind |
+
+### dna
+
+A DNA double helix with coloured base pairs, turning slowly. Animate unzip 0..1 to open it from the top.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#dfe3ff" | backbone colour |
+
+Animatable with `set` (also usable as a starting value):
+
+- `unzip` 0..1, default 0: how far the helix has unzipped, from the top down (0 = closed)
+
+### fish
+
+A cartoon fish with a wagging tail; "count" 1..30 makes a small school. Good for ocean, food chain, pollution.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "orange" | body colour |
+| `count` | whole number 1..30; default 1 | how many fish (1 = one big fish, more = a school) |
+| `seed` | whole number 0..999; default 5 | which school arrangement |
+
+### bird
+
+A cartoon bird with flapping wings; "count" 1..20 makes a flock. Good for migration, flight, nature.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "blue" | body colour |
+| `count` | whole number 1..20; default 1 | how many birds (1 = one big bird, more = a flock) |
+| `seed` | whole number 0..999; default 2 | which flock arrangement |
+
+### skeleton_bone
+
+A single classic bone (shaft with two knobs at each end). Good for bones, calcium, skeleton, fossils.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#f3ecd8" | bone colour |
+
+### dinosaur
+
+A chunky cartoon T-rex with a big head and tiny arms. Good for extinction, fossils, "what if" dinosaurs lived.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#6fbf4a" | skin colour |
+
+### car
+
+A chunky toy car, truck or bus with turning wheels. For traffic, transport, fuel, speed, commuting.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "red" | paint colour |
+| `style` | one of: car \| truck \| bus; default "car" | which vehicle |
+| `driving` | true or false; default false | wheels turn and the body jiggles |
+
+### plane
+
+A stylised airliner that gently banks. For flying, travel, altitude, air pressure, jet lag.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "blue" | tail, winglet and engine colour |
+
+### ship
+
+A toy cargo ship or sailing ship rocking on the water. For trade, oceans, shipping, exploration, sinking.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "blue" | upper hull colour |
+| `style` | one of: cargo \| sail; default "cargo" | cargo ship or sailing ship |
+
+### submarine
+
+A chunky submarine with periscope, portholes and a spinning propeller. For deep sea, pressure, exploration.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "yellow" | hull colour |
+
+### lightbulb
+
+A glass lightbulb that can light up. For ideas, electricity, energy use, efficiency, brightness.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#ffd36b" | colour of the light when on |
+
+Animatable with `set` (also usable as a starting value):
+
+- `on` 0..1, default 0: brightness (0 = off, 1 = glowing)
+
+### battery
+
+A cylinder battery with a charge window that fills and turns red to green. For energy, power, charging.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#2d6ed6" | body colour |
+
+Animatable with `set` (also usable as a starting value):
+
+- `charge` 0..1, default 0.6: charge level: window fill and colour (0 = empty red, 1 = full green)
+
+### thermometer
+
+A thermometer whose liquid rises and turns blue to red. For temperature, heat, cold, fever, climate.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#f3f5f9" | backplate colour |
+
+Animatable with `set` (also usable as a starting value):
+
+- `level` 0..1, default 0.5: temperature (0 = cold blue, low; 1 = hot red, high)
+
+### clock
+
+A round clock with hour and minute hands. For time, deadlines, ageing, speed, "how long".
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "red" | case colour |
+| `spin` | number 0..40; default 0 | extra hours per second the hands run (fast time passing) |
+
+Animatable with `set` (also usable as a starting value):
+
+- `hours` 0..24, default 10.1: time shown, in hours (0..24); hands follow
+
+### bars
+
+A 3D bar chart of 2-6 chunky bars that rise and can glow. For comparing numbers, growth, rankings.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `values` | list of number 0..1000000; default [3,5,8,6,10] | bar sizes (the tallest fills the chart) |
+| `colors` | list of colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default ["orange","yellow","green","blue","purple","pink"] | bar colours, in order (repeats if fewer than bars) |
+
+Animatable with `set` (also usable as a starting value):
+
+- `grow` 0..1, default 1: how far the bars have risen (0 = flat, 1 = full height)
+- `highlight` -1..5, default -1: index of the bar that glows (0 = first; -1 = none)
+
+### gauge
+
+A dial gauge with a coloured arc and a swinging needle. For speed, pressure, risk, levels, meters.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#c9d0da" | bezel colour |
+| `arc` | one of: green-red \| red-green \| blue-red; default "green-red" | colours of the arc from left to right |
+
+Animatable with `set` (also usable as a starting value):
+
+- `value` 0..1, default 0.5: needle position (0 = far left, 1 = far right)
+
+### coin_stack
+
+Stacks of gold coins that grow taller. For money, savings, cost, price, wealth, budgets.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "gold" | coin metal colour |
+
+Animatable with `set` (also usable as a starting value):
+
+- `amount` 0..1, default 1: how much money (0 = none, 1 = all stacks full height)
+
+### scale_balance
+
+A two-pan balance that tips left or right. For comparing, fairness, trade-offs, weighing, justice.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "gold" | beam and pan colour |
+
+Animatable with `set` (also usable as a starting value):
+
+- `tilt` -1..1, default 0: tilt (-1 = left pan down, 0 = level, 1 = right pan down)
+
+### phone
+
+A smartphone with a glowing screen. For screens, apps, social media, notifications, attention.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#2a2f3a" | phone body colour |
+| `screen` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "cyan" | screen glow colour |
+
+Animatable with `set` (also usable as a starting value):
+
+- `on` 0..1, default 1: screen on (0 = dark, 1 = glowing)
+
+### gear
+
+Interlocking turning gears (1-3). For machines, mechanisms, systems, cause and effect, engineering.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "orange" | colour of the first gear |
+| `count` | whole number 1..3; default 2 | how many gears in the chain |
+
+### bomb_blast
+
+An explosion burst: fireball, shockwave ring, smoke and debris. Animate "blast" 0..1. For impacts, bombs, asteroids.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "orange" | fire colour |
+
+Animatable with `set` (also usable as a starting value):
+
+- `blast` 0..1, default 0: progress of the explosion (0 = not started / invisible, 1 = fully spread and faded)
+
+### shield_dome
+
+A translucent hex-pattern dome or bubble that shimmers. For force fields, atmosphere, magnetic shield, protection.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "cyan" | shield colour |
+| `shape` | one of: dome \| bubble; default "dome" | half dome on the ground, or a full bubble |
+
+Animatable with `set` (also usable as a starting value):
+
+- `strength` 0..1, default 1: how strong the shield is (0 = invisible, 1 = bright)
+
 ## Environments
 
 ### space
@@ -143,6 +858,7 @@ Outer space: layered stars, soft nebula glow, floating dust. For planets, stars,
 |---|---|---|
 | `nebula` | one of: blue \| purple \| teal \| red \| none; default "blue" | colour of the soft background clouds |
 | `stars` | number 0..2; default 1 | how many stars |
+| `tint` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent) | optional colour for the nebula wash (overrides the nebula colours) |
 
 ### studio
 
@@ -162,6 +878,41 @@ Outdoors under a sky (day, sunset or night) above grass, ocean, desert or ice. F
 | `time` | one of: day \| sunset \| night; default "day" | time of day |
 | `ground` | one of: grass \| ocean \| desert \| ice \| none; default "grass" | what is below |
 | `clouds` | number 0..1; default 0.5 | how cloudy |
+
+### underwater
+
+Under the sea: blue-green water, light shafts, bubbles, optional sandy seabed. For ocean life, subs, pressure.
+
+| field | type | what |
+|---|---|---|
+| `seabed` | true or false; default true | show a sandy seabed (props stand on it); false = props float |
+| `depth` | one of: shallow \| deep; default "shallow" | shallow = bright turquoise, deep = dark blue |
+
+### micro
+
+Inside the body or under a microscope: soft glowing gradient with drifting out-of-focus blobs. Props float.
+
+| field | type | what |
+|---|---|---|
+| `tint` | one of: warm \| cool \| green; default "warm" | warm pink-orange (blood, tissue), cool blue (fluid), green (plants, bacteria) |
+
+### lab
+
+A dark neutral lab / showroom with a faint grid floor and a spotlight pool. For machines, objects and charts.
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "cyan" | accent colour of the grid, wall glow and rim light |
+
+### planet_surface
+
+The surface of another world: ground, low horizon, big sky with stars and an optional moon or ringed planet.
+
+| field | type | what |
+|---|---|---|
+| `ground` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#b5593a" | ground colour (Mars red, Moon grey, ...) |
+| `sky` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#e0a070" | sky colour at the horizon |
+| `companion` | one of: none \| moon \| ringed; default "moon" | a big body hanging in the sky |
 
 ## Actions
 

@@ -34,13 +34,18 @@ export const ASPECT = 9 / 16;     // the video is always vertical 1080x1920
 // Half-size of the safe rectangle as tangents of the view angle (horizontal and vertical).
 const TAN_V = Math.tan((FOV / 2) * Math.PI / 180);
 const SAFE_HALF_W = TAN_V * ASPECT * (1 - 2 * SAFE.side);
-const SAFE_HALF_H = TAN_V * (1 - SAFE.top - SAFE.bottom);
-// The safe rectangle's centre sits above the frame centre; the camera lens is shifted by this fraction of the frame height.
-export const VIEW_OFFSET_Y = (SAFE.bottom - SAFE.top) / 2;
+// The subject's centre sits at 43% of the frame height: a little above the middle, clear of the captions.
+export const CENTER_Y = 0.43;
+// The lens is shifted by this fraction of the frame height so the framed centre lands on CENTER_Y.
+export const VIEW_OFFSET_Y = 0.5 - CENTER_Y;
+// Tall subjects may use the space between the top margin and the caption zone, kept symmetric around CENTER_Y.
+const SAFE_HALF_H = TAN_V * 2 * Math.min(CENTER_Y - SAFE.top, 1 - SAFE.bottom - CENTER_Y);
 
-// How much of the safe rectangle the subject fills.
-const FILL = { close: 1.1, medium: 0.9, wide: 0.65 };
-const MIN_RADIUS = 0.7;
+// How much of the safe width (88% of the frame) the subject fills: about 90% / 70% / 45% of the frame width.
+export const FILL = { close: 1.02, medium: 0.8, wide: 0.51 };
+const MIN_RADIUS = 0.3;
+// Sideways travel of the drift move, as a fraction of the camera distance at amount 1 (0.05 -> the subject slides 6% of the frame width over a shot at amount 0.5).
+export const DRIFT_TRUCK = 0.05;
 
 // The radius a subject "looks like" at medium framing: close makes it bigger, wide smaller. Focus actions tween this,
 // so a change of framing eases smoothly too.
@@ -85,7 +90,9 @@ export function cameraPoseAt(base, focus, shot, t, shake = [0, 0, 0]) {
   // A slow wander shared by every move so the picture always breathes a little.
   const wander = Math.sin(s * 0.45) * 2.2 + Math.sin(s * 0.23 + 1.3) * 1.4;
   switch (base.move) {
-    case 'drift': az += (smooth - 0.5) * 14 * amt + wander * amt; el += Math.sin(s * 0.31) * 1.5 * amt; break;
+    // drift: a slow truck sideways (the subject slides about 6% of the frame width, edge to edge, over a shot at the default amount;
+    // far layers move less, near ones more) plus a small turn, so the 3D depth shows without distracting.
+    case 'drift': side = (smooth - 0.5) * DRIFT_TRUCK * dist * amt; az += (smooth - 0.5) * 14 * amt + wander * amt; el += Math.sin(s * 0.31) * 1.5 * amt; break;
     case 'push_in': dist *= 1.18 - 0.4 * amt * smooth; az += wander * 0.3; break;
     case 'pull_out': dist *= 0.82 + 0.45 * amt * smooth; az += wander * 0.3; break;
     case 'orbit': az += (smooth - 0.5) * 90 * amt; break;

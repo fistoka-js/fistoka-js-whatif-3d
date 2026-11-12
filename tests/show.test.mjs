@@ -30,7 +30,7 @@ test('the demo show resolves to the planned shots', () => {
 test('defaults are filled in and env strings are expanded', () => {
   const { show } = resolveMini(miniShow());
   const shot = show.shots[0];
-  assert.deepEqual(shot.env, { type: 'space', params: { nebula: 'blue', stars: 1 }, ground: false });
+  assert.deepEqual(shot.env, { type: 'space', params: { nebula: 'blue', stars: 1, tint: null }, ground: false });
   assert.equal(shot.camera.move, 'drift');
   assert.equal(shot.camera.framing, 'medium');
   const earth = shot.props[0];

@@ -25,9 +25,9 @@ const TIMES = {
     key: [0xfff2dc, 3.2], rim: [0xcfe8ff, 2.0], fill: [0x9fc8ff, 0.7], sky: 0xa8d4ff, gnd: 0x6a7a50, hemi: 1.0, cloud: 0xffffff,
   },
   sunset: {
-    dome: [[-1, 0x4a2a3a], [0, 0xffb878], [0.06, 0xff8a5a], [0.2, 0xb0507a], [0.45, 0x4a3a8a], [1, 0x1a1c4a]],
-    haze: 0xe89a80, sun: [0.12, 0.07, -0.99], sunColor: 0xffb060, sunSize: 34,
-    key: [0xffbb88, 2.8], rim: [0xff8a6a, 2.6], fill: [0x8a7aff, 1.0], sky: 0xb890d0, gnd: 0x4a3040, hemi: 0.8, cloud: 0xffb090,
+    dome: [[-1, 0x4a3a50], [0, 0xf0cfae], [0.06, 0xe6b095], [0.2, 0xb88aa6], [0.45, 0x6a6aa6], [1, 0x2e3670]],
+    haze: 0xd8b0a4, sun: [0.12, 0.07, -0.99], sunColor: 0xffd2a0, sunSize: 30,
+    key: [0xffd8b4, 2.6], rim: [0xffb09a, 2.2], fill: [0x9aa4ff, 1.0], sky: 0xb8a0d0, gnd: 0x4a3a48, hemi: 0.85, cloud: 0xffd8c4,
   },
   night: {
     dome: [[-1, 0x05070f], [0, 0x1a2a4a], [0.15, 0x0e1a36], [1, 0x03060f]],
@@ -35,7 +35,24 @@ const TIMES = {
     key: [0xb8ccff, 1.8], rim: [0x7fa8ff, 2.2], fill: [0x4a5a9a, 0.6], sky: 0x3a4a7a, gnd: 0x101420, hemi: 0.7, cloud: 0x4a5a7a,
   },
 };
-const GROUND = { grass: [0x4f8a3a, 0x3a6e2c], ocean: [0x1d6aa5, 0x0f3f70], desert: [0xd8b47a, 0xb88a52], ice: [0xe8f4fb, 0xbcd8ea] };
+const DRY = new THREE.Color(0x9aa850), LUSH = new THREE.Color(0x2f6a2a); // grass patch colours
+const GROUND = { grass: [0x4f8a3a, 0x3a6e2c], ocean: [0x1d6aa5, 0x0f3f70], desert: [0xd6bc8c, 0xb99a6c], ice: [0xe8f4fb, 0xbcd8ea] };
+
+// A ring of low rounded hills far away (behind the haze), in a few shades, so the grass has a horizon to stand against.
+function hills(s, rng, dim) {
+  const group = new THREE.Group();
+  const shades = [0x5f8f4a, 0x4f7f45, 0x6f9a55, 0x7a9a6a].map(h => new THREE.Color(h).multiplyScalar(dim));
+  const geo = new THREE.SphereGeometry(1, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2);
+  for (let i = 0; i < 16; i++) {
+    const a = (i / 16) * Math.PI * 2 + rng() * 0.3, d = (95 + rng() * 55) * s, w = (22 + rng() * 34) * s;
+    const m = new THREE.Mesh(geo, new THREE.MeshLambertMaterial({ color: shades[i % shades.length] }));
+    m.scale.set(w, (4 + rng() * 9) * s, w * 0.6);
+    m.position.set(Math.cos(a) * d, -0.2 * s, Math.sin(a) * d);
+    m.rotation.y = -a;
+    group.add(m);
+  }
+  return group;
+}
 
 // Ground: a big disc with gentle colour patches (vertex colours). The ocean gets waves in update().
 // dim: 0..1 multiplier on the ground colours (night ground is much darker).
@@ -43,8 +60,9 @@ function makeGround(kind, s, rng, dim = 1) {
   const geo = new THREE.CircleGeometry(80 * s, 96, 0, Math.PI * 2);
   // Extra rings near the middle so ocean waves and dunes have vertices to move.
   const plane = new THREE.PlaneGeometry(40 * s, 40 * s, 80, 80);
-  const g = kind === 'ocean' || kind === 'desert' ? plane : geo;
+  const g = kind === 'circle-never' ? geo : plane; // every ground uses the finer plane, so vertex colours can vary
   g.rotateX(-Math.PI / 2);
+  const ph = [rng() * 6, rng() * 6]; // shifts the patch pattern per shot
   const pos = g.attributes.position, cols = new Float32Array(pos.count * 3);
   const [c0, c1] = GROUND[kind].map(h => new THREE.Color(h).multiplyScalar(dim));
   const c = new THREE.Color();
@@ -52,6 +70,14 @@ function makeGround(kind, s, rng, dim = 1) {
     const x = pos.getX(i) / s, z = pos.getZ(i) / s;
     const n = 0.5 + 0.25 * Math.sin(x * 0.7 + Math.sin(z * 0.5) * 2) + 0.25 * Math.sin(z * 0.9 + x * 0.3);
     c.copy(c0).lerp(c1, n);
+    if (kind === 'grass') {
+      // Patches (big soft blotches), mown stripes and fine speckle: still a pure function of position.
+      const blot = Math.sin(x * 0.45 + 1.3 * Math.sin(z * 0.37 + ph[0])) * Math.sin(z * 0.41 - 0.8 * Math.sin(x * 0.33 + ph[1]));
+      const stripe = 0.5 + 0.5 * Math.sin(z * 1.5 + 0.35 * Math.sin(x * 0.4));
+      const speck = Math.sin(x * 5.3 + z * 3.1) * Math.sin(x * 2.9 - z * 4.7);
+      c.lerp(DRY, Math.max(0, blot) * 0.55).lerp(LUSH, Math.max(0, -blot) * 0.45);
+      c.multiplyScalar(0.93 + 0.1 * stripe + 0.035 * speck);
+    }
     c.toArray(cols, i * 3);
     // Dunes: gentle ridges, flat near the stage so props stand level.
     if (kind === 'desert') pos.setY(i, s * 0.55 * (Math.sin(x * 0.32 + z * 0.15) + 0.6 * Math.sin(z * 0.5 - x * 0.22) + 0.6) * Math.min(1, Math.max(0, Math.hypot(x, z) - 2.5) / 4));
@@ -66,11 +92,12 @@ function makeGround(kind, s, rng, dim = 1) {
   const group = new THREE.Group();
   group.add(mesh);
   // Beyond the detailed plane, a flat far disc so the ground reaches the horizon haze.
-  if (g === plane) {
+  if (g === plane && kind !== 'none') {
     const far = new THREE.Mesh(new THREE.RingGeometry(19 * s, 300 * s, 64, 1).rotateX(-Math.PI / 2), new THREE.MeshLambertMaterial({ color: c0.clone().lerp(c1, 0.5) }));
     far.position.y = -0.02 * s;
     group.add(far);
   }
+  if (kind === 'grass') group.add(hills(s, rng, dim));
   const base = pos.array.slice();
   const colAttr = g.attributes.color, crest = new THREE.Color(0x8fd0ff);
   return {

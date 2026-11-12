@@ -24,6 +24,10 @@ function channelAt(segs, base, t, ctx) {
   return prev ? prev.entry.value(prev.a, t, prevFrom, ctx) : base;
 }
 
+// How far (as a share of the subject's size, per side) free beam/arrow end points may pull the frame outward.
+const STAGE_REACH = 0.12;
+const MIN_FRAME_RADIUS = 0.3;
+
 export function makeShotState(shot, catalog) {
   const actions = catalog.actions;
   const props = new Map(shot.props.map(p => [p.id, p]));
@@ -121,7 +125,7 @@ export function makeShotState(shot, catalog) {
   function extentOf(id, t) {
     const p = props.get(id);
     if (!p.stageSpace) { const st = propAt(id, t, true); return [{ at: st.position, r: 0.5 * p.size * st.scale }]; }
-    const pts = Object.values(pointsOf(p, t)).map(q => ({ at: q.at, r: 0.15 }));
+    const pts = Object.values(pointsOf(p, t)).map(q => ({ at: q.at, r: 0, free: true }));
     return pts.length ? pts : [{ at: p.at, r: 0.3 }];
   }
 
@@ -130,30 +134,46 @@ export function makeShotState(shot, catalog) {
   const frameCache = new Map();
   const basis = angleBasis(shot.camera.angle);
   const dot = (p, v) => p[0] * v[0] + p[1] * v[1] + p[2] * v[2];
-  function frameOf(ids, t0, t1) {
-    const key = ids.join(',') + '@' + t0.toFixed(3) + '-' + t1.toFixed(3);
+  function frameOf(ids, t0, t1, clampRays = false) {
+    const key = ids.join(',') + (clampRays ? '!' : '') + '@' + t0.toFixed(3) + '-' + t1.toFixed(3);
     if (frameCache.has(key)) return frameCache.get(key);
     const times = [];
     for (let i = 0; i <= 16; i++) times.push(t0 + ((t1 - t0) * i) / 16);
     for (const a of shot.actions) if (a.t0 >= t0 && a.t0 <= t1) times.push(a.t0, Math.min(t1, a.t0 + a.over));
     // Extents along the camera's screen axes (right, up) and its depth axis (dir), for the shot's camera angle.
+    // Solid props set the frame first. Free-standing beams and arrows (when the shot has no `focus` list) only count up to STAGE_REACH of the subject's
+    // size beyond it (min one unit), so a long ray never shrinks the real subject to a speck; its far end may leave the frame.
     const axes = [basis.right, basis.up, basis.dir];
     const lo = [Infinity, Infinity, Infinity], hi = [-Infinity, -Infinity, -Infinity];
-    for (const t of times) for (const id of ids) for (const { at, r } of extentOf(id, t)) {
+    const stagePts = [];
+    for (const t of times) for (const id of ids) for (const { at, r, free } of extentOf(id, t)) {
+      if (free) { stagePts.push(at); continue; }
       for (let k = 0; k < 3; k++) { const c = dot(at, axes[k]); lo[k] = Math.min(lo[k], c - r); hi[k] = Math.max(hi[k], c + r); }
     }
+    if (Number.isFinite(lo[0])) {
+      const mlo = lo.slice(), mhi = hi.slice();
+      for (const at of stagePts) for (let k = 0; k < 3; k++) {
+        if (!clampRays) { const c = dot(at, axes[k]); lo[k] = Math.min(lo[k], c); hi[k] = Math.max(hi[k], c); continue; }
+        const reach = STAGE_REACH * Math.max(1, mhi[k] - mlo[k]);
+        const c = Math.min(mhi[k] + reach, Math.max(mlo[k] - reach, dot(at, axes[k])));
+        lo[k] = Math.min(lo[k], c); hi[k] = Math.max(hi[k], c);
+      }
+    } else for (const at of stagePts) for (let k = 0; k < 3; k++) { const c = dot(at, axes[k]); lo[k] = Math.min(lo[k], c); hi[k] = Math.max(hi[k], c); }
     if (!Number.isFinite(lo[0])) return { center: [0, 0, 0], radius: 1, depth: 0 };
     const mid = [0, 1, 2].map(k => (lo[k] + hi[k]) / 2);
     const center = [0, 1, 2].map(i => axes[0][i] * mid[0] + axes[1][i] * mid[1] + axes[2][i] * mid[2]);
     // radius: half the width on screen, or the half-height in width terms, whichever needs more room.
-    const radius = Math.max(0.3, (hi[0] - lo[0]) / 2, ((hi[1] - lo[1]) / 2) * HEIGHT_TO_WIDTH);
-    const out = { center, radius, depth: (hi[2] - lo[2]) / 2 };
+    const halfW = (hi[0] - lo[0]) / 2, halfH = (hi[1] - lo[1]) / 2;
+    const radius = Math.max(MIN_FRAME_RADIUS, halfW, halfH * HEIGHT_TO_WIDTH);
+    // Depth: only the half-depth beyond what a sphere of the same width would have (a ball needs no extra step back).
+    const out = { center, radius, depth: Math.max(0, (hi[2] - lo[2]) / 2 - Math.max(halfW, halfH)) };
     frameCache.set(key, out);
     return out;
   }
 
   const allIds = shot.props.map(p => p.id);
-  const baseFocus = frameOf(shot.camera.focus || allIds, shot.start, shot.end);
+  // Without a `focus` list, free beams and arrows are clamped (see frameOf); listing them in `focus` frames them in full.
+  const baseFocus = frameOf(shot.camera.focus || allIds, shot.start, shot.end, !shot.camera.focus);
   const camSeed = hashString(shot.id) % 1000;
 
   // Camera at t: framing (with focus actions tweened in), the move, and any camera shakes.

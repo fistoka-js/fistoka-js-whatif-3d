@@ -26,11 +26,13 @@ const UP = new THREE.Vector3(0, 1, 0);
 
 export function build(params, ctx) {
   const th = params.thickness;
-  const mat = ctx.mat.solid(ctx.color(params.color), { rough: 0.4, rim: 0.4 });
-  const shaftGeo = new THREE.CylinderGeometry(th / 2, th / 2, 1, 20);
+  // Chunky on purpose: the shaft is a bit thicker than `thickness` suggests and the head is big, so it reads at phone size.
+  const mat = ctx.mat.solid(ctx.color(params.color), { rough: 0.35, rim: 0.5, emissive: 0.18 });
+  const HEAD_R = 2.3, HEAD_L = 4.2, SHAFT = 1.35; // in units of `thickness`
+  const shaftGeo = new THREE.CylinderGeometry(th * SHAFT / 2, th * SHAFT / 2, 1, 20);
   shaftGeo.translate(0, 0.5, 0);                       // base at 0, top at 1
-  const headGeo = new THREE.ConeGeometry(th * 1.6, th * 3.2, 24);
-  headGeo.translate(0, -th * 1.6, 0);                  // tip at 0
+  const headGeo = new THREE.ConeGeometry(th * HEAD_R, th * HEAD_L, 28);
+  headGeo.translate(0, -th * HEAD_L / 2, 0);                  // tip at 0
   const shaft = new THREE.Mesh(shaftGeo, mat), head = new THREE.Mesh(headGeo, mat);
   const group = new THREE.Group();
   group.add(shaft, head);
@@ -51,10 +53,10 @@ export function build(params, ctx) {
       group.visible = len > 0.01;
       group.position.copy(a).addScaledVector(dir, startGap);
       group.quaternion.setFromUnitVectors(UP, dir);
-      const headLen = Math.min(th * 3.2, len * 0.6);
+      const headLen = Math.min(th * HEAD_L, len * 0.6);
       shaft.scale.set(1, Math.max(0.001, len - headLen * 0.9), 1);
       head.position.set(0, len, 0);
-      head.scale.setScalar(headLen / (th * 3.2) || 0.001);
+      head.scale.setScalar(headLen / (th * HEAD_L) || 0.001);
     },
     dispose() { shaftGeo.dispose(); headGeo.dispose(); mat.dispose(); },
   };
