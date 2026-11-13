@@ -1,13 +1,14 @@
 // Action folding: the value of every prop's animated properties, and the camera, at any time t (SPEC §7).
 // Pure: the same shot and t always give the same answer, whatever was asked before. No three.js, no DOM.
-// Exports: makeShotState(shot, catalog) -> { propAt(id, t), positionOf(id, t), cameraAt(t), frameOf(ids, t0, t1), radiusOf(id, t),
-//          baseFocus (what the shot's camera frames: { center, radius, depth }) }.
+// Exports: makeShotState(shot, catalog, prev) -> { propAt(id, t), positionOf(id, t), cameraAt(t), frameOf(ids, t0, t1), radiusOf(id, t),
+//          baseFocus (what the shot's camera frames: { center, radius, depth }), has(id) }.
+//          prev (optional): the state of the shot before; a continuing shot with camera "glide" moves from its camera.
 //
 // How folding works: each action with a "channel" (presence, position, scale, color, glow, rotation, param:<name>)
 // is a segment starting at its time t0. A channel's value at t comes from the last segment that has started, and that
 // segment starts from the value the previous segment had at the new segment's t0. "Effects" (bob, shake, pulse) add on top.
 
-import { cameraPoseAt, effectiveRadius, angleBasis, HEIGHT_TO_WIDTH } from './camera.js';
+import { cameraPoseAt, effectiveRadius, angleBasis, HEIGHT_TO_WIDTH, blendPose } from './camera.js';
 import { resolvePlace } from './places.js';
 import { parseColor } from './palette.js';
 import { hashString } from './rng.js';
@@ -31,7 +32,7 @@ const MIN_FRAME_RADIUS = 0.3;
 // The dive transition: seconds of push-in at the end of the shot before, and of pull-back at the start of the dive shot.
 export const DIVE_OUT = 0.4, DIVE_IN = 0.9;
 
-export function makeShotState(shot, catalog) {
+export function makeShotState(shot, catalog, prev = null) {
   const actions = catalog.actions;
   // A continuing shot sees its whole scene: the props and actions of the earlier shots of the run (SPEC §13).
   const scene = shot.scene || { props: shot.props, actions: shot.actions };
@@ -49,7 +50,8 @@ export function makeShotState(shot, catalog) {
   }
   for (const a of scene.actions) {
     const entry = actions[a.do];
-    if (entry.kind === 'camera' || (entry.kind === 'effect' && !a.prop)) continue;
+    // Only actions on a prop fold here: camera actions, camera shakes and icon colour changes ("color" with "icon") do not.
+    if (entry.kind === 'camera' || !a.prop) continue;
     if (entry.kind === 'effect') effects.get(a.prop).push({ a, entry });
     else if (entry.kind === 'channel') {
       const name = entry.channel === 'param' ? 'param:' + a.param : entry.channel;
@@ -199,13 +201,17 @@ export function makeShotState(shot, catalog) {
 
   // Camera at t: framing (with focus actions tweened in), the move, and any camera shakes.
   // Framing is folded into the radius (effectiveRadius) so a focus action can tween both centre and tightness.
+  // glide (SPEC §13): a continuing shot starts from the previous shot's last camera pose and blends into its own.
+  const glide = prev && shot.continue && shot.camera.glide > 0 ? shot.camera.glide : 0;
+  let glideFrom = null;
   function cameraAt(t) {
-    let focus = { center: baseFocus.center, radius: effectiveRadius(baseFocus.radius, shot.camera.framing), depth: baseFocus.depth };
+    let focus = { center: baseFocus.center, radius: effectiveRadius(baseFocus.radius, shot.camera.framing, shot.camera.fill), depth: baseFocus.depth };
     for (const a of focusSegs) {
       if (a.t0 > t) break;
       const target = frameOf(a.props, a.t0, shot.end);
       const k = ease('in_out', progress(t, a.t0, a.over));
-      const rTo = effectiveRadius(target.radius, a.framing);
+      // A shot with `fill` keeps filling by that number after a focus change (fill overrides the action's framing).
+      const rTo = effectiveRadius(target.radius, a.framing, shot.camera.fill);
       focus = { center: lerp3(focus.center, target.center, k), radius: focus.radius + (rTo - focus.radius) * k, depth: focus.depth + (target.depth - focus.depth) * k };
     }
     const shake = [0, 0, 0];
@@ -214,7 +220,7 @@ export function makeShotState(shot, catalog) {
       const e = entry.effect(a, t, { seed: camSeed });
       for (let k = 0; k < 3; k++) shake[k] += e.offset[k] * 1.5;
     }
-    const pose = cameraPoseAt({ ...shot.camera, framing: 'medium' }, focus, shot, t, shake);
+    let pose = cameraPoseAt({ ...shot.camera, framing: 'medium' }, focus, shot, t, shake);
     // dive (SPEC §13): the camera pushes into the subject over the last DIVE_OUT s of the shot before a dive shot,
     // and a dive shot starts close and pulls back over its first DIVE_IN s. A distance multiplier toward the target.
     let k = 1;
@@ -224,11 +230,22 @@ export function makeShotState(shot, catalog) {
       for (let i = 0; i < 3; i++) pose.position[i] = pose.target[i] + (pose.position[i] - pose.target[i]) * k;
       pose.distance *= k;
     }
-    // On a ground, never go below it: lift the camera to just above the surface (it keeps looking at the subject).
+    if (glide && t < shot.start + glide) {
+      glideFrom = glideFrom || prev.cameraAt(shot.start - 1e-3);
+      // Glide toward the camera as it will be shown (lifted above the ground), or the glide would aim below the
+      // floor and then stop short there, rushing the turn.
+      pose = blendPose(glideFrom, aboveGround(pose), ease('in_out', progress(t, shot.start, glide)));
+    }
+    return aboveGround(pose);
+  }
+  // On a ground, never go below it: lift the camera to just above the surface (it keeps looking at the subject).
+  function aboveGround(pose) {
     const floor = 0.3 + 0.03 * pose.distance;
     if (shot.env && shot.env.ground && pose.position[1] < floor) pose.position[1] = floor;
     return pose;
   }
 
-  return { propAt, positionOf, radiusOf, cameraAt, frameOf, baseFocus };
+  // has(id): is this prop in the scene as this shot sees it? (A later continuing shot may add props this one does not know.)
+  const has = id => props.has(id);
+  return { propAt, positionOf, radiusOf, cameraAt, frameOf, baseFocus, has };
 }

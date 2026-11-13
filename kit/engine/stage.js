@@ -1,6 +1,6 @@
 // The 3D stage: builds every shot once at load (its own scene: environment, lights, props, blob shadows) and draws
 // the frame for any time t. Only the current shot's scene is drawn.
-// Exports: buildStage(show, catalog, renderer) -> { render(t), shotIndexAt(t), propRect(id), project(xyz), dipAt(t),
+// Exports: buildStage(show, catalog, renderer) -> { render(t), shotIndexAt(t), propRect(id), propShapeRect(id), project(xyz), dipAt(t),
 //          warmUp(), camera, shots }, buildProp(p, shot, catalog, accent, scale), measure(inst).
 // Every value that affects pixels is set from scratch each frame from the pure state (engine/state.js).
 // A scene (a shot and the continuing shots after it) is built once; its shots share the env and props.
@@ -10,7 +10,7 @@ import * as mat from './materials.js';
 import { makeShotState } from './state.js';
 import { makeRng, hashString } from './rng.js';
 import { parseColor } from './palette.js';
-import { effectiveRadius } from './camera.js';
+import { effectiveRadius, cameraUp } from './camera.js';
 import { bindingAt } from './dials.js';
 
 const DEG = Math.PI / 180;
@@ -65,15 +65,17 @@ export function buildStage(show, catalog, renderer) {
   // One THREE scene per scene of the show (a shot plus the "continue" shots after it, SPEC §13), built at its first shot.
   // Each shot keeps its own state (camera); the props are shared, so a subject stays put across a camera change.
   const runs = new Map();
+  let prevState = null;
   const shots = show.shots.map(shot => {
-    const state = makeShotState(shot, catalog);
+    // The previous shot's state is only used by a continuing shot whose camera glides from it.
+    const state = prevState = makeShotState(shot, catalog, prevState);
     const first = shot.scene ? shot.scene.first : shot.index;
     if (!runs.has(first)) runs.set(first, buildRun(shot, state));
     return { shot, state, ...runs.get(first) };
   });
 
   function buildRun(shot, state) {
-    const scale = effectiveRadius(state.baseFocus.radius, shot.camera.framing);
+    const scale = effectiveRadius(state.baseFocus.radius, shot.camera.framing, shot.camera.fill);
     const scene = new THREE.Scene();
     const envMod = catalog.envs[shot.env.type];
     const env = envMod.build(shot.env.params, {
@@ -113,8 +115,10 @@ export function buildStage(show, catalog, renderer) {
   function poseProps(s, t) {
     const tl = t - s.runStart; // time since the scene began (continuous across continuing shots)
     for (const pr of s.props) {
-      const st = s.state.propAt(pr.p.id, t);
       const w = pr.wrapper;
+      // The scene's objects include props that later shots of the run add; this shot does not know them yet, so they are not there.
+      if (!s.state.has(pr.p.id)) { w.visible = false; if (pr.shadow) pr.shadow.visible = false; continue; }
+      const st = s.state.propAt(pr.p.id, t);
       w.visible = st.visible;
       if (!pr.p.stageSpace) {
         const k = pr.p.size * st.scale;
@@ -149,9 +153,8 @@ export function buildStage(show, catalog, renderer) {
     camera.aspect = size.x / size.y;
     camera.fov = pose.fov;
     camera.position.fromArray(pose.position);
-    camera.up.set(0, 1, 0);
-    // Looking straight down (top angle) needs a different "up" so the view does not spin.
-    if (Math.abs(pose.position[1] - pose.target[1]) > 0.97 * pose.distance) camera.up.set(0, 0, -1);
+    // Looking straight down (top angle) needs a different "up" so the view does not spin; a glide blends it (cameraUp).
+    camera.up.fromArray(cameraUp(pose));
     camera.lookAt(pose.target[0], pose.target[1], pose.target[2]);
     camera.setViewOffset(size.x, size.y, 0, pose.viewOffsetY * size.y, size.x, size.y);
     camera.updateProjectionMatrix();
@@ -162,7 +165,8 @@ export function buildStage(show, catalog, renderer) {
       for (const [k, b] of Object.entries(s.shot.env.bind)) cols[k] = bindingAt(b, show.dials, t);
       s.env.setColors(cols);
     }
-    s.env.update(t - s.runStart, { position: pose.position, target: pose.target, distance: pose.distance });
+    // "up" is only set mid-glide; envs keep their own rule otherwise.
+    s.env.update(t - s.runStart, { position: pose.position, target: pose.target, distance: pose.distance, up: pose.up });
     poseProps(s, t);
     s.scene.updateMatrixWorld(true);
     renderer.render(s.scene, camera);
@@ -194,6 +198,35 @@ export function buildStage(show, catalog, renderer) {
     return { x: x0, y: y0, w: x1 - x0, h: y1 - y0, line: pr.p.stageSpace };
   }
 
+  // Screen rectangle of the prop's real shape in the current frame (its visible mesh points, sampled), or null when it
+  // cannot be measured that way (hidden, instanced parts). Tighter than propRect, whose box is the prop's whole unit box
+  // turned with it; used only by the picture check's framing rule, so it never changes the picture or the labels.
+  const sv = new THREE.Vector3(), sm = new THREE.Matrix4();
+  function propShapeRect(id) {
+    const pr = current && current.byId.get(id);
+    if (!pr || pr.p.stageSpace || !pr.wrapper.visible || !pr.inst.object.visible) return null;
+    const size = renderer.getSize(new THREE.Vector2());
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity, ok = true;
+    (function walk(o) {
+      if (!ok || !o.visible || o.userData.noBounds || o.isSprite) return;
+      if (o.isInstancedMesh) { ok = false; return; }
+      const pos = o.geometry && o.geometry.attributes && o.geometry.attributes.position;
+      if (pos) {
+        sm.multiplyMatrices(camera.projectionMatrix, camera.matrixWorldInverse).multiply(o.matrixWorld);
+        const step = Math.max(1, Math.ceil(pos.count / 800));
+        for (let i = 0; i < pos.count; i += step) {
+          sv.fromBufferAttribute(pos, i).applyMatrix4(sm);
+          if (sv.z > 1) continue; // behind the camera
+          const x = (sv.x + 1) / 2 * size.x, y = (1 - sv.y) / 2 * size.y;
+          x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y);
+        }
+      }
+      for (const c of o.children) walk(c);
+    })(pr.inst.object);
+    if (!ok || !Number.isFinite(x0)) return null;
+    return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+  }
+
   // "dip" transition: the incoming shot fades up from its environment colour (and the outgoing one fades to it).
   const DIP = 0.25;
   function dipAt(t) {
@@ -211,5 +244,5 @@ export function buildStage(show, catalog, renderer) {
     for (let i = 0; i < shots.length; i++) render(shots[i].shot.start + 0.01);
   }
 
-  return { render, shotIndexAt, project, propRect, dipAt, warmUp, camera, shots };
+  return { render, shotIndexAt, project, propRect, propShapeRect, dipAt, warmUp, camera, shots };
 }

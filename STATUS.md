@@ -1,9 +1,28 @@
 # STATUS
 
-Last updated: 2026-11-12, about 21:30 UTC. Task numbers match PLAN.md.
-Paused near the 5-hour usage limit (87%; weekly 63%). It resets at 01:40 UTC on 13 Nov. The weekly allowance resets 16 Nov 09:00 UTC; about a quarter of it is left before the 90% stop line.
+Last updated: 2026-11-13, evening UTC (round 8 closed at the cap). Task numbers match PLAN.md.
+Work earlier stopped at the 5-hour usage limit; the limit has since been reset/raised. At 16:45 UTC on 13 Nov usage was 0% (5-hour) and 60% weekly (the weekly allowance resets 16 Nov 09:00 UTC). See DECISIONS-FOR-JACOB.md item 12 for the usage plan.
 
-## Done (all committed; nothing pushed)
+## Where work stopped (read this first)
+- **Round 2 part 3b is built but NOT committed.** It sits as uncommitted changes in this folder (18 changed files plus the new `tests/part3b.test.mjs` and `docs/briefs/part3b-open-review.md`).
+- What it added: the crash fix, camera `fill` and `glide`, icon `size` / colour / longer `until`, studio `haze`, a smoother camera "up" during glides, the picture check using each prop's real outline, and a much closer chameleon rebuild (no hidden framing balls).
+- Reviews: 8 review rounds used (the cap), 0 clear; the 4 small problems from round 8 were fixed in one last pass, unreviewed; Jacob approved committing at the cap on 13 Nov. Every round since the second found only small problems, and each was fixed. The latest fixes are from the 13 Nov round-7 fix task (lattice hidden at 17 s then matching 18-21 s, a `focus` action keeps the shot's `fill`, glide sweep checks both ends, QA hint and doc wording, test clean-up) and are unreviewed. List: `docs/briefs/part3b-open-review.md`.
+- Latest fixes (13 Nov, about 09:00 UTC, NOT yet reviewed): the lattice at 34-38 s shrinks and rises to match the original (`scale` and `move` on `lat`, "excited" fill 1.22); the end hero now pulls back like the original (`pull_out` 0.65 instead of orbit); an icon's colour change now starts from the colour reached when it begins (new test); the glide sweep test measures the swing between the first and last glide frames.
+- Checks after these fixes: `npm test` 305 pass, 0 fail; pytest 151 pass; `validate chameleon --story-rules` OK with 1 warning (the "emotions" shot is 10.12 s); picture check with story rules: pass, 0 fail, 0 warn.
+- **Outputs are fresh** (made 13 Nov after the last change to `show.json` and the code): `shows\chameleon\out\timeline.json`, `chameleon.mp4`, `chameleon-final.mp4` (no music, -16.0 LUFS, true peak -1.5 dBFS), `qa.json` and `compare\remake-sheet-1..4.jpg`.
+- Usage at 08:45 UTC on 13 Nov: 74% of the 5-hour window (resets 12:10 UTC) and 88% weekly (resets 16 Nov 09:00 UTC). Jacob moved the stop line to 95% weekly. The file `.claude/usage-latest.json` in the Pexels project froze at 08:04 UTC, so its numbers were too low. Two clear reviews in a row probably do not fit in the remaining weekly usage.
+- Pushed: commits up to `bb86990` ("Status timestamp") are on GitHub at `fistoka-js/fistoka-js-whatif-3d` (private). Every later push needs a new yes from Jacob.
+- The approved chameleon video for side-by-side comparison: `E:\Youtube Project\youtube-3d-pipeline\kit\render\chameleon-1080-stage2-final.mp4` (61 s, 1080x1920, Andrew +12% voice at about -32 LUFS). Read only; never write in that folder.
+
+## Jacob's priority order (13 Nov; work stops about 16 Nov)
+1. Keep this file up to date.
+2. Finish round 2 until the chameleon rebuilt in the new kit is about as good as the approved video (stills and frame grids side by side, and measure voice and loudness). This comes before extra props.
+3. Three new sample videos on different topics, each made by the pipeline from a one-line topic. Paths go in this file.
+4. Task 9 docs for a weaker model: README, how the pipeline works, how to add a prop or environment, how to ask Sonnet or Opus to change something, known problems.
+5. Leftovers from his decisions: music logistics, the -16 / -20 loudness comparison files, a Kokoro voice sample, prepared paid-test commands (see DECISIONS-FOR-JACOB.md, "Jacob's answers").
+At about 90% usage: finish what is in flight, update this file and DECISIONS-FOR-JACOB.md, end cleanly.
+
+## Done (all committed; pushed to GitHub up to commit bb86990)
 - Audit, plan, contract: `AUDIT.md`, `PLAN.md`, `docs/SPEC.md`. Items for Jacob: `DECISIONS-FOR-JACOB.md`.
 - Task 1 engine, task 2 audio, task 3 render, task 4 catalogue (61 props, 7 environments), task 5 picture checks.
 - **Task 6, the writer.** Topic → script → fact check → voice → show file, with repair loop, fallback and a free "files" mode. The script prompt and the fact-check module reuse the existing pipeline's.
@@ -31,10 +50,13 @@ In `E:\Youtube Project\whatif-3d\shows\`:
 - VERIFIED: 271 kit tests and 150 Python tests pass.
 
 ## Not done
-- **Round 2 part 3b**: fix the gaps the rebuild exposed (hero size, camera glide, a crash when a prop is added mid-scene, icon size, background haze). Listed in `docs/briefs/round2-improvements.md`. **Next step.**
+- **Round 2 part 3b**: finish the 8 review items in `docs/briefs/part3b-open-review.md`, re-make the chameleon video and sheets, then get two clear reviews in a row and commit. **Next step.**
+- Still visibly different from the approved video after 3b (lead's opinion from frames): no leaf backdrop, no section headings at the top, smaller tuner, darker middle backgrounds, smaller chameleons in the "emotions" part. Decide after 3b whether to close these before part 5.
 - **Round 2 part 5**: the writer still produces slideshows. It does not yet know about dials or persistent subjects, and does not turn the story rules on. Until this is done, automatic videos look like the first two samples.
 - Three new sample videos, then task 9 docs.
 - A real paid run (needs Jacob), a real GitHub run (needs a push), a real upload (needs the second channel).
+- Work from Jacob's answers, none started: music files for GitHub runs, loudness as one named setting plus a -16 and a -20 comparison file, the paid-test commands, the "build a missing mechanism" prompt, committing `shows/<slug>/` from the workflow, checking `docs/CHANNEL_SETUP.md`, a Kokoro sample.
+- Check `E:\Youtube Project\notes\project-notes-3d-and-animation.md` against AUDIT.md. The lead read a summary only. It may change the Audio Library redistribution concern and the note about the 2D track decision. Not done.
 
 ## Known problems
 - Sample videos are first-pass quality (see above).
@@ -50,4 +72,4 @@ In `E:\Youtube Project\whatif-3d\shows\`:
 - Both this repo and the old 3D repo exist only on this PC (DECISIONS-FOR-JACOB.md items 1 and 2).
 
 ## How to continue
-Say: "Continue round 2 from part 3b, then part 5, then three samples, then task 9. Read STATUS.md and docs/briefs/round2-improvements.md first."
+Say: "Continue round 2 part 3b from docs/briefs/part3b-open-review.md, then part 5, then three samples, then task 9. Read STATUS.md first."

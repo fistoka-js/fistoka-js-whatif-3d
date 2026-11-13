@@ -22,7 +22,7 @@ import { parseColor } from '../engine/palette.js';
 import { smoothNoise } from '../engine/rng.js';
 
 export const SFX_NAMES = ['whoosh', 'pop', 'buzz', 'chime', 'rumble', 'tick', 'shimmer', 'thud', 'rise'];
-export const ICON_NAMES = ['x', 'check', 'question', 'warning', 'heart', 'bolt'];
+export const ICON_NAMES = ['x', 'check', 'question', 'warning', 'heart', 'bolt', 'no', 'sun'];
 const EASE_FIELD = { type: 'enum', values: ['in_out', 'out', 'in', 'linear', 'back', 'bounce'], default: 'in_out', doc: 'easing curve' };
 const UNTIL_FIELD = { type: 'anchor', default: null, doc: 'when it goes away (default: end of the shot)' };
 // On a ramp (move, scale, color, glow, set): arrive when this is spoken, instead of after "over" seconds.
@@ -101,9 +101,18 @@ export const ACTIONS = {
     value: (a, t, from) => lerp(from, a.to, ease(a.ease, k(a, t))),
   },
   color: {
-    doc: 'Tint a prop\'s main colour.',
-    prop: 'required', over: 0.8, kind: 'channel', channel: 'color',
-    fields: { to: { type: 'color', required: true, doc: 'new colour' }, until: RAMP_UNTIL },
+    doc: 'Tint a prop\'s main colour, or an icon\'s colour (give the icon an "id" and name it here with "icon").',
+    prop: 'optional', over: 0.8, kind: 'channel', channel: 'color',
+    fields: {
+      to: { type: 'color', required: true, doc: 'new colour' },
+      icon: { type: 'string', max: 40, default: null, doc: 'the id of an icon in this scene to tint (instead of "prop")' },
+      until: RAMP_UNTIL,
+    },
+    validate(a) {
+      if (a.prop === null && a.icon === null) return [{ field: 'prop', message: '"prop" is required: the id of the prop to tint (or give "icon": the id of an icon in this scene).' }];
+      if (a.prop !== null && a.icon !== null) return [{ field: 'icon', message: 'give "prop" (a prop to tint) or "icon" (an icon to tint), not both.' }];
+      return [];
+    },
     value: (a, t, from) => mixColor(from, parseColor(a.to), ease('in_out', k(a, t))),
   },
   spin: {
@@ -225,9 +234,13 @@ export const ACTIONS = {
     doc: 'Pop an icon on a prop or at a place.',
     prop: 'optional', over: 0.35, kind: 'overlay',
     fields: {
-      name: { type: 'enum', values: ICON_NAMES, required: true, doc: 'which icon' },
+      name: { type: 'enum', values: ICON_NAMES, required: true, doc: 'which icon (no = a prohibition sign, a ring with a slash)' },
       place: { type: 'place', default: null, doc: 'where, when no prop is given' },
-      until: UNTIL_FIELD,
+      size: { type: 'number', min: 0.5, max: 3, default: 1, doc: 'size (1 = 13% of the frame width; 2.5 = a big sign)' },
+      style: { type: 'enum', values: ['badge', 'plain'], default: 'badge', doc: 'badge = white symbol on a coloured disc, plain = the symbol alone in its colour' },
+      color: { type: 'color', default: null, doc: 'its colour (default: the icon\'s own: x red, question blue, ...)' },
+      id: { type: 'string', max: 40, default: null, doc: 'a name, so a later "color" action can tint it ("icon": this id); lowercase letters, digits and dashes, starting with a letter or digit' },
+      until: { type: 'anchor', default: null, doc: 'when it goes away (default: end of the shot; may be in a later continuing shot)' },
     },
     validate: a => (a.prop === null && a.place === null ? [{ field: 'prop', message: 'give "prop" (a prop id) or "place" (a slot or [x,y,z]) for the icon.' }] : []),
   },

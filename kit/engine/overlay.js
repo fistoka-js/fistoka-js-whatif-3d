@@ -1,23 +1,29 @@
 // Overlays: labels (with a leader line), free text, counters and icons as crisp HTML on top of the 3D picture.
 // Exports: makeOverlay(root, svg, show, stage) -> { update(t), boxes() }, and the pure placement helpers
-//   rectsOverlap(a, b), overlapArea(a, b), labelBox(rect, size, side, gap, along, line), chooseLabelPlacement(opts), TITLE_BAND.
+//   rectsOverlap(a, b), overlapArea(a, b), labelBox(rect, size, side, gap, along, line), chooseLabelPlacement(opts), TITLE_BAND,
+//   iconColorAt(iconAction, colorActions, t) -> '#rrggbb'.
 // Labels avoid collisions: each label picks its side once (from the picture at the moment it starts) and keeps it.
 // Positions come from the 3D stage each frame (prop rectangles, projected points). Every style is set from t
 // alone, so the same t always gives the same overlay. Overlays stay out of the caption zone (bottom 24%).
 
-import { progress, ease, clamp } from './tween.js';
+import { progress, ease, clamp, mixColor } from './tween.js';
 import { resolvePlace } from './places.js';
 import { SAFE } from './camera.js';
+import { parseColor } from './palette.js';
 
-const ICON_COLORS = { x: '#ff4b4b', check: '#3ccf63', question: '#5b8bff', warning: '#ffb52e', heart: '#ff5c93', bolt: '#ffcc33' };
+const ICON_COLORS = { x: '#ff4b4b', check: '#3ccf63', question: '#5b8bff', warning: '#ffb52e', heart: '#ff5c93', bolt: '#ffcc33', no: '#ff3b30', sun: '#ffc23a' };
+// Symbols in currentColor: white on the badge's coloured disc, or the icon's colour itself when the style is "plain".
 const ICON_PATHS = {
-  x: '<path d="M7 7l10 10M17 7L7 17" stroke="#fff" stroke-width="3.2" stroke-linecap="round" fill="none"/>',
-  check: '<path d="M5.5 12.5l4.2 4.2L18.5 7.8" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
-  question: '<path d="M9 9.2a3 3 0 1 1 4.4 2.7c-.9.5-1.4 1.1-1.4 2.1v.6" stroke="#fff" stroke-width="2.8" stroke-linecap="round" fill="none"/><circle cx="12" cy="18" r="1.6" fill="#fff"/>',
-  warning: '<path d="M12 6.5v7" stroke="#fff" stroke-width="3" stroke-linecap="round"/><circle cx="12" cy="17.6" r="1.7" fill="#fff"/>',
-  heart: '<path d="M12 18.5s-6.5-4-6.5-8.3A3.6 3.6 0 0 1 12 8.3a3.6 3.6 0 0 1 6.5 1.9c0 4.3-6.5 8.3-6.5 8.3z" fill="#fff"/>',
-  bolt: '<path d="M13.2 4.5L7 13.2h4.6l-1 6.3 6.4-8.9h-4.7z" fill="#fff"/>',
+  x: '<path d="M7 7l10 10M17 7L7 17" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" fill="none"/>',
+  check: '<path d="M5.5 12.5l4.2 4.2L18.5 7.8" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+  question: '<path d="M9 9.2a3 3 0 1 1 4.4 2.7c-.9.5-1.4 1.1-1.4 2.1v.6" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" fill="none"/><circle cx="12" cy="18" r="1.6" fill="currentColor"/>',
+  warning: '<path d="M12 6.5v7" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="12" cy="17.6" r="1.7" fill="currentColor"/>',
+  heart: '<path d="M12 18.5s-6.5-4-6.5-8.3A3.6 3.6 0 0 1 12 8.3a3.6 3.6 0 0 1 6.5 1.9c0 4.3-6.5 8.3-6.5 8.3z" fill="currentColor"/>',
+  bolt: '<path d="M13.2 4.5L7 13.2h4.6l-1 6.3 6.4-8.9h-4.7z" fill="currentColor"/>',
+  no: '<circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="2.6" fill="none"/><path d="M6.4 6.4l11.2 11.2" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>',
+  sun: '<circle cx="12" cy="12" r="3.6" fill="currentColor"/><path d="M12 3.6v2.6M12 17.8v2.6M3.6 12h2.6M17.8 12h2.6M6.1 6.1l1.8 1.8M16.1 16.1l1.8 1.8M6.1 17.9l1.8-1.8M16.1 7.9l1.8-1.8" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>',
 };
+const hexOf = n => '#' + n.toString(16).padStart(6, '0');
 // Titles own the top band of the frame (fractions of the height); labels stay out of it while a title is on screen.
 export const TITLE_BAND = { top: 0.075, bottom: 0.19 };
 const OUT = 0.2; // seconds to fade out before "until" (when it is before the shot's end)
@@ -70,8 +76,26 @@ function formatNumber(v, decimals) {
   return v.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 }
 
+// An icon's colour at time t: its own colour, then each "color" action naming it ("icon": its id), in time order,
+// each starting from the colour reached at the moment it starts (like prop colours in state.js), so a new change
+// takes over from where the earlier one was. a: the icon action; tints: those colour actions, sorted by time.
+export function iconColorAt(a, tints, t) {
+  const own = parseColor(a.color || ICON_COLORS[a.name]);
+  // The colour at `time`, counting only the first n tints: the last of them that has started decides.
+  const at = (n, time) => {
+    let last = -1;
+    for (let k = 0; k < n; k++) if (tints[k].t0 <= time) last = k;
+    if (last < 0) return own;
+    const c = tints[last];
+    return mixColor(at(last, c.t0), parseColor(c.to), ease('in_out', progress(time, c.t0, c.over)));
+  };
+  return hexOf(at(tints.length, t));
+}
+
 export function makeOverlay(root, svg, show, stage) {
   const items = [];
+  // An icon may stay up into the continuing shots of its scene: which scene each shot belongs to.
+  const sceneOf = si => (show.shots[si].scene ? show.shots[si].scene.first : si);
   show.shots.forEach((shot, si) => {
     for (const a of shot.actions) {
       if (!['label', 'text', 'count', 'icon'].includes(a.do)) continue;
@@ -94,9 +118,13 @@ export function makeOverlay(root, svg, show, stage) {
         el.innerHTML = '<span class="num"></span><span class="unit"></span>';
         el.lastChild.textContent = a.unit ? ' ' + a.unit : '';
       } else {
-        el.className = 'ov-icon';
-        el.style.background = ICON_COLORS[a.name];
-        el.innerHTML = `<svg viewBox="0 0 24 24">${ICON_PATHS[a.name]}</svg>`;
+        el.className = a.style === 'plain' ? 'ov-icon ov-plain' : 'ov-icon';
+        // Plain symbols have no disc around them, so their view is cropped to the symbol: it fills the icon's size.
+        el.innerHTML = `<svg viewBox="${a.style === 'plain' ? '2.6 2.6 18.8 18.8' : '0 0 24 24'}">${ICON_PATHS[a.name]}</svg>`;
+        if (a.style !== 'plain') el.style.color = '#fff';
+        // Colour changes aimed at this icon, from any shot of its scene.
+        item.tints = a.id === null || a.id === undefined ? [] : show.shots.filter((s, j) => sceneOf(j) === sceneOf(si))
+          .flatMap(s => s.actions).filter(c => c.do === 'color' && c.icon === a.id).sort((x, y) => x.t0 - y.t0);
       }
       root.appendChild(el);
       items.push(item);
@@ -139,7 +167,8 @@ export function makeOverlay(root, svg, show, stage) {
   function otherBoxes(it, ctx) {
     const out = [];
     for (const o of items) {
-      if (o === it || o.si !== it.si || o.a.t0 >= it.a.until || it.a.t0 >= o.a.until) continue; // not on screen together
+      const sameShot = o.si === it.si || (o.a.do === 'icon' && o.si < it.si && sceneOf(o.si) === sceneOf(it.si)); // icons may carry on
+      if (o === it || !sameShot || o.a.t0 >= it.a.until || it.a.t0 >= o.a.until) continue; // not on screen together
       if (o.a.do === 'text' && o.a.style === 'title') out.push({ x: 0, y: TITLE_BAND.top * ctx.H, w: ctx.W, h: (TITLE_BAND.bottom - TITLE_BAND.top) * ctx.H, weight: 20 });
       else if (o.a.do === 'text' || o.a.do === 'count') {
         if (o.a.do === 'count') o.el.firstChild.textContent = formatNumber(o.a.to, o.a.decimals);
@@ -162,7 +191,7 @@ export function makeOverlay(root, svg, show, stage) {
     return out;
   }
   function iconCenter(it, ctx) {
-    const size = 13 * ctx.u;
+    const size = 13 * ctx.u * (it.a.size || 1);
     let cx, cy;
     if (it.a.prop) {
       const r = stage.propRect(it.a.prop);
@@ -212,9 +241,12 @@ export function makeOverlay(root, svg, show, stage) {
     const ctx = { W, H, u, top, bottom, left, right, gap: 6 * u, key: W + 'x' + H };
     for (const it of items) {
       const a = it.a;
-      if (it.si !== si || t < a.t0 || t >= a.until) { hide(it); continue; }
+      // An icon whose "until" is in a later shot of its scene stays up there too (other overlays end with their shot).
+      const here = it.si === si || (a.do === 'icon' && si > it.si && sceneOf(si) === sceneOf(it.si));
+      if (!here || t < a.t0 || t >= a.until) { hide(it); continue; }
       const kIn = ease('out', progress(t, a.t0, a.over));
-      const kOut = a.until < it.shot.end - 0.001 ? clamp((a.until - t) / OUT) : 1;
+      // Fade out only when it ends before the shot on screen does (one that lasts to a cut holds to the cut, as before).
+      const kOut = a.until < show.shots[si].end - 0.001 ? clamp((a.until - t) / OUT) : 1;
       const alpha = Math.min(kIn, kOut);
       const el = it.el;
       el.style.display = 'block';
@@ -240,6 +272,10 @@ export function makeOverlay(root, svg, show, stage) {
         const c = iconCenter(it, ctx);
         if (!c) { hide(it); continue; }
         const pop = ease('back', progress(t, a.t0, a.over));
+        const col = iconColorAt(a, it.tints, t);
+        if (a.style === 'plain') el.style.color = col; else el.style.background = col;
+        // Size 1 keeps the stylesheet's size (13% of the width); other sizes set it here.
+        if (a.size !== 1) el.style.width = el.style.height = c.size.toFixed(1) + 'px';
         el.style.left = (c.x - c.size / 2).toFixed(1) + 'px';
         el.style.top = (c.y - c.size / 2).toFixed(1) + 'px';
         el.style.transform = `scale(${Math.max(0.001, pop).toFixed(3)})`;

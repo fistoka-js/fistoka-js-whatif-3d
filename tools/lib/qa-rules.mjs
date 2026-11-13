@@ -3,6 +3,7 @@
 //   blackFindings, frozenFindings, framingFindings, textFindings, pacingFindings, videoFindings, mergeFindings, worstLevel.
 // A finding is { level:'FAIL'|'WARN', code, shot (id or null), time (s or null), what, measured:{}, fix, hits, key }.
 // Samples (made by tools/qa.mjs) look like { t, shotIndex, kinds:Set<'grid'|'mid'|'edge'|'action'>, luma (0..255), boxes:[__boxes rows],
+//   (a prop row may carry shape: {x,y,w,h}, its real shape; the framing rule uses it for "outside" and "in the captions"),
 //   actions:[resolved actions that this sample follows by 0.3 s] }. `show` is the resolved show (kit/engine/show.js).
 
 // ---- Thresholds: the one table. Change numbers here only. ----
@@ -14,9 +15,9 @@ export const T = {
   BLACK_SECONDS: 1.0,        // FAIL when black lasts longer than this
   FROZEN_DIFF: 0.3,          // mean pixel change (of 255) between samples one step apart under this counts as frozen
   FROZEN_SECONDS: 2.5,       // FAIL when frozen longer than this
-  TARGET_INSIDE_MIN: 0.6,    // FAIL when a targeted/focused prop has less than this fraction of its box inside the frame
+  TARGET_INSIDE_MIN: 0.6,    // FAIL when a targeted/focused prop has less than this fraction inside the frame (the better of its box and its real shape is used)
   CAPTION_ZONE: 0.24,        // bottom fraction of the frame reserved for captions
-  CAPTION_OVERLAP_MAX: 0.4,  // WARN when more than this fraction of a prop box sits in the caption zone
+  CAPTION_OVERLAP_MAX: 0.4,  // WARN when more than this fraction of a prop's real shape (clipped to its box) sits in the caption zone
   SUBJECT_MIN_AREA: 0.06,    // WARN when all visible prop boxes together cover less than this fraction of the frame
   EMPTY_WARN_SECONDS: 1.5,   // WARN when nothing at all is visible for longer than this inside a shot
   TEXT_OVERLAP_FAIL: 0.2,    // FAIL when two text boxes overlap by this fraction of the smaller box or more
@@ -186,17 +187,28 @@ export function framingFindings(show, samples, frame) {
     if (isMid) targetIds(shot, shot.actions, true).forEach(i => targets.add(i));
     if (isAct) targetIds(shot, s.actions || [], false).forEach(i => targets.add(i));
 
-    for (const b of props) {
-      const p = propIn(shot, b.id);
+    for (const box of props) {
+      const p = propIn(shot, box.id);
       if (!p) continue;
       const line = p.stageSpace; // beams/arrows: their box is the bounding box of a line and they often run off the frame on purpose, so skip them here
-      const inside = insideFraction(b, frameRect);
+      // The prop's real shape (clipped to its box) when the page measured it, else its box. A turned unit box can reach
+      // far past a large hero that is itself well inside the frame and above the captions; the shape is what the viewer sees.
+      const clip = box.shape ? intersect(box, box.shape) : null;
+      const b = clip && area(clip) > 0 ? { id: box.id, ...clip } : box;
+      // "Outside the frame" (a FAIL) takes the better of the two measures, so it never fails where the box alone passed.
+      // The message reports the rectangle that gave this measure, so the percentage and the printed box agree.
+      const inShape = b === box ? -1 : insideFraction(b, frameRect), inBox = insideFraction(box, frameRect);
+      const r = inShape >= inBox ? b : box, rName = r === box ? 'box' : 'shape';
+      const inside = Math.max(inShape, inBox);
       if (!line && targets.has(b.id) && inside < T.TARGET_INSIDE_MIN) {
-        const where = `x ${Math.round(b.x)}..${Math.round(b.x + b.w)} of ${frame.w}, y ${Math.round(b.y)}..${Math.round(b.y + b.h)} of ${frame.h}`;
+        const where = `x ${Math.round(r.x)}..${Math.round(r.x + r.w)} of ${frame.w}, y ${Math.round(r.y)}..${Math.round(r.y + r.h)} of ${frame.h}`;
         out.push(mk('FAIL', 'prop-outside', shot, s.t,
-          `prop "${b.id}" is ${pct(1 - inside)} outside the frame (box ${where})`,
-          { prop: b.id, outsidePct: Math.round((1 - inside) * 100), box: [b.x, b.y, b.w, b.h].map(Math.round) },
-          `move it toward the centre (its "at" is ${JSON.stringify(p.at)}) or use a wider camera "framing" (now "${shot.camera.framing}") and list the props to keep in view under "focus".`,
+          `prop "${b.id}" is ${pct(1 - inside)} outside the frame (${rName} ${where})`,
+          { prop: b.id, outsidePct: Math.round((1 - inside) * 100), box: [r.x, r.y, r.w, r.h].map(Math.round) },
+          // A camera "fill" overrides "framing", so the hint names whichever one actually sets the size.
+          `move it toward the centre (its "at" is ${JSON.stringify(p.at)}) or ${typeof shot.camera.fill === 'number'
+            ? `lower the camera "fill" (now ${shot.camera.fill}; it overrides "framing")`
+            : `use a wider camera "framing" (now "${shot.camera.framing}")`} and list the props to keep in view under "focus".`,
           `prop-outside|${shot.id}|${b.id}`));
       }
       if (!line && area(b) > 0) {

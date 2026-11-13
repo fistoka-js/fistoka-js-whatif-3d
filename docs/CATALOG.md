@@ -939,6 +939,7 @@ A clean coloured studio backdrop with a soft floor. The default look for explain
 |---|---|---|
 | `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "teal" | backdrop colour |
 | `floor` | true or false; default true | show a floor (props stand on it); false = props float |
+| `haze` | number 0..1; default 1 | the lighter band across the backdrop behind the subject (0 = none: a plain soft gradient) |
 
 Can follow a dial: `color`
 
@@ -1042,11 +1043,12 @@ Change a prop's size (to = multiple of its starting size). (prop: required; defa
 
 ### color
 
-Tint a prop's main colour. (prop: required; default over 0.8 s)
+Tint a prop's main colour, or an icon's colour (give the icon an "id" and name it here with "icon"). (prop: optional; default over 0.8 s)
 
 | field | type | what |
 |---|---|---|
 | `to` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); required | new colour |
+| `icon` | text (up to 40 characters) | the id of an icon in this scene to tint (instead of "prop") |
 | `until` | anchor: "spoken phrase" \| {phrase, edge, offset} \| {time} \| {shot} | arrive when this is spoken (instead of over) |
 
 ### spin
@@ -1155,9 +1157,13 @@ Pop an icon on a prop or at a place. (prop: optional; default over 0.35 s)
 
 | field | type | what |
 |---|---|---|
-| `name` | one of: x \| check \| question \| warning \| heart \| bolt; required | which icon |
+| `name` | one of: x \| check \| question \| warning \| heart \| bolt \| no \| sun; required | which icon (no = a prohibition sign, a ring with a slash) |
 | `place` | place: a slot (center, left, right, top, bottom, top-left, top-right, bottom-left, bottom-right, front, back, far-left, far-right) or [x, y, z] | where, when no prop is given |
-| `until` | anchor: "spoken phrase" \| {phrase, edge, offset} \| {time} \| {shot} | when it goes away (default: end of the shot) |
+| `size` | number 0.5..3; default 1 | size (1 = 13% of the frame width; 2.5 = a big sign) |
+| `style` | one of: badge \| plain; default "badge" | badge = white symbol on a coloured disc, plain = the symbol alone in its colour |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent) | its colour (default: the icon's own: x red, question blue, ...) |
+| `id` | text (up to 40 characters) | a name, so a later "color" action can tint it ("icon": this id); lowercase letters, digits and dashes, starting with a letter or digit |
+| `until` | anchor: "spoken phrase" \| {phrase, edge, offset} \| {time} \| {shot} | when it goes away (default: end of the shot; may be in a later continuing shot) |
 
 ### focus
 
@@ -1185,6 +1191,8 @@ Force a sound here, or "none" to silence the automatic sound at this moment. (pr
 | `angle` | one of: front \| high \| low \| top \| side \| three-quarter; default "front" | where the camera looks from |
 | `move` | one of: drift \| push_in \| pull_out \| orbit \| rise \| pan \| still; default "drift" | camera motion during the shot |
 | `amount` | number 0..1; default 0.5 | strength of the move |
+| `fill` | number 0.5..1.3 | how much of the safe area the focus props fill (default: by framing; close 1.02, medium 0.8, wide 0.51); above 1 runs past the safe area |
+| `glide` | number 0.2..6 | continuing shots only: seconds to glide from the previous shot's camera instead of cutting |
 
 **angle**:
 

@@ -2,15 +2,43 @@
 
 Things only you can decide or do. Nothing here blocks the build; work continues around each item. Newest first within each group.
 
+## Jacob's answers (received 2026-11-13). These are decided.
+1. Old 3D repo: Jacob pushed it himself. DONE. Do not touch that working folder.
+2. This repo: pushed on 13 Nov to the private repo `fistoka-js/fistoka-js-whatif-3d` (commits up to `bb86990`). Every later push needs a new yes.
+3. Voice: keep Edge `en-US-AndrewNeural` at +12%. Keep the voice step swappable. If there is spare time, make a free Kokoro sample of the same script so Jacob can compare by ear. Do not switch.
+4. Music: only YouTube Audio Library tracks that Jacob downloads himself, each with one line in `assets/music/LEDGER.csv`. TO DO for Claude: music files are git-ignored, so propose and document the simplest legal way for a GitHub run to get them (for example a private repo that holds the files, or a release asset), with the trade-off written here. Do not touch the Pexels repo.
+5. Loudness: -16 LUFS for now, as ONE named setting. TO DO: make one short file at -16 and one at -20 from the same sample video so Jacob can compare by ear.
+6. Length: scripts capped at about 55 s (video 60 s or less). The writer enforces it.
+7. Paid writer test: yes in principle, only after the round-2 samples look good. TO DO: prepare the single command for Jacob to run himself at the `!` prompt, with a cost estimate.
+7a. Writer model: start in free "files" mode. TO DO: prepare, but do not run, two paid tests: (b) Haiku for script and fact check plus Sonnet for the show file, and (c) Haiku for everything. Also note how much of Jacob's weekly Claude usage one files-mode video takes.
+7b. Yes: the workflow commits `shows/<slug>/` (script, voice, show file, review.md; no large renders). TO DO: make that workflow change.
+7c. Topics the kit cannot show: automatic runs skip them and list what is missing in `queue/needs-props/`. TO DO: write a short ready-to-paste prompt Jacob can give a Sonnet or Opus Claude Code session to build the two most-requested missing mechanisms.
+8. Second channel: later; Jacob creates it. Keep `docs/CHANNEL_SETUP.md` accurate and complete.
+9. Stay on a private repo.
+10. Project notes are exported to `E:\Youtube Project\notes\project-notes-3d-and-animation.md`. TO DO: check whether they change any conclusion in AUDIT.md.
+
+Rules Jacob restated: work only inside `E:\Youtube Project`; never touch the Pexels repo; never read keys, tokens, `client_secret.json` or `.verticals\config.json`; no paid API calls, no YouTube uploads, and no pushes unless Jacob says yes in that session.
+
+## New items for Jacob (13 Nov)
+
+### 11. Does every change in this repo need the fixer and two-skeptic review?
+- **What:** your rules file in the Pexels project says every file change goes through a fixer and then fresh reviewers until two in a row are clear. I assumed that also applies here, including to status notes like this one. It is thorough but costly: part 3b used about 85% of a 5-hour window (one build, two reviews, one and a half fix rounds) and is not finished.
+- **Options:** (a) keep the full loop for everything; (b) full loop for code and show files, but status and decision notes are written by the lead with no review; (c) one review round instead of two clear runs.
+- **Recommendation:** (b). Until you say otherwise I keep doing (a).
+
+### 12. The remaining plan will probably not fit in this week's usage
+- **What:** weekly usage is 76% and resets 16 Nov 09:00 UTC, about when I stop being available. Left to do: finish part 3b, part 5 (the writer), three samples, task 9 docs, and the leftovers above. Each review round costs about 2 weekly points and each build about 2-4.
+- **Recommendation:** spend what is left in your priority order and accept that items 4 and 5 of that order (docs, leftovers) may not be reached. Item 11 option (b) or (c) would stretch the budget.
+
 ## Please do soon
 
-### 1. Back up the old 3D repo (about 28 commits exist only on this PC)
+### 1. Back up the old 3D repo (about 28 commits exist only on this PC) — DONE 13 Nov
 - **What:** `youtube-3d-pipeline` has never been pushed. If the disk fails, the chameleon video's source and all of stages 1-3 are gone.
 - **My recommendation:** push it (it is a private repo). I did not, because every push needs your yes, and another session has unfinished changes in that folder.
 - **Steps:** in the session that owns that folder, commit or discard the 7 changed files, then at the `!` prompt:
   `cd "/e/Youtube Project/youtube-3d-pipeline" && git pull --rebase && git push`
 
-### 2. Back up this new repo (`whatif-3d`)
+### 2. Back up this new repo (`whatif-3d`) — DONE 13 Nov
 - **What:** it is local only. It needs a GitHub repo, which I may not create (accounts and pushes are yours).
 - **Recommendation:** create a **private** repo `fistoka-js/whatif-3d` on github.com (no README), then at the `!` prompt:
   `cd "/e/Youtube Project/whatif-3d" && git remote add origin https://github.com/fistoka-js/whatif-3d.git && git push -u origin main`

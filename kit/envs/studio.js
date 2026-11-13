@@ -14,6 +14,7 @@ export const meta = {
   params: {
     color: { type: 'color', default: 'teal', doc: 'backdrop colour' },
     floor: { type: 'bool', default: true, doc: 'show a floor (props stand on it); false = props float' },
+    haze: { type: 'number', min: 0, max: 1, default: 1, doc: 'the lighter band across the backdrop behind the subject (0 = none: a plain soft gradient)' },
   },
 };
 
@@ -79,11 +80,13 @@ function vignetteTexture() {
 }
 
 // Every colour of the room, from the backdrop colour (0xRRGGBB). One place, so a colour that follows a dial repaints the same way.
-function roomColors(color) {
+function roomColors(color, haze = 1) {
   // The backdrop: muted version of the colour, darker toward the floor and the top, a bright band behind the subject.
+  // haze (0..1) is the strength of that band; at 0 the band stop is no brighter than its neighbours (a plain soft gradient).
   const base = new THREE.Color(color).lerp(new THREE.Color(0x203040), 0.35).getHex();
+  const band = haze >= 1 ? tint(base, 0.08) : new THREE.Color(shade(base, 0.58)).lerp(new THREE.Color(tint(base, 0.08)), haze).getHex();
   return {
-    base, dome: [[-1, shade(base, 0.25)], [-0.05, shade(base, 0.55)], [0.08, tint(base, 0.08)], [0.45, shade(base, 0.62)], [1, shade(base, 0.3)]],
+    base, dome: [[-1, shade(base, 0.25)], [-0.05, shade(base, 0.55)], [0.08, band], [0.45, shade(base, 0.62)], [1, shade(base, 0.3)]],
     floorMid: shade(base, 0.42), floorEdge: shade(base, 0.2), horizon: tint(base, 0.55),
     fill: tint(base, 0.5), sky: tint(base, 0.4), ground: shade(base, 0.4), fog: shade(base, 0.55), background: shade(base, 0.5),
   };
@@ -109,7 +112,7 @@ function paintHorizon(geo, rc, H) {
 
 export function build(params, ctx) {
   const s = ctx.scale;
-  let rc = roomColors(ctx.color(params.color));
+  let rc = roomColors(ctx.color(params.color), params.haze);
   const base = rc.base;
   const group = new THREE.Group();
   const dome = gradientDome(rc.dome);
@@ -174,7 +177,7 @@ export function build(params, ctx) {
     setColors(cols) {
       if (cols.color === undefined || cols.color === painted) return;
       painted = cols.color;
-      rc = roomColors(painted);
+      rc = roomColors(painted, params.haze);
       paintDome(dome, rc.dome);
       if (floor) paintFloor(floor.geometry, rc, s);
       if (horizon) paintHorizon(horizon.geometry, rc, H);
@@ -191,7 +194,9 @@ export function build(params, ctx) {
       // The vignette sits one unit in front of the camera, facing it, upright (as the camera's up).
       toCam.fromArray(cam.position).sub(new THREE.Vector3().fromArray(cam.target)).normalize();
       vignette.position.fromArray(cam.position).addScaledVector(toCam, -1);
-      vignette.up.set(0, Math.abs(toCam.y) > 0.97 ? 0 : 1, Math.abs(toCam.y) > 0.97 ? -1 : 0);
+      // Mid-glide the camera's blended up is passed in, so the vignette turns with the camera instead of flipping.
+      if (cam.up) vignette.up.fromArray(cam.up);
+      else vignette.up.set(0, Math.abs(toCam.y) > 0.97 ? 0 : 1, Math.abs(toCam.y) > 0.97 ? -1 : 0);
       vignette.lookAt(cam.position[0], cam.position[1], cam.position[2]);
     },
   };

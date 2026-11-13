@@ -9,7 +9,7 @@ export const SOUND_RULES = {
   shotChange: 'whoosh',          // every shot start except the first
   appear: 'pop',
   disappear: null,
-  icon: { x: 'buzz', check: 'chime', other: 'pop' },
+  icon: { x: 'buzz', no: 'buzz', check: 'chime', other: 'pop' },
   shake: 'rumble',
   count: 'tick',                 // at the start of the count
   label: 'tick',

@@ -76,14 +76,17 @@ async function boot() {
 
   window.__renderAt = renderAt;
   window.__info = () => ({ duration: show.duration, fps: FPS, shots: show.shots.map(s => ({ id: s.id, start: s.start, end: s.end })) });
-  // Screen rectangles (px) of every visible prop, overlay and the caption block at time t.
+  // Screen rectangles (px) of every visible prop, overlay and the caption block at time t. Prop rows may carry
+  // shape: { x, y, w, h }, the rectangle of the prop's real shape, tighter than its turned unit box, for the framing
+  // check (see stage.propShapeRect).
   window.__boxes = t => {
     renderAt(t);
     const s = stage.shots[stage.shotIndexAt(t)];
     const out = [];
     for (const pr of s.props) {
       const r = stage.propRect(pr.p.id);
-      if (r) out.push({ kind: 'prop', id: pr.p.id, x: r.x, y: r.y, w: r.w, h: r.h });
+      const sh = r ? stage.propShapeRect(pr.p.id) : null;
+      if (r) out.push({ kind: 'prop', id: pr.p.id, x: r.x, y: r.y, w: r.w, h: r.h, ...(sh ? { shape: sh } : {}) });
     }
     out.push(...overlay.boxes());
     const cap = $('cap').querySelector('.line');

@@ -140,6 +140,14 @@ export function resolveShow(raw, words, catalog) {
     if (s.transition !== undefined) errors.push(...check(s.transition, { type: 'enum', values: ['cut', 'dip', 'dive'] }, `${path}.transition`));
     if (s.transition === 'dive' && i === 0) err(`${path}.transition`, '"dive" pushes the camera from the shot before into this one; the first shot has no shot before it.');
     shot.transition = ['dip', 'dive'].includes(s.transition) ? s.transition : 'cut';
+    // glide: moves from the previous shot's camera, so it needs a continuing shot and replaces the cut.
+    if (s.camera && typeof s.camera.glide === 'number') {
+      const g = s.camera.glide, len = shot.end - shot.start;
+      if (!keeps) err(`${path}.camera.glide`, `"glide" moves the camera on from the shot before inside one scene, so it only works on a continuing shot ("continue": true). Remove "glide" (this shot starts a new scene with a cut).`);
+      else if (shot.transition !== 'cut') err(`${path}.camera.glide`, `"glide" replaces the cut, so it cannot be used with "transition": "${shot.transition}". Remove one of them.`);
+      // Out of range (0.2..6) is already reported by the field check; a second "too long" message would only repeat it.
+      else if (g >= CAMERA_FIELDS.glide.min && g <= CAMERA_FIELDS.glide.max && g > len) err(`${path}.camera.glide`, `${g} s is longer than the shot (${len.toFixed(2)} s). Use a glide of at most ${Math.floor(len * 10) / 10} s.`);
+    }
     shot.diveOut = false;
     shot.actions = resolveActions(s.actions, path, shot, words, catalog, errors, warnings, run.end);
     run.actions = run.actions.concat(shot.actions);
@@ -154,6 +162,25 @@ export function resolveShow(raw, words, catalog) {
     for (const p of shot.props) {
       const first = last.scene.actions.find(a => a.prop === p.id && (a.do === 'appear' || a.do === 'disappear'));
       p.startsHidden = p.hidden || (first !== undefined && first.do === 'appear');
+    }
+  }
+  // Icon ids are unique in their scene, and a "color" action with "icon" names one of them (SPEC §7).
+  for (const shot of shots) {
+    if (shots.filter(x => x.scene.first === shot.scene.first).pop() !== shot) continue; // once per scene, from its last shot
+    const icons = new Map();
+    for (const a of shot.scene.actions) {
+      if (a.do !== 'icon' || a.id === null) continue;
+      if (!ID_RE.test(a.id)) err(`${a.path}.id`, `${JSON.stringify(a.id)} must be a short id of a-z, 0-9 and dashes, like "no-paint".`);
+      else if (icons.has(a.id)) err(`${a.path}.id`, `icon id "${a.id}" is used twice in this scene (also at ${icons.get(a.id).path}); give each icon its own id.`);
+      else icons.set(a.id, a);
+    }
+    for (const a of shot.scene.actions) {
+      if (a.do !== 'color' || a.icon === null) continue;
+      const ic = icons.get(a.icon);
+      if (!ic) err(`${a.path}.icon`, `"${a.icon}" is not the id of an icon in this scene (icon ids here: ${[...icons.keys()].join(', ') || 'none'}). Give the icon action an "id" first.`, hintFor(a.icon, [...icons.keys()]));
+      else if (ic.t0 > a.t0) err(`${a.path}.at`, `the colour change starts at ${a.t0.toFixed(2)} s, before icon "${a.icon}" appears (${ic.t0.toFixed(2)} s).`);
+      // After the icon has gone it would change nothing on screen; a warning, not an error, so the show still plays.
+      else if (a.t0 >= ic.until) warn(`${a.path}.at`, `the colour change starts at ${a.t0.toFixed(2)} s, after icon "${a.icon}" has gone (${ic.until.toFixed(2)} s), so it changes nothing. Move it earlier or give the icon a later "until".`);
     }
   }
   // "dive": the shot before pushes into its subject at its end.
@@ -339,6 +366,10 @@ function resolveActions(list, shotPath, shot, words, catalog, errors, warnings, 
         if (u.t > runEnd) warnings.push(problem(`${ap}.until`, `resolves to ${u.t.toFixed(2)} s, after the scene ends (${runEnd.toFixed(2)} s); the ramp will be cut off there.`));
         res.until = round3(Math.min(u.t, runEnd));
         res.over = round3(res.until - res.t0);
+      } else if (a.do === 'icon') {
+        // An icon may stay up into the continuing shots of its scene (it ends with the scene at the latest).
+        if (u.t > runEnd) warnings.push(problem(`${ap}.until`, `resolves to ${u.t.toFixed(2)} s, after the scene ends (${runEnd.toFixed(2)} s); it will end with the scene.`));
+        res.until = Math.min(round3(u.t), runEnd);
       } else {
         if (u.t > shot.end) warnings.push(problem(`${ap}.until`, `resolves to ${u.t.toFixed(2)} s, after the shot ends (${shot.end.toFixed(2)} s); it will end with the shot.`));
         res.until = Math.min(round3(u.t), shot.end);

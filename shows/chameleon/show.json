@@ -219,9 +219,12 @@
      "over": 0.8
     },
     {
-     "at": "lose their",
+     "at": {
+      "phrase": "they'd lose",
+      "offset": -0.25
+     },
      "to": 5,
-     "over": 1.0
+     "over": 0.5
     }
    ]
   },
@@ -231,7 +234,7 @@
     {
      "at": "shift",
      "to": 1,
-     "over": 1.0
+     "over": 1
     },
     {
      "at": "communicate",
@@ -246,12 +249,15 @@
     {
      "at": "regulate",
      "to": 4,
-     "over": 1.0
+     "over": 1
     },
     {
-     "at": "lose their",
+     "at": {
+      "phrase": "they'd lose",
+      "offset": -0.25
+     },
      "to": 5,
-     "over": 1.0
+     "over": 0.5
     }
    ]
   },
@@ -274,6 +280,156 @@
      "over": 0.9
     }
    ]
+  },
+  "gap": {
+   "start": 0.1,
+   "keys": [
+    {
+     "at": "tiny",
+     "to": 0.38,
+     "over": 0.5
+    },
+    {
+     "at": {
+      "phrase": "nanocrystals",
+      "edge": "start"
+     },
+     "to": 0.45,
+     "over": 1.0
+    },
+    {
+     "at": "microscopic",
+     "to": 0.8,
+     "over": 0.9
+    },
+    {
+     "at": "like a",
+     "to": 0.6,
+     "over": 0.5
+    },
+    {
+     "at": {
+      "phrase": "When a chameleon",
+      "edge": "start",
+      "offset": -0.3
+     },
+     "to": 0.1,
+     "over": 0.3
+    },
+    {
+     "at": {
+      "phrase": "reflect",
+      "edge": "end"
+     },
+     "to": 0.06,
+     "over": 0.86
+    },
+    {
+     "at": {
+      "phrase": "wavelengths",
+      "edge": "end"
+     },
+     "to": 0.3,
+     "over": 1.1
+    },
+    {
+     "at": {
+      "phrase": "warm up",
+      "edge": "end"
+     },
+     "to": 0.46,
+     "over": 1.78
+    },
+    {
+     "at": {
+      "phrase": "Bigger",
+      "edge": "start"
+     },
+     "to": 0.5,
+     "over": 1.26
+    },
+    {
+     "at": {
+      "phrase": "longer",
+      "edge": "end"
+     },
+     "to": 0.56,
+     "over": 0.86
+    },
+    {
+     "at": {
+      "phrase": "yellow",
+      "edge": "end"
+     },
+     "to": 0.78,
+     "over": 0.48
+    },
+    {
+     "at": {
+      "phrase": "orange",
+      "edge": "end"
+     },
+     "to": 1,
+     "over": 0.5
+    },
+    {
+     "at": {
+      "phrase": "red",
+      "edge": "end"
+     },
+     "to": 0.6,
+     "over": 0.75
+    },
+    {
+     "at": {
+      "phrase": "tuning",
+      "edge": "end"
+     },
+     "to": 0.25,
+     "over": 0.9
+    },
+    {
+     "at": {
+      "phrase": "antenna",
+      "edge": "end",
+      "offset": -0.08
+     },
+     "to": 0.7,
+     "over": 0.75
+    },
+    {
+     "at": {
+      "phrase": "broadcast",
+      "edge": "end"
+     },
+     "to": 0.4,
+     "over": 0.65
+    },
+    {
+     "at": {
+      "phrase": "different",
+      "edge": "end",
+      "offset": -0.02
+     },
+     "to": 0.9,
+     "over": 0.3
+    },
+    {
+     "at": "No paint",
+     "to": 0.5,
+     "over": 0.7
+    },
+    {
+     "at": "No dye",
+     "to": 0.05,
+     "over": 0.7
+    },
+    {
+     "at": "Just physics",
+     "to": 0.4,
+     "over": 1
+    }
+   ]
   }
  },
  "shots": [
@@ -289,7 +445,8 @@
       "#d9722a",
       "#6a3fb0"
      ]
-    }
+    },
+    "haze": 0
    },
    "props": [
     {
@@ -313,24 +470,14 @@
        "#d9937a"
       ]
      }
-    },
-    {
-     "id": "cam",
-     "type": "ball",
-     "at": [
-      0,
-      0,
-      0
-     ],
-     "size": 1.0,
-     "hidden": true
     }
    ],
    "camera": {
     "focus": [
-     "cam"
+     "hero"
     ],
     "framing": "close",
+    "fill": 1.3,
     "angle": "front",
     "move": "drift",
     "amount": 0.3
@@ -340,15 +487,17 @@
      "at": "That's",
      "do": "pulse",
      "prop": "hero",
-     "strength": 0.4
+     "strength": 0.05
     },
     {
      "at": "That's",
      "do": "icon",
-     "name": "x",
+     "name": "no",
+     "style": "plain",
+     "size": 2.5,
      "place": [
-      -0.55,
-      0.75,
+      -0.62,
+      1,
       0.6
      ],
      "until": "So why"
@@ -357,15 +506,14 @@
      "at": "So why",
      "do": "icon",
      "name": "question",
+     "style": "plain",
+     "size": 3,
+     "color": "#d6c64a",
      "place": [
-      0.55,
-      0.85,
+      0.45,
+      1,
       0.6
-     ],
-     "until": {
-      "phrase": "it?",
-      "edge": "end"
-     }
+     ]
     },
     {
      "at": "they really",
@@ -381,7 +529,8 @@
    "env": {
     "type": "studio",
     "floor": false,
-    "color": "#14283a"
+    "color": "#14283a",
+    "haze": 0
    },
    "props": [
     {
@@ -480,7 +629,8 @@
     "framing": "close",
     "angle": "low",
     "move": "push_in",
-    "amount": 0.7
+    "amount": 0.7,
+    "glide": 1.2
    },
    "actions": [
     {
@@ -509,7 +659,8 @@
       "#5a2c0a",
       "#4a0808"
      ]
-    }
+    },
+    "haze": 0
    },
    "props": [
     {
@@ -523,7 +674,7 @@
      "size": 3.2,
      "tilt": 0.3,
      "spacing": {
-      "dial": "wavelength",
+      "dial": "gap",
       "to": [
        0,
        1
@@ -532,7 +683,12 @@
      "color": {
       "dial": "wavelength",
       "colors": "spectrum"
-     }
+     },
+     "rotate": [
+      -15.0,
+      0,
+      0
+     ]
     },
     {
      "id": "small",
@@ -552,7 +708,7 @@
      "id": "inwave",
      "type": "light_wave",
      "from": [
-      -1.0,
+      -1,
       1.7,
       0.3
      ],
@@ -595,7 +751,7 @@
      "id": "inwave2",
      "type": "light_wave",
      "from": [
-      -1.0,
+      -1,
       1.7,
       0.3
      ],
@@ -633,57 +789,25 @@
        0.95
       ]
      }
-    },
-    {
-     "id": "cam",
-     "type": "ball",
-     "at": [
-      0,
-      0.3,
-      0
-     ],
-     "size": 2.2,
-     "hidden": true
-    },
-    {
-     "id": "cam2",
-     "type": "ball",
-     "at": [
-      0,
-      0.3,
-      0
-     ],
-     "size": 2.35,
-     "hidden": true
-    },
-    {
-     "id": "cam3",
-     "type": "ball",
-     "at": [
-      0,
-      0.3,
-      0
-     ],
-     "size": 2.7,
-     "hidden": true
     }
    ],
    "camera": {
     "focus": [
-     "cam"
+     "lat"
     ],
     "framing": "medium",
     "angle": "front",
-    "move": "pull_out",
-    "amount": 0.35
+    "move": "push_in",
+    "amount": 1,
+    "fill": 1
    },
    "actions": [
     {
-     "at": "deeper layers",
+     "at": "hold",
      "do": "appear",
      "prop": "lat",
      "style": "grow",
-     "over": 1.3
+     "over": 0.7
     },
     {
      "at": "microscopic structures",
@@ -701,12 +825,15 @@
    "continue": true,
    "camera": {
     "focus": [
-     "cam"
+     "lat",
+     "small"
     ],
     "framing": "medium",
     "angle": "front",
     "move": "drift",
-    "amount": 0.3
+    "amount": 0.3,
+    "fill": 1.25,
+    "glide": 1
    },
    "actions": [
     {
@@ -776,12 +903,15 @@
    "continue": true,
    "camera": {
     "focus": [
-     "cam2"
+     "lat",
+     "small"
     ],
     "framing": "medium",
     "angle": "front",
     "move": "drift",
-    "amount": 0.4
+    "amount": 0.4,
+    "fill": 1.3,
+    "glide": 1.2
    },
    "actions": [
     {
@@ -812,8 +942,15 @@
      "do": "set",
      "prop": "lat",
      "param": "tilt",
-     "to": 0.45,
+     "to": 1.0,
      "over": 1.2
+    },
+    {
+     "at": "crystals",
+     "do": "scale",
+     "prop": "lat",
+     "to": 0.76,
+     "over": 1
     }
    ]
   },
@@ -823,12 +960,15 @@
    "continue": true,
    "camera": {
     "focus": [
-     "cam3"
+     "lat",
+     "small"
     ],
     "framing": "medium",
     "angle": "front",
-    "move": "pull_out",
-    "amount": 0.4
+    "move": "drift",
+    "amount": 0.3,
+    "fill": 1.12,
+    "glide": 1.2
    },
    "actions": [
     {
@@ -885,11 +1025,35 @@
     },
     {
      "at": "Bigger gaps",
-     "do": "set",
+     "do": "scale",
      "prop": "lat",
-     "param": "tilt",
-     "to": 0.7,
-     "over": 1.2
+     "to": 0.8,
+     "over": 1.2,
+     "ease": "linear"
+    },
+    {
+     "at": {
+      "phrase": "orange",
+      "edge": "end"
+     },
+     "do": "scale",
+     "prop": "lat",
+     "to": 0.815,
+     "over": 0.6
+    },
+    {
+     "at": {
+      "phrase": "orange",
+      "edge": "end"
+     },
+     "do": "move",
+     "prop": "lat",
+     "to": [
+      0,
+      0.14,
+      0
+     ],
+     "over": 0.6
     }
    ]
   },
@@ -908,7 +1072,8 @@
       "#5a2c0a",
       "#4a0808"
      ]
-    }
+    },
+    "haze": 0
    },
    "props": [
     {
@@ -989,7 +1154,8 @@
     "framing": "close",
     "angle": "front",
     "move": "drift",
-    "amount": 0.3
+    "amount": 0.3,
+    "fill": 0.85
    },
    "actions": [
     {
@@ -999,13 +1165,20 @@
      "style": "pop"
     },
     {
-     "at": {
-      "phrase": "paint",
+     "do": "icon",
+     "name": "no",
+     "style": "plain",
+     "size": 2.3,
+     "place": [
+      -0.85,
+      0.55,
+      0.5
+     ],
+     "until": {
+      "phrase": "physics",
       "edge": "end"
      },
-     "do": "icon",
-     "name": "x",
-     "prop": "paint"
+     "at": "No paint"
     },
     {
      "at": {
@@ -1024,13 +1197,20 @@
      "style": "pop"
     },
     {
-     "at": {
-      "phrase": "dye",
-      "edge": "start"
-     },
      "do": "icon",
-     "name": "x",
-     "prop": "dye"
+     "name": "no",
+     "style": "plain",
+     "size": 2.3,
+     "place": [
+      0.85,
+      0.55,
+      0.5
+     ],
+     "until": {
+      "phrase": "physics",
+      "edge": "end"
+     },
+     "at": "No dye"
     },
     {
      "at": {
@@ -1047,56 +1227,16 @@
      "do": "appear",
      "prop": "atom",
      "style": "pop"
-    },
-    {
-     "at": {
-      "phrase": "physics",
-      "edge": "end",
-      "offset": 0.05
-     },
-     "do": "disappear",
-     "prop": "tune",
-     "style": "shrink",
-     "over": 0.4
-    },
-    {
-     "at": {
-      "phrase": "physics",
-      "edge": "end",
-      "offset": 0.05
-     },
-     "do": "disappear",
-     "prop": "paint",
-     "style": "shrink",
-     "over": 0.4
-    },
-    {
-     "at": {
-      "phrase": "physics",
-      "edge": "end",
-      "offset": 0.05
-     },
-     "do": "disappear",
-     "prop": "dye",
-     "style": "shrink",
-     "over": 0.4
-    },
-    {
-     "at": {
-      "phrase": "physics",
-      "edge": "end",
-      "offset": 0.05
-     },
-     "do": "disappear",
-     "prop": "atom",
-     "style": "shrink",
-     "over": 0.4
     }
    ]
   },
   {
    "id": "emotions",
-   "start": "Chameleons shift",
+   "start": {
+    "phrase": "physics",
+    "edge": "end",
+    "offset": 0.1
+   },
    "env": {
     "type": "studio",
     "floor": false,
@@ -1106,7 +1246,8 @@
       "#10161c",
       "#4a0a10"
      ]
-    }
+    },
+    "haze": 0
    },
    "props": [
     {
@@ -1114,10 +1255,10 @@
      "type": "chameleon",
      "at": [
       0,
-      1.15,
+      1,
       0
      ],
-     "size": 2.0,
+     "size": 2,
      "color": {
       "dial": "top",
       "from": [
@@ -1139,10 +1280,10 @@
      "type": "chameleon",
      "at": [
       0,
-      -1.25,
+      -1.1,
       0
      ],
-     "size": 2.0,
+     "size": 2,
      "rotate": [
       0,
       180,
@@ -1163,61 +1304,47 @@
        "#7d8790"
       ]
      }
-    },
-    {
-     "id": "bolt1",
-     "type": "lightning",
-     "at": [
-      -0.35,
-      -0.05,
-      0.4
-     ],
-     "size": 0.9,
-     "color": "#ffb020"
-    },
-    {
-     "id": "bolt2",
-     "type": "lightning",
-     "at": [
-      0.3,
-      -0.05,
-      0.4
-     ],
-     "size": 0.9,
-     "color": "#ffb020"
-    },
-    {
-     "id": "sunp",
-     "type": "sun",
-     "at": [
-      -0.85,
-      1.6,
-      0.5
-     ],
-     "size": 0.55
-    },
-    {
-     "id": "cam",
-     "type": "ball",
-     "at": [
-      0,
-      0,
-      0
-     ],
-     "size": 1.9,
-     "hidden": true
     }
    ],
    "camera": {
     "focus": [
-     "cam"
+     "ctop",
+     "cbot"
     ],
     "framing": "medium",
+    "fill": 1.3,
     "angle": "front",
     "move": "drift",
     "amount": 0.3
    },
    "actions": [
+    {
+     "at": "Chameleons shift",
+     "do": "appear",
+     "prop": "ctop",
+     "style": "fade",
+     "over": 0.3
+    },
+    {
+     "at": "Chameleons shift",
+     "do": "appear",
+     "prop": "cbot",
+     "style": "fade",
+     "over": 0.3
+    },
+    {
+     "at": {
+      "phrase": "Chameleons",
+      "offset": -0.48
+     },
+     "do": "sfx",
+     "name": "none"
+    },
+    {
+     "at": "Chameleons shift",
+     "do": "sfx",
+     "name": "whoosh"
+    },
     {
      "at": "attract mates",
      "do": "icon",
@@ -1227,7 +1354,9 @@
       0.45,
       0.6
      ],
-     "until": "fight"
+     "until": "fight",
+     "style": "plain",
+     "size": 1.8
     },
     {
      "at": "mates",
@@ -1238,7 +1367,9 @@
       -0.1,
       0.6
      ],
-     "until": "fight"
+     "until": "fight",
+     "style": "plain",
+     "size": 1.8
     },
     {
      "at": {
@@ -1252,46 +1383,9 @@
       -0.35,
       0.6
      ],
-     "until": "fight"
-    },
-    {
-     "at": "fight rivals",
-     "do": "appear",
-     "prop": "bolt1",
-     "style": "pop"
-    },
-    {
-     "at": "rivals",
-     "do": "appear",
-     "prop": "bolt2",
-     "style": "pop"
-    },
-    {
-     "at": "body temperature",
-     "do": "appear",
-     "prop": "sunp",
-     "style": "pop"
-    },
-    {
-     "at": "lose their",
-     "do": "color",
-     "prop": "bolt1",
-     "to": "grey",
-     "over": 1.0
-    },
-    {
-     "at": "lose their",
-     "do": "color",
-     "prop": "bolt2",
-     "to": "grey",
-     "over": 1.0
-    },
-    {
-     "at": "lose their",
-     "do": "color",
-     "prop": "sunp",
-     "to": "grey",
-     "over": 1.0
+     "until": "fight",
+     "style": "plain",
+     "size": 1.8
     },
     {
      "at": "lose their",
@@ -1306,6 +1400,136 @@
      "prop": "cbot",
      "strength": 0.1,
      "for": 0.5
+    },
+    {
+     "at": "fight rivals",
+     "do": "icon",
+     "name": "bolt",
+     "style": "plain",
+     "size": 2.6,
+     "color": "#f0a43a",
+     "place": [
+      -0.42,
+      -0.05,
+      0.6
+     ],
+     "id": "bolt-a",
+     "until": "temperature"
+    },
+    {
+     "at": "rivals",
+     "do": "icon",
+     "name": "bolt",
+     "style": "plain",
+     "size": 2.6,
+     "color": "#f0a43a",
+     "place": [
+      0.42,
+      -0.05,
+      0.6
+     ],
+     "id": "bolt-b",
+     "until": "temperature"
+    },
+    {
+     "at": "and regulate",
+     "do": "color",
+     "icon": "bolt-a",
+     "to": "#8a5530",
+     "over": 0.6
+    },
+    {
+     "at": "and regulate",
+     "do": "color",
+     "icon": "bolt-b",
+     "to": "#8a5530",
+     "over": 0.6
+    },
+    {
+     "at": "body temperature",
+     "do": "icon",
+     "name": "sun",
+     "style": "plain",
+     "size": 1.55,
+     "color": "#ffc23a",
+     "place": [
+      -0.75,
+      1.75,
+      0.5
+     ],
+     "until": "Without"
+    },
+    {
+     "at": "Without this",
+     "do": "icon",
+     "name": "heart",
+     "style": "plain",
+     "size": 1.84,
+     "color": "#c9ced4",
+     "place": [
+      -0.66,
+      0.25,
+      0.6
+     ],
+     "id": "g-heart"
+    },
+    {
+     "at": "Without this",
+     "do": "icon",
+     "name": "sun",
+     "style": "plain",
+     "size": 1.96,
+     "color": "#c9ced4",
+     "place": [
+      0.66,
+      0.25,
+      0.6
+     ],
+     "id": "g-sun"
+    },
+    {
+     "at": "Without this",
+     "do": "icon",
+     "name": "bolt",
+     "style": "plain",
+     "size": 2.2,
+     "color": "#c9ced4",
+     "place": [
+      0,
+      -0.12,
+      0.6
+     ],
+     "id": "g-bolt"
+    },
+    {
+     "at": {
+      "phrase": "they'd lose",
+      "offset": -0.25
+     },
+     "do": "color",
+     "icon": "g-heart",
+     "to": "#59606a",
+     "over": 0.5
+    },
+    {
+     "at": {
+      "phrase": "they'd lose",
+      "offset": -0.25
+     },
+     "do": "color",
+     "icon": "g-sun",
+     "to": "#59606a",
+     "over": 0.5
+    },
+    {
+     "at": {
+      "phrase": "they'd lose",
+      "offset": -0.25
+     },
+     "do": "color",
+     "icon": "g-bolt",
+     "to": "#59606a",
+     "over": 0.5
     }
    ]
   },
@@ -1325,7 +1549,7 @@
      "rotate": [
       0,
       -35,
-      55
+      30
      ],
      "color": {
       "dial": "finale",
@@ -1339,8 +1563,9 @@
     ],
     "framing": "close",
     "angle": "front",
-    "move": "orbit",
-    "amount": 0.3
+    "move": "pull_out",
+    "amount": 0.65,
+    "fill": 1.3
    },
    "actions": [
     {
@@ -1351,10 +1576,16 @@
     },
     {
      "at": "What other",
-     "do": "text",
-     "text": "?",
-     "style": "stamp",
-     "pos": "top"
+     "do": "icon",
+     "name": "question",
+     "style": "plain",
+     "size": 2.1,
+     "color": "#d6c64a",
+     "place": [
+      0.6,
+      1.1,
+      0.4
+     ]
     }
    ]
   }
