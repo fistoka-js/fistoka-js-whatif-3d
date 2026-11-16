@@ -1,6 +1,6 @@
 # STATUS
 
-Last updated: 2026-11-16 (round 2 part 5, the writer, built; review hit the 8-round cap with 0 clean; round 8's 7 problems fixed in one last unreviewed pass; committed at the cap with Jacob's approval). Task numbers match PLAN.md.
+Last updated: 2026-11-16 (round 2 part 5, the writer, built; review hit the 8-round cap with 0 clean; round 8's 7 problems fixed in one last unreviewed pass; committed at the cap with Jacob's approval; beat word checks cut to a short exact-phrase list, new review loop started; second review loop hit the cap, final 2 fixes applied). Task numbers match PLAN.md.
 
 ## Where work stopped (read this first)
 - **Round 2 part 3b is committed** as `36b2c0a` (not pushed). It added the crash fix, camera `fill` and `glide`, icon `size` / colour / longer `until`, studio `haze`, a smoother camera "up" during glides, the picture check using each prop's real outline, and a much closer chameleon rebuild. It hit the 8-round review cap with no clean pass; Jacob approved committing at the cap on 13 Nov. Remaining visual gaps against the approved video: no leaf backdrop, a smaller tuner, darker middle backgrounds, fewer hearts and no red backdrop in the "emotions" part, and a gold end chameleon where the original is light green. Nobody has listened to the audio yet. Notes: `docs/briefs/part3b-open-review.md`.
@@ -54,6 +54,8 @@ In `E:\Youtube Project\whatif-3d\shows\`:
   - If no prop can show the mechanism (`feasible: false`), the writer writes `NEEDS-PROPS.md`, exits with code 3, and the topic goes to `queue/needs-props/`.
   - A fallback (slideshow) show counts as a failed topic in `run.py` unless `--allow-fallback` is given, and upload refuses a fallback show.
   - Chameleon is the only worked example in the prompt. Files mode (no API) still works.
+  - 16 Nov: an extra review after the commit found 6 problems, fixed in `dd51869`. Then the beat word checks were cut down to a short fixed list of exact phrases (Jacob's decision), because looser checks kept producing false alarms and misses; a new review loop was started.
+  - 16 Nov: second review loop after the beat-check simplification ran 8 rounds (cap), round 7 clean, round 8 found 2 small problems, fixed in one last unreviewed pass; Jacob approved committing.
 
 ## Not done
 - **Round 2 part 3b**: finish the 8 review items in `docs/briefs/part3b-open-review.md`, re-make the chameleon video and sheets, then get two clear reviews in a row and commit. **Next step.**

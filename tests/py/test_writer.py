@@ -219,6 +219,18 @@ def test_every_show_reply_bad_uses_the_fallback(tmp_path):
     assert "- Show: fallback: not good enough to publish" in review
 
 
+def test_a_show_with_non_object_shots_is_repaired_then_falls_back(tmp_path):
+    junk = {"format": 1, "shots": ["x"]}
+    code, folder, fake = run_writer(tmp_path, {"script": [script_reply()], "audit": [audit_reply(GOOD_CLAIM)],
+                                               "show": [junk], "repair": [junk, {"shots": [None]}, junk]})
+    assert code == 0
+    assert fake.purposes == ["script", "audit", "show", "repair1", "repair2", "repair3"]
+    assert result(folder)["status"] == "fallback"
+    assert (folder / "review.md").exists()
+    for bad in ({"shots": [None]}, {"shots": "abc"}, {"a": 1}, {"shots": [[1]]}, {"shots": 5}):
+        assert writer.dial_reach(bad) == 0
+
+
 def test_an_llm_show_is_not_marked_as_fallback(tmp_path):
     code, folder, fake = run_writer(tmp_path, {"script": [script_reply()], "audit": [audit_reply(GOOD_CLAIM)],
                                                "show": [good_show]})
@@ -241,6 +253,19 @@ def test_not_feasible_writes_needs_props_and_exits_3(tmp_path):
     assert "- a wing scale with ridges" in text and "- a gap that can vary" in text
     assert result(folder)["status"] == "needs_props"
     assert not (folder / "show.json").exists() and not (folder / "voice.mp3").exists()
+
+
+def test_first_call_not_feasible_ignores_its_script_and_review_says_nothing_was_accepted(tmp_path):
+    reply = script_reply(feasible=False, mechanism_prop=MECHANISM, missing=["a wing scale"])
+    code, folder, fake = run_writer(tmp_path, {"script": [reply]})
+    assert code == 3 and fake.purposes == ["script"]
+    assert not (folder / "voice.mp3").exists()
+    review = (folder / "review.md").read_text(encoding="utf-8")
+    assert "No script was accepted" in review
+    assert review.startswith("# Review: " + folder.name + "\n")
+    for gone in ("## Script", "## Claims to check", "## Description", "## Tags", "last one the run accepted",
+                 "Automatic fact check"):
+        assert gone not in review
 
 
 def test_not_feasible_topic_goes_to_the_needs_props_queue(tmp_path, monkeypatch):
@@ -389,12 +414,12 @@ def test_beat_problems_finds_missing_wrong_length_and_no_change():
     assert "the beat list has 3 entries but the script has 5 sentences" in short[0]
     assert writer.beat_problems(SCRIPT, writer.normalise_beats(beats_for(SCRIPT))) == []
     assert writer.script_sentences("No paint. No dye. Just physics.") == ["No paint.", "No dye.", "Just physics."]
-    # A camera move or a label is not a change (the story rules do not count them).
+    # A camera move or a label named exactly as in the list is flagged.
     camera = writer.normalise_beats(beats_for(SCRIPT))
     camera[0]["change"] = "the camera pushes in"
     camera[2]["change"] = "a label appears"
     found = writer.beat_problems(SCRIPT, camera)
-    assert len(found) == 2 and "S1" in found[0] and "only a camera move or on-screen text" in found[0]
+    assert len(found) == 2 and "S1" in found[0] and "nothing visibly changes" in found[0]
     assert "S3" in found[1]
 
 
@@ -405,23 +430,15 @@ def test_a_beat_list_that_does_not_match_the_voiced_sentences_is_not_passed_on()
     assert "no usable picture plan" in writer.show_user_prompt("t", words[:-5], SCRIPT, beats)
 
 
-def test_shown_is_no_change_and_real_changes_are_not_taken_for_camera_words():
+def test_beat_problems_names_the_flagged_beats_only():
     beats = writer.normalise_beats(beats_for(SCRIPT))
     beats[0]["change"] = "shown"
     beats[1]["change"] = "is shown"
     beats[2]["change"] = "a pan of water starts to boil"          # "pan" is a thing here
-    beats[3]["change"] = "counter-rotating gears speed up"        # "counter" is part of a word
+    beats[3]["change"] = "counter-rotating gears speed up"
     found = writer.beat_problems(SCRIPT, beats)
     assert len(found) == 2 and "S1" in found[0] and "S2" in found[1]
     assert all("nothing visibly changes" in p for p in found)
-    for real in ("cuts in half", "zooms away", "zooms across the sky", "the lattice spreads", "the skin turns red",
-                 "the figure skates off", "counter-rotating gears speed up", "a number-line unrolls"):   # e.g. a comet that zooms away
-        assert writer.beat_problems(SCRIPT, writer.normalise_beats(beats_for(SCRIPT, change=real))) == [], real
-    for camera in ("camera pans", "the camera pulls out", "zoom in", "a label appears", "pans across the sea",
-                   "numbers count up", "the number rises", "the counter climbs",
-                   "a question mark appears", "the digits flip"):
-        beats = writer.normalise_beats(beats_for(SCRIPT, change=camera))
-        assert "only a camera move or on-screen text" in writer.beat_problems(SCRIPT, beats)[0], camera
 
 
 def test_a_dash_dial_is_not_printed_in_review(tmp_path):
@@ -978,8 +995,6 @@ def test_a_shorten_without_claims_does_not_keep_the_old_claims():
 def test_beats_note_names_the_real_problem():
     assert writer.beats_note([]) is None
     assert writer.beats_note(['S4 "x": nothing visibly changes. Rewrite']) == "script has sentences with no visible change"
-    assert writer.beats_note(['S1 "x": "a label appears" is only a camera move or on-screen text']) \
-        == "script has sentences with no visible change"
     wrong_count = ["the beat list has 4 entries but the script has 5 sentences (a sentence ends at . ? or !)"]
     assert writer.beats_note(wrong_count) == "the picture plan does not fit the script"
 
@@ -1043,17 +1058,38 @@ def test_flagged_claims_after_a_shorten_are_not_called_flagged_after_a_redraft(t
     assert "Still flagged after one redraft" not in review
 
 
-def test_more_ways_to_say_nothing_changes_are_caught_and_real_changes_pass():
-    for nothing in ("stays the same", "it stays the same", "no visible change", "nothing moves", "remains still",
-                    "No change.", "unchanged", "nothing happens", "it does not change", "the ice stays the same",
-                    "there is no change", "The crystal remains static", "nothing changes at all"):
-        assert writer.is_no_change(nothing), nothing
-        found = writer.beat_problems(SCRIPT, writer.normalise_beats(beats_for(SCRIPT, change=nothing)))
-        assert found and all("nothing visibly changes" in p for p in found), nothing
-    for real in ("the lattice spreads", "the skin turns red", "the ice stays cold while the water boils",
-                 "the wave stays in frame while its colour shifts", "the crystal changes colour",
-                 "nothing moves except the lattice", "it moves faster", "the oceans pull back"):
+# The beat check flags only an empty change or one exact phrase from the list (case, apostrophes and end
+# punctuation ignored). Everything else passes on purpose: a false alarm costs the run's one rewrite.
+FLAGGED = (
+    "none", "n/a", "nothing", "no change", "no visible change", "nothing happens", "nothing changes",
+    "nothing moves", "stays", "it stays", "stays the same", "it stays the same", "remains the same",
+    "unchanged", "same as before", "static", "idle", "is shown", "it is shown", "shown", "spins", "it spins",
+    "bobs", "it bobs", "orbits", "it orbits", "camera move", "zoom in", "zoom out",
+    "zooms in", "zooms out", "pan", "pans", "pan left", "pan right", "pan across", "the camera zooms in",
+    "the camera zooms out", "the camera pans", "the camera pulls back", "the camera pushes in",
+    "a label appears", "the label appears", "text appears", "a number counts up", "the number counts up",
+    "the counter counts up")
+PASSES = (
+    "tilts up", "pulls back", "the orbit widens", "the moon orbits closer", "the lizard stays green",
+    "the skin turns red", "zoom in as the crystals spread apart", "nothing moves except the lattice",
+    "the lattice spreads", "the oceans pull back", "the lizard spins", "a pan of water starts to boil", "drifts", "it drifts", "drifts apart")
+
+
+def test_the_beat_check_flags_only_an_empty_change_or_an_exact_phrase():
+    for phrase in FLAGGED:
+        for variant in (phrase, phrase.upper(), f"  {phrase.capitalize()}. ", f"({phrase})", phrase.replace(" ", "  ")):
+            assert writer.is_no_change(variant), variant
+    for empty in ("", "   ", "-", "—", "...", "(none)"):
+        assert writer.is_no_change(empty), empty
+    assert writer.is_no_change("Same as before!") and writer.is_no_change("No change?")
+    for odd in ("Nothing happens…", "“none”", "none —", "[none]", "Zoom in…", "Spins!", "none;",
+                "_", "none_", "stays_", "_none_", "__"):
+        assert writer.is_no_change(odd), odd
+    for real in PASSES:
         assert not writer.is_no_change(real), real
+        assert writer.beat_problems(SCRIPT, writer.normalise_beats(beats_for(SCRIPT, change=real))) == [], real
+    found = writer.beat_problems(SCRIPT, writer.normalise_beats(beats_for(SCRIPT, change="zoom in")))
+    assert found and all("nothing visibly changes" in p and '"zoom in"' in p for p in found)
 
 
 def test_beat_sentences_match_whole_words_and_short_sentences_must_be_copied():
@@ -1063,6 +1099,7 @@ def test_beat_sentences_match_whole_words_and_short_sentences_must_be_copied():
     assert not match("It is light.", "It is not paint.", 1)
     assert match("No dye.", "No dye.", 2) and match('"NO  DYE"', "No dye.", 2)
     assert match("2", "No dye.", 2) and match("S2", "No dye.", 2) and not match("S1", "No dye.", 2)
+    assert match("2 moons collide.", "2 moons collide.", 2)
     assert match("Earths tilt would wobble.", "Earth's tilt would wobble.", 1)
     # The chameleon script with every beat shifted by one is caught.
     script = "No paint. No dye. Just physics."
@@ -1073,54 +1110,6 @@ def test_beat_sentences_match_whole_words_and_short_sentences_must_be_copied():
     assert len(found) == 3 and all("not this sentence" in p for p in found)
     straight = [dict(b, sentence=s) for b, s in zip(shifted, sents)]
     assert writer.beat_problems(script, straight) == []
-
-
-# The word checks are cautious (see writer.py): only a whole change in one clear shape is flagged. A false
-# alarm costs the run's one rewrite; a miss only gives the show call a weaker plan.
-NO_CHANGE_FLAGGED = (
-    "nothing at all happens", "the chameleon is shown", "\u2014", "-", "(none)", "n/a", "",
-    "nothing changes yet", "no visible change here", "same as before", "holds still", "is visible",
-    "appears unchanged", "does nothing", "idle", "the lizard sits still", "the lizard just sits there",
-    "nothing new", "hold on the lizard", "nothing, just the lizard", "the lizard spins", "the lizard bobs",
-    "the lizard rotates slowly", "It doesn\u2019t move.", "stays", "it stays", "the same", "no changes",
-    "no visible changes", "nothing visibly changes")
-REAL_CHANGES = (
-    # Real changes that contain a "no change" word somewhere inside.
-    "the drop that stays on the leaf shrinks", "the remains of the star collapse", "the stay cables tighten",
-    "the temperature stays below zero so ice forms", "the colour stays green until the crystals spread",
-    "nothing moves except the lattice", "the wave stays in frame while its colour shifts",
-    "the skin stays green then turns red", "the chameleon is shown turning red",
-    "it is a lizard that changes colour", "no dye bleeds into the water",
-    # Real changes that contain a camera word.
-    "camera shows the skin turning red", "zoom in on the cells swelling", "pan across the ice spreading",
-    "push in on the crystals spreading apart", "zoom in as the crystals spread apart",
-    "the camera pulls back while the skin turns red", "a label appears and the gaps open",
-    "the camera-trap lizard turns red", "zoom in as the skin turns red", "the camera pushes in, then the ice cracks",
-    "zooms away", "a pan of water starts to boil", "counter-rotating gears speed up")
-UNCLEAR_LEFT_TO_THE_SHOW_CALL = (
-    # Not one clear shape, so neither check flags them (the show call and story rules judge the show).
-    "the skin stays green", "The lizard remains on the branch", "zoom in and then a label appears",
-    "the camera zooms in and out", "a label appears; numbers count up",
-    "the camera pulls back while a caption fades in")
-CAMERA_FLAGGED = (
-    "slow zoom in", "zoom in on the lizard", "the camera pulls back", "a label appears", "a quick zoom in",
-    "slowly zoom out", "the camera pushes in", "camera pans left")
-
-
-def test_the_word_checks_flag_only_clear_whole_changes():
-    for nothing in NO_CHANGE_FLAGGED:
-        assert writer.is_no_change(nothing), nothing
-        assert not writer.is_camera_or_overlay_only(nothing), nothing
-    for camera in CAMERA_FLAGGED:
-        assert writer.is_camera_or_overlay_only(camera), camera
-        assert not writer.is_no_change(camera), camera
-    for text in REAL_CHANGES + UNCLEAR_LEFT_TO_THE_SHOW_CALL:
-        assert not writer.is_no_change(text), text
-        assert not writer.is_camera_or_overlay_only(text), text
-    # Spin and bob go through beat_problems as "nothing visibly changes".
-    for idle in ("the lizard spins", "the lizard bobs"):
-        found = writer.beat_problems(SCRIPT, writer.normalise_beats(beats_for(SCRIPT, change=idle)))
-        assert found and all("nothing visibly changes" in p for p in found), idle
 
 
 def test_thousands_separators_and_any_apostrophe_do_not_make_a_different_sentence():
@@ -1248,44 +1237,48 @@ def test_not_feasible_rewrite_after_a_shorten_does_not_report_a_voice_or_show(tm
     review = (folder / "review.md").read_text(encoding="utf-8")
     assert LONG_SCRIPT in review and "The beat rewrite after the shorten step answered" in review
     assert "the beat rewrite after the shorten step answered" not in review
-    assert "STILL WRONG" not in review and "show call" not in review and "Voice: none used" in review
+    assert "STILL WRONG" not in review and "show call" not in review and "Voice: none used" not in review
+    assert "Voice: a voice was made for the script below, but no show was built" in review
     assert "NEEDS FACT CHECK" not in review and "Redrafted: no" in review
     assert "The shorten step's script (not shown: its rewrite answered" in review and "Sent back once" not in review
     r = result(folder)
     assert r["beats_note"] is None and r["beat_problems"] == [] and r["needs_fact_check"] is False
 
 
-def test_bare_verbs_are_the_subjects_change_and_only_a_named_camera_is_a_camera_move():
-    # The subject has its own field, so a bare verb is the subject's change: neither check flags it.
-    for real in ("tilts up", "pulls back", "pushes in", "cuts", "cuts into the apple", "cut to the lattice",
-                 "the lever tilts down", "zooms across the sky", "a pan of water starts to boil", "the pores close up"):
-        assert not writer.is_camera_or_overlay_only(real), real
-        assert writer.beat_problems(SCRIPT, writer.normalise_beats(beats_for(SCRIPT, change=real))) == [], real
-    # Starting with the camera, a camera noun, "zoom in/out" or "pan left/right/across" is a camera move.
-    for camera in ("zoom out", "pan right", "pan across the reef", "close-up on the lizard", "a slow close-up",
-                   "wide shot", "the camera tilts up", "camera cuts to the lattice",
-                   "the camera orbits around the lizard", "camera"):
-        assert writer.is_camera_or_overlay_only(camera), camera
-        assert not writer.is_no_change(camera), camera
-        found = writer.beat_problems(SCRIPT, writer.normalise_beats(beats_for(SCRIPT, change=camera)))
-        assert found and all("only a camera move or on-screen text" in p for p in found), camera
-    # Orbiting is idle motion, like spin and bob: "nothing visibly changes", not "a camera move".
-    for idle in ("orbits around the sun", "the moon orbits the earth", "orbits"):
-        assert writer.is_no_change(idle) and not writer.is_camera_or_overlay_only(idle), idle
-        found = writer.beat_problems(SCRIPT, writer.normalise_beats(beats_for(SCRIPT, change=idle)))
-        assert found and all("nothing visibly changes" in p for p in found), idle
-    assert not writer.is_no_change("the moon orbits the earth while its shadow grows")
+def test_not_feasible_rewrite_of_the_first_script_says_nothing_was_accepted(tmp_path):
+    bad = beats_for(SCRIPT)
+    bad[3]["change"] = "none"
+    code, folder, fake = run_writer(tmp_path, {
+        "script": [script_reply(beats=bad)], "script-rewrite": [NOT_FEASIBLE]})
+    assert code == 3 and fake.purposes == ["script", "script-rewrite"]
+    review = (folder / "review.md").read_text(encoding="utf-8")
+    assert "No script was accepted" in review and "Voice: none used" in review
+    for gone in ("## Script", "## Claims to check", "## Description", "last one the run accepted",
+                 "Automatic fact check"):
+        assert gone not in review
+    r = result(folder)
+    assert r["status"] == "needs_props" and r["beat_rewrite"] is True
+    for gone in ("title", "description", "tags", "beats"):
+        assert gone not in r
 
 
-def test_common_nouns_ending_in_ing_are_plain_things_but_ing_verbs_are_not():
-    for nothing in ("the spring stays still", "the wing stays still", "the building sits still", "the ring spins",
-                    "the coil-spring stays the same", "the drop stays the same", "the earth spins"):
-        assert writer.is_no_change(nothing), nothing
-    for real in ("the cells swelling stays the same", "the ice melting stays still", "the ring ringing spins",
-                 "zoom in on the cells swelling", "pan across the ice spreading"):
-        assert not writer.is_no_change(real), real
-        assert not writer.is_camera_or_overlay_only(real), real
-    assert writer.is_camera_or_overlay_only("zoom in on the spring")
+def test_not_feasible_rewrite_of_the_first_script_does_not_voice_or_list_old_voice_files(tmp_path):
+    folder = tmp_path / "moon"
+    folder.mkdir()
+    for name in ("script.txt", "words.json", "voice.mp3", "voice.stats.json"):
+        (folder / name).write_text("[]", encoding="utf-8")        # an earlier run's voice
+    voiced = []
+    bad = beats_for(SCRIPT)
+    bad[3]["change"] = "none"
+    fake = FakeLLM(folder, {"script": [script_reply(beats=bad)], "script-rewrite": [NOT_FEASIBLE]})
+    code = writer.write("What if the Moon vanished?", "moon", mode="api", settings=dict(writer.DEFAULTS),
+                        complete=fake, voice_fn=lambda *a: voiced.append(a), qa_fn=QA_PASS, shows_dir=tmp_path)
+    assert code == 3 and voiced == []
+    assert (folder / "script.txt").read_text(encoding="utf-8") == "[]"      # not rewritten with the unaudited draft
+    files = (folder / "review.md").read_text(encoding="utf-8").split("## Files")[1]
+    for gone in ("script.txt", "words.json", "voice.mp3", "voice.stats.json"):
+        assert gone not in files
+    assert "review.md" in files and "writer.json" in files
 
 
 def test_the_dial_tag_in_the_script_prompt_is_the_one_the_code_prints():
@@ -1427,22 +1420,22 @@ def test_files_mode_reset_then_not_feasible_after_a_shorten_leaves_matching_voic
     assert go() == 3 and voiced == [208, 50, 208]
 
 
-def test_orbit_is_idle_only_with_nothing_or_a_plain_object_after_it():
-    for idle in ("the moon orbits", "orbits the sun", "orbits around the sun", "the moon orbits slowly",
-                 "the lizard drifts", "drifts", "the lizard is static", "it is static", "the lizard is idle",
-                 "nothing visible changes", "the lizard stays"):
-        assert writer.is_no_change(idle), idle
-    for real in ("the moon orbits closer", "the planet orbits the sun faster", "the orbit widens",
-                 "the satellite orbits lower", "the electron orbits faster", "the moon orbits farther away",
-                 "the cells swell and drift apart", "the lizard drifts left", "the lizard stays green"):
-        assert not writer.is_no_change(real), real
-
-
 def test_dotted_initialisms_match_their_plain_form_and_never_end_a_sentence():
     match = writer.sentence_matches
     assert match("US scientists found it.", "U.S. scientists found it.", 1)
+    # a label for another beat in front of the sentence is a mismatch; the right label is fine
+    assert not match("S2 The sun is hot today.", "The sun is hot today.", 3) and not match("2 The sun is hot today.", "The sun is hot today.", 3)
+    assert match("S3 The sun is hot today.", "The sun is hot today.", 3) and match("3 The sun is hot today.", "The sun is hot today.", 3)
+    # a leading number that is part of the sentence is kept; a real label is still dropped
+    assert match("3 grains", "3 grains fall down now", 3) and match("3 grains fall down now", "3 grains fall down now", 3)
+    assert match("S3: 3 grains fall down now", "3 grains fall down now", 3) and match("S2: No dye here at all.", "No dye here at all.", 2)
+    assert match("S3 grains fall down fast", "Grains fall down fast and far", 3)
     assert match("U.S.A. scientists found it.", "USA scientists found it.", 1)
     assert not match("UK scientists found it.", "U.S. scientists found it.", 1)
+    # a dropped final dot is the same word, on either side
+    assert match("The U.S is a big country with many people.", "The U.S. is a big country with many people.", 1)
+    assert match("The U.S. is a big country with many people.", "The U.S is a big country with many people.", 1)
+    assert match("Meet at 5 p.m", "Meet at 5 p.m.", 1) and match("Meet at 5 p.m.", "Meet at 5 p.m", 1)
     assert writer.script_sentences("The U.S.A. is big. Yes. Dr. Lee agrees.") == ["The U.S.A. is big.", "Yes.", "Dr. Lee agrees."]
 
 

@@ -21,8 +21,11 @@ Tests: `tests/py/test_writer.py`, `test_fact_check.py`, `test_fallback.py`, `tes
      closing question. One subject, one chain of cause and effect, 150-175 words (the voice reads about
      3.3 words a second, so 175 words is about 53 s and fits the 55 s limit).
    - `beats` has one entry per sentence: `subject` (the thing that stays on screen), `change` (what
-     visibly changes while the sentence is spoken, as a verb; a camera move, a label, spin, bob, orbit or idle drift does not count). The check is cautious: it flags only clear cases, and anything unclear is left to the show call (a false alarm would use up the run's one rewrite and could leave the show call with no plan; a miss only gives a weaker plan). It flags a change only when the WHOLE change is one short "nothing happens" shape ("-", "none", "nothing happens", "the lizard sits still", "it stays the same", "hold on the lizard", "nothing, just the lizard", "the lizard spins", "the lizard drifts", "the lizard is static", "orbits around the sun"; "the moon orbits closer" or "orbits the sun faster" is a real change) or one camera/text shape ("slow zoom in", "zoom in on the lizard", "the camera pulls back", "a label appears"); a word inside a longer sentence never counts, so "the drop that stays on the leaf shrinks", "nothing moves except the lattice", "zoom in on the cells swelling" and "zoom in as the crystals spread apart" pass, and so do unclear ones such as "the skin stays green". The subject has its own field, so a bare verb is the subject's own change and is never called a camera move ("tilts up", "pulls back", "pushes in", "cuts into the apple"): a camera move is flagged only when the change starts with "camera", a camera noun ("close-up", "wide shot") or "zoom"/"pan" ("zoom in", "pan left", "pans across the sea"). In "the X", -ing words are refused ("the cells swelling" is not a plain thing) except a short list of common nouns such as "spring", "wing", "ring" and "building")
-     and `dial` (the number that drives it, if any). If a sentence has no showable change, or the list
+     visibly changes while the sentence is spoken, as a verb; a camera move, a label, spin, bob or orbit does not count) and `dial` (the number that drives it, if any).
+     The check is tiny on purpose: it flags a change only when it is empty or exactly one of a short fixed list of phrases (`NO_VISIBLE_CHANGE` in `pipeline/writer.py`: "none", "nothing happens", "stays the same", "spins", "zoom in", "the camera pulls back", "a label appears", ...), ignoring case, apostrophes and end punctuation (any non-letter, non-digit at either end).
+     Everything else passes, even when it is weak ("tilts up", "nothing moves except the lattice"); the show call and the story rules judge those.
+     This is deliberate: a false alarm would use up the run's one rewrite, while a miss only gives a slightly weaker plan.
+     If a sentence has no showable change, or the list
      does not match the sentences (a sentence ends at . ? or !, but not after a common abbreviation or a dotted initialism such as "U.S.", "U.S.A.", "Dr.", "Mr.", "e.g." or "etc."; the script prompt asks for none, so a real sentence ending in one joins the next; a wrong count, or a beat whose copied `sentence` is clearly another sentence, judged on whole words, so "No dye." is not "No paint." and a sentence under 5 words must be copied almost exactly; case, quotes and apostrophes of any kind, spacing, punctuation ("U.S." is "US"), a thousands separator ("1,000" is "1000"), curly quotes after a full stop, a beat's own number and a cut-short copy of a longer sentence are fine; one changed word such as "black" for "white" is not, and a sentence that is only a number is matched as that text), the script is sent back (`script-rewrite`) before it is voiced. The
      same check runs on the fact-check redraft and on a shortened script, but there is ONE rewrite per
      run in total. If it is still wrong, review.md and `writer.json` (`beats_note`) say "script has
@@ -34,7 +37,7 @@ Tests: `tests/py/test_writer.py`, `test_fact_check.py`, `test_fallback.py`, `tes
      `queue/needs-props/`. This also applies when the beat rewrite (after the first script, the redraft or
      a shorten) answers `feasible: false`. Then `review.md` says which call stopped the run, that no show
      was made and no voice is used, and shows the last script the run accepted (never an unchecked redraft
-     or rewrite) with its own claims and fact check (NEEDS FACT CHECK if that check flagged anything);
+     or rewrite) with its own claims and fact check (NEEDS FACT CHECK if that check flagged anything). If no script was accepted yet (the first call, or the beat rewrite of the first script, answered not feasible), `review.md` is headed with the slug and says "No script was accepted", and `writer.json` has no title, description, tags or beats;
      `writer.json` has no `beats_note` or `beat_problems` for it. Voice files left from an earlier run
      (a reset in files mode) are voiced again to match that script, and an old `show.json` is not listed
      under Files.
@@ -128,7 +131,7 @@ missing uses the default). The writer reads only these keys:
 | 1 | failed (script reply unusable, voice failed, API error) | review.md, writer.json (with `error`) |
 | 2 | bad command line (missing `--topic`/`--slug`, bad slug) | nothing |
 | 3 | the topic needs props the catalogue lacks | NEEDS-PROPS.md, review.md, writer.json |
-| 4 | files mode: waiting for a reply file | the prompt file for the step it waits at, plus whatever earlier steps already made (`script.txt`, `voice.mp3`, `words.json`, `voice.stats.json`); an old writer.json and NEEDS-PROPS.md are deleted |
+| 4 | files mode: waiting for a reply file | the prompt file for the step it waits at, plus whatever earlier steps already made (`script.txt`, `voice.mp3`, `words.json`, `voice.stats.json`); an old writer.json, NEEDS-PROPS.md and review.md are deleted |
 
 ## writer.json (for the runner)
 
@@ -148,7 +151,8 @@ missing uses the default). The writer reads only these keys:
 `writer.json` exists only after a finished run (exit 0, 1 or 3). `review.md` has the same facts in words,
 the script, the picture plan (beat list), the claims as a tick list, the fact-check verdicts, how the
 show was made, the checker's warnings on the accepted show, QA findings and a cost table per call.
-A run removes an old `writer.json` and `NEEDS-PROPS.md` when it starts.
+When a not-feasible stop comes before any script was accepted, `writer.json` leaves out title, description, tags and beats, and `review.md` says "No script was accepted".
+A run removes an old `writer.json`, `NEEDS-PROPS.md` and `review.md` when it starts.
 
 ## Changing the prompts
 
@@ -187,7 +191,7 @@ Measured on 2026-11-13 (round 2), tokens = characters / 4:
 |---|---|
 | show system prompt (rules ~3,400 + catalogue ~4,700 + the chameleon example ~5,900); 56,521 characters | ~14,000 |
 | show user part (words with times + beat list, 55 s script) | ~1,400 |
-| script system prompt (rules + beat list + prop/env names); 14,076 characters, was 11,964 | ~3,500 |
+| script system prompt (rules + beat list + prop/env names); 14,064 characters, was 11,964 | ~3,500 |
 | fact-check prompt | ~1,100 |
 | a show reply (compact JSON, 3-4 scenes with dials; the chameleon example is ~4,300) | ~2,500 to 4,500 |
 
