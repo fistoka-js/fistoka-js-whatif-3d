@@ -1,6 +1,10 @@
 """The pipeline runner: topic -> show -> video -> checks -> private upload.
 
     python -m pipeline.run [--topic "..."] [--slug s] [--from-step name] [--no-upload] [--llm api|files]
+                           [--allow-fallback]
+
+A writer result that is only the fallback show ("fallback: not good enough to publish") fails the topic,
+unless --allow-fallback is given (local testing only: it is rendered, but never uploaded).
 
 Steps (in order): writer, timeline, render, mix, qa, review, upload.
 Each step is skipped when its output file exists and is newer than its inputs, so a failed run
@@ -136,6 +140,7 @@ class Show:
     def step_writer(self):
         w = read_json(self.dir / "writer.json", {})
         if w.get("status") in ("ok", "fallback") and (self.dir / "show.json").exists() and not self.forced:
+            self._refuse_fallback(w)
             return "skipped"
         mode = self.args.llm or self.settings["llm_mode"]
         code = run_cmd([sys.executable, "-m", "pipeline.writer", "--topic", self.topic, "--slug", self.slug, "--mode", mode], self.log, self.root)
@@ -145,7 +150,15 @@ class Show:
             raise WaitingForReply("the writer is waiting for a reply file in shows/%s/llm/" % self.slug)
         if code != 0:
             raise StepFailed(f"writer exited with code {code}")
+        self._refuse_fallback(read_json(self.dir / "writer.json", {}) or {})
         return "done"
+
+    def _refuse_fallback(self, w):
+        """The fallback show is a slideshow that must never be published: the topic fails (queue/failed/,
+        with the note) unless --allow-fallback was given for a local test. Upload refuses it either way."""
+        if w.get("status") == "fallback" and not getattr(self.args, "allow_fallback", False):
+            raise StepFailed(f"the writer made only a fallback show ({w.get('fallback_note') or 'fallback'}); "
+                             "see review.md. --allow-fallback renders it for a local test only")
 
     def step_timeline(self):
         ins = [self.dir / "show.json", self.dir / "words.json"]
@@ -217,10 +230,12 @@ class Show:
             return "skipped"
         if self.args.no_upload:
             return "skipped (--no-upload)"
+        w = read_json(self.dir / "writer.json", {}) or {}
+        if w.get("fallback_note"):
+            raise StepFailed(f"the show is a fallback ({w['fallback_note']}), so it is never uploaded")
         if self.qa_result() == "fail":
             raise StepFailed("the picture check failed, so the video is not uploaded (see out/qa.json)")
         from . import upload
-        w = read_json(self.dir / "writer.json", {}) or {}
         try:
             vid = upload.upload_video(self.final, w.get("title") or self.topic, w.get("description", ""), w.get("tags", []),
                                       self.settings, say=lambda m: self.log.say(m))
@@ -256,6 +271,8 @@ def main(argv=None, root=ROOT):
     ap.add_argument("--from-step", choices=STEPS)
     ap.add_argument("--no-upload", action="store_true")
     ap.add_argument("--llm", choices=["api", "files"])
+    # Local testing only (never in the GitHub workflow): render a fallback show instead of failing the topic.
+    ap.add_argument("--allow-fallback", action="store_true")
     try:
         args = ap.parse_args(argv)
     except SystemExit as e:

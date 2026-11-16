@@ -3,15 +3,21 @@
     python -m pipeline.writer --topic "What if the Moon disappeared?" --slug moon-gone [--mode api|files]
 
 Steps (docs/WRITER.md explains each in plain words):
-  1. Script call (title, script, description, tags, feasible, missing, claims). Not feasible ->
-     shows/<slug>/NEEDS-PROPS.md and exit 3.
-  2. Fact check (pipeline/fact_check.py): flagged claims -> one redraft -> anything still flagged is
-     listed under NEEDS FACT CHECK in review.md.
+  1. Script call (title, script, beats, description, tags, feasible, mechanism_prop, missing, claims).
+     Not feasible -> shows/<slug>/NEEDS-PROPS.md and exit 3. The beat list says, per sentence, what
+     stays on screen (subject), what visibly changes (change) and which dial drives it. A sentence
+     with no showable change -> one "script-rewrite" call, before any voice is made. The same check
+     runs on a redraft and on a shortened script; one rewrite per run in total.
+  2. Fact check (pipeline/fact_check.py): flagged claims -> one redraft (it may also answer
+     not feasible) -> anything still flagged is listed under NEEDS FACT CHECK in review.md.
   3. Voice (pipeline.voice.make_voice, free Edge TTS). Longer than the limit -> one "shorten" call,
      then voice again.
-  4. Show call -> shows/<slug>/show.json -> node tools/validate.mjs. Errors -> up to 3 repair rounds.
+  4. Show call (gets the beat list) -> shows/<slug>/show.json -> node tools/validate.mjs --story-rules.
+     Errors, the story.scenes / story.subject warnings, or no dial bound to two or more things ->
+     up to 3 repair rounds.
   5. Picture check (node tools/qa.mjs). fail -> one repair round, then check again; keep the best.
-  6. No valid show at all -> pipeline/fallback.py builds a plain one.
+  6. No valid show at all -> pipeline/fallback.py builds a plain one, marked
+     "fallback: not good enough to publish" (it is checked without the story rules).
   7. review.md (for the human) and writer.json (for the pipeline runner).
 
 Exit codes: 0 show written (by the LLM or the fallback), 1 failed, 2 bad command,
@@ -32,7 +38,10 @@ from . import catalog_text, fact_check, fallback, llm
 REPO = Path(__file__).resolve().parents[1]
 PROMPTS = Path(__file__).resolve().parent / "prompts"
 EXAMPLES = PROMPTS / "examples"
-EXAMPLE_ORDER = ["rings", "ice"]
+# Worked examples put into the show prompt. "rings" and "ice" are kept as folders but left out: they
+# are slideshows (a new object per sentence) that fail the story rules, so they would teach the old style.
+EXAMPLE_ORDER = ["chameleon"]
+FALLBACK_NOTE = "fallback: not good enough to publish"
 
 # Settings and their defaults. settings.yaml (optional, at the repo root) can override them under
 # a "writer:" section, e.g.  writer:\n  model: claude-haiku-5-5
@@ -43,7 +52,7 @@ DEFAULTS = {
     "max_repairs": 3,             # validator repair rounds
     "qa_repair": True,            # one repair round when the picture check fails
     "qa": True,                   # run the picture check at all (needs Chrome and 2 GB free RAM)
-    "max_seconds": 58.0,          # the voice must end before this
+    "max_seconds": 55.0,          # the voice must end before this; + 0.4 s tail keeps the video under 60 s
     "voice": "en-US-AndrewNeural",
     "rate": "+12%",
     "fallback_seed": 0,
@@ -111,12 +120,19 @@ def fill(template, **values):
     return template
 
 
+# Common abbreviations end in "." but do not end a sentence ("U.S. scientists", "Dr. Lee"). The script
+# prompt asks for none ("US", "Doctor"); a real sentence that ends in one joins the next sentence.
+ABBREVIATIONS = {"u.s.", "u.k.", "dr.", "mr.", "mrs.", "ms.", "st.", "prof.", "e.g.", "i.e.", "etc.", "vs."}
+
+
 def sentences(words):
     """Group words.json entries into sentences (lists of words)."""
     out, cur = [], []
     for w in words:
         cur.append(w)
-        if re.search(r"[.!?][\"')\]]*$", w["text"]):
+        if w["text"].lower() in ABBREVIATIONS:
+            continue
+        if re.search(r"[.!?…][\"')\]}”’»]*$", w["text"]):
             out.append(cur)
             cur = []
     if cur:
@@ -139,8 +155,178 @@ def show_duration(words, tail=0.4):
     return round(words[-1]["end"] + tail, 2)
 
 
-def suggested_shots(duration):
-    return max(7, min(10, round(duration / 5.0)))
+def script_sentences(script):
+    """The script's sentences as strings, split exactly as sentences() splits the voiced words, so
+    beat n of the script call is sentence S n of the show prompt."""
+    return [" ".join(w["text"] for w in s) for s in sentences([{"text": t} for t in str(script).split()])]
+
+
+# The two word checks below are CAUTIOUS on purpose. A false alarm uses up the run's one rewrite and can
+# leave the show call with no plan; a miss only gives the show call a weaker plan (the show rules and the
+# story-rules checker still judge the show). So each check flags a change only when the WHOLE change text
+# is one short, clear shape; a word somewhere inside a longer sentence never counts. Anything unclear
+# ("the skin stays green", "zoom in and then a label appears") is left to the show call.
+
+# Every apostrophe-like character: dropped, so "doesn't" / "doesn’t" / "doesnʼt" are all "doesnt".
+_APOSTROPHES = "'`´‘’‛ʹʼ′"
+
+
+def _flat_change(change):
+    """A change as plain lower-case words: apostrophes dropped, a ";" becomes ",", other punctuation and
+    lone dashes become spaces, and nothing is left at the ends. Empty when it has no letter or digit."""
+    text = re.sub(f"[{re.escape(_APOSTROPHES)}]", "", str(change).lower())
+    text = re.sub(r"[^a-z0-9/,;\- ]", " ", text.replace(";", ","))
+    text = re.sub(r"(?<![a-z0-9])-+|-+(?![a-z0-9])", " ", text)        # "-" or " - " alone, not "camera-trap"
+    text = " ".join(re.sub(r"\s*,\s*", ", ", text).split()).strip(" ,")
+    return text if re.search(r"[a-z0-9]", text) else ""
+
+
+# "the X": an optional article and one to three plain words. Joining words ("that", "while", ...) and
+# -ing words are not allowed in it, so "the drop that stays still" and "the cells swelling" are not a
+# plain thing, and a change that names one is left alone. The common nouns that end in "ing" below
+# ("the spring", "the building") are plain words, not -ing verbs.
+_ING_NOUNS = (r"spring|string|wing|ring|king|thing|swing|sling|building|ceiling|painting|drawing|pudding"
+              r"|icing|lightning|bearing|wedding|herring|duckling|seedling|sapling")
+_WORD = (r"(?!(?:that|which|who|so|until|while|and|but|then|except|as|when|because|if|or)(?![a-z0-9-]))"
+         rf"(?!(?!(?:[a-z0-9]+-)*(?:{_ING_NOUNS})(?![a-z0-9-]))[a-z0-9-]*ing(?![a-z0-9-]))[a-z0-9][a-z0-9-]*")
+_THING = rf"(?:(?:the|a|an|its|this|it) )?{_WORD}(?: {_WORD}){{0,2}}"
+
+NO_CHANGE = re.compile("|".join([
+    r"none|n/a|na|nil|static|still|unchanged|same|idle|no change|shown|visible|(?:it )?(?:stays|remains)",
+    r"nothing(?: (?:at all|new|else))?(?: (?:happens|changes|moves))?(?: (?:yet|at all|here))?",
+    r"(?:there is |there are |theres )?no (?:visible |real )?(?:changes?|movement)(?: (?:here|yet))?",
+    r"the same|nothing visibly changes",
+    r"same as before",
+    rf"(?:{_THING} )?(?:stays|remains|stay|remain) (?:the same|still|unchanged|as is|static|frozen)",
+    rf"(?:{_THING} )?(?:holds|sits|stays|keeps|hold|sit|stay|keep) still",
+    rf"(?:{_THING} )?(?:just )?sits there",
+    rf"(?:{_THING} )?does nothing",
+    rf"(?:{_THING} )?(?:does not|doesnt|do not|dont) (?:change|move)",
+    rf"(?:{_THING} )?(?:is|are) (?:shown|visible|unchanged)",
+    rf"hold on {_THING}",
+    rf"nothing,? just {_THING}",
+    rf"(?:{_THING} )?(?:appears|looks) unchanged",
+    # Idle motion: the show rules (show_system.md, story-rules IDLE) do not count spin, bob, orbit or drift.
+    rf"(?:{_THING} )?(?:(?:spins|bobs|floats|sways|hovers)(?: (?:slowly|gently|in place))?|rotates slowly)",
+    rf"(?!(?:the )?camera )(?:{_THING} )?(?:orbits|orbit)(?: (?:slowly|gently))?(?: (?:(?:around|round) )?{_THING})?",
+]))
+
+
+def is_no_change(change):
+    """True when the whole change says nothing changes ("nothing happens", "the lizard sits still",
+    "the lizard spins", "-", "(none)"). Only these clear shapes count: "nothing moves except the lattice"
+    and "the temperature stays below zero so ice forms" are real changes."""
+    flat = _flat_change(change)
+    return not flat or bool(NO_CHANGE.fullmatch(flat))
+
+
+# A whole change that only moves the camera or shows text/a number: the story rules do not count these.
+# The subject has its own field, so a bare verb ("tilts up", "pulls back", "cuts into the apple") is the
+# subject's own change. A camera move counts only when the text says so: it starts with "camera", a camera
+# noun ("close-up", "wide shot"), or "zoom"/"pan" ("zoom in", "pan left", "pans across the sea").
+_CAMERA_LEAD = r"(?:(?:(?:a|an|the) )?(?:slow|slowly|quick|quickly|gentle|gently|smooth|smoothly|steady) )?"
+_CAMERA_MOVE = (r"(?:zoom|zooms) (?:in|out)|(?:pan|pans)(?: (?:left|right|up|down))?|(?:push|pushes) in"
+                r"|(?:pull|pulls) (?:back|out)|orbit|orbits|cut|cuts|(?:tilt|tilts)(?: (?:up|down))?"
+                r"|(?:dolly|dollies)(?: (?:in|out))?")
+_CAMERA_START = (rf"(?:the )?camera(?: (?:(?:slowly|quickly|gently) )?(?:{_CAMERA_MOVE}))?"
+                 r"|zoom(?: (?:in|out))?|zooms (?:in|out)|(?:pan|pans)(?: (?:left|right|across))?"
+                 r"|close-up|closeup|wide shot|tracking shot|(?:dolly|dollies) (?:in|out)")
+_OVERLAY = (r"(?:(?:a|an|the) )?(?:labels?|text|captions?|titles?|numbers?|counters?|digits?|icons?"
+            r"|question marks?) (?:appears?|counts? up|rises?|ticks?(?: up)?|flips?|changes?|climbs?"
+            r"|fades? in|pops? up)")
+CAMERA_OR_OVERLAY = re.compile(
+    rf"{_CAMERA_LEAD}(?:{_CAMERA_START})(?: (?:on|to|across|around|toward|towards|over|into) {_THING})?"
+    rf"|{_OVERLAY}")
+
+
+def is_camera_or_overlay_only(change):
+    """True when the whole change is only a camera move ("slow zoom in", "zoom in on the lizard", "the
+    camera pulls back") or on-screen text ("a label appears"). "zoom in on the cells swelling",
+    "camera shows the skin turning red" and a bare verb ("tilts up", "cuts") name a real change, so they
+    are not flagged."""
+    return bool(CAMERA_OR_OVERLAY.fullmatch(_flat_change(change)))
+
+
+def normalise_beats(value):
+    """The script reply's "beats" as a list of {sentence, subject, change, dial} strings (bad entries kept empty)."""
+    out = []
+    for b in value if isinstance(value, list) else []:
+        b = b if isinstance(b, dict) else {}
+        out.append({k: str(b.get(k) or "").strip() for k in ("sentence", "subject", "change", "dial")})
+    return out
+
+
+def _plain_words(text):
+    """Lower-case words only: quotes, apostrophes (any kind), punctuation, case, spacing and a thousands
+    separator ("1,000" is "1000") do not matter."""
+    text = re.sub(r"(?<=\d)[,\u00a0\u2009\u202f](?=\d{3}(?!\d))", "", str(text).lower())
+    return re.findall(r"[a-z0-9]+", re.sub(f"[{re.escape(_APOSTROPHES)}]", "", text))
+
+
+def _run_in(small, big):
+    """True when the words of small appear in big as one unbroken run of whole words."""
+    n = len(small)
+    return any(big[i:i + n] == small for i in range(len(big) - n + 1))
+
+
+def sentence_matches(beat_sentence, real_sentence, n):
+    """True when a beat's "sentence" is this sentence (copied or cut short), or empty
+    (the count already guards the order). A bare number or "S3" label must be this beat's own number.
+    Only a clearly different sentence (a shifted or swapped beat) is False. Whole words only, and a short
+    sentence (under 5 words) must be copied almost exactly, so "No dye." is not "No paint."."""
+    got, real = _plain_words(beat_sentence), _plain_words(real_sentence)
+    if not got:
+        return True
+    if len(got) == 1 and re.fullmatch(r"s?\d+", got[0]) and got != real:   # a label, unless the sentence is that text
+        return int(got[0].lstrip("s")) == n
+    if len(got) > 1 and re.fullmatch(rf"s{n}|{n}", got[0]):
+        got = got[1:]                                    # "S2: No dye." is still sentence 2
+    if got == real:
+        return True
+    if len(real) < 5:
+        small, big = sorted((got, real), key=len)
+        return len(small) >= 2 and _run_in(small, big) and len(small) / len(big) >= 0.75
+    if _run_in(got, real):                               # cut short: 3+ words, or the first 2
+        return len(got) >= 3 or (len(got) == 2 and real[:2] == got)
+    if _run_in(real, got):
+        return len(got) - len(real) <= 3                 # the whole sentence plus a few extra words
+    return False                                         # a changed key word ("black" for "white") is a different sentence
+
+
+def beat_problems(script, beats):
+    """Why a beat list cannot be used: missing, the wrong length, or a sentence with nothing that changes."""
+    sents = script_sentences(script)
+    if not beats:
+        return ["there is no beat list: give one beat per sentence"]
+    problems = []
+    if len(beats) != len(sents):
+        problems.append(f"the beat list has {len(beats)} entries but the script has {len(sents)} sentences "
+                        f"(a sentence ends at . ? or !): give exactly one beat per sentence, in order")
+    for n, (sent, b) in enumerate(zip(sents, beats), 1):
+        if not sentence_matches(b["sentence"], sent, n):
+            problems.append(f"S{n} \"{sent}\": the beat's sentence is \"{b['sentence']}\", which is not this "
+                            f"sentence. Copy each sentence into its own beat, in order")
+        if not b["subject"]:
+            problems.append(f"S{n} \"{sent}\": no subject (the thing on screen)")
+        if is_no_change(b["change"]):
+            problems.append(f"S{n} \"{sent}\": nothing visibly changes. Rewrite the sentence so something "
+                            f"on screen changes while it is spoken (a verb: grows, spreads, turns red, ...)")
+        elif is_camera_or_overlay_only(b["change"]):
+            problems.append(f"S{n} \"{sent}\": \"{b['change']}\" is only a camera move or on-screen text, "
+                            f"which does not count. Name a change to the subject itself")
+    return problems
+
+
+def beats_block(script, beats, n_sentences=None):
+    """The beat list for the show prompt, one line per sentence; or a note when it is not usable.
+    n_sentences: the number of sentences in the voiced words (the S numbers of the show prompt)."""
+    if not beats or beat_problems(script, beats) or (n_sentences is not None and len(beats) != n_sentences):
+        return "(no usable picture plan came with this script: plan one change per sentence yourself)"
+    lines = []
+    for n, b in enumerate(beats, 1):
+        line = f"S{n} subject: {b['subject']} | change: {b['change']}"
+        lines.append(line + (f" | dial: {b['dial']}" if b["dial"] and b["dial"] != "-" else ""))
+    return "\n".join(lines)
 
 
 def compact_json(show):
@@ -171,24 +357,33 @@ def compact_json(show):
 
 
 def catalog_names(cat):
-    """For the script prompt: prop and environment names with their one-line summaries."""
+    """For the script prompt: prop and environment names with their one-line summaries, each prop's
+    animatable values and each environment's dial parameters (what a dial can drive)."""
     lines = ["Props:"]
-    lines += [f"- {n}: {p['summary']}" for n, p in cat["props"].items()]
+    for n, p in cat["props"].items():
+        anim = ", ".join(p.get("animatable", {}))
+        lines.append(f"- {n}: {catalog_text._summary(p)}" + (f" [can vary: {anim}]" if anim else ""))
     lines += ["Environments:"]
-    lines += [f"- {n}: {e['summary']}" for n, e in cat["envs"].items()]
+    for n, e in cat["envs"].items():
+        dial = f" [can follow a dial (dialParams): {', '.join(e['dialParams'])}]" if e.get("dialParams") else ""
+        lines.append(f"- {n}:{dial} {e['summary']}")
     return "\n".join(lines)
 
 
 def examples_text():
-    """The worked examples for the show prompt: input words, the plan, the output show."""
+    """The worked examples for the show prompt: input (words and picture plan, as a real call gives them), notes, output show."""
     out = []
     for n, name in enumerate(EXAMPLE_ORDER, 1):
         d = EXAMPLES / name
         show = json.loads((d / "show.json").read_text(encoding="utf-8"))
         words = json.loads((d / "words.json").read_text(encoding="utf-8"))
         plan = (d / "plan.md").read_text(encoding="utf-8").strip()
-        out.append(f"## Example {n}: {show['title']}\n\nINPUT (the words, as you will get them):\n"
-                   f"{words_block(words)}\n\nTHE BEAT PLAN (your thinking, not part of the reply):\n{plan}\n\n"
+        notes = (d / "notes.md").read_text(encoding="utf-8").strip()
+        # The heading line is taken from show_user.md so the example input reads exactly like a real call.
+        heading = next(l for l in read_prompt("show_user.md").splitlines() if l.startswith("THE PICTURE PLAN"))
+        out.append(f"## Example {n}: {show['title']}\n\nINPUT (exactly what you will get):\n"
+                   f"{words_block(words)}\n\n{heading}\n{plan}\n\n"
+                   f"NOTES ON THIS EXAMPLE (not part of the input or the reply):\n{notes}\n\n"
                    f"OUTPUT (the reply):\n{compact_json(show)}")
     return "\n\n".join(out)
 
@@ -204,10 +399,11 @@ def script_system_prompt(cat=None):
     return fill(read_prompt("script_system.md"), CATALOG_NAMES=catalog_names(cat))
 
 
-def show_user_prompt(title, words):
+def show_user_prompt(title, words, script="", beats=None):
     dur = show_duration(words)
     return fill(read_prompt("show_user.md"), TITLE=title, WORDS=words_block(words),
-                LAST_END=f"{words[-1]['end']:.2f}", DURATION=f"{dur:.2f}", SHOTS=suggested_shots(dur))
+                LAST_END=f"{words[-1]['end']:.2f}", DURATION=f"{dur:.2f}",
+                BEATS=beats_block(script, beats, len(sentences(words))))
 
 
 # ---------------------------------------------------------------- parsing replies
@@ -287,9 +483,12 @@ def node_json(args, timeout=600):
     return p.returncode, data, p.stderr
 
 
-def validate_show(folder):
-    """{"ok", "errors": [{path, message, hint}], "warnings"} from node tools/validate.mjs."""
-    code, data, err = node_json(["tools/validate.mjs", str(folder)])
+def validate_show(folder, story_rules=True):
+    """{"ok", "errors": [{path, message, hint}], "warnings"} from node tools/validate.mjs.
+    story_rules: also check that the picture follows the words (SPEC section 14). On for every show the
+    model writes; off only for the fallback, which is a plain slideshow by design."""
+    flag = "--story-rules" if story_rules else "--no-story-rules"
+    code, data, err = node_json(["tools/validate.mjs", str(folder), flag])
     if data is None:
         return {"ok": False, "errors": [{"path": "validator", "message": f"validator did not run: {err[-300:]}",
                                          "hint": ""}], "warnings": []}
@@ -321,10 +520,16 @@ class Run:
         self.topic, self.slug, self.folder, self.settings, self.mode = topic, slug, folder, settings, mode
         self.calls = []                  # one dict per LLM call
         self.draft = {}
+        # The beat list check (see beat_problems): was the script sent back once, and why.
+        # The rewrite budget is one per run, shared by the first script, the redraft and the shorten.
+        self.beats = {"rewritten": False, "first_problems": [], "error": None, "rewrite_after": None}
+        self.warnings = []               # checker warnings on the accepted show, for review.md
         self.fact = {"first_audit": None, "final_audit": None, "redrafted": False,
-                     "redraft_error": None, "needs_fact_check": False}
+                     "redraft_error": None, "needs_fact_check": False,
+                     "audited": "script"}      # which script final_audit checked: script | redraft | shorten
         self.voice_stats = None
         self.voice_note = ""
+        self.not_feasible_step = None    # which call answered "feasible": false (the run stops for props)
         self.show_source = "none"        # llm | fallback | none
         self.repairs = 0
         self.history = []                # one line per show attempt
@@ -358,17 +563,115 @@ def _ask(run, complete, system, user, purpose, max_tokens):
     return reply.text
 
 
+class NotFeasible(Exception):
+    """The model answered "feasible": false: no prop can show the mechanism. The writer stops with
+    NEEDS-PROPS.md (exit 3)."""
+
+
+# Shown in writer.json and review.md when the beat check still fails after the one rewrite.
+BEATS_NOTE = "script has sentences with no visible change"
+BEATS_NOTE_OTHER = "the picture plan does not fit the script"
+
+
+def beats_note(problems):
+    """The label for the problems left: "no visible change" only when a problem really says that; a
+    wrong beat count or a missing subject gets the plain "does not fit" label."""
+    if any("nothing visibly changes" in p or "camera move" in p for p in problems):
+        return BEATS_NOTE
+    return BEATS_NOTE_OTHER if problems else None
+
+
+def _stop_not_feasible(run, reply, step):
+    """Stop for props. run.draft stays the last script the run accepted (the one the audit on file and
+    review.md describe), never an unchecked redraft or shortened script; it only gets the reply's
+    feasibility fields for NEEDS-PROPS.md. step: which call answered not feasible, for review.md."""
+    run.draft = dict(run.draft, **{k: reply[k] for k in ("feasible", "mechanism_prop", "missing") if k in reply})
+    run.not_feasible_step = step
+    raise NotFeasible()
+
+
+def _script_and_beats(draft):
+    """The current title, script and beat list as JSON, for a prompt that asks for a change to them."""
+    return json.dumps({k: draft.get(k) for k in ("title", "script", "beats")}, ensure_ascii=False, indent=1)
+
+
+def carry_over(new, old):
+    """Fill the keys a model reply left out (title, tags, ...) from the draft it replaced. Claims are NOT
+    carried: they describe one particular script, so a reply with none gets an empty list plus a flag
+    that review.md shows, never the claims of a script that is not the voiced one."""
+    for k, v in old.items():
+        if k not in ("claims", "claims_missing"):
+            new.setdefault(k, v)
+    new.pop("claims_missing", None)
+    if not as_list(new.get("claims")):
+        new["claims"], new["claims_missing"] = [], True
+    return new
+
+
+def check_beats(run, complete, system, draft, after, max_words=None):
+    """Send the script back when a sentence has nothing that visibly changes (it would become a still
+    picture). Runs on the first script, on a fact-check redraft and on a shortened script, before that
+    script is voiced; at most ONE rewrite per run in total. Returns the draft to use (raises NotFeasible
+    when the rewrite answers "feasible": false). after: what made this draft, for review.md.
+    max_words: set after a shorten: the rewrite is told this limit wins over the 150-word floor, and a
+    rewrite that comes back longer is not used (the shortened script is kept and the problem reported)."""
+    problems = beat_problems(draft["script"], draft["beats"])
+    if not problems or run.beats["rewritten"]:
+        return draft                     # fine, or the budget is used: left_beat_problems reports it
+    length = ("about the same number of words" if not max_words else
+              f"at most {max_words} words: this script was just shortened to fit the voice limit, so that "
+              f"word limit wins over the 150 to 175 word length")
+    rewrite_user = fill(read_prompt("script_rewrite_user.md"), TOPIC=run.topic,
+                        PREVIOUS=_script_and_beats(draft), PROBLEMS="\n".join(f"- {p}" for p in problems),
+                        LENGTH=length)
+    run.beats.update(rewritten=True, first_problems=problems, rewrite_after=after)
+    try:
+        new = parse_loose_json(_ask(run, complete, system, rewrite_user, "script-rewrite", SCRIPT_MAX_TOKENS))
+    except (BadReply, llm.LlmError) as e:
+        run.beats["error"] = f"{type(e).__name__}: {str(e)[:160]}; kept the script it was asked about"
+        return draft
+    new["script"] = clean_script(new.get("script"))
+    new["beats"] = normalise_beats(new.get("beats"))
+    if new.get("feasible") is False:
+        _stop_not_feasible(run, new, f"the beat rewrite after the {after} step")
+    if not new["script"]:
+        run.beats["error"] = "the rewrite had no script text; kept the script it was asked about"
+        return draft
+    # The same rule as the shortened script itself: over the target is reported, and a text is only
+    # thrown away when a shorter one is at hand. So a rewrite is not used when it is over the target AND
+    # longer than the shortened script it replaces.
+    n_new = len(new["script"].split())
+    if max_words and n_new > max(max_words, len(draft["script"].split())):
+        run.beats["error"] = (f"the rewrite had {n_new} words, over the {max_words}-word limit from the shorten "
+                              f"step and longer than the shortened script, so it was NOT used; kept the "
+                              f"shortened script")
+        return draft
+    if max_words and n_new > max_words:
+        run.beats["length_note"] = (f"The rewrite had {n_new} words, over the {max_words}-word target from the "
+                                    f"shorten step, but no longer than the shortened script, so it was used")
+    return carry_over(new, draft)
+
+
+def left_beat_problems(run):
+    """What is still wrong with the final script's beat list (empty when it is usable)."""
+    d = run.draft
+    return beat_problems(d.get("script", ""), d.get("beats") or []) if d.get("script") else []
+
+
 def write_script_step(run, complete, cat):
-    """Script call + fact check (+ one redraft). Returns the draft dict or None (not feasible)."""
+    """Script call + beat check + fact check (+ one redraft). Returns the draft dict; raises NotFeasible."""
     system = script_system_prompt(cat)
     user = fill(read_prompt("script_user.md"), TOPIC=run.topic)
     draft = parse_loose_json(_ask(run, complete, system, user, "script", SCRIPT_MAX_TOKENS))
     draft["script"] = clean_script(draft.get("script"))
+    draft["beats"] = normalise_beats(draft.get("beats"))
     run.draft = draft
     if draft.get("feasible") is False:
-        return None
+        run.not_feasible_step = "the script call"
+        raise NotFeasible()
     if not draft["script"]:
         raise BadReply("the script reply had no script text")
+    run.draft = draft = check_beats(run, complete, system, draft, "script")
 
     def audit_call(purpose):
         return lambda prompt: _ask(run, complete, "", prompt, purpose, SCRIPT_MAX_TOKENS)
@@ -377,19 +680,30 @@ def write_script_step(run, complete, cat):
     run.fact["first_audit"] = run.fact["final_audit"] = first
     if first["available"] and not first["ok"]:
         flagged = fact_check.flagged_claims(first)
+        # The redraft sees the CURRENT script and beats (after any beat rewrite), not just the topic.
+        redraft_user = fill(read_prompt("script_redraft_user.md"), TOPIC=run.topic,
+                            PREVIOUS=_script_and_beats(draft),
+                            CORRECTIONS=fact_check.build_corrections_block(flagged))
         try:
-            redraft = parse_loose_json(_ask(run, complete, system, user + fact_check.build_corrections_block(flagged),
-                                            "script-redraft", SCRIPT_MAX_TOKENS))
+            redraft = parse_loose_json(_ask(run, complete, system, redraft_user, "script-redraft",
+                                            SCRIPT_MAX_TOKENS))
+            if redraft.get("feasible") is False:
+                _stop_not_feasible(run, redraft, "the fact-check redraft")
             script = clean_script(redraft.get("script"))
             if not script:
                 raise BadReply("the redraft had no script text")
-            for k, v in draft.items():
-                redraft.setdefault(k, v)
+            # The redraft's own beat list (or none): the old one may no longer match its sentences.
+            redraft["beats"] = normalise_beats(redraft.get("beats"))
             redraft["script"] = script
-            final = fact_check.audit_script(script, "", run.topic, llm_call=audit_call("audit-redraft"))
+            carry_over(redraft, draft)
+            # Checked before the second audit, so the audited script is the one that is voiced.
+            redraft = check_beats(run, complete, system, redraft, "redraft")
+            final = fact_check.audit_script(redraft["script"], "", run.topic,
+                                            llm_call=audit_call("audit-redraft"))
             run.draft = draft = redraft
             run.fact["redrafted"] = True
             run.fact["final_audit"] = final
+            run.fact["audited"] = "redraft"
         except (BadReply, llm.LlmError) as e:
             # The redraft is optional: keep the first script and mark it for a human check.
             run.fact["redraft_error"] = f"{type(e).__name__}: {str(e)[:200]}"
@@ -415,16 +729,37 @@ def voice_step(run, complete, voice_fn, cat):
                                           SCRIPT_MAX_TOKENS))
             new_script = clean_script(short.get("script"))
             if new_script:
-                run.draft["script"] = new_script
-                if as_list(short.get("claims")):
-                    run.draft["claims"] = short["claims"]
-                stats = _voice_if_needed(folder, new_script, voice_fn, run.settings,
+                # The shorter script's own beat list, checked like the first one before it is voiced.
+                shorter = carry_over({"script": new_script, "beats": normalise_beats(short.get("beats")),
+                                      "claims": short.get("claims")}, run.draft)
+                run.draft = check_beats(run, complete, script_system_prompt(cat), shorter, "shorten",
+                                       max_words=target)
+                # Always audit the shortened words (new model text may carry new claims), so the audit on
+                # file, the claims list and review.md all describe the script that gets voiced. In files
+                # mode this stops with exit 4 on an "audit-shorten" prompt.
+                run.fact["final_audit"] = fact_check.audit_script(
+                    run.draft["script"], "", run.topic,
+                    llm_call=lambda prompt: _ask(run, complete, "", prompt, "audit-shorten", SCRIPT_MAX_TOKENS))
+                run.fact["audited"] = "shorten"
+                # The shortened script is the voiced one and this audit covers it, so a failed redraft
+                # earlier does not matter any more: only a flag on these words needs a check.
+                run.fact["needs_fact_check"] = not run.fact["final_audit"]["ok"]
+                stats = _voice_if_needed(folder, run.draft["script"], voice_fn, run.settings,
                                          shortened_from={"sha256": _fingerprint(script), "stats": stats})
-                run.voice_note = f"shortened once ({cut} words asked)"
+                n_short = len(new_script.split())
+                run.voice_note = f"shortened once ({cut} words asked)" + (
+                    f"; the shortened script had {n_short} words, over the {target}-word target"
+                    if n_short > target else "")
+            else:
+                run.voice_note = "shorten gave no script text, so the long script was kept"
         except (BadReply, llm.LlmError) as e:
             run.voice_note = f"shorten failed: {e}"
-        if stats["duration"] > limit:
-            run.voice_note += f"; STILL TOO LONG: {stats['duration']:.1f} s"
+    # The voice on disk must be the reported script's. When the long script is kept on a resumed run, the
+    # files may be a shortened script's from before (the stats above came from voice.stats.json's
+    # "shortened_from"), so this voices again; when they already match it returns the saved stats at once.
+    stats = _voice_if_needed(folder, run.draft["script"], voice_fn, run.settings, exact=True)
+    if stats["duration"] > limit:
+        run.voice_note += ("; " if run.voice_note else "") + f"STILL TOO LONG: {stats['duration']:.1f} s"
     run.voice_stats = stats
     return stats
 
@@ -433,10 +768,12 @@ def _fingerprint(script):
     return hashlib.sha256(script.encode("utf-8")).hexdigest()
 
 
-def _voice_if_needed(folder, script, voice_fn, settings, shortened_from=None):
+def _voice_if_needed(folder, script, voice_fn, settings, shortened_from=None, exact=False):
     """Voice only when the script differs from the one last voiced, so a resumed run keeps the word
     times that an earlier show reply was written against. voice.stats.json remembers the last voiced
-    script and, after a shorten, the long script it replaced (that one is never voiced again)."""
+    script and, after a shorten, the long script it replaced (that one is not voiced again while the
+    shorten step replays). exact: only the script whose voice is on disk counts, so the long script is
+    voiced again when the shortened one is not used after all."""
     digest = _fingerprint(script)
     marker = folder / "voice.stats.json"
     (folder / "script.txt").write_text(script + "\n", encoding="utf-8")
@@ -445,7 +782,7 @@ def _voice_if_needed(folder, script, voice_fn, settings, shortened_from=None):
         if saved.get("sha256") == digest:
             return saved["stats"]
         before = saved.get("shortened_from") or {}
-        if before.get("sha256") == digest:
+        if before.get("sha256") == digest and not exact:
             return before["stats"]          # the long version: the shorten step follows and replays
     stats = voice_fn(script, folder, settings)
     record = {"sha256": digest, "stats": stats}
@@ -470,12 +807,48 @@ def _finding_lines(findings, limit=30):
     return "\n".join(lines)
 
 
+# Story warnings that a model-written show may not have (the checker only warns, so that hand-made
+# shows and the fallback stay valid; the writer treats them like errors and sends them to the repair).
+BLOCKING_WARNINGS = ("story.scenes", "story.subject")
+
+
+def dial_reach(show):
+    """The most things one dial is bound to inside one scene (a shot without "continue" plus the
+    continuing shots after it: its environment and every prop field written as {"dial": ...})."""
+    def dials_in(obj):
+        if isinstance(obj, dict):
+            own = [obj["dial"]] if isinstance(obj.get("dial"), str) else []
+            return own + [d for v in obj.values() for d in dials_in(v)]
+        if isinstance(obj, list):
+            return [d for v in obj for d in dials_in(v)]
+        return []
+    best, found = 0, []
+    for shot in show.get("shots") or []:
+        if not shot.get("continue"):
+            found = dials_in(shot.get("env"))          # a new scene; a continuing shot keeps the env
+        found = found + dials_in(shot.get("props") or [])
+        best = max([best] + [found.count(d) for d in set(found)])
+    return best
+
+
+def story_problems(show, result):
+    """Why a show is not accepted beyond the checker's errors, in the checker's {path, message, hint}
+    shape: a blocking story warning, or no dial bound to two or more things."""
+    problems = [w for w in result.get("warnings", []) if str(w.get("path", "")).startswith(BLOCKING_WARNINGS)]
+    if dial_reach(show) < 2:
+        problems.append({"path": "story.dial", "message": "no dial is bound to two or more things in one scene.",
+                         "hint": 'Add a "dials" entry for the quantity that changes and bind it with '
+                                 '{"dial": ...} to two or more things on screen together (the subject\'s '
+                                 'param, its colour, the background), with keys on the words where it changes.'})
+    return problems
+
+
 def show_step(run, complete, validate_fn, cat, words):
     """Show call + validator repairs. Returns the valid show dict, or None."""
     folder = run.folder
     title = run.draft.get("title") or run.topic
     system = show_system_prompt(cat)
-    original = show_user_prompt(title, words)
+    original = show_user_prompt(title, words, run.draft.get("script", ""), run.draft.get("beats"))
     user, purpose = original, "show"
     max_rounds = int(run.settings["max_repairs"])
     for attempt in range(max_rounds + 1):
@@ -497,11 +870,14 @@ def show_step(run, complete, validate_fn, cat, words):
         else:
             (folder / "show.json").write_text(json.dumps(show, indent=1, ensure_ascii=False), encoding="utf-8")
             result = validate_fn(folder)
-            if result.get("ok"):
-                run.history.append(f"{purpose}: valid ({len(result.get('warnings', []))} warning(s))")
+            blocking = story_problems(show, result)
+            if result.get("ok") and not blocking:
+                run.warnings = list(result.get("warnings", []))
+                run.history.append(f"{purpose}: valid ({len(run.warnings)} warning(s))")
                 return show
-            run.history.append(f"{purpose}: {len(result['errors'])} validator error(s)")
-            errors_text = _error_lines(result["errors"])
+            run.history.append(f"{purpose}: {len(result.get('errors', []))} validator error(s), "
+                               f"{len(blocking)} story problem(s)")
+            errors_text = _error_lines(list(result.get("errors", [])) + blocking)
             previous = compact_json(show)
         user = fill(read_prompt("repair_user.md"), ORIGINAL=original, PREVIOUS=previous, ERRORS=errors_text)
         purpose = f"repair{attempt + 1}"
@@ -525,7 +901,8 @@ def qa_step(run, complete, validate_fn, qa_fn, cat, words, show):
         return show
     fails = _count_fails(qa)
     title = run.draft.get("title") or run.topic
-    user = fill(read_prompt("qa_repair_user.md"), ORIGINAL=show_user_prompt(title, words),
+    user = fill(read_prompt("qa_repair_user.md"),
+                ORIGINAL=show_user_prompt(title, words, run.draft.get("script", ""), run.draft.get("beats")),
                 PREVIOUS=compact_json(show), FINDINGS=_finding_lines(qa.get("findings", [])))
     keep_old = lambda why: (run.history.append(f"qa-repair: {why}; kept the earlier show"),
                             (folder / "show.json").write_text(json.dumps(show, indent=1, ensure_ascii=False),
@@ -537,8 +914,9 @@ def qa_step(run, complete, validate_fn, qa_fn, cat, words, show):
         keep_old(f"no usable answer ({str(e)[:80]})")
         return show
     (folder / "show.json").write_text(json.dumps(new, indent=1, ensure_ascii=False), encoding="utf-8")
-    if not validate_fn(folder).get("ok"):
-        keep_old("the repaired show did not validate")
+    check = validate_fn(folder)
+    if not check.get("ok") or story_problems(new, check):
+        keep_old("the repaired show did not pass the checker and story checks")
         return show
     qa2 = qa_fn(run.slug)
     fails2 = _count_fails(qa2)
@@ -548,20 +926,60 @@ def qa_step(run, complete, validate_fn, qa_fn, cat, words, show):
         return show
     run.history.append(f"qa-repair: picture check now {qa2.get('result')} ({fails2} fails, was {fails})")
     run.qa = qa2
+    run.warnings = list(check.get("warnings", []))
     return new
 
 
 def write_needs_props(run):
+    mechanism = str(run.draft.get("mechanism_prop") or "").strip() or "(the model did not describe it)"
     missing = as_list(run.draft.get("missing")) or ["(the model did not say)"]
-    text = (f"# Needs props: {run.topic}\n\nThe writer stopped: this topic needs things the 3D catalogue "
-            f"does not have.\n\nMissing:\n" + "\n".join(f"- {m}" for m in missing) + "\n\n"
+    text = (f"# Needs props: {run.topic}\n\nThe writer stopped: no prop in the 3D catalogue can show this "
+            f"topic's central mechanism changing, and icons or bar charts are not an honest stand-in.\n\n"
+            f"## The mechanism prop that is needed\n\n{mechanism}\n\n"
+            f"## Missing\n\n" + "\n".join(f"- {m}" for m in missing) + "\n\n"
             "Add the props (see docs/AUTHORING.md), or pick another topic.\n")
     (run.folder / "NEEDS-PROPS.md").write_text(text, encoding="utf-8")
 
 
 def _claims_md(run):
     claims = as_list(run.draft.get("claims"))
+    if not claims and run.draft.get("claims_missing"):
+        return ("- (the model gave no claims list for this script, which was rewritten after the first one. "
+                "Check the automatic fact check below instead)")
     return "\n".join(f"- [ ] {c}" for c in claims) or "- (the model listed none)"
+
+
+def _beats_md(run):
+    d = run.draft
+    beats = d.get("beats") or []
+    # "-" means "no dial", as in beats_block (the show prompt), so it is not printed.
+    lines = [f"- S{n}: {b['subject']} | {b['change']}"
+             + (f" | dial: {b['dial']}" if b["dial"] and b["dial"] != "-" else "")
+             for n, b in enumerate(beats, 1)] or ["- (none)"]
+    if run.beats["rewritten"] and run.status == "needs_props" and run.beats["rewrite_after"] != "script" \
+            and (run.not_feasible_step or "").startswith("the beat rewrite"):
+        # The script that was sent back (a redraft or a shortened one) is not the one shown above.
+        lines.append(f"- The {run.beats['rewrite_after']} step's script (not shown: its rewrite answered "
+                     f"\"feasible\": false) was sent back because: " + "; ".join(run.beats["first_problems"]))
+    elif run.beats["rewritten"]:
+        lines.append(f"- Sent back once for a rewrite (after the {run.beats['rewrite_after']} step) because: "
+                     + "; ".join(run.beats["first_problems"]))
+    if run.beats["error"]:
+        lines.append(f"- The rewrite failed: {run.beats['error']}")
+    if run.beats.get("length_note"):
+        lines.append(f"- {run.beats['length_note']}")
+    left = reported_beat_problems(run)
+    if left:
+        # Only say what the show call got when there was one (run.history has one line per show attempt).
+        lines.append(f"- STILL WRONG, {beats_note(left)}"
+                     + (" (the show call got no plan)" if run.history else "") + ": " + "; ".join(left))
+    return "\n".join(lines)
+
+
+def reported_beat_problems(run):
+    """left_beat_problems, except when the run stopped for props: then no show is made from this script,
+    so its beat list does not matter and nothing is reported (review.md, writer.json beats_note)."""
+    return [] if run.status == "needs_props" else left_beat_problems(run)
 
 
 def _audit_md(audit):
@@ -577,37 +995,61 @@ def review_text(run):
     t = run.totals()
     d = run.draft
     made = {"llm": "first try" if run.repairs == 0 else f"repaired {run.repairs} time(s)",
-            "fallback": "FALLBACK (plain automatic show: the LLM's show never validated)",
+            "fallback": f"{FALLBACK_NOTE} (plain automatic slideshow: the LLM's show never passed the checks)",
             "none": "no show"}[run.show_source]
     lines = []
+    if run.show_source == "fallback":
+        lines += [FALLBACK_NOTE.upper(), f"This is a {FALLBACK_NOTE}, a plain slideshow built from the words "
+                  "alone. Use it only to test the rest of the pipeline.", ""]
     if run.fact["needs_fact_check"]:
         lines += ["NEEDS FACT CHECK", ""]
+    if reported_beat_problems(run):
+        lines += [beats_note(reported_beat_problems(run)).upper() + " (see Picture plan)", ""]
+    stopped = run.status == "needs_props"
     lines += [f"# Review: {d.get('title') or run.topic}", "",
               f"- Topic: {run.topic}", f"- Slug: {run.slug}", f"- Status: {run.status}",
               f"- Show: {made}", f"- Picture check (QA): {run.qa.get('result')}"
               + (f" ({run.qa.get('reason')})" if run.qa.get("reason") else ""),
+              "- Voice: none used (the run stopped for props before a show was made; see NEEDS-PROPS.md)"
+              if stopped else
               f"- Voice: {run.voice_stats['duration']:.1f} s, {run.voice_stats['word_count']} words"
               + (f" ({run.voice_note})" if run.voice_note else "") if run.voice_stats else "- Voice: not made",
               f"- Mode: {run.mode}; model priced as {run.price_model()}",
               f"- Written: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}", ""]
     if run.error:
         lines += ["## Error", run.error, ""]
+    if stopped:
+        lines += ["## Stopped for props",
+                  f"{(run.not_feasible_step or 'a model call')[:1].upper()}{(run.not_feasible_step or 'a model call')[1:]}"
+                  " answered \"feasible\": false, so the run stopped "
+                  "(see NEEDS-PROPS.md). No show was made. The script below is the last one the run accepted "
+                  "(any later redraft or rewrite is not shown), and the claims and fact check below are about it.",
+                  ""]
     lines += ["## Script", d.get("script", ""), "",
+              "## Picture plan (the beat list that goes with the script above)", _beats_md(run), "",
               "## Claims to check (tick each one you have verified)", _claims_md(run), ""]
     if run.fact["needs_fact_check"]:
         fa = run.fact["final_audit"] or {}
         flagged = fact_check.flagged_claims(fa) if fa.get("available") else []
         lines += ["## NEEDS FACT CHECK",
                   ("The automatic fact check could not run: " + str(fa.get("error"))) if not fa.get("available")
-                  else "Still flagged after one redraft:" if run.fact["redrafted"] else "Flagged:",
+                  else "No claim is flagged, but the redraft failed (see below): check the claims by hand."
+                  if not flagged
+                  else "Flagged in the shortened script (its words were never redrafted):"
+                  if run.fact["audited"] == "shorten"
+                  else "Still flagged after one redraft:" if run.fact["audited"] == "redraft" else "Flagged:",
                   "\n".join(f"- {c['verdict']}: {c['claim']} (Note: {c['note']})" for c in flagged), ""]
     lines += ["## Automatic fact check (final audit)", _audit_md(run.fact["final_audit"]),
-              f"- Redrafted: {'yes' if run.fact['redrafted'] else 'no'}"
-              + (f" (redraft failed: {run.fact['redraft_error']})" if run.fact["redraft_error"] else ""), "",
+              ("- Redrafted: a redraft was written but not used (the run stopped for props)"
+               if stopped and not run.fact["redrafted"] and any(c["purpose"] == "script-redraft" for c in run.calls)
+               else f"- Redrafted: {'yes' if run.fact['redrafted'] else 'no'}"
+               + (f" (redraft failed: {run.fact['redraft_error']})" if run.fact["redraft_error"] else "")), "",
               "## Description", d.get("description", ""), "",
               "## Tags", ", ".join(as_list(d.get("tags"))), "",
               "## How the show was made"]
     lines += [f"- {h}" for h in run.history] or ["- (no show attempts)"]
+    if run.warnings:
+        lines += ["", "## Checker warnings on the accepted show", _error_lines(run.warnings)]
     if run.qa.get("findings"):
         lines += ["", "## Picture check findings", _finding_lines(run.qa["findings"])]
     lines += ["", "## Cost (estimate)" if t["estimated"] else "## Cost",
@@ -619,7 +1061,10 @@ def review_text(run):
                  f"{t['cache_write_tokens']} | {t['cost_usd']:.4f} |")
     if t["estimated"]:
         lines.append(f"\nfiles mode: tokens are characters / 4, priced as {run.price_model()}; nothing was paid.")
-    files = sorted({p.name for p in run.folder.iterdir() if p.is_file()} | {"review.md", "writer.json"})
+    files = {p.name for p in run.folder.iterdir() if p.is_file()} | {"review.md", "writer.json"}
+    if stopped:
+        files.discard("show.json")       # a run that stops for props makes no show: one on disk is an old run's
+    files = sorted(files)
     if (run.folder / "llm").is_dir():
         files.append("llm/ (every prompt and reply)")
     lines += ["", "## Files", ", ".join(files), ""]
@@ -633,6 +1078,13 @@ def writer_json(run):
         "slug": run.slug, "topic": run.topic, "status": run.status,
         "title": d.get("title", ""), "description": d.get("description", ""), "tags": as_list(d.get("tags")),
         "show": run.show_source, "repairs": run.repairs,
+        # Set only for the fallback: the pipeline runner and people must not publish that show.
+        "fallback_note": FALLBACK_NOTE if run.show_source == "fallback" else None,
+        "beats": d.get("beats") or [], "beat_rewrite": run.beats["rewritten"],
+        # Set when the final script still has a sentence with no usable beat (after the one rewrite).
+        # Never set when the run stopped for props (no show is made from this script).
+        "beats_note": beats_note(reported_beat_problems(run)),
+        "beat_problems": reported_beat_problems(run),
         "qa": run.qa.get("result"),
         "needs_fact_check": run.fact["needs_fact_check"],
         "voice_seconds": run.voice_stats["duration"] if run.voice_stats else None,
@@ -658,9 +1110,11 @@ def write(topic, slug, *, mode=None, settings=None, complete=None, voice_fn=None
     mode = mode or settings["mode"]
     folder = Path(shows_dir or REPO / "shows") / slug
     folder.mkdir(parents=True, exist_ok=True)
-    stale = folder / "writer.json"
-    if stale.exists():
-        stale.unlink()                   # never leave an old result readable while this run is unfinished
+    # Never leave an old result readable while this run is unfinished (NEEDS-PROPS.md is written again
+    # if this run also stops for props).
+    for name in ("writer.json", "NEEDS-PROPS.md"):
+        if (folder / name).exists():
+            (folder / name).unlink()
     complete = complete or llm.make_complete(mode, folder, model=settings["model"], effort=settings["effort"])
     voice_fn = voice_fn or default_voice
     validate_fn = validate_fn or validate_show
@@ -668,11 +1122,7 @@ def write(topic, slug, *, mode=None, settings=None, complete=None, voice_fn=None
     run = Run(topic, slug, folder, settings, mode)
     cat = catalog_text.load_catalog()
     try:
-        draft = write_script_step(run, complete, cat)
-        if draft is None:
-            write_needs_props(run)
-            run.status = "needs_props"
-            return finish(run, EXIT_NEEDS_PROPS)
+        write_script_step(run, complete, cat)
         voice_step(run, complete, voice_fn, cat)
         words = json.loads((folder / "words.json").read_text(encoding="utf-8"))
         show = show_step(run, complete, validate_fn, cat, words)
@@ -682,13 +1132,32 @@ def write(topic, slug, *, mode=None, settings=None, complete=None, voice_fn=None
             show = fallback.build_fallback_show(words, run.draft.get("title") or topic,
                                                 seed=int(settings["fallback_seed"]))
             (folder / "show.json").write_text(json.dumps(show, indent=1, ensure_ascii=False), encoding="utf-8")
-            if not validate_fn(folder).get("ok"):
+            # The fallback is a slideshow by design, so it is checked without the story rules.
+            if not validate_fn(folder, story_rules=False).get("ok"):
                 raise RuntimeError("the fallback show did not validate (a bug in pipeline/fallback.py)")
             run.show_source = "fallback"
-            run.history.append("fallback show used")
+            run.history.append(f"fallback show used ({FALLBACK_NOTE})")
         qa_step(run, complete, validate_fn, qa_fn, cat, words, show)
         run.status = "ok" if run.show_source == "llm" else "fallback"
         return finish(run, EXIT_OK)
+    except NotFeasible:
+        # From the first script, the beat rewrite, the fact-check redraft or a rewrite after a shorten.
+        # The audit on file belongs to run.draft (see _stop_not_feasible); flag it if it found a problem,
+        # since the end of write_script_step, which normally does this, may not have been reached.
+        fa = run.fact["final_audit"]
+        if fa:
+            run.fact["needs_fact_check"] = (not fa["ok"]) or run.fact["redraft_error"] is not None
+        # Voice files left from an earlier run (a reset in files mode) may belong to another script: make
+        # them match the script review.md shows (no new voice when they already do).
+        if (folder / "words.json").exists() and run.draft.get("script"):
+            try:
+                _voice_if_needed(folder, run.draft["script"], voice_fn, settings, exact=True)
+            except Exception as e:      # the stop for props still has to be written
+                run.error = (f"the voice files on disk could not be remade for the script below, so they may "
+                             f"belong to another script: {type(e).__name__}: {e}")
+        write_needs_props(run)
+        run.status = "needs_props"
+        return finish(run, EXIT_NEEDS_PROPS)
     except llm.WaitingForReply as w:
         # files mode: say which file to write; nothing else is written (writer.json stays absent).
         print(f"WAITING: write the answer to {w.reply_path}\n         (the prompt is {w.prompt_path})\n"

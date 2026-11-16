@@ -94,7 +94,13 @@ def prop_line(name, p):
 def env_line(name, e):
     params = ", ".join(_param(k, v) for k, v in e.get("params", {}).items())
     ground = ENV_GROUND.get(name, "UNKNOWN ground")
-    return f"- {name} ({params}) [{ground}] -- {e['summary']}"
+    dial = f" [can follow a dial (dialParams): {', '.join(e['dialParams'])}]" if e.get("dialParams") else ""
+    return f"- {name} ({params}) [{ground}]{dial} -- {e['summary']}"
+
+
+def dial_key_line(name, spec):
+    """One field of a dial key, with its doc (the dial fields are few, so the doc is worth its words)."""
+    return f"{_field(name, spec)}: {spec.get('doc', '')}"
 
 
 def _field(name, spec):
@@ -147,6 +153,15 @@ def catalog_text(cat=None):
         else:
             lines.append(f"- {_field(k, spec)} -- {spec.get('doc', '')}")
     lines += ["", "TRANSITIONS: " + "; ".join(f"{k} = {v}" for k, v in cat["transitions"].items())]
+    # Dials, bindings and continuing shots: the texts come from kit/catalog.json (tools/catalog.mjs),
+    # which follow docs/SPEC.md sections 12 and 13, so the prompt never paraphrases the contract.
+    if cat.get("dials"):
+        lines += ["", f"DIALS: {cat['dials']}"]
+        lines += ["Dial key fields: " + "; ".join(dial_key_line(k, v) for k, v in cat.get("dialKeyFields", {}).items())]
+    if cat.get("bindings"):
+        lines += [f"BINDINGS: {cat['bindings']}"]
+    if cat.get("continue"):
+        lines += [f"CONTINUE (scenes): {cat['continue']}"]
     lines += ["", "COLOURS: any #rrggbb, or a name: " + ", ".join(cat["colors"])
               + " (accent = the channel's yellow)"]
     pf = ", ".join(_field(k, v) for k, v in cat["propFields"].items())

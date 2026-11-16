@@ -1,7 +1,7 @@
 # PIPELINE: from topic to private upload
 
 ```
-python -m pipeline.run [--topic "..."] [--slug s] [--from-step name] [--no-upload] [--llm api|files]
+python -m pipeline.run [--topic "..."] [--slug s] [--from-step name] [--no-upload] [--llm api|files] [--allow-fallback]
 ```
 
 Takes the oldest topic in `queue/pending/` (or `--topic`), makes a video, optionally uploads it as **private**. Does at most 3 topics per run (`max_topics_per_run` in `settings.yaml`); a topic that fails or cannot be shown does not stop the next one.
@@ -20,6 +20,7 @@ Takes the oldest topic in `queue/pending/` (or `--topic`), makes a video, option
 
 Music: if `assets/music/LEDGER.csv` lists mp3 files that exist, one is picked by a fixed choice from the slug; otherwise no music.
 A picture check of `fail` stops the upload (the video is kept). `warn` is allowed; look at `out/qa-sheet.jpg`.
+If the writer only made the fallback show (`writer.json` status `fallback`, "fallback: not good enough to publish"), the topic fails (`queue/failed/`, with that note) and nothing is rendered. `--allow-fallback` renders it anyway, for local testing only (never set it in the GitHub workflow); the upload step still refuses any show whose `writer.json` has a `fallback_note`. To try such a topic again, run the writer again with `--from-step writer` (moving it back to `pending/` alone fails at once, because the old fallback result is still there). With `--allow-fallback --no-upload` a queued topic ends in `done/`.
 One log per show: `out/run.log`. The console shows one line per step.
 
 ## Resuming

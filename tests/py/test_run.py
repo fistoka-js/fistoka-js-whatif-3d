@@ -12,7 +12,7 @@ def env(tmp_path, monkeypatch):
     (tmp_path / "settings.yaml").write_text('channel_id: "UCgood"\nllm_mode: files\n')
     q = Queue(tmp_path / "queue")
     calls = []
-    behaviour = {"writer": 0, "render": 0}
+    behaviour = {"writer": 0, "render": 0, "status": "ok"}
 
     def fake(cmd, log, cwd=None):
         cmd = [str(c) for c in cmd]
@@ -25,7 +25,10 @@ def env(tmp_path, monkeypatch):
                 d.mkdir(parents=True, exist_ok=True)
                 for n in ("voice.mp3", "words.json", "show.json"):
                     (d / n).write_text("x")
-                (d / "writer.json").write_text(json.dumps({"title": "Title " + slug, "description": "d", "tags": ["t"], "status": "ok"}))
+                w = {"title": "Title " + slug, "description": "d", "tags": ["t"], "status": behaviour["status"]}
+                if behaviour["status"] == "fallback":
+                    w["fallback_note"] = "fallback: not good enough to publish"
+                (d / "writer.json").write_text(json.dumps(w))
             return behaviour["writer"]
         if "validate.mjs" in joined:
             return 0
@@ -153,6 +156,40 @@ def test_guard_refusal_puts_topic_back(env, monkeypatch):
     q.add("Topic one")
     assert go(root) == run.EXIT_GUARD
     assert q.count("pending") == 1 and q.count("failed") == 0
+
+
+def test_fallback_show_fails_the_topic_and_is_never_rendered(env):
+    root, q, calls, beh, uploads = env
+    beh["status"] = "fallback"
+    q.add("Topic one")
+    assert go(root) == run.EXIT_FAILED
+    failed = json.loads(q.path("failed", "topic-one").read_text())
+    assert "fallback: not good enough to publish" in failed["reason"]
+    assert count(calls, "render.mjs") == 0 and uploads == []
+    # A later run (writer.json already says fallback, so the writer step is skipped) still refuses it.
+    assert go(root, "--topic", "Topic one", "--slug", "topic-one") == run.EXIT_FAILED
+    assert count(calls, "render.mjs") == 0 and uploads == []
+
+
+def test_allow_fallback_renders_but_upload_still_refuses(env):
+    root, q, calls, beh, uploads = env
+    beh["status"] = "fallback"
+    q.add("Topic one")
+    assert go(root, "--allow-fallback", "--no-upload") == run.EXIT_OK      # local test: rendered
+    assert count(calls, "render.mjs") == 1
+    assert go(root, "--topic", "Topic one", "--slug", "topic-one", "--allow-fallback") == run.EXIT_FAILED
+    assert uploads == []
+    assert not (root / "shows" / "topic-one" / "upload.json").exists()
+
+
+def test_upload_refuses_a_writer_json_with_a_fallback_note(env):
+    root, q, calls, beh, uploads = env
+    q.add("Topic one")
+    assert go(root, "--no-upload") == run.EXIT_OK
+    w = root / "shows" / "topic-one" / "writer.json"
+    w.write_text(json.dumps(dict(json.loads(w.read_text()), fallback_note="fallback: not good enough to publish")))
+    assert go(root, "--topic", "Topic one", "--slug", "topic-one") == run.EXIT_FAILED
+    assert uploads == []
 
 
 def test_from_step_forces_rerun(env):

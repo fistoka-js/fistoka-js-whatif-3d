@@ -39,8 +39,23 @@ def test_floating_and_stage_space_props_are_marked():
     assert "- car (" in text            # a ground prop has no flag
 
 
+def test_dials_bindings_continue_fill_glide_until_are_taught():
+    # The show prompt must teach these exactly as the kit defines them (texts from kit/catalog.json).
+    cat = CT.load_catalog()
+    text = CT.catalog_text(cat)
+    assert "DIALS: " + cat["dials"] in text
+    assert "BINDINGS: " + cat["bindings"] in text
+    assert "CONTINUE (scenes): " + cat["continue"] in text
+    for key in cat["dialKeyFields"]:
+        assert re.search(rf"Dial key fields:.*\b{key}\b", text), key
+    assert re.search(r"^- fill 0\.5\.\.1\.3", text, re.M) and re.search(r"^- glide 0\.2\.\.6", text, re.M)
+    assert "until:anchor" in text
+    assert "- studio (" in text and "[can follow a dial (dialParams): color]" in text
+
+
 def test_size_stays_compact():
-    # Target from the brief: about 3,500 tokens for 70 props (estimate: characters / 4).
+    # Target from the brief: about 3,500 tokens for 70 props (estimate: characters / 4), plus about
+    # 600 tokens for the dials, bindings and continuing-shots text (round 2).
     cat = CT.load_catalog()
     tokens = len(CT.catalog_text(cat)) / 4
-    assert tokens < 3500 * len(cat["props"]) / 61 * 1.2
+    assert tokens < 3500 * len(cat["props"]) / 61 * 1.2 + 600

@@ -1,0 +1,6 @@
+The approved video, rebuilt in this kit. One causal chain: crystal spacing -> reflected wavelength -> skin colour.
+SCENES: hook (chameleon, S1-S3) -> skin layers (layer_stack: 1 shot + 2 continuing shots, S4-S6) -> MAIN SCENE: the lattice with a small chameleon and light waves (1 shot + 3 continuing shots, S6-S9) -> analogy as an object (tuner, then paint and a drop crossed out, S10-S13) -> why it matters (two chameleons, S14-S15) -> close (one chameleon, S16-S18).
+DIALS: "gap" drives the lattice spacing only; from "reflect" on its keys sit on the same words as "wavelength", so the gaps and the colour change together. In the lattice scene "wavelength" drives the lattice colour, the small chameleon's colour, the reflected wave's colour, the reflected wave's length and the background, so one number changes five things in the same frame (cause on top, effect below). In the tuner scene it drives the tuner's value and the background.
+Icons and labels in the output (a "no" sign on the paint box and dye drop, question marks) are decoration on top of the plan's changes; they are never the change.
+
+Not to copy: this example has 6 scenes because of the hook and closing scenes, and runs 61 s; yours must stay at 60 s or less. The "lose" shot was split from "emotions" so no shot is over 9 s. Do not reuse its props or layout for a different topic.

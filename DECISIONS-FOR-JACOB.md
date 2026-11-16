@@ -30,6 +30,11 @@ Rules Jacob restated: work only inside `E:\Youtube Project`; never touch the Pex
 - **What:** weekly usage is 76% and resets 16 Nov 09:00 UTC, about when I stop being available. Left to do: finish part 3b, part 5 (the writer), three samples, task 9 docs, and the leftovers above. Each review round costs about 2 weekly points and each build about 2-4.
 - **Recommendation:** spend what is left in your priority order and accept that items 4 and 5 of that order (docs, leftovers) may not be reached. Item 11 option (b) or (c) would stretch the budget.
 
+### 13. Commit part 5 (the writer) at the review count reached?
+- **What:** part 5 used all 8 review rounds (the cap) with no clean pass. Round 8 found 2 bugs (a camera-move check that can flag real prop changes such as "tilts up"; a files-mode reset path where the voice files on disk can differ from the script shown) and 5 small problems, listed in `docs/briefs/part5-open-review.md`.
+- **Recommendation:** one fix pass for those 7, a test run, then commit locally (no push), as was done for part 3b.
+- **Answer (16 Nov):** yes — fix the 7, test, commit locally (no push). Done.
+
 ## Please do soon
 
 ### 1. Back up the old 3D repo (about 28 commits exist only on this PC) — DONE 13 Nov
