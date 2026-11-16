@@ -1425,3 +1425,41 @@ def test_files_mode_reset_then_not_feasible_after_a_shorten_leaves_matching_voic
     assert "show.json" not in files and "words.json" in files and "script.txt" in files
     # A stop for props with nothing voiced before does not voice (the first test's case).
     assert go() == 3 and voiced == [208, 50, 208]
+
+
+def test_orbit_is_idle_only_with_nothing_or_a_plain_object_after_it():
+    for idle in ("the moon orbits", "orbits the sun", "orbits around the sun", "the moon orbits slowly",
+                 "the lizard drifts", "drifts", "the lizard is static", "it is static", "the lizard is idle",
+                 "nothing visible changes", "the lizard stays"):
+        assert writer.is_no_change(idle), idle
+    for real in ("the moon orbits closer", "the planet orbits the sun faster", "the orbit widens",
+                 "the satellite orbits lower", "the electron orbits faster", "the moon orbits farther away",
+                 "the cells swell and drift apart", "the lizard drifts left", "the lizard stays green"):
+        assert not writer.is_no_change(real), real
+
+
+def test_dotted_initialisms_match_their_plain_form_and_never_end_a_sentence():
+    match = writer.sentence_matches
+    assert match("US scientists found it.", "U.S. scientists found it.", 1)
+    assert match("U.S.A. scientists found it.", "USA scientists found it.", 1)
+    assert not match("UK scientists found it.", "U.S. scientists found it.", 1)
+    assert writer.script_sentences("The U.S.A. is big. Yes. Dr. Lee agrees.") == ["The U.S.A. is big.", "Yes.", "Dr. Lee agrees."]
+
+
+def test_the_voice_note_counts_the_voiced_rewrite_not_the_shorten_reply(tmp_path):
+    target = _shorten_target(tmp_path, LONG_SCRIPT)
+    over, rewrite = _one_sentence(target + 9), _one_sentence(target)
+    code, folder, fake = run_writer(tmp_path / "a", {
+        "script": [script_reply(LONG_SCRIPT)], "audit": [audit_reply(MOON_CLAIM)],
+        "shorten": [json.dumps({"script": over, "beats": beats_for(over, change="stays the same")})],
+        "script-rewrite": [script_reply(rewrite)], "audit-shorten": [audit_reply(MOON_CLAIM)], "show": [good_show]})
+    voice = [l for l in (folder / "review.md").read_text(encoding="utf-8").splitlines() if l.startswith("- Voice:")][0]
+    assert code == 0 and "shortened once" in voice and "-word target" not in voice, voice
+
+
+def test_an_old_review_is_removed_while_a_files_mode_run_waits(tmp_path):
+    (tmp_path / "moon").mkdir()
+    (tmp_path / "moon" / "review.md").write_text("- Status: needs_props", encoding="utf-8")
+    code = writer.write("Moon", "moon", mode="files", settings=dict(writer.DEFAULTS), voice_fn=fake_voice,
+                        qa_fn=QA_PASS, shows_dir=tmp_path)
+    assert code == writer.EXIT_WAITING and not (tmp_path / "moon" / "review.md").exists()

@@ -130,7 +130,7 @@ def sentences(words):
     out, cur = [], []
     for w in words:
         cur.append(w)
-        if w["text"].lower() in ABBREVIATIONS:
+        if w["text"].lower() in ABBREVIATIONS or re.fullmatch(r"(?:[A-Za-z]\.){2,}", w["text"]):
             continue
         if re.search(r"[.!?…][\"')\]}”’»]*$", w["text"]):
             out.append(cur)
@@ -195,20 +195,22 @@ NO_CHANGE = re.compile("|".join([
     r"none|n/a|na|nil|static|still|unchanged|same|idle|no change|shown|visible|(?:it )?(?:stays|remains)",
     r"nothing(?: (?:at all|new|else))?(?: (?:happens|changes|moves))?(?: (?:yet|at all|here))?",
     r"(?:there is |there are |theres )?no (?:visible |real )?(?:changes?|movement)(?: (?:here|yet))?",
-    r"the same|nothing visibly changes",
+    r"the same|nothing visib(?:ly|le) changes",
     r"same as before",
     rf"(?:{_THING} )?(?:stays|remains|stay|remain) (?:the same|still|unchanged|as is|static|frozen)",
     rf"(?:{_THING} )?(?:holds|sits|stays|keeps|hold|sit|stay|keep) still",
     rf"(?:{_THING} )?(?:just )?sits there",
     rf"(?:{_THING} )?does nothing",
     rf"(?:{_THING} )?(?:does not|doesnt|do not|dont) (?:change|move)",
-    rf"(?:{_THING} )?(?:is|are) (?:shown|visible|unchanged)",
+    rf"(?:{_THING} )?(?:is|are) (?:shown|visible|unchanged|static|idle)",
+    rf"(?:{_THING} )?(?:stays|remains)",
     rf"hold on {_THING}",
     rf"nothing,? just {_THING}",
     rf"(?:{_THING} )?(?:appears|looks) unchanged",
     # Idle motion: the show rules (show_system.md, story-rules IDLE) do not count spin, bob, orbit or drift.
-    rf"(?:{_THING} )?(?:(?:spins|bobs|floats|sways|hovers)(?: (?:slowly|gently|in place))?|rotates slowly)",
-    rf"(?!(?:the )?camera )(?:{_THING} )?(?:orbits|orbit)(?: (?:slowly|gently))?(?: (?:(?:around|round) )?{_THING})?",
+    rf"(?:{_THING} )?(?:(?:spins|bobs|floats|sways|hovers|drifts)(?: (?:slowly|gently|in place))?|rotates slowly)",
+    # After "orbit" only "(around) the X" may follow, one noun: "orbits closer" / "orbits the sun faster" are real changes.
+    rf"(?!(?:the )?camera )(?:{_THING} )?(?:orbits|orbit)(?: (?:slowly|gently))?(?: (?:(?:around|round) (?:(?:the|a|an|its|this) )?|(?:the|a|an|its|this) ){_WORD})?",
 ]))
 
 
@@ -260,6 +262,7 @@ def _plain_words(text):
     """Lower-case words only: quotes, apostrophes (any kind), punctuation, case, spacing and a thousands
     separator ("1,000" is "1000") do not matter."""
     text = re.sub(r"(?<=\d)[,\u00a0\u2009\u202f](?=\d{3}(?!\d))", "", str(text).lower())
+    text = re.sub(r"(?<![a-z0-9.])(?:[a-z]\.){2,}", lambda m: m.group().replace(".", ""), text)   # "U.S." is "us"
     return re.findall(r"[a-z0-9]+", re.sub(f"[{re.escape(_APOSTROPHES)}]", "", text))
 
 
@@ -746,7 +749,7 @@ def voice_step(run, complete, voice_fn, cat):
                 run.fact["needs_fact_check"] = not run.fact["final_audit"]["ok"]
                 stats = _voice_if_needed(folder, run.draft["script"], voice_fn, run.settings,
                                          shortened_from={"sha256": _fingerprint(script), "stats": stats})
-                n_short = len(new_script.split())
+                n_short = len(run.draft["script"].split())     # the script actually voiced (a beat rewrite may differ)
                 run.voice_note = f"shortened once ({cut} words asked)" + (
                     f"; the shortened script had {n_short} words, over the {target}-word target"
                     if n_short > target else "")
@@ -1111,8 +1114,8 @@ def write(topic, slug, *, mode=None, settings=None, complete=None, voice_fn=None
     folder = Path(shows_dir or REPO / "shows") / slug
     folder.mkdir(parents=True, exist_ok=True)
     # Never leave an old result readable while this run is unfinished (NEEDS-PROPS.md is written again
-    # if this run also stops for props).
-    for name in ("writer.json", "NEEDS-PROPS.md"):
+    # if this run also stops for props; review.md is written again when the run ends).
+    for name in ("writer.json", "NEEDS-PROPS.md", "review.md"):
         if (folder / name).exists():
             (folder / name).unlink()
     complete = complete or llm.make_complete(mode, folder, model=settings["model"], effort=settings["effort"])
