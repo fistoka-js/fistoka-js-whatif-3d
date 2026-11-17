@@ -1,14 +1,14 @@
 # STATUS
 
-Last updated: 2026-11-16 (round 2 part 5, the writer, built; review hit the 8-round cap with 0 clean; round 8's 7 problems fixed in one last unreviewed pass; committed at the cap with Jacob's approval; beat word checks cut to a short exact-phrase list, new review loop started; second review loop hit the cap, final 2 fixes applied). Task numbers match PLAN.md.
+Last updated: 2026-11-17 (files-mode re-test done; microwave show step redone after full prompt read; doc note added to WRITER.md. Earlier, 16 Nov: round 2 part 5, the writer, built; review hit the 8-round cap with 0 clean; round 8's 7 problems fixed in one last unreviewed pass; committed at the cap with Jacob's approval; beat word checks cut to a short exact-phrase list, new review loop started; second review loop hit the cap, final 2 fixes applied). Task numbers match PLAN.md.
 
 ## Where work stopped (read this first)
-- **Round 2 part 3b is committed** as `36b2c0a` (not pushed). It added the crash fix, camera `fill` and `glide`, icon `size` / colour / longer `until`, studio `haze`, a smoother camera "up" during glides, the picture check using each prop's real outline, and a much closer chameleon rebuild. It hit the 8-round review cap with no clean pass; Jacob approved committing at the cap on 13 Nov. Remaining visual gaps against the approved video: no leaf backdrop, a smaller tuner, darker middle backgrounds, fewer hearts and no red backdrop in the "emotions" part, and a gold end chameleon where the original is light green. Nobody has listened to the audio yet. Notes: `docs/briefs/part3b-open-review.md`.
-- **Round 2 part 5 (the writer) is built and committed** (not pushed). See the part 5 section below; the round-5 problems in `docs/briefs/part5-open-review.md` were fixed on 16 Nov. Review hit the 8-round cap on 16 Nov; round 8's 7 problems were fixed in one last unreviewed pass (list in `docs/briefs/part5-open-review.md`).
+- **Round 2 part 3b is committed** as `36b2c0a` (pushed). It added the crash fix, camera `fill` and `glide`, icon `size` / colour / longer `until`, studio `haze`, a smoother camera "up" during glides, the picture check using each prop's real outline, and a much closer chameleon rebuild. It hit the 8-round review cap with no clean pass; Jacob approved committing at the cap on 13 Nov. Remaining visual gaps against the approved video: no leaf backdrop, a smaller tuner, darker middle backgrounds, fewer hearts and no red backdrop in the "emotions" part, and a gold end chameleon where the original is light green. Nobody has listened to the audio yet. Notes: `docs/briefs/part3b-open-review.md`.
+- **Round 2 part 5 (the writer) is built, committed and pushed** (commits `4c4a93e`, `dd51869`, `84ce279` are on origin/main). See the part 5 section below; the round-5 problems in `docs/briefs/part5-open-review.md` were fixed on 16 Nov. Review hit the 8-round cap on 16 Nov; round 8's 7 problems were fixed in one last unreviewed pass (list in `docs/briefs/part5-open-review.md`).
 - Checks on 16 Nov after the last part 5 fix: pytest 199 passed; `npm test` 293 pass, 0 fail (browser tests skip when less than 2 GB memory is free); `validate chameleon --story-rules` OK with 1 warning (the 10.12 s "emotions" shot).
 - **Outputs are fresh** (made 13 Nov after the last change to `show.json` and the code): `shows\chameleon\out\timeline.json`, `chameleon.mp4`, `chameleon-final.mp4` (no music, -16.0 LUFS, true peak -1.5 dBFS), `qa.json` and `compare\remake-sheet-1..4.jpg`.
 - Usage reset on 16 Nov (weekly resets again 23 Nov 09:00 UTC).
-- Pushed: commits up to `bb86990` ("Status timestamp") are on GitHub at `fistoka-js/fistoka-js-whatif-3d` (private). Every later push needs a new yes from Jacob.
+- Pushed: commits up to `84ce279` are on GitHub at `fistoka-js/fistoka-js-whatif-3d` (private). Commits `28eb48c` and later are local only. Every later push needs a new yes from Jacob.
 - The approved chameleon video for side-by-side comparison: `E:\Youtube Project\youtube-3d-pipeline\kit\render\chameleon-1080-stage2-final.mp4` (61 s, 1080x1920, Andrew +12% voice at about -32 LUFS). Read only; never write in that folder.
 
 ## Jacob's priority order (13 Nov; work stops about 16 Nov)
@@ -19,7 +19,7 @@ Last updated: 2026-11-16 (round 2 part 5, the writer, built; review hit the 8-ro
 5. Leftovers from his decisions: music logistics, the -16 / -20 loudness comparison files, a Kokoro voice sample, prepared paid-test commands (see DECISIONS-FOR-JACOB.md, "Jacob's answers").
 At about 90% usage: finish what is in flight, update this file and DECISIONS-FOR-JACOB.md, end cleanly.
 
-## Done (all committed; pushed to GitHub up to commit bb86990)
+## Done (all committed; pushed to GitHub up to commit 84ce279)
 - Audit, plan, contract: `AUDIT.md`, `PLAN.md`, `docs/SPEC.md`. Items for Jacob: `DECISIONS-FOR-JACOB.md`.
 - Task 1 engine, task 2 audio, task 3 render, task 4 catalogue (61 props, 7 environments), task 5 picture checks.
 - **Task 6, the writer.** Topic → script → fact check → voice → show file, with repair loop, fallback and a free "files" mode. The script prompt and the fact-check module reuse the existing pipeline's.
@@ -57,12 +57,11 @@ In `E:\Youtube Project\whatif-3d\shows\`:
   - 16 Nov: an extra review after the commit found 6 problems, fixed in `dd51869`. Then the beat word checks were cut down to a short fixed list of exact phrases (Jacob's decision), because looser checks kept producing false alarms and misses; a new review loop was started.
   - 16 Nov: second review loop after the beat-check simplification ran 8 rounds (cap), round 7 clean, round 8 found 2 small problems, fixed in one last unreviewed pass; Jacob approved committing.
   - 16 Nov: fresh-agent files-mode re-test, 2 topics, 0 repair rounds each. `zz-rt-cat` (cats) ended with code 3 (no cat prop; feasible false, NEEDS-PROPS.md written). `zz-rt-microwave` ended with code 0 (show valid first try, `--story-rules` OK, 0 warnings; picture check not run, only 1.3 GB RAM free; no stills). Folders: `shows/zz-rt-cat/`, `shows/zz-rt-microwave/`.
+  - 17 Nov: the first re-test agent skipped the worked example (long reads were summarised), and its microwave show hopped from object to object. A fresh agent redid only the show step after reading every line: 14 shots, 2 repair files (`04-repair1` stillness, `05-qa-repair` picture check), `--story-rules` OK with 1 warning (a label `until` past its shot end). The sheet `shows/zz-rt-microwave/out/stills/sheet.jpg` now keeps the wave and molecule together from about 12.5 s to 26 s and shows the outer and inner ball at 30 to 35 s. Conclusion: the prompt works when fully read; WRITER.md now says so.
 
 ## Not done
-- **Round 2 part 3b**: finish the 8 review items in `docs/briefs/part3b-open-review.md`, re-make the chameleon video and sheets, then get two clear reviews in a row and commit. **Next step.**
-- Still visibly different from the approved video after 3b (lead's opinion from frames): no leaf backdrop, no section headings at the top, smaller tuner, darker middle backgrounds, smaller chameleons in the "emotions" part. Decide after 3b whether to close these before part 5.
-- **Round 2 part 5, still to do**: a second worked example (to come from the first sample that passes by eye); the three samples; then task 9 docs.
-- Three new sample videos, then task 9 docs.
+- **Next step: three samples.** Each is made from a one-line topic in files mode, on a topic the catalogue can show; a sample that exits 3 is swapped for another topic. Round 2 part 5 also needs a second worked example (to come from the first sample that passes by eye). Then task 9 docs. (Round 2 part 3b is committed as `36b2c0a`, at the review cap with Jacob's approval.)
+- Still visibly different from the approved video after 3b (lead's opinion from frames): no leaf backdrop, no section headings at the top, smaller tuner, darker middle backgrounds, smaller chameleons in the "emotions" part.
 - A real paid run (needs Jacob), a real GitHub run (needs a push), a real upload (needs the second channel).
 - Work from Jacob's answers, none started: music files for GitHub runs, loudness as one named setting plus a -16 and a -20 comparison file, the paid-test commands, the "build a missing mechanism" prompt, committing `shows/<slug>/` from the workflow, checking `docs/CHANNEL_SETUP.md`, a Kokoro sample.
 - Check `E:\Youtube Project\notes\project-notes-3d-and-animation.md` against AUDIT.md. The lead read a summary only. It may change the Audio Library redistribution concern and the note about the 2D track decision. Not done.
@@ -89,6 +88,8 @@ In `E:\Youtube Project\whatif-3d\shows\`:
 - In `pipeline/run.py` the writer step checks a fallback by `status` while upload checks `fallback_note`. This works today, but it is two different fields.
 - Out of scope from round 8: `pipeline/prompts/show_system.md` line 40 says label text up to 32 characters and line 77 says under 22 characters (older lines).
 - Out of scope from round 8: `tools/lib/story-rules.mjs` line 36 splits sentences differently from Python `sentences()` (curly closing quotes and "…" are not sentence ends in the JS split), so S numbers and story-rules sentence indexes can disagree.
+- A colour dial from blue to orange passes through grey in the middle (seen on the microwave ball at 4.5 s, 30.5 s and 48.5 s), so the change reads as "gets dull".
+- The microwave sheet frame at 40.5 s is almost black with faint marbles (not yet checked whether this is a dip transition or a bug).
 
 ## How to continue
-Say: "Continue round 2 part 3b from docs/briefs/part3b-open-review.md, then part 5, then three samples, then task 9. Read STATUS.md first."
+Say: "Round 2 part 3b is committed as 36b2c0a. Continue with the three samples, then task 9 docs. Read STATUS.md first."

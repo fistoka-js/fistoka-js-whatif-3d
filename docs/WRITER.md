@@ -99,6 +99,10 @@ Tests: `tests/py/test_writer.py`, `test_fact_check.py`, `test_fallback.py`, `tes
   number (`01-script`, `02-audit`, `03-show`); the number counts the calls actually made, so skipped
   optional steps leave no gap and a step that runs shifts every later number. Token counts in this mode are characters / 4.
   To start again from a step, delete that reply file and every later one.
+  The agent playing the model must read every line of each prompt file, including the whole worked
+  example and its OUTPUT JSON. A read tool in this setup replaced long reads with summaries, so read
+  in chunks (for example under 100 lines). A re-test that skipped the example made a slideshow, while
+  the same show step redone after the full read followed one subject.
 - **api** (paid). The Anthropic API through the official Python SDK (`pip install anthropic`; it is not
   in `pipeline/requirements.txt` yet). The key is read only from the `ANTHROPIC_API_KEY` environment
   variable; it is never read from a file or printed. The long fixed part of each prompt (rules,
