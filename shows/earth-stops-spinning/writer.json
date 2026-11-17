@@ -1,0 +1,177 @@
+{
+ "slug": "earth-stops-spinning",
+ "topic": "What if Earth stopped spinning?",
+ "status": "ok",
+ "title": "What if Earth suddenly stopped spinning?",
+ "description": "What would really happen if Earth stopped spinning? The air and oceans would keep moving, and one side of the planet would bake while the other froze.\n\n#science #earth #whatif #physics #space",
+ "tags": [
+  "what if",
+  "earth stops spinning",
+  "earth rotation",
+  "science explained",
+  "physics",
+  "planet earth",
+  "day and night",
+  "winds",
+  "oceans",
+  "climate",
+  "space",
+  "science shorts"
+ ],
+ "show": "llm",
+ "repairs": 0,
+ "fallback_note": null,
+ "beats": [
+  {
+   "sentence": "What if Earth suddenly stopped spinning?",
+   "subject": "planet",
+   "change": "the air glow around the planet settles to a calm thin halo",
+   "dial": "air_speed"
+  },
+  {
+   "sentence": "You might picture the world gently coming to rest.",
+   "subject": "planet",
+   "change": "the air glow stays smooth and quiet",
+   "dial": "air_speed"
+  },
+  {
+   "sentence": "That's the thing, it would be anything but.",
+   "subject": "planet",
+   "change": "the air glow flares thick and bright",
+   "dial": "air_speed"
+  },
+  {
+   "sentence": "Here is what really happens.",
+   "subject": "planet",
+   "change": "the air glow swells further around the planet",
+   "dial": "air_speed"
+  },
+  {
+   "sentence": "Right now, the ground at the equator moves at about one thousand miles an hour.",
+   "subject": "planet",
+   "change": "the air glow settles back to the normal thin halo",
+   "dial": "air_speed"
+  },
+  {
+   "sentence": "The air and the oceans are carried along with it.",
+   "subject": "planet",
+   "change": "the air glow hugs the surface evenly",
+   "dial": "air_speed"
+  },
+  {
+   "sentence": "If the rock stopped, the air would not.",
+   "subject": "planet",
+   "change": "the air glow starts to surge outward",
+   "dial": "air_speed"
+  },
+  {
+   "sentence": "It would keep racing eastward, and winds would scour the surface at hundreds of miles an hour.",
+   "subject": "planet",
+   "change": "the air glow grows thick, bright and stormy",
+   "dial": "air_speed"
+  },
+  {
+   "sentence": "Oceans would surge onto the land, flooding the coasts.",
+   "subject": "planet",
+   "change": "the planet's blue tint swells and spreads over its colour",
+   "dial": "air_speed"
+  },
+  {
+   "sentence": "One day would last about a year.",
+   "subject": "planet",
+   "change": "the sunlit face glows brighter while the far face darkens",
+   "dial": "heat"
+  },
+  {
+   "sentence": "For roughly six months the sunny side would bake, and the dark side would freeze.",
+   "subject": "planet",
+   "change": "the sunlit face turns hot orange and the dark face turns icy blue",
+   "dial": "heat"
+  },
+  {
+   "sentence": "It's like a kebab that stops turning over a fire.",
+   "subject": "fire",
+   "change": "the flames grow taller and brighter on one side",
+   "dial": "heat"
+  },
+  {
+   "sentence": "One side burns, and the other side stays raw.",
+   "subject": "fire",
+   "change": "the flames flare even bigger",
+   "dial": "heat"
+  },
+  {
+   "sentence": "Spinning is what shares the sunlight out evenly.",
+   "subject": "planet",
+   "change": "the hot and cold colours blend back into one even glow",
+   "dial": "heat"
+  },
+  {
+   "sentence": "Without it, the temperature gap would grow, and most life would struggle.",
+   "subject": "planet",
+   "change": "the hot face and cold face pull apart in colour again",
+   "dial": "heat"
+  },
+  {
+   "sentence": "Which side would you pick, bright or dark?",
+   "subject": "planet",
+   "change": "the bright face glows stronger while the dark face deepens",
+   "dial": "heat"
+  },
+  {
+   "sentence": "Comment below.",
+   "subject": "planet",
+   "change": "the dark face fades to its deepest blue",
+   "dial": "heat"
+  }
+ ],
+ "beat_rewrite": false,
+ "beats_note": null,
+ "beat_problems": [],
+ "qa": "not_run",
+ "needs_fact_check": false,
+ "voice_seconds": 45.84,
+ "mode": "files",
+ "model": "claude-sonnet-5-5",
+ "tokens": {
+  "input_tokens": 20393,
+  "output_tokens": 3701,
+  "cache_read_tokens": 0,
+  "cache_write_tokens": 0
+ },
+ "cost_usd": 0.0778,
+ "cost_is_estimate": true,
+ "calls": [
+  {
+   "purpose": "script",
+   "model": "files",
+   "input_tokens": 3601,
+   "output_tokens": 1213,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.01933
+  },
+  {
+   "purpose": "audit",
+   "model": "files",
+   "input_tokens": 1166,
+   "output_tokens": 584,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.00817
+  },
+  {
+   "purpose": "show",
+   "model": "files",
+   "input_tokens": 15626,
+   "output_tokens": 1904,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.05029
+  }
+ ],
+ "error": null
+}

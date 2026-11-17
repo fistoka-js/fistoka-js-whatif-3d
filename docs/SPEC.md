@@ -197,7 +197,7 @@ Optional: `meta.dialParams: ['color']` lists params that may follow a dial (§12
 - `render.mjs <slug> [--chunks N] [--size 1080x1920] [--fps 30]`: MP4 (video + voice) in `shows/<slug>/out/`.
 - `gallery.mjs`: one still of every prop (and every env) into `docs/gallery/`, for eyeball review.
 - `catalog.mjs`: writes `docs/CATALOG.md` and `kit/catalog.json` from the `meta` objects.
-- `qa.mjs <slug>`: automatic picture checks (see docs/HOW-IT-WORKS.md). Prop framing is judged on the prop's real shape where the page can measure it (§10).
+- `qa.mjs <slug>`: automatic picture checks (see docs/QA.md). Prop framing is judged on the prop's real shape where the page can measure it (§10).
 
 All browser tools use puppeteer-core with the installed Chrome (`CHROME_PATH` env, else the usual Windows/Linux paths), software WebGL flags `--use-gl=angle --use-angle=swiftshader --enable-unsafe-swiftshader`, and wait for `window.__ready === true` before drawing.
 

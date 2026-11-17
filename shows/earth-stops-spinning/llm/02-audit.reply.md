@@ -1,0 +1,11 @@
+{"claims": [
+{"claim": "The ground at the equator moves at about one thousand miles an hour.", "quote": "the ground at the equator moves at about one thousand miles an hour", "verdict": "supported", "note": "Equatorial rotation speed is about 1,040 mph; general knowledge, not in the research."},
+{"claim": "The air and oceans are carried along with Earth's rotation.", "quote": "The air and the oceans are carried along with it.", "verdict": "supported", "note": "Atmosphere and oceans co-rotate with the planet; general knowledge, not in the research."},
+{"claim": "If the ground stopped suddenly, the air would keep moving.", "quote": "If the rock stopped, the air would not.", "verdict": "supported", "note": "Inertia would keep the atmosphere moving; general knowledge, not in the research."},
+{"claim": "Winds would reach hundreds of miles an hour at the surface.", "quote": "winds would scour the surface at hundreds of miles an hour", "verdict": "simplified", "note": "Near the equator winds would approach about a thousand mph at first, then slow with friction."},
+{"claim": "Oceans would surge onto land and flood coasts.", "quote": "Oceans would surge onto the land, flooding the coasts.", "verdict": "simplified", "note": "Oceans would keep moving and flood coasts, mostly in the east-moving direction; fine as a short summary."},
+{"claim": "One day would last about a year.", "quote": "One day would last about a year.", "verdict": "supported", "note": "Without spin, the sun cycle matches the orbital period; general knowledge, not in the research."},
+{"claim": "About six months of sunlight then six months of darkness for each side.", "quote": "For roughly six months the sunny side would bake, and the dark side would freeze.", "verdict": "supported", "note": "Follows from a year-long day; general knowledge, not in the research."},
+{"claim": "Rotation spreads sunlight evenly around the planet.", "quote": "Spinning is what shares the sunlight out evenly.", "verdict": "supported", "note": "Day and night cycles even out heating; general knowledge, not in the research."},
+{"claim": "A large temperature gap would make life struggle.", "quote": "the temperature gap would grow, and most life would struggle", "verdict": "supported", "note": "Hedged and widely accepted; general knowledge, not in the research."}
+]}

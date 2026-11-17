@@ -1,0 +1,807 @@
+[
+ {
+  "text": "Is",
+  "start": 0.089,
+  "end": 0.179
+ },
+ {
+  "text": "the",
+  "start": 0.19,
+  "end": 0.279
+ },
+ {
+  "text": "Earth",
+  "start": 0.29,
+  "end": 0.513
+ },
+ {
+  "text": "full",
+  "start": 0.525,
+  "end": 0.748
+ },
+ {
+  "text": "of",
+  "start": 0.759,
+  "end": 0.848
+ },
+ {
+  "text": "liquid",
+  "start": 0.859,
+  "end": 1.127
+ },
+ {
+  "text": "fire?",
+  "start": 1.138,
+  "end": 1.518
+ },
+ {
+  "text": "Not",
+  "start": 1.886,
+  "end": 2.009
+ },
+ {
+  "text": "quite.",
+  "start": 2.02,
+  "end": 2.344
+ },
+ {
+  "text": "Here",
+  "start": 2.734,
+  "end": 2.835
+ },
+ {
+  "text": "is",
+  "start": 2.846,
+  "end": 2.913
+ },
+ {
+  "text": "what",
+  "start": 2.924,
+  "end": 3.069
+ },
+ {
+  "text": "really",
+  "start": 3.08,
+  "end": 3.248
+ },
+ {
+  "text": "happens.",
+  "start": 3.259,
+  "end": 3.761
+ },
+ {
+  "text": "Deep",
+  "start": 4.129,
+  "end": 4.319
+ },
+ {
+  "text": "down,",
+  "start": 4.33,
+  "end": 4.665
+ },
+ {
+  "text": "rock",
+  "start": 5.034,
+  "end": 5.234
+ },
+ {
+  "text": "is",
+  "start": 5.246,
+  "end": 5.346
+ },
+ {
+  "text": "mostly",
+  "start": 5.357,
+  "end": 5.714
+ },
+ {
+  "text": "solid,",
+  "start": 5.725,
+  "end": 6.161
+ },
+ {
+  "text": "but",
+  "start": 6.417,
+  "end": 6.518
+ },
+ {
+  "text": "in",
+  "start": 6.529,
+  "end": 6.607
+ },
+ {
+  "text": "places",
+  "start": 6.618,
+  "end": 6.987
+ },
+ {
+  "text": "a",
+  "start": 6.998,
+  "end": 7.054
+ },
+ {
+  "text": "little",
+  "start": 7.065,
+  "end": 7.333
+ },
+ {
+  "text": "melts",
+  "start": 7.344,
+  "end": 7.623
+ },
+ {
+  "text": "into",
+  "start": 7.634,
+  "end": 7.779
+ },
+ {
+  "text": "magma.",
+  "start": 7.79,
+  "end": 8.248
+ },
+ {
+  "text": "That",
+  "start": 8.616,
+  "end": 8.761
+ },
+ {
+  "text": "magma",
+  "start": 8.772,
+  "end": 9.252
+ },
+ {
+  "text": "is",
+  "start": 9.263,
+  "end": 9.397
+ },
+ {
+  "text": "lighter",
+  "start": 9.409,
+  "end": 9.743
+ },
+ {
+  "text": "than",
+  "start": 9.754,
+  "end": 9.866
+ },
+ {
+  "text": "the",
+  "start": 9.877,
+  "end": 9.944
+ },
+ {
+  "text": "rock",
+  "start": 9.955,
+  "end": 10.223
+ },
+ {
+  "text": "around",
+  "start": 10.234,
+  "end": 10.569
+ },
+ {
+  "text": "it,",
+  "start": 10.58,
+  "end": 10.703
+ },
+ {
+  "text": "so",
+  "start": 11.06,
+  "end": 11.25
+ },
+ {
+  "text": "it",
+  "start": 11.261,
+  "end": 11.384
+ },
+ {
+  "text": "rises",
+  "start": 11.395,
+  "end": 11.786
+ },
+ {
+  "text": "into",
+  "start": 11.797,
+  "end": 12.098
+ },
+ {
+  "text": "a",
+  "start": 12.109,
+  "end": 12.154
+ },
+ {
+  "text": "chamber.",
+  "start": 12.165,
+  "end": 12.645
+ },
+ {
+  "text": "Dissolved",
+  "start": 13.013,
+  "end": 13.393
+ },
+ {
+  "text": "gas,",
+  "start": 13.404,
+  "end": 13.839
+ },
+ {
+  "text": "mostly",
+  "start": 14.051,
+  "end": 14.386
+ },
+ {
+  "text": "water",
+  "start": 14.397,
+  "end": 14.687
+ },
+ {
+  "text": "vapour",
+  "start": 14.699,
+  "end": 15.067
+ },
+ {
+  "text": "and",
+  "start": 15.078,
+  "end": 15.167
+ },
+ {
+  "text": "carbon",
+  "start": 15.179,
+  "end": 15.491
+ },
+ {
+  "text": "dioxide,",
+  "start": 15.502,
+  "end": 16.116
+ },
+ {
+  "text": "is",
+  "start": 16.373,
+  "end": 16.44
+ },
+ {
+  "text": "trapped",
+  "start": 16.451,
+  "end": 16.763
+ },
+ {
+  "text": "inside.",
+  "start": 16.775,
+  "end": 17.21
+ },
+ {
+  "text": "As",
+  "start": 17.567,
+  "end": 17.679
+ },
+ {
+  "text": "the",
+  "start": 17.69,
+  "end": 17.757
+ },
+ {
+  "text": "magma",
+  "start": 17.768,
+  "end": 18.159
+ },
+ {
+  "text": "climbs,",
+  "start": 18.17,
+  "end": 18.728
+ },
+ {
+  "text": "the",
+  "start": 18.884,
+  "end": 18.973
+ },
+ {
+  "text": "pressure",
+  "start": 18.984,
+  "end": 19.297
+ },
+ {
+  "text": "drops,",
+  "start": 19.308,
+  "end": 19.821
+ },
+ {
+  "text": "and",
+  "start": 20.011,
+  "end": 20.1
+ },
+ {
+  "text": "the",
+  "start": 20.112,
+  "end": 20.19
+ },
+ {
+  "text": "gas",
+  "start": 20.201,
+  "end": 20.513
+ },
+ {
+  "text": "forms",
+  "start": 20.525,
+  "end": 20.804
+ },
+ {
+  "text": "bubbles.",
+  "start": 20.815,
+  "end": 21.272
+ },
+ {
+  "text": "The",
+  "start": 21.652,
+  "end": 21.719
+ },
+ {
+  "text": "bubbles",
+  "start": 21.73,
+  "end": 22.065
+ },
+ {
+  "text": "grow,",
+  "start": 22.076,
+  "end": 22.433
+ },
+ {
+  "text": "and",
+  "start": 22.701,
+  "end": 22.779
+ },
+ {
+  "text": "they",
+  "start": 22.79,
+  "end": 22.891
+ },
+ {
+  "text": "push",
+  "start": 22.902,
+  "end": 23.181
+ },
+ {
+  "text": "the",
+  "start": 23.192,
+  "end": 23.281
+ },
+ {
+  "text": "magma",
+  "start": 23.292,
+  "end": 23.828
+ },
+ {
+  "text": "upward",
+  "start": 23.839,
+  "end": 24.163
+ },
+ {
+  "text": "faster.",
+  "start": 24.174,
+  "end": 24.699
+ },
+ {
+  "text": "It",
+  "start": 25.067,
+  "end": 25.134
+ },
+ {
+  "text": "is",
+  "start": 25.145,
+  "end": 25.234
+ },
+ {
+  "text": "like",
+  "start": 25.246,
+  "end": 25.368
+ },
+ {
+  "text": "a",
+  "start": 25.379,
+  "end": 25.413
+ },
+ {
+  "text": "shaken",
+  "start": 25.424,
+  "end": 25.815
+ },
+ {
+  "text": "fizzy",
+  "start": 25.826,
+  "end": 26.094
+ },
+ {
+  "text": "drink.",
+  "start": 26.105,
+  "end": 26.507
+ },
+ {
+  "text": "Open",
+  "start": 26.864,
+  "end": 27.065
+ },
+ {
+  "text": "the",
+  "start": 27.076,
+  "end": 27.143
+ },
+ {
+  "text": "cap,",
+  "start": 27.154,
+  "end": 27.522
+ },
+ {
+  "text": "the",
+  "start": 27.723,
+  "end": 27.812
+ },
+ {
+  "text": "pressure",
+  "start": 27.824,
+  "end": 28.125
+ },
+ {
+  "text": "drops,",
+  "start": 28.136,
+  "end": 28.616
+ },
+ {
+  "text": "and",
+  "start": 28.806,
+  "end": 28.884
+ },
+ {
+  "text": "the",
+  "start": 28.895,
+  "end": 28.962
+ },
+ {
+  "text": "bubbles",
+  "start": 28.973,
+  "end": 29.353
+ },
+ {
+  "text": "burst",
+  "start": 29.364,
+  "end": 29.687
+ },
+ {
+  "text": "out.",
+  "start": 29.699,
+  "end": 29.944
+ },
+ {
+  "text": "The",
+  "start": 30.324,
+  "end": 30.379
+ },
+ {
+  "text": "pressure",
+  "start": 30.391,
+  "end": 30.725
+ },
+ {
+  "text": "finally",
+  "start": 30.737,
+  "end": 31.127
+ },
+ {
+  "text": "breaks",
+  "start": 31.138,
+  "end": 31.44
+ },
+ {
+  "text": "the",
+  "start": 31.451,
+  "end": 31.529
+ },
+ {
+  "text": "rock",
+  "start": 31.54,
+  "end": 31.853
+ },
+ {
+  "text": "plug",
+  "start": 31.864,
+  "end": 32.199
+ },
+ {
+  "text": "in",
+  "start": 32.21,
+  "end": 32.266
+ },
+ {
+  "text": "the",
+  "start": 32.277,
+  "end": 32.333
+ },
+ {
+  "text": "crater.",
+  "start": 32.344,
+  "end": 32.723
+ },
+ {
+  "text": "Lava,",
+  "start": 33.092,
+  "end": 33.426
+ },
+ {
+  "text": "ash",
+  "start": 33.761,
+  "end": 33.996
+ },
+ {
+  "text": "and",
+  "start": 34.007,
+  "end": 34.096
+ },
+ {
+  "text": "gas",
+  "start": 34.107,
+  "end": 34.408
+ },
+ {
+  "text": "blast",
+  "start": 34.42,
+  "end": 34.788
+ },
+ {
+  "text": "out",
+  "start": 34.799,
+  "end": 34.933
+ },
+ {
+  "text": "into",
+  "start": 34.944,
+  "end": 35.112
+ },
+ {
+  "text": "the",
+  "start": 35.123,
+  "end": 35.212
+ },
+ {
+  "text": "air.",
+  "start": 35.223,
+  "end": 35.547
+ },
+ {
+  "text": "Thick,",
+  "start": 35.96,
+  "end": 36.161
+ },
+ {
+  "text": "sticky",
+  "start": 36.373,
+  "end": 36.708
+ },
+ {
+  "text": "magma",
+  "start": 36.719,
+  "end": 37.054
+ },
+ {
+  "text": "traps",
+  "start": 37.065,
+  "end": 37.411
+ },
+ {
+  "text": "gas",
+  "start": 37.422,
+  "end": 37.69
+ },
+ {
+  "text": "longer,",
+  "start": 37.701,
+  "end": 38.103
+ },
+ {
+  "text": "so",
+  "start": 38.348,
+  "end": 38.449
+ },
+ {
+  "text": "the",
+  "start": 38.46,
+  "end": 38.549
+ },
+ {
+  "text": "blast",
+  "start": 38.56,
+  "end": 38.906
+ },
+ {
+  "text": "is",
+  "start": 38.917,
+  "end": 39.018
+ },
+ {
+  "text": "bigger.",
+  "start": 39.029,
+  "end": 39.397
+ },
+ {
+  "text": "Runny",
+  "start": 39.766,
+  "end": 39.944
+ },
+ {
+  "text": "magma",
+  "start": 39.955,
+  "end": 40.402
+ },
+ {
+  "text": "lets",
+  "start": 40.469,
+  "end": 40.647
+ },
+ {
+  "text": "gas",
+  "start": 40.658,
+  "end": 40.915
+ },
+ {
+  "text": "escape,",
+  "start": 40.926,
+  "end": 41.328
+ },
+ {
+  "text": "so",
+  "start": 41.652,
+  "end": 41.786
+ },
+ {
+  "text": "lava",
+  "start": 41.797,
+  "end": 42.176
+ },
+ {
+  "text": "just",
+  "start": 42.232,
+  "end": 42.422
+ },
+ {
+  "text": "flows",
+  "start": 42.433,
+  "end": 42.768
+ },
+ {
+  "text": "down",
+  "start": 42.779,
+  "end": 42.98
+ },
+ {
+  "text": "the",
+  "start": 42.991,
+  "end": 43.047
+ },
+ {
+  "text": "slopes.",
+  "start": 43.058,
+  "end": 43.571
+ },
+ {
+  "text": "Over",
+  "start": 43.94,
+  "end": 44.118
+ },
+ {
+  "text": "millions",
+  "start": 44.129,
+  "end": 44.554
+ },
+ {
+  "text": "of",
+  "start": 44.565,
+  "end": 44.621
+ },
+ {
+  "text": "years,",
+  "start": 44.632,
+  "end": 45.033
+ },
+ {
+  "text": "this",
+  "start": 45.246,
+  "end": 45.424
+ },
+ {
+  "text": "gas",
+  "start": 45.435,
+  "end": 45.737
+ },
+ {
+  "text": "probably",
+  "start": 45.748,
+  "end": 46.127
+ },
+ {
+  "text": "helped",
+  "start": 46.138,
+  "end": 46.429
+ },
+ {
+  "text": "build",
+  "start": 46.44,
+  "end": 46.663
+ },
+ {
+  "text": "our",
+  "start": 46.674,
+  "end": 46.797
+ },
+ {
+  "text": "air",
+  "start": 46.875,
+  "end": 47.109
+ },
+ {
+  "text": "and",
+  "start": 47.121,
+  "end": 47.21
+ },
+ {
+  "text": "oceans.",
+  "start": 47.221,
+  "end": 47.712
+ },
+ {
+  "text": "Would",
+  "start": 48.08,
+  "end": 48.181
+ },
+ {
+  "text": "you",
+  "start": 48.192,
+  "end": 48.292
+ },
+ {
+  "text": "live",
+  "start": 48.304,
+  "end": 48.482
+ },
+ {
+  "text": "next",
+  "start": 48.493,
+  "end": 48.705
+ },
+ {
+  "text": "to",
+  "start": 48.717,
+  "end": 48.783
+ },
+ {
+  "text": "one",
+  "start": 48.795,
+  "end": 49.051
+ },
+ {
+  "text": "for",
+  "start": 49.062,
+  "end": 49.185
+ },
+ {
+  "text": "its",
+  "start": 49.196,
+  "end": 49.308
+ },
+ {
+  "text": "rich",
+  "start": 49.319,
+  "end": 49.475
+ },
+ {
+  "text": "soil?",
+  "start": 49.487,
+  "end": 49.821
+ },
+ {
+  "text": "Comment",
+  "start": 50.19,
+  "end": 50.435
+ },
+ {
+  "text": "below.",
+  "start": 50.446,
+  "end": 50.759
+ }
+]

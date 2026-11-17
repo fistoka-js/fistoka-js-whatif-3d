@@ -1,0 +1,9 @@
+{
+ "sha256": "b8761586dfa0e6566a765bfb213237aeb4b1e31393206d3f3edb449608192507",
+ "stats": {
+  "duration": 51.36,
+  "word_count": 167,
+  "words_per_second": 3.28,
+  "longest_pause": 0.391
+ }
+}

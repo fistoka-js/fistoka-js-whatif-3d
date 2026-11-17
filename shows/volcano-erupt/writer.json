@@ -1,0 +1,175 @@
+{
+ "slug": "volcano-erupt",
+ "topic": "Why do volcanoes erupt?",
+ "status": "ok",
+ "title": "Why Do Volcanoes Actually Erupt?",
+ "description": "Volcanoes are not leaks from a sea of liquid fire. Rising magma, trapped gas and falling pressure make the bubbles that blast it out.\n\n#volcano #science #geology #shorts",
+ "tags": [
+  "volcano",
+  "volcanoes",
+  "why do volcanoes erupt",
+  "magma",
+  "lava",
+  "geology",
+  "earth science",
+  "science explained",
+  "pressure",
+  "gas bubbles"
+ ],
+ "show": "llm",
+ "repairs": 0,
+ "fallback_note": null,
+ "beats": [
+  {
+   "sentence": "Is the Earth full of liquid fire?",
+   "subject": "volcano",
+   "change": "the cone sits calm while its crater glows faintly",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "Not quite.",
+   "subject": "volcano",
+   "change": "the glow in the crater dims to a dark rim",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "Here is what really happens.",
+   "subject": "volcano",
+   "change": "the cone turns see-through to reveal a chamber inside",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "Deep down, rock is mostly solid, but in places a little melts into magma.",
+   "subject": "volcano",
+   "change": "a pocket of orange magma appears deep inside the cone",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "That magma is lighter than the rock around it, so it rises into a chamber.",
+   "subject": "volcano",
+   "change": "the magma pocket climbs and swells into a large chamber",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "Dissolved gas, mostly water vapour and carbon dioxide, is trapped inside.",
+   "subject": "volcano",
+   "change": "tiny gas dots appear inside the magma",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "As the magma climbs, the pressure drops, and the gas forms bubbles.",
+   "subject": "volcano",
+   "change": "the magma rises up the vent and the bubbles form",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "The bubbles grow, and they push the magma upward faster.",
+   "subject": "volcano",
+   "change": "the bubbles swell and the magma surges up the vent",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "It is like a shaken fizzy drink.",
+   "subject": "particles",
+   "change": "a packed clump of bubbles spreads and speeds up",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "Open the cap, the pressure drops, and the bubbles burst out.",
+   "subject": "particles",
+   "change": "the bubbles rush upward out of the box",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "The pressure finally breaks the rock plug in the crater.",
+   "subject": "volcano",
+   "change": "the crater glows bright orange and the plug cracks",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "Lava, ash and gas blast out into the air.",
+   "subject": "volcano",
+   "change": "lava and ash burst out of the crater",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "Thick, sticky magma traps gas longer, so the blast is bigger.",
+   "subject": "volcano",
+   "change": "the crater erupts harder and the plume grows taller",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "Runny magma lets gas escape, so lava just flows down the slopes.",
+   "subject": "volcano",
+   "change": "the eruption calms to a gentle flow down the slopes",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "Over millions of years, this gas probably helped build our air and oceans.",
+   "subject": "volcano",
+   "change": "the cone grows taller and the plume spreads wide",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "Would you live next to one for its rich soil?",
+   "subject": "volcano",
+   "change": "the eruption fades and the crater glow settles",
+   "dial": "eruption"
+  },
+  {
+   "sentence": "Comment below.",
+   "subject": "volcano",
+   "change": "the glow dims to a small ember",
+   "dial": "eruption"
+  }
+ ],
+ "beat_rewrite": false,
+ "beats_note": null,
+ "beat_problems": [],
+ "qa": "not_run",
+ "needs_fact_check": false,
+ "voice_seconds": 51.096,
+ "mode": "files",
+ "model": "claude-sonnet-5-5",
+ "tokens": {
+  "input_tokens": 20403,
+  "output_tokens": 6287,
+  "cache_read_tokens": 0,
+  "cache_write_tokens": 0
+ },
+ "cost_usd": 0.1037,
+ "cost_is_estimate": true,
+ "calls": [
+  {
+   "purpose": "script",
+   "model": "files",
+   "input_tokens": 3599,
+   "output_tokens": 1292,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.02012
+  },
+  {
+   "purpose": "audit",
+   "model": "files",
+   "input_tokens": 1164,
+   "output_tokens": 863,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.01096
+  },
+  {
+   "purpose": "show",
+   "model": "files",
+   "input_tokens": 15640,
+   "output_tokens": 4132,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.0726
+  }
+ ],
+ "error": null
+}

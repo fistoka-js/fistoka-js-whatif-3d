@@ -1,0 +1,37 @@
+{
+ "slug": "black-hole-light",
+ "topic": "How does a black hole bend light?",
+ "status": "needs_props",
+ "show": "none",
+ "repairs": 0,
+ "fallback_note": null,
+ "beat_rewrite": false,
+ "beats_note": null,
+ "beat_problems": [],
+ "qa": "not_run",
+ "needs_fact_check": false,
+ "voice_seconds": null,
+ "mode": "files",
+ "model": "claude-sonnet-5-5",
+ "tokens": {
+  "input_tokens": 3601,
+  "output_tokens": 243,
+  "cache_read_tokens": 0,
+  "cache_write_tokens": 0
+ },
+ "cost_usd": 0.0096,
+ "cost_is_estimate": true,
+ "calls": [
+  {
+   "purpose": "script",
+   "model": "files",
+   "input_tokens": 3601,
+   "output_tokens": 243,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.00963
+  }
+ ],
+ "error": null
+}

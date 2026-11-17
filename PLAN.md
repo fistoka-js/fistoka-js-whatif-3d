@@ -39,7 +39,7 @@ Status is tracked in STATUS.md. "Working" = the test named here passes and I hav
 | 6 | Writer: topic → script → show.json using the catalogue; checker-driven repair loop; safe fallback. Paid API calls are behind one function and mocked in tests | Opus or Sonnet | mocked tests pass; a helper acting as "the LLM" with only the real prompt produces a valid show for 2 topics |
 | 7 | Pipeline runner + private upload with wrong-channel guard + GitHub workflow (manual trigger only) | Sonnet | dry run end to end with `--no-upload`; guard unit test refuses a wrong channel |
 | 8 | Sample videos: sky-blue remake (direct comparison with the old one), one "what if", one more | me + helpers | MP4 paths in STATUS.md; QA passes; I have watched frames and measured audio |
-| 9 | Docs for a weaker model: README, AUTHORING, HOW-IT-WORKS (one page), ASKING-CLAUDE, KNOWN-PROBLEMS | me + Sonnet | a fresh Sonnet helper adds a new prop and a new show using only the docs |
+| 9 | Docs written 2026-11-17; acceptance test (a fresh Sonnet helper adds a new prop and a new show using only the docs) still open. Docs for a weaker model: README, AUTHORING, HOW-IT-WORKS (one page), ASKING-CLAUDE, KNOWN-PROBLEMS | me + Sonnet | a fresh Sonnet helper adds a new prop and a new show using only the docs |
 
 Order: 1 and 2 run now, in parallel (they share no files). 3, 4, 5 start when 1 lands. 6 and 7 after the catalogue has grown. 8 and 9 throughout.
 
@@ -53,7 +53,7 @@ Order: 1 and 2 run now, in parallel (they share no files). 3, 4, 5 start when 1 
 ## Cost per video (estimate until measured)
 
 - Voice, render, mix, sound effects: free.
-- LLM: script (about 1 call) + show file (about 1-2 calls of roughly 6k tokens in, 2-3k out). REASONED estimate: **$0.05-0.12 per video on a Sonnet-class model**, less on Haiku. Not measured: needs one paid test run that only Jacob can approve.
+- LLM: script (about 1 call) + show file (about 1-2 calls of roughly 6k tokens in, 2-3k out). REASONED estimate: **about $0.18 typical, about $0.70 worst case per video on a Sonnet-class model**, less on Haiku. Not measured: needs one paid test run that only Jacob can approve.
 - GitHub minutes: to be measured in task 3; budget allows about 150 minutes per video.
 
 ## Round 2 finding (2026-11-12): the kit can show things, but not yet explain them
@@ -70,4 +70,4 @@ Jacob watched the first two sample videos and said the pictures do not match the
 
 **Honest limit:** the chameleon video's quality came from code written for that one topic. A kit gets close only for topics whose central mechanism exists as a prop. Topics without one should be set aside, not faked with icons. See DECISIONS-FOR-JACOB.md item 7c.
 
-Order now: round 2 parts 1-5 → three new samples → task 9 docs.
+Order now: round 2 parts 1-5, and three new samples are done; task 9 docs were written 2026-11-17, and the acceptance test (a fresh Sonnet helper adds a new prop and a new show using only the docs) is still open.
