@@ -263,7 +263,7 @@ def beat_problems(script, beats):
         if is_no_change(b["change"]):
             problems.append(f"S{n} \"{sent}\": nothing visibly changes (\"{b['change']}\"). Name a change to "
                             f"the subject itself that happens while the sentence is spoken (a verb: grows, "
-                            f"spreads, turns red, ...); a camera move, label or number does not count")
+                            f"spreads, turns red, ...); a camera move, label, number, pulse or shake does not count")
     return problems
 
 
@@ -566,14 +566,14 @@ def check_beats(run, complete, system, draft, after, max_words=None):
     picture). Runs on the first script, on a fact-check redraft and on a shortened script, before that
     script is voiced; at most ONE rewrite per run in total. Returns the draft to use (raises NotFeasible
     when the rewrite answers "feasible": false). after: what made this draft, for review.md.
-    max_words: set after a shorten: the rewrite is told this limit wins over the 150-word floor, and a
+    max_words: set after a shorten: the rewrite is told this limit wins over the 165-word floor, and a
     rewrite that comes back longer is not used (the shortened script is kept and the problem reported)."""
     problems = beat_problems(draft["script"], draft["beats"])
     if not problems or run.beats["rewritten"]:
         return draft                     # fine, or the budget is used: left_beat_problems reports it
     length = ("about the same number of words" if not max_words else
               f"at most {max_words} words: this script was just shortened to fit the voice limit, so that "
-              f"word limit wins over the 150 to 175 word length")
+              f"word limit wins over the 165 to 180 word length")
     rewrite_user = fill(read_prompt("script_rewrite_user.md"), TOPIC=run.topic,
                         PREVIOUS=_script_and_beats(draft), PROBLEMS="\n".join(f"- {p}" for p in problems),
                         LENGTH=length)

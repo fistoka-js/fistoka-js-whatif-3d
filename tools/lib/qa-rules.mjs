@@ -147,7 +147,7 @@ export function frozenFindings(show, pairs) {
         out.push(mk('FAIL', 'frozen', shotOf(show, run[0].t0), run[0].t0,
           `the picture does not change for ${sec(len)}, from ${r1(run[0].t0)} s (average change ${avg.toFixed(2)} of 255)`,
           { seconds: r1(len), avgChange: Math.round(avg * 100) / 100 },
-          'give the shot something to do every few seconds: an action ("pulse", "move", "glow", "label") or a camera "move" other than "still" (for example "push_in" or "orbit").'));
+          'give the shot something to do every few seconds: an action ("move", "scale", "glow", "color", "label", a dial key, or a "set" of an animatable value) or a camera "move" other than "still" (for example "push_in" or "orbit").'));
       }
     }
     run = [];
@@ -350,12 +350,12 @@ export function pacingFindings(show, samples) {
   for (const shot of show.shots) {
     const move = shot.camera && shot.camera.move;
     if (move !== 'still' && move !== 'drift') continue;
-    const times = [shot.start, ...shot.actions.filter(a => a.do !== 'sfx').map(a => a.t0), shot.end].sort((a, b) => a - b);
+    const times = [shot.start, ...shot.actions.filter(a => a.do !== 'sfx' && a.do !== 'pulse' && a.do !== 'shake').map(a => a.t0), shot.end].sort((a, b) => a - b);
     let best = 0, at = shot.start;
     for (let i = 1; i < times.length; i++) if (times[i] - times[i - 1] > best) { best = times[i] - times[i - 1]; at = times[i - 1]; }
     if (best > T.IDLE_SECONDS) {
       out.push(mk('WARN', 'idle', shot, at, `nothing happens for ${sec(best)} (no action, camera "${move}")`, { seconds: r1(best) },
-        'add an action in the quiet stretch (a "pulse", "label" or "move" on a spoken word), or change the camera "move" to "push_in", "orbit" or "pan".'));
+        'add an action in the quiet stretch (a "move", "scale", "glow", "color" or "label" on a spoken word), or change the camera "move" to "push_in", "orbit" or "pan".'));
     }
   }
   for (const s of samples) {

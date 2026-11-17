@@ -55,7 +55,7 @@ Floats: yes
 | `look` | one of: earth \| moon \| mars \| gas \| ice \| lava; default "earth" | surface style |
 | `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent) | tint the surface (default: natural colours) |
 | `rings` | true or false; default false | Saturn-style rings |
-| `turn` | number -1..1; default 0.02 | turns per second of its own spin |
+| `turn` | number -1..1; default 0.02 | turns per second: the planet turns by itself at this rate. When the story stops or starts its rotation, place it with "turn": 0 and drive all turning with the "spin" action |
 | `seed` | whole number 0..999; default 1 | which variant of the surface |
 
 Animatable with `set` (also usable as a starting value):

@@ -125,10 +125,12 @@ test('text rules: overlap 20% FAIL (needs 2 samples), under 20% WARN, outside fr
 
 test('pacing: long idle stretch with a still camera, too many overlays', () => {
   const idle = { shots: [{ id: 's', start: 0, end: 10, props: [], camera: { move: 'still' }, actions: [{ do: 'pulse', t0: 1 }] }] };
-  assert.equal(pacingFindings(idle, []).filter(f => f.code === 'idle').length, 1);
+  assert.equal(pacingFindings(idle, []).filter(f => f.code === 'idle').length, 1, 'a pulse is emphasis only, it does not end the quiet stretch');
+  idle.shots[0].actions.push({ do: 'shake', t0: 5 });
+  assert.equal(pacingFindings(idle, []).filter(f => f.code === 'idle').length, 1, 'a shake is emphasis only too');
   idle.shots[0].camera.move = 'orbit';
   assert.equal(pacingFindings(idle, []).length, 0);
-  idle.shots[0].camera.move = 'drift'; idle.shots[0].actions.push({ do: 'pulse', t0: 5 }, { do: 'pulse', t0: 9 });
+  idle.shots[0].camera.move = 'drift'; idle.shots[0].actions.push({ do: 'move', t0: 3 }, { do: 'move', t0: 7 });
   assert.equal(pacingFindings(idle, []).length, 0);
   const four = [1, 2, 3, 4].map(i => box('s:p' + i, 10, 10, 10, 10, 'label'));
   assert.equal(pacingFindings(showWith([]), [sample(3, four)]).filter(f => f.code === 'too-many-overlays').length, 1);

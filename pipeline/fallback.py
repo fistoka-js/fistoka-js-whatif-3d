@@ -156,7 +156,7 @@ def build_fallback_show(words, title, seed=0):
                        "amount": 0.5},
             "actions": [
                 {"at": {"shot": 0}, "do": "appear", "prop": "subject", "style": "grow"},
-                {"at": {"shot": 0.55}, "do": "pulse", "prop": "subject", "strength": 0.2},
+                {"at": {"shot": 0.55}, "do": "scale", "prop": "subject", "to": 1.1, "over": 1},
             ],
         }
         if s > 0:

@@ -37,7 +37,7 @@ All numbers in boxes are pixels of the 540x960 sampling size.
 | `text-overlap` | FAIL / WARN | two of label, text, counter, icon, caption overlap by 20% or more of the smaller box: FAIL if seen in 2+ samples, else WARN; 2% to 20%: WARN. Tilted `stamp` texts are shrunk to their real shape first |
 | `text-outside` | FAIL / WARN | more than 5% of a text box is outside the frame (FAIL if seen in 2+ samples). The engine shrinks long text to fit, so this rarely fires |
 | `label-covers-prop` | WARN | a label covers more than 35% of the prop it belongs to |
-| `idle` | WARN | a shot with camera `still` or `drift` has no action for more than 7 s |
+| `idle` | WARN | a shot with camera `still` or `drift` has no action for more than 7 s (a pulse or shake does not end the quiet stretch) |
 | `too-many-overlays` | WARN | more than 3 labels/texts/counters/icons visible at once |
 | `video-length` | FAIL | video and `voice.mp3` lengths differ by more than 0.5 s |
 | `video-size` / `video-fps` / `video-audio` | FAIL | not 1080x1920 / not 30 fps / no audio stream |
@@ -52,7 +52,7 @@ With `--story-rules` (default: `STORY_RULES_DEFAULT` in `tools/lib/story-rules.m
 | code | level | meaning |
 |---|---|---|
 | `story-coverage` | FAIL | a spoken sentence (`. ? !`; under 1 s joined to the next) in which no prop state change starts and no dial bound to a visible prop moves |
-| `story-stillness` | FAIL / WARN | a stretch of the narration over 3.5 s (FAIL) or 2.5 s (WARN) in which no prop changes (camera, spin, bob, orbit and overlays do not count) |
+| `story-stillness` | FAIL / WARN | a stretch of the narration over 3.5 s (FAIL) or 2.5 s (WARN) in which no prop changes (camera, spin, bob, orbit, pulse, shake and overlays do not count) |
 | `story-subject` | WARN | more than 6 scenes (shots without `"continue"`), or no prop on screen for 30% of the video |
 
 Example (the committed sky-blue sample): `FAIL shot "violet" at 24.8 s: the sentence "Then why isn't the sky violet?" (24.81-26.39 s) has no visible change ...`.

@@ -14,7 +14,7 @@ SCRIPT SHAPE (in this order; one subject, one causal chain from start to end):
 6. CLOSE: a closing question to the viewer, then at most one short line ("Comment below." or "Follow for more science.").
 
 RULES:
-- Length: 150 to 175 words; aim for about 160. The voice reads about 3.3 words per second with its pauses, so 150 words is about 45 seconds and 175 words about 53. The voice must end before 55 seconds (a longer script is sent back to be shortened).
+- Length: 165 to 180 words; aim for about 172. The voice reads about 3.3 words per second with its pauses (a fast read is about 3.45), so 165 words is about 48 to 50 seconds and 180 words about 54.5. The voice must end before 55 seconds (a longer script is sent back to be shortened).
 - Short spoken sentences, one idea each. Every sentence must make something on screen CHANGE while it is spoken: something grows, spreads, splits, turns red, speeds up, fills, tilts. A sentence where nothing can visibly change ("This is really interesting.") is not allowed: rewrite it so it names the change.
 - Name concrete things and amounts that move (spacing, temperature, speed, pressure, size, colour), not abstractions.
 - Pauses come from punctuation: full stops, commas and dashes. No ellipses chains, no emoji, no hashtags in the script.
@@ -27,7 +27,7 @@ RULES:
 THE BEAT LIST ("beats"): exactly one entry per sentence of the script, in order (a sentence ends at . ? or !, so "No paint. No dye." is two sentences). Each entry:
 - "sentence": the sentence, copied.
 - "subject": the thing on screen while it is spoken, a prop from the list below. Keep the SAME subject for as long as the story is about it; a new subject only when the story moves to a new zoom level, the analogy, or the ending.
-- "change": what visibly changes on that subject while it is spoken, as a verb phrase ("crystals spread apart", "the reflected wave turns red", "granules pull together"). Never "none", "stays" or "shown". Camera moves, labels, icons, text and numbers on screen do NOT count: the change must happen to a prop. Spin, bob and orbit do NOT count either (the show rules ignore them): name what the prop itself becomes.
+- "change": what visibly changes on that subject while it is spoken, as a verb phrase ("crystals spread apart", "the reflected wave turns red", "granules pull together"). Never "none", "stays" or "shown". Camera moves, labels, icons, text and numbers on screen do NOT count: the change must happen to a prop. Spin, bob, orbit, pulse and shake do NOT count either (the show rules ignore them): name what the prop itself becomes.
 - "dial": the name of a number that drives the change, if one does (for example "spacing" driving the crystal gaps, the reflected colour and the background together), else "". Use the same dial name across sentences when the same number keeps changing. A dial can drive a prop's "can vary" values (and its colour, glow, size or position), and an environment's "can follow a dial" values (for example the background colour) below.
 
 FEASIBILITY: The video only works when a prop below can show the topic's CENTRAL MECHANISM changing (a lattice whose spacing changes, a wave whose length changes, a layer stack that opens). Stand-ins are fine for scenery and for the hook ("person" can be anyone, "box" can be a brick). They are NOT fine for the mechanism: icons, bar charts, arrows and floating labels do not count as showing a mechanism. If no prop can show the central mechanism changing, set "feasible" to false, leave "script" and "beats" empty, and write in "mechanism_prop" ONE paragraph describing the prop that is needed: what it looks like, which values vary (and between what), and what the viewer should see change. List the missing things in "missing".
@@ -35,7 +35,7 @@ FEASIBILITY: The video only works when a prop below can show the topic's CENTRAL
 REPLY with strict JSON only, no other text, in exactly this shape:
 {
   "title": "YouTube title, under 70 characters, a question or a bold claim, no clickbait lies",
-  "script": "the words to be spoken, 150 to 175 words",
+  "script": "the words to be spoken, 165 to 180 words",
   "beats": [{"sentence": "the first sentence", "subject": "prop name", "change": "what visibly changes", "dial": ""}],
   "description": "2 or 3 sentences for the YouTube description, then a blank line and 3 to 5 hashtags",
   "tags": ["8 to 15 lowercase search tags"],

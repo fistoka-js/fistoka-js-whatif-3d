@@ -549,32 +549,33 @@ TEN = " ".join(f"The {w} slowly glows now." for w in
 TEN_CLAIM = {"claim": "c", "quote": "The moon slowly glows now", "verdict": "supported", "note": ""}
 
 
-def pulse_slideshow(folder):
-    """A new scene for every sentence, each with a planet that pulses on the sentence: every sentence has
-    a change, so the checker finds no error, but it is a slideshow with no dial."""
+def scale_slideshow(folder):
+    """A new scene for every sentence, each with a planet that scales up on the sentence: every sentence has
+    a change, so the checker finds no error, but it is a slideshow with no dial. (The change is a scale: a
+    pulse is emphasis only and no longer counts as a change.)"""
     words = json.loads((Path(folder) / "words.json").read_text(encoding="utf-8"))
     shots = []
     for i, t in enumerate(s[0]["start"] for s in writer.sentences(words)):
         shot = {"id": f"s{i}", "env": "studio", "props": [{"id": "hero", "type": "planet"}],
-                "camera": {"move": "drift"}, "actions": [{"at": {"time": t}, "do": "pulse", "prop": "hero"}]}
+                "camera": {"move": "drift"}, "actions": [{"at": {"time": t}, "do": "scale", "prop": "hero", "to": 1.2, "over": 1}]}
         if i:
             shot["start"] = {"time": t}
         shots.append(shot)
     return {"format": 1, "title": "Ten", "voice": {"audio": "voice.mp3", "words": "words.json"}, "shots": shots}
 
 
-def test_a_ten_scene_pulse_slideshow_is_not_accepted(tmp_path):
+def test_a_ten_scene_scale_slideshow_is_not_accepted(tmp_path):
     # The checker alone accepts it (no errors, only warnings) ...
     alone = tmp_path / "alone"
     alone.mkdir()
     fake_voice(TEN, alone, {})
-    (alone / "show.json").write_text(json.dumps(pulse_slideshow(alone)), encoding="utf-8")
+    (alone / "show.json").write_text(json.dumps(scale_slideshow(alone)), encoding="utf-8")
     check = writer.validate_show(alone, story_rules=True)
     assert check["ok"], check["errors"][:3]
     assert {"story.scenes", "story.subject"} <= {w["path"] for w in check["warnings"]}
     # ... but the writer does not: the warnings and the missing dial go to the repair, then the fallback.
-    bad = [pulse_slideshow] * 4
-    code, folder, fake = run_writer(tmp_path, {"script": [script_reply(TEN, beats=beats_for(TEN, "it pulses"))],
+    bad = [scale_slideshow] * 4
+    code, folder, fake = run_writer(tmp_path, {"script": [script_reply(TEN, beats=beats_for(TEN, "it scales up"))],
                                                "audit": [audit_reply(TEN_CLAIM)], "show": bad[:1], "repair": bad[1:]})
     assert fake.purposes == ["script", "audit", "show", "repair1", "repair2", "repair3"]
     repair_prompt = fake.calls[3].user
@@ -636,7 +637,7 @@ def test_validate_show_passes_the_story_flag(monkeypatch):
 def test_script_prompt_has_the_shape_beats_and_mechanism_rules():
     text = writer.script_system_prompt()
     for must in ("SCRIPT SHAPE", "HOOK", "ONE mechanism", "2 or 3 zoom levels", "ONE ANALOGY", "WHY IT MATTERS",
-                 "closing question", "150 to 175 words", "3.3 words per second", "55 seconds", '"beats"', '"subject"', '"change"',
+                 "closing question", "165 to 180 words", "3.3 words per second", "55 seconds", '"beats"', '"subject"', '"change"',
                  '"dial"', '"mechanism_prop"', "icons, bar charts", "[can vary: spacing"):
         assert must in text, must
     assert "{{" not in text
@@ -765,6 +766,7 @@ def test_show_prompt_contains_rules_catalogue_and_examples():
                  "DIALS: ", "BINDINGS: ", "CONTINUE (scenes): ", "- fill 0.5..1.3", "- glide 0.2..6", '"until"',
                  "Story rules", "S7 [22.46-28.68] When a chameleon is relaxed"):
         assert must in text, must
+    assert 'place it with "turn": 0' in text and 'drive all turning with "spin"' in text   # the planet turns by itself
     assert "## Example 2" not in text                     # the old slideshow examples are out
     assert "7 to 10" not in text and "fresh stage" not in text
     assert "{{" not in text
@@ -1025,7 +1027,7 @@ def test_a_rewrite_after_a_shorten_is_told_the_word_limit_and_a_longer_one_is_no
     assert code == 0
     assert fake.purposes == ["script", "audit", "shorten", "script-rewrite", "audit-shorten", "show"]
     limit = int(re.search(r"at most (\d+) words", fake.calls[3].user).group(1))
-    assert limit < 208 and "wins over the 150 to 175 word length" in fake.calls[3].user
+    assert limit < 208 and "wins over the 165 to 180 word length" in fake.calls[3].user
     assert voiced == [LONG_SCRIPT, short.strip()]               # the too-long rewrite was never voiced
     review = (folder / "review.md").read_text(encoding="utf-8")
     assert "so it was NOT used; kept the shortened script" in review

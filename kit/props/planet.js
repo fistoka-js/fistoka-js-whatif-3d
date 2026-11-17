@@ -15,7 +15,7 @@ export const meta = {
     look: { type: 'enum', values: LOOKS, default: 'earth', doc: 'surface style' },
     color: { type: 'color', default: null, doc: 'tint the surface (default: natural colours)' },
     rings: { type: 'bool', default: false, doc: 'Saturn-style rings' },
-    turn: { type: 'number', min: -1, max: 1, default: 0.02, doc: 'turns per second of its own spin' },
+    turn: { type: 'number', min: -1, max: 1, default: 0.02, doc: 'turns per second: the planet turns by itself at this rate. When the story stops or starts its rotation, place it with "turn": 0 and drive all turning with the "spin" action' },
     seed: { type: 'int', min: 0, max: 999, default: 1, doc: 'which variant of the surface' },
   },
   animatable: {

@@ -5,7 +5,7 @@ Moved from `STATUS.md` on 2026-11-17. When you fix one, delete it here and say s
 ## Writer
 
 - `tools/lib/story-rules.mjs` lines 11-12 have an out-of-date comment about how `writer.py` calls the validator (it says no flag, and mentions two prompt examples). Fix: update the comment.
-- Words per second do not agree. `docs/AUDIO.md` says aim for 2.6 to 3.0, the writer prompt plans at 3.3, and the chameleon worked example's voice runs at about 2.7 (165 words, 60.6 s). Real voiced scripts may run longer than planned. Fix: pick one number and use it in both places.
+- Words per second do not agree. `docs/AUDIO.md` says aim for 2.6 to 3.0, the writer prompt plans at 3.3, and the chameleon worked example's voice runs at about 2.7 (165 words, 60.6 s); the script target is now 165 to 180 words. Real voiced scripts may run longer than planned. Fix: pick one number and use it in both places.
 - No paid LLM call has been made. The cost per video (about $0.18 typical, about $0.70 worst case) is an estimate (see `docs/WRITER.md`).
 - `pipeline/prompts/qa_repair_user.md` does not mention the story rules or the dial rule, so a picture-check repair that breaks them is thrown away and the earlier show is kept. Fix: add those rules to the prompt.
 - In `pipeline/run.py` the writer step checks a fallback by `status`, while upload checks `fallback_note`. It works today, but it is two different fields.

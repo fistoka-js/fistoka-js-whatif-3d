@@ -25,6 +25,8 @@ export const STORY = {
 // Actions that do not change a prop's state (overlays, camera, sound), and continuous idle motions.
 const NOT_A_CHANGE = new Set(['label', 'text', 'icon', 'count', 'focus', 'sfx']);
 const IDLE = new Set(['spin', 'bob', 'orbit']);
+// Emphasis only: a swell or a shake is never "the change" of a sentence (overused, they read as bouncing).
+const EMPHASIS = new Set(['pulse', 'shake']);
 
 // Spoken sentences (split after a word ending in . ? or !), each { text, start, end, words }. `end` is where the next
 // sentence starts (the pause belongs to the sentence before it). Very short sentences are joined to the next one.
@@ -54,9 +56,8 @@ export function sentencesOf(words) {
 export function changeEvents(show) {
   const out = [];
   for (const shot of show.shots) for (const a of shot.actions) {
-    if (NOT_A_CHANGE.has(a.do) || IDLE.has(a.do) || !a.prop) continue;
-    const len = a.do === 'shake' ? a.for : a.over;
-    out.push({ t0: a.t0, t1: a.t0 + Math.max(len || 0, STORY.MIN_CHANGE), what: `${a.do} on "${a.prop}"`, shot: shot.id });
+    if (NOT_A_CHANGE.has(a.do) || IDLE.has(a.do) || EMPHASIS.has(a.do) || !a.prop) continue;
+    out.push({ t0: a.t0, t1: a.t0 + Math.max(a.over || 0, STORY.MIN_CHANGE), what: `${a.do} on "${a.prop}"`, shot: shot.id });
   }
   return out;
 }
@@ -98,7 +99,7 @@ export function storyRules(show, catalog) {
     errors.push({
       path: `story.sentences[${i}]`, time: s.start,
       message: `the sentence ${quote(s.text)} (${fmt(s.start)}-${fmt(s.end)} s) has no visible change: nothing on screen changes while it is spoken.`,
-      hint: `Make something change between ${fmt(s.start)} and ${fmt(s.end)} s: an action on a prop that starts there (move, scale, color, glow, set, appear, disappear, pulse, shake), or a dial key at a phrase of this sentence with the dial bound to a prop on screen. Labels, text, icons, counts and camera moves do not count.`,
+      hint: `Make something change between ${fmt(s.start)} and ${fmt(s.end)} s: an action on a prop that starts there (move, scale, color, glow, set, appear, disappear), or a dial key at a phrase of this sentence with the dial bound to a prop on screen. Pulse and shake are emphasis only and do not count. Labels, text, icons, counts and camera moves do not count either.`,
     });
   });
 
@@ -118,7 +119,7 @@ export function storyRules(show, catalog) {
     return {
       path: 'story.stillness', time: a,
       message: `nothing on screen changes from ${fmt(a)} to ${fmt(b)} s (${fmt(b - a)} s; at most ${STORY.STILL_ERROR} s allowed, ${STORY.STILL_WARN} s is better) while the narrator says ${quote(said || '(a pause)')}.`,
-      hint: 'Add a change in that stretch: a "set", "move", "scale", "color" or "glow" on a prop (give it "until": a later phrase so it runs from word to word), or a dial key there with the dial bound to a prop on screen. Camera moves, spin, bob, orbit, labels and text do not count.',
+      hint: 'Add a change in that stretch: a "set", "move", "scale", "color" or "glow" on a prop (give it "until": a later phrase so it runs from word to word), or a dial key there with the dial bound to a prop on screen. Camera moves, spin, bob, orbit, pulse, shake, labels and text do not count.',
     };
   };
   const long = stretches.filter(s => s[1] - s[0] > STORY.STILL_ERROR);

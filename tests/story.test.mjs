@@ -8,7 +8,7 @@ import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { resolveShow } from '../kit/engine/show.js';
 import { catalog } from '../kit/engine/registry.js';
-import { storyRules, sentencesOf, STORY_RULES_DEFAULT } from '../tools/lib/story-rules.mjs';
+import { storyRules, sentencesOf, changeEvents, STORY_RULES_DEFAULT } from '../tools/lib/story-rules.mjs';
 import { REPO } from './helpers.mjs';
 
 const FIX = path.join(REPO, 'tests/fixtures/story');
@@ -30,7 +30,7 @@ test('slideshow fixture moon-gone fails: things sit still for over 3.5 s', () =>
 
 test('slideshow fixture sky-blue fails: a sentence with no change, and a still stretch', () => {
   const r = storyRules(fixture('sky-blue'), catalog);
-  const cov = r.errors.find(e => e.path.startsWith('story.sentences['));
+  const cov = r.errors.find(e => e.path.startsWith('story.sentences[') && /violet/.test(e.message));   // the pulses that used to cover the first sentences no longer count
   assert.ok(cov, JSON.stringify(r.errors));
   assert.match(cov.message, /the sentence "Then why isn't the sky violet\?" \(24\.81-26\.39 s\) has no visible change/);
   assert.match(cov.hint, /Labels, text, icons, counts and camera moves do not count/);
@@ -54,6 +54,16 @@ test('a dial that no visible prop follows does not count as a change', () => {
   assert.deepEqual(r.errors, []);
   const s = storyRules(r.show, catalog);
   assert.equal(s.measured.uncovered, s.measured.sentences);
+});
+
+test('pulse and shake are emphasis only: they are not a change, so they cannot fill a sentence or a still stretch', () => {
+  const show = { shots: [{ id: 's1', actions: [
+    { do: 'pulse', prop: 'a', t0: 1, over: 0.5 }, { do: 'shake', prop: 'a', t0: 2, for: 1 }, { do: 'scale', prop: 'a', t0: 3, over: 1 },
+  ] }] };
+  assert.deepEqual(changeEvents(show).map(e => e.what), ['scale on "a"']);
+  const r = storyRules(fixture('sky-blue'), catalog);
+  assert.match(r.errors.find(e => e.path.startsWith('story.sentences[')).hint, /Pulse and shake are emphasis only/);
+  assert.match(r.errors.find(e => e.path === 'story.stillness').hint, /pulse, shake/);
 });
 
 test('sentences: split at . ? !, very short ones joined to the next, each runs to the next one\'s start', () => {

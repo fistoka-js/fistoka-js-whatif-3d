@@ -18,10 +18,10 @@ Tests: `tests/py/test_writer.py`, `test_fact_check.py`, `test_fallback.py`, `tes
    `tags`, `feasible`, `mechanism_prop`, `missing`, `claims`.
    - Script shape: hook (a belief or the question) -> "here is what really happens" -> ONE mechanism
      followed through 2-3 zoom levels or stages -> one analogy shown as an object -> why it matters ->
-     closing question. One subject, one chain of cause and effect, 150-175 words (the voice reads about
-     3.3 words a second, so 175 words is about 53 s and fits the 55 s limit).
+     closing question. One subject, one chain of cause and effect, 165-180 words (the voice reads about
+     3.3 words a second, so 180 words is about 54.5 s and fits the 55 s limit; a fast read of 165 words stays near 48 s).
    - `beats` has one entry per sentence: `subject` (the thing that stays on screen), `change` (what
-     visibly changes while the sentence is spoken, as a verb; a camera move, a label, spin, bob or orbit does not count) and `dial` (the number that drives it, if any).
+     visibly changes while the sentence is spoken, as a verb; a camera move, a label, spin, bob, orbit, pulse or shake does not count) and `dial` (the number that drives it, if any).
      The check is tiny on purpose: it flags a change only when it is empty or exactly one of a short fixed list of phrases (`NO_VISIBLE_CHANGE` in `pipeline/writer.py`: "none", "nothing happens", "stays the same", "spins", "zoom in", "the camera pulls back", "a label appears", ...), ignoring case, apostrophes and end punctuation (any non-letter, non-digit at either end).
      Everything else passes, even when it is weak ("tilts up", "nothing moves except the lattice"); the show call and the story rules judge those.
      This is deliberate: a false alarm would use up the run's one rewrite, while a miss only gives a slightly weaker plan.
@@ -50,7 +50,7 @@ Tests: `tests/py/test_writer.py`, `test_fact_check.py`, `test_fallback.py`, `tes
    itself never stops the run.
 3. **Voice.** Free Edge TTS (`pipeline.voice.make_voice`) makes `voice.mp3` and `words.json`. If the
    voice is longer than `max_seconds` (55 s), the model is asked once to shorten the script by the needed
-   number of words (the prompt gives a word target; if that target is under 150 words it wins over the usual 150-175 range; with a new beat list, checked as in step 1; the shortened words always get their own fact check, `audit-shorten`, before they are voiced, so `final_audit`, the claims list and `review.md` describe the script that is voiced. The rewrite, redraft and shorten prompts each ask for a new `claims` list, because a reply with no `claims` does not keep the old list: the list is empty and `review.md` says so. If a redraft failed but the shortened script's audit is clean, nothing is marked NEEDS FACT CHECK; if the review cannot list a flagged claim it says so instead of printing an empty list), then it is voiced again. If that shortened script needs the one beat rewrite, the rewrite is told the same word target (it wins over the 150 word floor). One rule holds both: a shortened script over the target is still used (it is shorter than the long one), and review.md's Voice line says it was over the target; a rewrite over the target is used only when it is no longer than the shortened script it replaces (review.md says so), otherwise it is not used: the shortened script is kept, voiced, and review.md says so. 55 s of
+   number of words (the prompt gives a word target; if that target is under 165 words it wins over the usual 165-180 range; with a new beat list, checked as in step 1; the shortened words always get their own fact check, `audit-shorten`, before they are voiced, so `final_audit`, the claims list and `review.md` describe the script that is voiced. The rewrite, redraft and shorten prompts each ask for a new `claims` list, because a reply with no `claims` does not keep the old list: the list is empty and `review.md` says so. If a redraft failed but the shortened script's audit is clean, nothing is marked NEEDS FACT CHECK; if the review cannot list a flagged claim it says so instead of printing an empty list), then it is voiced again. If that shortened script needs the one beat rewrite, the rewrite is told the same word target (it wins over the 165 word floor). One rule holds both: a shortened script over the target is still used (it is shorter than the long one), and review.md's Voice line says it was over the target; a rewrite over the target is used only when it is no longer than the shortened script it replaces (review.md says so), otherwise it is not used: the shortened script is kept, voiced, and review.md says so. 55 s of
    voice plus the 0.4 s tail keeps the finished video at 60 s or less. The writer only re-voices when the script text changed
    (`voice.stats.json` keeps a fingerprint, also of the long script a shorten replaced), so a resumed run
    never voices again and keeps the same word times. The voice files on disk always belong to the script
@@ -61,7 +61,9 @@ Tests: `tests/py/test_writer.py`, `test_fact_check.py`, `test_fallback.py`, `tes
    chameleon video), the script as numbered sentences with every word's start time, and the beat list.
    The rules ask for 2-4 main scenes (runs of `continue` shots) instead of a new room per sentence, a
    hero prop that stays, at least one dial bound to two or more things, cause and effect in the same
-   frame, labels that only name parts, and nothing unchanged for more than 3.5 s.
+   frame, labels that only name parts, and nothing unchanged for more than 3.5 s. Pulse and shake are
+   emphasis only (at most 3 pulses and 2 shakes in the video, a camera shake counts), particle clouds
+   hold still between the words that need a change, and each scene adds 1 or 2 supporting props.
    Its reply is written to `show.json` and checked with
    `node tools/validate.mjs --story-rules` (SPEC section 14: every sentence needs a change, no still
    stretch over 3.5 s). The writer accepts a show only with no errors, neither of the checker's
@@ -169,9 +171,10 @@ All model-facing text is in `pipeline/prompts/`. Edit it there; no code change i
   sentence has no showable change. `script_redraft_user.md`: the fact-check redraft (current script and
   beats plus the corrections).
 - `show_system.md`: the heart. How the engine works, a "how to think" procedure (the chain and the hero ->
-  2-4 scenes -> dials -> a change in every sentence -> cause and effect together -> JSON), the checker's
+  2-4 scenes -> dials -> a change in every sentence -> emphasis only (pulse, shake) -> clouds hold still
+  -> variety (supporting props) -> cause and effect together -> JSON), the checker's
   rules (story rules included), picture rules, a short "good to know" list (ring radius and tilt, flat
-  particle rings, bars), a checklist.
+  particle rings, bars, the planet's own turn), a checklist.
   `{{CATALOG}}` is filled from `kit/catalog.json` by `pipeline/catalog_text.py`; `{{EXAMPLES}}` with the
   examples.
 - `show_user.md` (gets the beat list as `{{BEATS}}`), `repair_user.md`, `qa_repair_user.md`,

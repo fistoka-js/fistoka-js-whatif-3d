@@ -517,9 +517,10 @@
     },
     {
      "at": "they really",
-     "do": "pulse",
+     "do": "scale",
      "prop": "hero",
-     "strength": 0.4
+     "to": 1.15,
+     "over": 0.8
     }
    ]
   },
@@ -921,13 +922,6 @@
      "param": "shake",
      "to": 0.6,
      "over": 0.7
-    },
-    {
-     "at": "gets excited",
-     "do": "shake",
-     "prop": "small",
-     "strength": 0.2,
-     "for": 3
     },
     {
      "at": "the crystals spread",
@@ -1388,20 +1382,6 @@
      "size": 1.8
     },
     {
-     "at": "lose their",
-     "do": "shake",
-     "prop": "ctop",
-     "strength": 0.1,
-     "for": 0.5
-    },
-    {
-     "at": "lose their",
-     "do": "shake",
-     "prop": "cbot",
-     "strength": 0.1,
-     "for": 0.5
-    },
-    {
      "at": "fight rivals",
      "do": "icon",
      "name": "bolt",
@@ -1458,6 +1438,20 @@
       0.5
      ],
      "until": "Without"
+    },
+    {
+     "at": "lose their",
+     "do": "scale",
+     "prop": "ctop",
+     "to": 0.9,
+     "over": 2
+    },
+    {
+     "at": "lose their",
+     "do": "scale",
+     "prop": "cbot",
+     "to": 0.9,
+     "over": 2
     },
     {
      "at": "Without this",

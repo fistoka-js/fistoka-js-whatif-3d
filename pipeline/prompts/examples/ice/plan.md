@@ -1,4 +1,4 @@
-- hook (S1): the question as a picture: an ice block floating high, a rock resting on the seabed. Bob on "Why does ice", question icon on "float", pulse the rock on "sink".
+- hook (S1): the question as a picture: an ice block floating high, a rock resting on the seabed. Bob on "Why does ice", question icon on "float", one small pulse on the rock on "sink" (emphasis only, never the sentence's change).
 - wax (S2): melted wax = glowing dots (particles) in an orange studio with no floor; a wax block (box) drops in and sinks on "sinks". One label.
 - ice-up (S3, starts on "But ice bobs"): the ice block shoots up on "bobs" with ease "back". It travels far, so its size is raised.
 - molecule (S4-S5, starts mid-sentence on "the water molecule"): one h2o molecule, close framing, orbit. Label "H2O", spin on "boomerang", a title for the formula.
