@@ -95,7 +95,9 @@ Tests: `tests/py/test_writer.py`, `test_fact_check.py`, `test_fallback.py`, `tes
   can make a video with his Claude subscription: a Claude Code agent reads each prompt file and writes the
   reply file. Purposes in order: `script`, (`script-rewrite`), `audit`, (`script-redraft`,
   (`script-rewrite`), `audit-redraft`), (`shorten`, (`script-rewrite`), `audit-shorten`), `show`, (`repair1`..`repair3`),
-  (`qa-repair`); `script-rewrite` happens at most once. Token counts in this mode are characters / 4.
+  (`qa-repair`); `script-rewrite` happens at most once. The file names start with a two-digit call
+  number (`01-script`, `02-audit`, `03-show`); the number counts the calls actually made, so skipped
+  optional steps leave no gap and a step that runs shifts every later number. Token counts in this mode are characters / 4.
   To start again from a step, delete that reply file and every later one.
 - **api** (paid). The Anthropic API through the official Python SDK (`pip install anthropic`; it is not
   in `pipeline/requirements.txt` yet). The key is read only from the `ANTHROPIC_API_KEY` environment

@@ -166,7 +166,8 @@ def catalog_text(cat=None):
               + " (accent = the channel's yellow)"]
     pf = ", ".join(_field(k, v) for k, v in cat["propFields"].items())
     lines += ["", f"EVERY PLACED PROP has: {pf}. {cat['stageSpaceNote']}"]
-    lines += [f"ANCHORS: {cat['anchors']}"]
+    # The writer must not use {time} (show_system.md says so); hand-made shows still may, so the kit text keeps it.
+    lines += [f"ANCHORS: {cat['anchors'].replace(' | {time}', '')}"]
     return "\n".join(lines) + "\n"
 
 

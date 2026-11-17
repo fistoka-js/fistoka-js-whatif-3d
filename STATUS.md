@@ -56,11 +56,12 @@ In `E:\Youtube Project\whatif-3d\shows\`:
   - Chameleon is the only worked example in the prompt. Files mode (no API) still works.
   - 16 Nov: an extra review after the commit found 6 problems, fixed in `dd51869`. Then the beat word checks were cut down to a short fixed list of exact phrases (Jacob's decision), because looser checks kept producing false alarms and misses; a new review loop was started.
   - 16 Nov: second review loop after the beat-check simplification ran 8 rounds (cap), round 7 clean, round 8 found 2 small problems, fixed in one last unreviewed pass; Jacob approved committing.
+  - 16 Nov: fresh-agent files-mode re-test, 2 topics, 0 repair rounds each. `zz-rt-cat` (cats) ended with code 3 (no cat prop; feasible false, NEEDS-PROPS.md written). `zz-rt-microwave` ended with code 0 (show valid first try, `--story-rules` OK, 0 warnings; picture check not run, only 1.3 GB RAM free; no stills). Folders: `shows/zz-rt-cat/`, `shows/zz-rt-microwave/`.
 
 ## Not done
 - **Round 2 part 3b**: finish the 8 review items in `docs/briefs/part3b-open-review.md`, re-make the chameleon video and sheets, then get two clear reviews in a row and commit. **Next step.**
 - Still visibly different from the approved video after 3b (lead's opinion from frames): no leaf backdrop, no section headings at the top, smaller tuner, darker middle backgrounds, smaller chameleons in the "emotions" part. Decide after 3b whether to close these before part 5.
-- **Round 2 part 5, still to do**: the fresh-agent files-mode re-test on 2 topics; a second worked example (to come from the first sample that passes by eye); the three samples; then task 9 docs.
+- **Round 2 part 5, still to do**: a second worked example (to come from the first sample that passes by eye); the three samples; then task 9 docs.
 - Three new sample videos, then task 9 docs.
 - A real paid run (needs Jacob), a real GitHub run (needs a push), a real upload (needs the second channel).
 - Work from Jacob's answers, none started: music files for GitHub runs, loudness as one named setting plus a -16 and a -20 comparison file, the paid-test commands, the "build a missing mechanism" prompt, committing `shows/<slug>/` from the workflow, checking `docs/CHANNEL_SETUP.md`, a Kokoro sample.

@@ -53,6 +53,12 @@ def test_dials_bindings_continue_fill_glide_until_are_taught():
     assert "- studio (" in text and "[can follow a dial (dialParams): color]" in text
 
 
+def test_writer_text_does_not_offer_time_anchor():
+    text = CT.catalog_text(CT.load_catalog())
+    anchors = [l for l in text.splitlines() if l.startswith("ANCHORS:")]
+    assert anchors and "{time}" not in anchors[0] and "{phrase" in anchors[0] and "{shot}" in anchors[0]
+
+
 def test_size_stays_compact():
     # Target from the brief: about 3,500 tokens for 70 props (estimate: characters / 4), plus about
     # 600 tokens for the dials, bindings and continuing-shots text (round 2).
