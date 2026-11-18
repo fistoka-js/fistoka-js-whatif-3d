@@ -32,7 +32,7 @@ function writeShow(items) {
   const demo = path.join(REPO, 'shows', 'demo-sky');
   fs.copyFileSync(path.join(demo, 'voice.mp3'), path.join(TMP_DIR, 'voice.mp3'));
   const end = items.length * SHOT_S;
-  // Words only fix the show's length: the last word ends 0.4 s before the end (the default tail).
+  // Words only fix the show's length: the last word ends 0.4 s before the end (tail set below).
   fs.writeFileSync(path.join(TMP_DIR, 'words.json'), JSON.stringify([
     { text: 'a', start: 0, end: 0.1 }, { text: 'b', start: end - 0.5, end: end - 0.4 }]));
   const shots = items.map((it, i) => ({
@@ -40,7 +40,7 @@ function writeShow(items) {
     env: it.env, props: it.props, camera: { move: 'still' },
   }));
   fs.writeFileSync(path.join(TMP_DIR, 'show.json'), JSON.stringify({
-    format: 1, title: 'Gallery', voice: { audio: 'voice.mp3', words: 'words.json' }, shots }));
+    format: 1, title: 'Gallery', tail: 0.4, voice: { audio: 'voice.mp3', words: 'words.json' }, shots }));
 }
 
 async function sheet(session, tiles, file, cols) {

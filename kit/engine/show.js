@@ -22,7 +22,7 @@ import { CAMERA_FIELDS } from './camera.js';
 import { COMMON_FIELDS } from '../actions/actions.js';
 import { resolveDials, isBinding, checkBinding, bindingAt, colorText } from './dials.js';
 
-const MIN_SHOT = 1.5, MAX_SHOT = 12, LONG_SHOT = 9, DEFAULT_TAIL = 0.4;
+const MIN_SHOT = 1.5, MAX_SHOT = 12, LONG_SHOT = 9, DEFAULT_TAIL = 2.5;
 const TOP_FIELDS = ['format', 'title', 'voice', 'style', 'tail', 'dials', 'shots'];
 const SHOT_FIELDS = ['id', 'start', 'continue', 'env', 'props', 'camera', 'transition', 'actions'];
 const PROP_FIELDS = {

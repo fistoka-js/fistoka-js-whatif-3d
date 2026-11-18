@@ -1,6 +1,6 @@
 # whatif-3d
 
-A kit that turns a one-line science topic into a 3D vertical video (1080x1920; writer-made videos keep the voice under 55 seconds, the hand-built chameleon reference runs 61 s).
+A kit that turns a one-line science topic into a 3D vertical video (1080x1920; writer-made videos keep the voice to about 60 seconds at most (up to 62 s is accepted) and add a 2.5 s ending, so the finished video is up to 64.5 s, the hand-built chameleon reference runs 63 s).
 A script and a voice are made first. Then a "show file" says which 3D props appear and when. The kit draws the show in a headless browser, adds sound and checks the result.
 
 Read `docs/HELPER-RULES.md` first if you are an AI helper. It is binding.

@@ -8,7 +8,7 @@ Things only you can decide or do. Nothing here blocks the build; work continues 
 3. Voice: keep Edge `en-US-AndrewNeural` at +12%. Keep the voice step swappable. If there is spare time, make a free Kokoro sample of the same script so Jacob can compare by ear. Do not switch.
 4. Music: only YouTube Audio Library tracks that Jacob downloads himself, each with one line in `assets/music/LEDGER.csv`. TO DO for Claude: music files are git-ignored, so propose and document the simplest legal way for a GitHub run to get them (for example a private repo that holds the files, or a release asset), with the trade-off written here. Do not touch the Pexels repo.
 5. Loudness: -16 LUFS for now, as ONE named setting. TO DO: make one short file at -16 and one at -20 from the same sample video so Jacob can compare by ear.
-6. Length: scripts capped at about 55 s (video 60 s or less). The writer enforces it.
+6. Length: voice capped at 60 s, plus a 2.5 s ending (video about 62 s; superseded 18 Nov, was 55 s). The writer enforces it.
 7. Paid writer test: yes in principle, only after the round-2 samples look good. TO DO: prepare the single command for Jacob to run himself at the `!` prompt, with a cost estimate.
 7a. Writer model: start in free "files" mode. TO DO: prepare, but do not run, two paid tests: (b) Haiku for script and fact check plus Sonnet for the show file, and (c) Haiku for everything. Also note how much of Jacob's weekly Claude usage one files-mode video takes.
 7b. Yes: the workflow commits `shows/<slug>/` (script, voice, show file, review.md; no large renders). TO DO: make that workflow change.
@@ -67,7 +67,7 @@ Rules Jacob restated: work only inside `E:\Youtube Project`; never touch the Pex
 
 ### 6. Keep videos at 60 seconds or less
 - **What:** YouTube blocks monetisation of Shorts longer than 60 s that contain claimed music. Your brief said 40-70 s.
-- **Recommendation:** cap scripts at about 55 s. The writer step will enforce it unless you say otherwise.
+- **Recommendation:** cap the voice at 60 s (a 2.5 s ending follows; was 55 s until 18 Nov). The writer step will enforce it unless you say otherwise.
 
 ### 7. One paid test of the automatic writer
 - **What:** the step where Claude writes the script and the show file is built and tested with fakes only. Real cost per video is an estimate ($0.05-0.12) until one real run.

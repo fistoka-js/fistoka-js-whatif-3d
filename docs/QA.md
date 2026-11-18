@@ -10,7 +10,7 @@ Result: `pass`, `warn` or `fail`. Exit code 0 = pass or warn, 1 = fail (or the s
 Always written: `shows/<slug>/out/qa.json` and `shows/<slug>/out/qa-sheet.jpg` (one tile per shot middle, labelled with the shot id,
 outlined red when the shot has a FAIL and yellow for a WARN). The human reviewer looks at the sheet.
 If `--video` is not given and `shows/<slug>/out/<slug>.mp4` exists, the video checks run on it.
-Runtime is about 10 to 20 s for a 55 s show.
+Runtime is about 10 to 20 s for a 60 s show.
 
 ## Reading the output
 
@@ -30,7 +30,7 @@ All numbers in boxes are pixels of the 540x960 sampling size.
 | `black` | FAIL | mean brightness under 5% of full scale for more than 1.0 s, and almost no bright pixels (under 0.15%) outside captions/overlays, so a dark space scene with a lit subject is not "black" |
 | `frozen` | FAIL | samples 0.5 s apart differ by under 0.3/255 on average for more than 2.5 s; captions and overlays are masked out so changing captions cannot hide a frozen picture |
 | `prop-outside` | FAIL | a prop that an action points at (or that is in the camera `focus`, at the shot middle) has under 60% inside the frame, measured on the better of its box and its real shape (the `shape` rectangle from `__boxes`, clipped to the box), so it never fails where the box alone passes; the message names which one (`box` or `shape`) it printed. Not checked 0.3 s after `appear`/`disappear` (the prop is flying in or out), and not for beams/arrows (their box is a line's bounding box and they often leave the frame on purpose) |
-| `prop-in-captions` | WARN | more than 40% of a prop's real shape (clipped to its box; its box when the page gave no shape, or when the shape clipped to the box has no area) is inside the caption zone (bottom 24%) |
+| `prop-in-captions` | WARN | more than 40% of a prop's real shape (clipped to its box; its box when the page gave no shape, or when the shape clipped to the box has no area) is inside the caption zone (bottom 28%) |
 | `subject-small` | WARN | at the shot middle, all visible props together cover under 6% of the frame (beams/arrows not counted) |
 | `nothing-visible` | FAIL | no prop, label, text, counter or icon visible in any sample of a shot (the caption alone does not count) |
 | `empty-stretch` | WARN | nothing visible for more than 1.5 s inside a shot |
@@ -39,7 +39,7 @@ All numbers in boxes are pixels of the 540x960 sampling size.
 | `label-covers-prop` | WARN | a label covers more than 35% of the prop it belongs to |
 | `idle` | WARN | a shot with camera `still` or `drift` has no action for more than 7 s (a pulse or shake does not end the quiet stretch) |
 | `too-many-overlays` | WARN | more than 3 labels/texts/counters/icons visible at once |
-| `video-length` | FAIL | video and `voice.mp3` lengths differ by more than 0.5 s |
+| `video-length` | FAIL | video length differs from `voice.mp3` length plus the tail (the ending after the last word) by more than 0.5 s |
 | `video-size` / `video-fps` / `video-audio` | FAIL | not 1080x1920 / not 30 fps / no audio stream |
 | `video-loudness` | WARN | integrated loudness (ffmpeg ebur128) outside -18..-13 LUFS; the measured value is in `qa.json` under `measured.video.lufs` |
 | `show-invalid`, `video-missing`, `video-unreadable`, `page-problem` | FAIL / WARN | the show does not validate, `--video` file missing/unreadable, or the page logged an error |

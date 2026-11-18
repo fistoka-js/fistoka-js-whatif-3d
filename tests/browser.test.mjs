@@ -56,10 +56,10 @@ test('__boxes: props, labels and the caption as sane rectangles; captions stay i
   const cap = boxes.find(b => b.kind === 'caption');
   assert.ok(cap.y > H * 0.7, 'caption in the bottom zone');
   const label = boxes.find(b => b.kind === 'label');
-  assert.ok(label.y + label.h <= H * 0.76, 'label above the caption zone');
+  assert.ok(label.y + label.h <= H * 0.72, 'label above the caption zone');
   // Beams that have not started yet (progress 0) have no box: at 7.0 s only the sun, the earth and its light show.
   const early = await page.evaluate(() => window.__boxes(7.0));
   assert.deepEqual(early.filter(b => b.kind === 'prop').map(b => b.id).sort(), ['earth', 'light', 'sun']);
   const air = boxes.find(b => b.id === 'air');
-  assert.ok(air.x > 0 && air.x + air.w < W && air.y > 0 && air.y + air.h < H * 0.76, 'the subject is inside the safe area');
+  assert.ok(air.x > 0 && air.x + air.w < W && air.y > 0 && air.y + air.h < H * 0.72, 'the subject is inside the safe area');
 });

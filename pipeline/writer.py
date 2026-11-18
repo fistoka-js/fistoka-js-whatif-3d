@@ -52,11 +52,15 @@ DEFAULTS = {
     "max_repairs": 3,             # validator repair rounds
     "qa_repair": True,            # one repair round when the picture check fails
     "qa": True,                   # run the picture check at all (needs Chrome and 2 GB free RAM)
-    "max_seconds": 55.0,          # the voice must end before this; + 0.4 s tail keeps the video under 60 s
+    "max_seconds": 60.0,          # the voice must end before this; up to 62 s is accepted; the 2.5 s tail makes the video 64.5 s at most
     "voice": "en-US-AndrewNeural",
     "rate": "+12%",
     "fallback_seed": 0,
 }
+TAIL_SECONDS = fallback.TAIL      # quiet seconds after the last word (same default as kit/engine/show.js)
+WORD_FLOOR = 180                   # the script prompt asks for 180 to 195 words; a shorten never goes below this
+WORD_FLOOR_TOLERANCE = 5           # the model counts words approximately: a reply this far under the floor is still accepted
+STILL_OK_SECONDS = 2.0            # a voice up to this much over max_seconds is accepted with a note ("a little over 60 s is fine")
 SCRIPT_MAX_TOKENS = 16000          # a cap, not a cost: thinking (always on) plus the JSON must fit
 SHOW_MAX_TOKENS = 16000
 
@@ -151,7 +155,7 @@ def words_block(words):
     return "\n".join(lines)
 
 
-def show_duration(words, tail=0.4):
+def show_duration(words, tail=TAIL_SECONDS):
     return round(words[-1]["end"] + tail, 2)
 
 
@@ -248,9 +252,12 @@ def _same_sentence(got, real):
 def beat_problems(script, beats):
     """Why a beat list cannot be used: missing, the wrong length, or a sentence with nothing that changes."""
     sents = script_sentences(script)
-    if not beats:
-        return ["there is no beat list: give one beat per sentence"]
     problems = []
+    if sents and "comment" not in sents[-1].lower():
+        problems.append(f"the last sentence \"{sents[-1]}\" must ask viewers to answer in the comments "
+                        f"(for example \"Comment your answer below.\")")
+    if not beats:
+        return ["there is no beat list: give one beat per sentence"] + problems
     if len(beats) != len(sents):
         problems.append(f"the beat list has {len(beats)} entries but the script has {len(sents)} sentences "
                         f"(a sentence ends at . ? or !): give exactly one beat per sentence, in order")
@@ -566,14 +573,15 @@ def check_beats(run, complete, system, draft, after, max_words=None):
     picture). Runs on the first script, on a fact-check redraft and on a shortened script, before that
     script is voiced; at most ONE rewrite per run in total. Returns the draft to use (raises NotFeasible
     when the rewrite answers "feasible": false). after: what made this draft, for review.md.
-    max_words: set after a shorten: the rewrite is told this limit wins over the 165-word floor, and a
+    max_words: set after a shorten: the rewrite is told this limit wins over the usual 180 to 195 word length
+    (the shorten target itself is never below the 180-word floor), and a
     rewrite that comes back longer is not used (the shortened script is kept and the problem reported)."""
     problems = beat_problems(draft["script"], draft["beats"])
     if not problems or run.beats["rewritten"]:
         return draft                     # fine, or the budget is used: left_beat_problems reports it
     length = ("about the same number of words" if not max_words else
               f"at most {max_words} words: this script was just shortened to fit the voice limit, so that "
-              f"word limit wins over the 165 to 180 word length")
+              f"word limit wins over the 180 to 195 word length, but never go below {WORD_FLOOR} words")
     rewrite_user = fill(read_prompt("script_rewrite_user.md"), TOPIC=run.topic,
                         PREVIOUS=_script_and_beats(draft), PROBLEMS="\n".join(f"- {p}" for p in problems),
                         LENGTH=length)
@@ -594,6 +602,10 @@ def check_beats(run, complete, system, draft, after, max_words=None):
     # thrown away when a shorter one is at hand. So a rewrite is not used when it is over the target AND
     # longer than the shortened script it replaces.
     n_new = len(new["script"].split())
+    if max_words and n_new < WORD_FLOOR - WORD_FLOOR_TOLERANCE:
+        run.beats["error"] = (f"the rewrite had {n_new} words, below the {WORD_FLOOR}-word floor, so it was NOT "
+                              f"used; kept the shortened script")
+        return draft
     if max_words and n_new > max(max_words, len(draft["script"].split())):
         run.beats["error"] = (f"the rewrite had {n_new} words, over the {max_words}-word limit from the shorten "
                               f"step and longer than the shortened script, so it was NOT used; kept the "
@@ -673,17 +685,25 @@ def voice_step(run, complete, voice_fn, cat):
     script = run.draft["script"]
     stats = _voice_if_needed(folder, script, voice_fn, run.settings)
     limit = float(run.settings["max_seconds"])
-    if stats["duration"] > limit:
+    n_words = len(script.split())
+    if stats["duration"] > limit and n_words > WORD_FLOOR:      # at the floor a shorten could only make it longer
         wps = stats["word_count"] / max(stats["duration"], 1)
-        cut = math.ceil((stats["duration"] - limit) * wps) + 6
-        target = max(60, stats["word_count"] - cut)
+        # Never ask for more words than the script has now, and never fewer than the floor.
+        target = min(n_words, max(WORD_FLOOR, stats["word_count"] - (math.ceil((stats["duration"] - limit) * wps) + 6)))
+        cut = n_words - target
         user = fill(read_prompt("shorten_user.md"), TOPIC=run.topic, SCRIPT=script,
-                    SECONDS=f"{stats['duration']:.1f}", LIMIT=f"{limit:.0f}", WORDS=cut, TARGET=target)
+                    SECONDS=f"{stats['duration']:.1f}", LIMIT=f"{limit:.0f}", WORDS=cut, TARGET=target, FLOOR=WORD_FLOOR)
         try:
             short = parse_loose_json(_ask(run, complete, script_system_prompt(cat), user, "shorten",
                                           SCRIPT_MAX_TOKENS))
             new_script = clean_script(short.get("script"))
-            if new_script:
+            n_reply = len(new_script.split())
+            if new_script and n_reply < WORD_FLOOR - WORD_FLOOR_TOLERANCE:
+                # No model call here (the reply is already consumed), no re-voice, no new audit: the
+                # kept long script is still the one on file and the one voiced.
+                run.voice_note = (f"the shortened script had {n_reply} words, below the {WORD_FLOOR}-word floor, "
+                                  f"so the first script was kept")
+            elif new_script:
                 # The shorter script's own beat list, checked like the first one before it is voiced.
                 shorter = carry_over({"script": new_script, "beats": normalise_beats(short.get("beats")),
                                       "claims": short.get("claims")}, run.draft)
@@ -713,8 +733,18 @@ def voice_step(run, complete, voice_fn, cat):
     # files may be a shortened script's from before (the stats above came from voice.stats.json's
     # "shortened_from"), so this voices again; when they already match it returns the saved stats at once.
     stats = _voice_if_needed(folder, run.draft["script"], voice_fn, run.settings, exact=True)
-    if stats["duration"] > limit:
-        run.voice_note += ("; " if run.voice_note else "") + f"STILL TOO LONG: {stats['duration']:.1f} s"
+    shown = round(stats["duration"], 2)        # decide on the number that is printed, so text and decision agree
+    if shown > limit:
+        over = f"{shown:.2f} s is over the {limit:.0f} s limit"
+        if shown > limit + STILL_OK_SECONDS:
+            run.voice_stats = stats
+            what = run.voice_note or (f"the script has {len(run.draft['script'].split())} words, at or under the "
+                                      f"{WORD_FLOOR}-word floor, so it was not shortened")
+            raise RuntimeError(f"the voice is too long: {over}, more than {STILL_OK_SECONDS:.0f} s over "
+                               f"(the most accepted is {limit + STILL_OK_SECONDS:.0f} s). "
+                               f"{what[:1].upper()}{what[1:]}. "
+                               "Use a shorter topic or a faster voice rate.")
+        run.voice_note += ("; " if run.voice_note else "") + f"ACCEPTED, a little over the limit: {over}"
     run.voice_stats = stats
     return stats
 
@@ -979,7 +1009,7 @@ def review_text(run):
                if (run.folder / "voice.mp3").exists() and run.fact["final_audit"] else
                "- Voice: none used (the run stopped for props before a show was made; see NEEDS-PROPS.md)")
               if stopped else
-              f"- Voice: {run.voice_stats['duration']:.1f} s, {run.voice_stats['word_count']} words"
+              f"- Voice: {run.voice_stats['duration']:.2f} s, {run.voice_stats['word_count']} words"
               + (f" ({run.voice_note})" if run.voice_note else "") if run.voice_stats else "- Voice: not made",
               f"- Mode: {run.mode}; model priced as {run.price_model()}",
               f"- Written: {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}", ""]
@@ -1067,6 +1097,7 @@ def writer_json(run):
         "qa": run.qa.get("result"),
         "needs_fact_check": run.fact["needs_fact_check"],
         "voice_seconds": run.voice_stats["duration"] if run.voice_stats else None,
+        "voice_note": run.voice_note,
         "mode": run.mode, "model": run.price_model(),
         "tokens": {k: t[k] for k in ("input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens")},
         "cost_usd": t["cost_usd"], "cost_is_estimate": t["estimated"],

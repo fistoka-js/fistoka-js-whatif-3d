@@ -47,6 +47,7 @@ he she his her them us i me my if what why how when where which who whom will wo
 might must just very more most less much many some any all every each about over under up down out off
 there here also even only still too as like such one two""".split())
 MIN_SHOT, TARGET_SHOT, MAX_PIECE = 2.0, 4.0, 7.0
+TAIL = 2.5   # seconds the video runs after the last word; must equal DEFAULT_TAIL in kit/engine/show.js
 
 
 def norm(text):
@@ -71,7 +72,7 @@ def cut_points(words):
         elif since >= MAX_PIECE:
             cuts.append(i)
     # The last shot must be long enough too: drop the last cut while it is too short.
-    while len(cuts) > 1 and words[-1]["end"] + 0.4 - words[cuts[-1]]["start"] < MIN_SHOT:
+    while len(cuts) > 1 and words[-1]["end"] + TAIL - words[cuts[-1]]["start"] < MIN_SHOT:
         cuts.pop()
     return cuts
 
@@ -172,8 +173,4 @@ def build_fallback_show(words, title, seed=0):
     # Keep the first shot's keys in the usual order: id first, no start.
     show = {"format": 1, "title": (title or "Untitled")[:120],
             "voice": {"audio": "voice.mp3", "words": "words.json"}, "shots": shots}
-    # A very short voice still needs a shot of at least 1.5 s: stretch the tail (max 3 s).
-    total = words[-1]["end"] + 0.4
-    if total < 1.6:
-        show["tail"] = round(min(3.0, 1.6 - words[-1]["end"]), 3)
     return show

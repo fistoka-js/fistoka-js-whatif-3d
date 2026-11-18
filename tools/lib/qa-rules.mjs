@@ -16,7 +16,7 @@ export const T = {
   FROZEN_DIFF: 0.3,          // mean pixel change (of 255) between samples one step apart under this counts as frozen
   FROZEN_SECONDS: 2.5,       // FAIL when frozen longer than this
   TARGET_INSIDE_MIN: 0.6,    // FAIL when a targeted/focused prop has less than this fraction inside the frame (the better of its box and its real shape is used)
-  CAPTION_ZONE: 0.24,        // bottom fraction of the frame reserved for captions
+  CAPTION_ZONE: 0.28,        // bottom fraction of the frame reserved for captions
   CAPTION_OVERLAP_MAX: 0.4,  // WARN when more than this fraction of a prop's real shape (clipped to its box) sits in the caption zone
   SUBJECT_MIN_AREA: 0.06,    // WARN when all visible prop boxes together cover less than this fraction of the frame
   EMPTY_WARN_SECONDS: 1.5,   // WARN when nothing at all is visible for longer than this inside a shot
@@ -27,7 +27,7 @@ export const T = {
   MIN_HITS_FOR_FAIL: 2,      // a text problem must show in this many samples to FAIL (a one-sample flash is only a WARN)
   IDLE_SECONDS: 7,           // WARN when a shot with a still/drift camera has no action for longer than this
   MAX_OVERLAYS: 3,           // WARN when more than this many labels/texts/counters/icons are visible at once
-  VIDEO_LEN_DIFF: 0.5,       // FAIL when video and voice lengths differ by more than this many seconds
+  VIDEO_LEN_DIFF: 0.5,       // FAIL when video length differs from voice length plus the tail by more than this many seconds
   VIDEO_SIZE: [1080, 1920],  // the video must be exactly this size
   VIDEO_FPS: 30,             // and this frame rate
   LUFS_MIN: -18,             // WARN when the measured loudness is quieter than this
@@ -370,12 +370,12 @@ export function pacingFindings(show, samples) {
 }
 
 // ---- 6. video file ----
-// info: { width, height, fps, hasAudio, videoSeconds, voiceSeconds, lufs (number|null) }
+// info: { width, height, fps, hasAudio, videoSeconds, voiceSeconds, tail (seconds the video runs after the voice), lufs (number|null) }
 export function videoFindings(info) {
   const out = [];
   const add = (level, code, what, measured, fix) => out.push(mk(level, code, null, null, what, measured, fix));
-  if (info.voiceSeconds != null && info.videoSeconds != null && Math.abs(info.videoSeconds - info.voiceSeconds) > T.VIDEO_LEN_DIFF) {
-    add('FAIL', 'video-length', `video is ${info.videoSeconds.toFixed(2)} s but the voice is ${info.voiceSeconds.toFixed(2)} s long (difference ${Math.abs(info.videoSeconds - info.voiceSeconds).toFixed(2)} s)`,
+  if (info.voiceSeconds != null && info.videoSeconds != null && Math.abs(info.videoSeconds - info.voiceSeconds - (info.tail || 0)) > T.VIDEO_LEN_DIFF) {
+    add('FAIL', 'video-length', `video is ${info.videoSeconds.toFixed(2)} s but the voice is ${info.voiceSeconds.toFixed(2)} s long (difference ${Math.abs(info.videoSeconds - info.voiceSeconds - (info.tail || 0)).toFixed(2)} s after the ${(info.tail || 0).toFixed(1)} s tail)`,
       { video: info.videoSeconds, voice: info.voiceSeconds }, 'render again (node tools/render.mjs <slug>); if it repeats, check "tail" in show.json and that voice.mp3 was not changed after words.json.');
   }
   if (info.width !== T.VIDEO_SIZE[0] || info.height !== T.VIDEO_SIZE[1]) {

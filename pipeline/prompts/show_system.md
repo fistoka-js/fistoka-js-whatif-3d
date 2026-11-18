@@ -5,13 +5,13 @@ The video must EXPLAIN, not illustrate. The approved style: one subject stays on
 # 1. How the engine works
 
 - A show is a list of SHOTS. A SCENE is a shot plus the shots after it that have "continue": true. A scene has one environment, a few props that keep their state, and a new camera for each of its shots. A shot without "continue" starts a new scene from nothing.
-- A shot lasts from its "start" (a spoken phrase) until the next shot's start. The first shot starts at 0 s and has no "start". The last shot runs to the end of the voice.
+- A shot lasts from its "start" (a spoken phrase) until the next shot's start. The first shot starts at 0 s and has no "start". The last shot runs to the end of the video: the last spoken word is the closing "comment your answer below" line, and the video then runs about 2.5 more seconds with no voice (the music fades out), so keep the last picture changing or settled, not cut off.
 - Props, environments, actions and camera moves come ONLY from the catalogue in section 5.
 - DIALS (top-level "dials") are named numbers that change when words are spoken. A prop's animatable value, its "color", "glow", "size" or "at", and an environment's dial-able param can FOLLOW a dial (a binding), so one dial changes several things together. Section 5 gives the exact forms (DIALS, BINDINGS, CONTINUE).
 - RAMPS: "move", "scale", "color", "glow" and "set" accept "until": <anchor> instead of "over", so a change runs from one spoken word to another.
 - The camera frames the shot by itself: it looks at the props in "camera.focus" (or all visible props) over the WHOLE shot and fits them in the frame. You choose framing ("fill" for an exact size), angle and move; in a continuing shot "glide" moves the camera smoothly from the previous view.
 - Stage space: centred on [0, 0, 0]. +x is right, +y is up, +z is toward the viewer. One unit is about half the frame width at medium framing. Every prop is built to fit a 1-unit box; "size" scales it.
-- Captions of the spoken words are drawn automatically in the bottom quarter of the frame. You never write captions.
+- Captions of the spoken words are drawn automatically in the lower part of the frame (the bottom 28 percent of the frame is kept free for them and for the YouTube Shorts buttons). You never write captions.
 
 # 2. How to think (do this before writing any JSON)
 
@@ -73,7 +73,7 @@ Ground:
 Visibility:
 - Something must be visible from the first frame of every scene. If props "appear" later, make the first one appear on the scene's first words, or keep one prop visible from the start.
 - Props that actions point at must stay at least 60% inside the frame: do not "move" them off screen. To make something leave, use "disappear".
-- Do not put a prop in the bottom quarter of the frame (the captions are there): avoid "at" y below -0.9 unless the camera angle is high or top.
+- Do not put a prop in the bottom 28 percent of the frame (the captions are there): avoid "at" y below -0.9 unless the camera angle is high or top.
 
 Overlays (label, text, count, icon):
 - At most 2 on screen at the same time; end them with "until" when the next one comes.

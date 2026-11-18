@@ -30,8 +30,8 @@ export const CAMERA_DOCS = {
   },
 };
 
-// Safe rectangle (fractions of the frame): captions own the bottom 24%, 7% top margin, 6% side margins.
-export const SAFE = { top: 0.07, bottom: 0.24, side: 0.06 };
+// Safe rectangle (fractions of the frame): captions own the bottom 28% (caption text sits at 16% to 26% from the bottom edge), 7% top margin, 6% side margins.
+export const SAFE = { top: 0.07, bottom: 0.28, side: 0.06 };
 export const FOV = 40;            // vertical field of view, degrees
 export const ASPECT = 9 / 16;     // the video is always vertical 1080x1920
 

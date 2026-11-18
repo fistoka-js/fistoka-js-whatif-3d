@@ -138,7 +138,7 @@ test('pacing: long idle stretch with a still camera, too many overlays', () => {
 });
 
 test('video rules and ffmpeg readers', () => {
-  const good = { width: 1080, height: 1920, fps: 30, hasAudio: true, videoSeconds: 54.7, voiceSeconds: 54.5, lufs: -15 };
+  const good = { width: 1080, height: 1920, fps: 30, hasAudio: true, videoSeconds: 57.0, voiceSeconds: 54.5, tail: 2.5, lufs: -15 };
   assert.deepEqual(videoFindings(good), []);
   const bad = videoFindings({ ...good, width: 720, fps: 24, hasAudio: false, videoSeconds: 50 });
   assert.deepEqual(bad.map(f => f.code).sort(), ['video-audio', 'video-fps', 'video-length', 'video-size']);

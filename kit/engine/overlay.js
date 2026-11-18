@@ -4,7 +4,7 @@
 //   iconColorAt(iconAction, colorActions, t) -> '#rrggbb'.
 // Labels avoid collisions: each label picks its side once (from the picture at the moment it starts) and keeps it.
 // Positions come from the 3D stage each frame (prop rectangles, projected points). Every style is set from t
-// alone, so the same t always gives the same overlay. Overlays stay out of the caption zone (bottom 24%).
+// alone, so the same t always gives the same overlay. Overlays stay out of the caption zone (bottom 28%).
 
 import { progress, ease, clamp, mixColor } from './tween.js';
 import { resolvePlace } from './places.js';

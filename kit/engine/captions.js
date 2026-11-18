@@ -1,11 +1,11 @@
 // Captions: groups the spoken words into short lines and highlights the word being spoken (SPEC §8).
 // Exports: buildChunks(words) -> [{ words: [{text, start, end}], start, end }] (pure, used by tests),
 //          makeCaptions(el, words, duration) -> { update(t), rect() }.
-// Rules (ported from the approved chameleon video): at most 4 words and 22 characters per line; a line ends at
+// Rules (ported from the approved chameleon video): at most 4 words and 19 characters per line (so a line fits in 2 rows at the 84 px caption size); a line ends at
 // . ? ! : and at a comma once it has 11+ characters. Unspoken words are dimmed, the current word is the accent colour.
 // update(t) sets every class from t alone, so the same t always gives the same captions.
 
-export const CAPTION_RULES = { maxWords: 4, maxChars: 22, commaBreakMinChars: 11, showBefore: 0.04, holdAfter: 0.7 };
+export const CAPTION_RULES = { maxWords: 4, maxChars: 19, commaBreakMinChars: 11, showBefore: 0.04, holdAfter: 0.7 };
 
 export function buildChunks(words, rules = CAPTION_RULES) {
   const chunks = [];

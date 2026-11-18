@@ -65,7 +65,7 @@ Imports of three.js use the bare name `three` (and `three/addons/...`). The page
 ```
 
 Rules:
-- A shot lasts from its `start` to the next shot's `start`; the last shot runs to the end of the **last spoken word** (words.json) plus `tail` (default 0.4 s; optional top-level number `"tail"`, 0..3). That is the show's duration (Node cannot read the mp3's length, and the page and tools must agree). So shots can never overlap or leave gaps. The first shot always starts at 0 s.
+- A shot lasts from its `start` to the next shot's `start`; the last shot runs to the end of the **last spoken word** (words.json) plus `tail` (default 2.5 s, so the video does not stop on the last word: the music fades out and the last picture keeps going; optional top-level number `"tail"`, 0..3). That is the show's duration (Node cannot read the mp3's length, and the page and tools must agree). So shots can never overlap or leave gaps. The first shot always starts at 0 s.
 - Shot `start` times must increase. A shot should last 1.5 s to 12 s (shorter or longer is an error; over 9 s is a warning).
 - `words.json` is `[{"text": "What", "start": 0.10, "end": 0.31}, ...]` (seconds), in spoken order.
 - Unknown fields are errors everywhere (catches typos), with a "did you mean" hint.

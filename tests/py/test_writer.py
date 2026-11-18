@@ -16,7 +16,7 @@ pytestmark = pytest.mark.skipif(shutil.which("node") is None, reason="node is no
 
 SCRIPT = ("What if the Moon vanished tonight? The tides would shrink to a third of their size. "
           "Earth's tilt would start to wobble over millions of years. Nights would be much darker. "
-          "Follow for more what ifs.")
+          "Comment your answer below.")
 GOOD_CLAIM = {"claim": "Tides would shrink to a third.", "quote": "tides would shrink to a third",
               "verdict": "supported", "note": "ok"}
 BAD_CLAIM = {"claim": "Earth's tilt would wobble.", "quote": "tilt would start to wobble",
@@ -42,12 +42,12 @@ def audit_reply(*claims):
 
 
 def fake_voice(script, folder, settings):
-    """words.json with 0.3 s per word, an empty voice.mp3, and the stats make_voice returns."""
+    """words.json with 0.29 s per word, an empty voice.mp3, and the stats make_voice returns."""
     folder = Path(folder)
     words, t = [], 0.1
     for tok in script.split():
-        words.append({"text": tok, "start": round(t, 3), "end": round(t + 0.25, 3)})
-        t += 0.3 + (0.25 if tok[-1] in ".?!" else 0)
+        words.append({"text": tok, "start": round(t, 3), "end": round(t + 0.24, 3)})
+        t += 0.29 + (0.12 if tok[-1] in ".?!" else 0)
     (folder / "words.json").write_text(json.dumps(words), encoding="utf-8")
     (folder / "voice.mp3").write_bytes(b"")
     return {"duration": round(words[-1]["end"] + 0.2, 3), "word_count": len(words),
@@ -66,7 +66,7 @@ def story_show(words):
                          "atmosphere": {"dial": "tide", "to": [0, 1.5]},
                          "color": {"dial": "tide", "colors": "spectrum"}}],
               "camera": {"move": "orbit"}, "actions": []}]
-    end, last, n = words[-1]["end"] + 0.4, 0.0, 1
+    end, last, n = words[-1]["end"] + writer.TAIL_SECONDS, 0.0, 1
     for s in starts[1:]:
         if s - last >= 6 and end - s >= 3:          # a continuing shot every 6+ s keeps shots under 12 s
             shots.append({"id": f"s{n}", "start": {"time": s}, "continue": True, "actions": [],
@@ -317,8 +317,8 @@ def test_audit_prompt_says_no_research_was_collected(tmp_path):
 
 
 def test_too_long_voice_asks_once_to_shorten(tmp_path):
-    long_script = " ".join(["The Moon pulls the oceans every single day."] * 26)   # 208 words, about 64 s
-    short = "The Moon pulls the oceans. " * 10
+    long_script = LONG_SCRIPT
+    short = _one_sentence(writer.WORD_FLOOR)
     code, folder, fake = run_writer(tmp_path, {
         "script": [script_reply(long_script)], "audit": [json.dumps({"claims": [
             {"claim": "c", "quote": "The Moon pulls the oceans", "verdict": "supported", "note": ""}]})],
@@ -332,7 +332,7 @@ def test_too_long_voice_asks_once_to_shorten(tmp_path):
     assert "words shorter" in fake.calls[2].user
     assert short.strip() in fake.calls[3].user and long_script not in fake.calls[3].user
     assert (folder / "script.txt").read_text(encoding="utf-8").strip() == short.strip()
-    assert result(folder)["voice_seconds"] < 55
+    assert result(folder)["voice_seconds"] < 60
 
 
 def test_picture_check_fail_gets_one_repair_round(tmp_path):
@@ -503,9 +503,9 @@ def test_a_redraft_answering_not_feasible_goes_to_needs_props(tmp_path):
 
 
 def test_a_shortened_script_gets_the_beat_check_before_it_is_voiced(tmp_path):
-    long_script = " ".join(["The Moon pulls the oceans every single day."] * 26)   # 208 words, about 64 s
-    short = "The Moon pulls the oceans. " * 10
-    shorter = "The Moon drags the oceans. " * 10
+    long_script = LONG_SCRIPT
+    short = _one_sentence(writer.WORD_FLOOR)
+    shorter = ("The Moon drags the oceans. " * 35 + "Please comment your answer below.")
     voiced = []
 
     def voice(script, folder_, settings):
@@ -544,8 +544,8 @@ def test_an_old_needs_props_file_is_removed_at_the_start(tmp_path):
 
 
 # Ten short sentences (5 words each, 1.75 s with fake_voice), for a one-shot-per-sentence slideshow.
-TEN = " ".join(f"The {w} slowly glows now." for w in
-               ("moon", "sea", "sky", "rock", "tide", "wave", "sand", "star", "wind", "shore"))
+TEN = " ".join([f"The {w} slowly glows now." for w in
+                ("moon", "sea", "sky", "rock", "tide", "wave", "sand", "star", "wind")] + ["Please comment your answer below."])
 TEN_CLAIM = {"claim": "c", "quote": "The moon slowly glows now", "verdict": "supported", "note": ""}
 
 
@@ -637,7 +637,7 @@ def test_validate_show_passes_the_story_flag(monkeypatch):
 def test_script_prompt_has_the_shape_beats_and_mechanism_rules():
     text = writer.script_system_prompt()
     for must in ("SCRIPT SHAPE", "HOOK", "ONE mechanism", "2 or 3 zoom levels", "ONE ANALOGY", "WHY IT MATTERS",
-                 "closing question", "165 to 180 words", "3.3 words per second", "55 seconds", '"beats"', '"subject"', '"change"',
+                 "closing question", "180 to 195 words", "3.3 words per second", "before 60 seconds", '"beats"', '"subject"', '"change"',
                  '"dial"', '"mechanism_prop"', "icons, bar charts", "[can vary: spacing"):
         assert must in text, must
     assert "{{" not in text
@@ -866,8 +866,8 @@ def test_files_mode_resume_after_a_shorten_does_not_voice_again(tmp_path):
         return writer.write("Moon", "moon", mode="files", settings=s, voice_fn=counting_voice,
                             qa_fn=QA_PASS, shows_dir=tmp_path)
 
-    long_script = " ".join(["The Moon pulls the oceans every single day."] * 26)
-    short = "The Moon pulls the oceans. " * 10
+    long_script = LONG_SCRIPT
+    short = _one_sentence(writer.WORD_FLOOR)
     llm_dir = folder / "llm"
     assert go() == 4
     (llm_dir / "01-script.reply.md").write_text(script_reply(long_script), encoding="utf-8")
@@ -885,11 +885,11 @@ def test_files_mode_resume_after_a_shorten_does_not_voice_again(tmp_path):
         {"claim": "c", "quote": "The Moon pulls the oceans", "verdict": "supported", "note": ""}]}),
         encoding="utf-8")
     assert go() == 4                                   # voiced (short), waiting for the show reply
-    assert voiced == [208, 50]
+    assert voiced == [208, 180]
     words_before = (folder / "words.json").read_text(encoding="utf-8")
     (llm_dir / "05-show.reply.md").write_text(json.dumps(good_show(folder)), encoding="utf-8")
     assert go() == 0
-    assert voiced == [208, 50]                         # nothing voiced again on the resumes
+    assert voiced == [208, 180]                         # nothing voiced again on the resumes
     assert (folder / "words.json").read_text(encoding="utf-8") == words_before
 
 
@@ -1004,13 +1004,13 @@ def test_beats_note_names_the_real_problem():
 
 # ---------------------------------------------------------------- round-5 review fixes
 
-LONG_SCRIPT = " ".join(["The Moon pulls the oceans every single day."] * 26)   # 208 words, about 69 s
+LONG_SCRIPT = " ".join(["The Moon pulls the oceans every single day."] * 25 + ["Please comment your answer below every single day."])   # 208 words, about 66 s
 MOON_CLAIM = {"claim": "c", "quote": "The Moon pulls the oceans", "verdict": "supported", "note": ""}
 MOON_BAD = dict(MOON_CLAIM, verdict="unsupported", note="needs a source")
 
 
 def test_a_rewrite_after_a_shorten_is_told_the_word_limit_and_a_longer_one_is_not_voiced(tmp_path):
-    short = "The Moon pulls the oceans. " * 10
+    short = _one_sentence(writer.WORD_FLOOR)
     voiced = []
 
     def voice(script, folder_, settings):
@@ -1028,7 +1028,8 @@ def test_a_rewrite_after_a_shorten_is_told_the_word_limit_and_a_longer_one_is_no
     assert code == 0
     assert fake.purposes == ["script", "audit", "shorten", "script-rewrite", "audit-shorten", "show"]
     limit = int(re.search(r"at most (\d+) words", fake.calls[3].user).group(1))
-    assert limit < 208 and "wins over the 165 to 180 word length" in fake.calls[3].user
+    assert limit < 208 and "wins over the 180 to 195 word length" in fake.calls[3].user
+    assert f"never go below {writer.WORD_FLOOR} words" in fake.calls[3].user
     assert voiced == [LONG_SCRIPT, short.strip()]               # the too-long rewrite was never voiced
     review = (folder / "review.md").read_text(encoding="utf-8")
     assert "so it was NOT used; kept the shortened script" in review
@@ -1045,11 +1046,12 @@ def test_a_shorten_with_no_script_is_named_in_the_voice_line(tmp_path):
         "script": [script_reply(LONG_SCRIPT)], "audit": [audit_reply(MOON_CLAIM)],
         "shorten": [json.dumps({"script": "", "beats": []})], "show": [good_show]})
     voice = [l for l in (folder / "review.md").read_text(encoding="utf-8").splitlines() if l.startswith("- Voice:")][0]
-    assert "shorten gave no script text" in voice and "(;" not in voice and "STILL TOO LONG" in voice
+    assert code == 1 and "shorten gave no script text" in voice and "(;" not in voice
+    assert "voice is too long" in result(folder)["error"]     # 64 s is more than 2 s over the 60 s limit
 
 
 def test_flagged_claims_after_a_shorten_are_not_called_flagged_after_a_redraft(tmp_path):
-    short = "The Moon pulls the oceans. " * 10
+    short = _one_sentence(writer.WORD_FLOOR)
     code, folder, fake = run_writer(tmp_path, {
         "script": [script_reply(LONG_SCRIPT)], "audit": [audit_reply(MOON_BAD)],
         "script-redraft": [script_reply(LONG_SCRIPT)], "audit-redraft": [audit_reply(MOON_CLAIM)],
@@ -1105,7 +1107,7 @@ def test_beat_sentences_match_whole_words_and_short_sentences_must_be_copied():
     assert match("2 moons collide.", "2 moons collide.", 2)
     assert match("Earths tilt would wobble.", "Earth's tilt would wobble.", 1)
     # The chameleon script with every beat shifted by one is caught.
-    script = "No paint. No dye. Just physics."
+    script = "No paint. No dye. Comment below."
     sents = writer.script_sentences(script)
     shifted = [{"sentence": s, "subject": "skin", "change": "the lattice spreads", "dial": ""}
                for s in sents[1:] + sents[:1]]
@@ -1139,7 +1141,7 @@ def test_a_number_only_sentence_is_not_a_label_and_one_changed_word_fails():
 
 
 def test_a_failed_redraft_with_a_clean_shortened_audit_is_not_flagged_with_an_empty_list(tmp_path):
-    short = "The Moon pulls the oceans. " * 10
+    short = _one_sentence(writer.WORD_FLOOR)
     code, folder, fake = run_writer(tmp_path, {
         "script": [script_reply(LONG_SCRIPT)], "audit": [audit_reply(MOON_BAD)], "script-redraft": [Raise()],
         "shorten": [json.dumps({"script": short, "beats": beats_for(short)})],
@@ -1164,13 +1166,14 @@ def test_files_mode_reset_shorten_failure_voices_the_long_script_again(tmp_path)
 
     def counting_voice(script, folder_, settings):
         voiced.append(len(script.split()))
-        return fake_voice(script, folder_, settings)
+        stats = fake_voice(script, folder_, settings)
+        return dict(stats, duration=min(stats["duration"], 61.5))   # a little over 60 s is accepted
 
     def go():
         return writer.write("Moon", "moon", mode="files", settings=s, voice_fn=counting_voice,
                             qa_fn=QA_PASS, shows_dir=tmp_path)
 
-    short = "The Moon pulls the oceans. " * 10
+    short = _one_sentence(writer.WORD_FLOOR)
     llm_dir = folder / "llm"
     supported = json.dumps({"claims": [MOON_CLAIM]})
     assert go() == 4
@@ -1183,20 +1186,20 @@ def test_files_mode_reset_shorten_failure_voices_the_long_script_again(tmp_path)
     assert go() == 4
     (llm_dir / "04-audit-shorten.reply.md").write_text(supported, encoding="utf-8")
     assert go() == 4                                   # the short script is voiced; waiting for the show
-    assert voiced == [208, 50]
+    assert voiced == [208, 180]
     # Reset: remove the shorten reply and every later one, then answer the shorten with non-JSON.
     for p in llm_dir.glob("0[3-9]-*"):
         p.unlink()
     assert go() == 4                                   # waiting for the shorten reply again
     (llm_dir / "03-shorten.reply.md").write_text("not json", encoding="utf-8")
     assert go() == 4                                   # shorten failed, long script kept, now waiting for the show
-    assert voiced == [208, 50, 208]                    # voiced again: the files on disk were the short script's
+    assert voiced == [208, 180, 208]                    # voiced again: the files on disk were the short script's
     script_words = len((folder / "script.txt").read_text(encoding="utf-8").split())
     words = json.loads((folder / "words.json").read_text(encoding="utf-8"))
     assert script_words == len(words) == 208
     (llm_dir / "04-show.reply.md").write_text(json.dumps(good_show(folder)), encoding="utf-8")
     assert go() == 0
-    assert voiced == [208, 50, 208]                    # the resume does not voice again
+    assert voiced == [208, 180, 208]                    # the resume does not voice again
     review = (folder / "review.md").read_text(encoding="utf-8")
     assert ", 208 words (shorten failed" in review
 
@@ -1230,7 +1233,7 @@ def test_not_feasible_rewrite_after_a_redraft_reports_the_audited_script_only(tm
 
 
 def test_not_feasible_rewrite_after_a_shorten_does_not_report_a_voice_or_show(tmp_path):
-    short = "The Moon pulls the oceans. " * 10
+    short = _one_sentence(writer.WORD_FLOOR)
     code, folder, fake = run_writer(tmp_path, {
         "script": [script_reply(LONG_SCRIPT)], "audit": [audit_reply(MOON_CLAIM)],
         "shorten": [json.dumps({"script": short, "beats": beats_for(short, change="stays the same")})],
@@ -1310,14 +1313,14 @@ def _shorten_target(tmp_path, script):
     stats = fake_voice(script, d, None)
     wps = stats["word_count"] / max(stats["duration"], 1)
     cut = math.ceil((stats["duration"] - float(writer.DEFAULTS["max_seconds"])) * wps) + 6
-    return max(60, stats["word_count"] - cut)
+    return min(stats["word_count"], max(writer.WORD_FLOOR, stats["word_count"] - cut))
 
 
 def _one_sentence(n):
     """A script of exactly n words, in short sentences (so the test show's shots stay short)."""
-    whole, rest = divmod(n, 5)
+    whole, rest = divmod(n - 2, 5)           # the last 2 words are the comment line every script must end with
     return " ".join(["The Moon pulls the oceans."] * whole + ([" ".join(["Tides"] * (rest - 1) + ["fall."])]
-                                                               if rest else []))
+                                                               if rest else []) + ["Comment below."])
 
 
 def test_a_shortened_script_over_the_target_is_named_and_a_rewrite_no_longer_than_it_is_used(tmp_path):
@@ -1379,13 +1382,14 @@ def test_files_mode_reset_then_not_feasible_after_a_shorten_leaves_matching_voic
 
     def counting_voice(script, folder_, settings):
         voiced.append(len(script.split()))
-        return fake_voice(script, folder_, settings)
+        stats = fake_voice(script, folder_, settings)
+        return dict(stats, duration=min(stats["duration"], 61.5))   # a little over 60 s is accepted
 
     def go():
         return writer.write("Moon", "moon", mode="files", settings=s, voice_fn=counting_voice,
                             qa_fn=QA_PASS, shows_dir=tmp_path)
 
-    short = "The Moon pulls the oceans. " * 10
+    short = _one_sentence(writer.WORD_FLOOR)
     llm_dir = folder / "llm"
     supported = json.dumps({"claims": [MOON_CLAIM]})
     assert go() == 4
@@ -1400,7 +1404,7 @@ def test_files_mode_reset_then_not_feasible_after_a_shorten_leaves_matching_voic
     assert go() == 4
     (llm_dir / "05-show.reply.md").write_text(json.dumps(good_show(folder)), encoding="utf-8")
     assert go() == 0 and (folder / "show.json").exists()
-    assert voiced == [208, 50]
+    assert voiced == [208, 180]
     # Reset: remove the shorten reply and every later one; the new shorten needs a beat rewrite.
     for p in llm_dir.glob("0[3-9]-*"):
         p.unlink()
@@ -1411,7 +1415,7 @@ def test_files_mode_reset_then_not_feasible_after_a_shorten_leaves_matching_voic
     assert (llm_dir / "04-script-rewrite.prompt.md").exists()
     (llm_dir / "04-script-rewrite.reply.md").write_text(NOT_FEASIBLE, encoding="utf-8")
     assert go() == 3
-    assert voiced == [208, 50, 208]                    # voiced again to match the script review.md shows
+    assert voiced == [208, 180, 208]                    # voiced again to match the script review.md shows
     script_words = len((folder / "script.txt").read_text(encoding="utf-8").split())
     words = json.loads((folder / "words.json").read_text(encoding="utf-8"))
     assert script_words == len(words) == 208
@@ -1420,7 +1424,7 @@ def test_files_mode_reset_then_not_feasible_after_a_shorten_leaves_matching_voic
     files = review.split("## Files")[1]
     assert "show.json" not in files and "words.json" in files and "script.txt" in files
     # A stop for props with nothing voiced before does not voice (the first test's case).
-    assert go() == 3 and voiced == [208, 50, 208]
+    assert go() == 3 and voiced == [208, 180, 208]
 
 
 def test_dotted_initialisms_match_their_plain_form_and_never_end_a_sentence():
@@ -1459,3 +1463,119 @@ def test_an_old_review_is_removed_while_a_files_mode_run_waits(tmp_path):
     code = writer.write("Moon", "moon", mode="files", settings=dict(writer.DEFAULTS), voice_fn=fake_voice,
                         qa_fn=QA_PASS, shows_dir=tmp_path)
     assert code == writer.EXIT_WAITING and not (tmp_path / "moon" / "review.md").exists()
+
+
+# ---------------------------------------------------------------- length limits and the closing comment line
+
+def _run_with_voice_seconds(tmp_path, script, seconds, extra=None):
+    """Run the writer with a voice that always lasts `seconds`, whatever the script."""
+    def voice(text, folder_, settings):
+        stats = fake_voice(text, folder_, settings)
+        return dict(stats, duration=seconds)
+
+    folder = tmp_path / "moon"
+    replies = {"script": [script_reply(script)], "audit": [audit_reply(MOON_CLAIM)], "show": [good_show]}
+    replies.update(extra or {})
+    fake = FakeLLM(folder, replies)
+    code = writer.write("Moon", "moon", mode="api", settings=dict(writer.DEFAULTS), complete=fake,
+                        voice_fn=voice, qa_fn=QA_PASS, shows_dir=tmp_path)
+    return code, folder, fake
+
+
+def test_a_script_at_the_floor_is_not_shortened_and_a_little_over_60_s_is_accepted(tmp_path):
+    script = _one_sentence(writer.WORD_FLOOR)
+    code, folder, fake = _run_with_voice_seconds(tmp_path, script, 61.7)
+    assert code == 0 and "shorten" not in fake.purposes
+    note = result(folder)["voice_note"]
+    assert "ACCEPTED, a little over the limit" in note and "61.7" in note
+    assert "ACCEPTED" in (folder / "review.md").read_text(encoding="utf-8")
+
+
+def test_a_script_at_the_floor_with_a_voice_over_62_s_fails_cleanly(tmp_path):
+    code, folder, fake = _run_with_voice_seconds(tmp_path, _one_sentence(writer.WORD_FLOOR), 62.5)
+    assert code == writer.EXIT_FAILED and "shorten" not in fake.purposes
+    assert result(folder)["status"] == "failed" and "voice is too long" in result(folder)["error"]
+    assert "voice is too long" in (folder / "review.md").read_text(encoding="utf-8")
+    assert not (folder / "show.json").exists()
+
+
+def test_a_voice_over_62_s_after_one_shorten_says_the_shorten_was_tried(tmp_path):
+    short = _one_sentence(writer.WORD_FLOOR + 10)
+    code, folder, fake = _run_with_voice_seconds(tmp_path, _one_sentence(writer.WORD_FLOOR + 15), 62.5, {
+        "shorten": [json.dumps({"script": short, "beats": beats_for(short)})], "audit-shorten": [audit_reply(MOON_CLAIM)]})
+    error = result(folder)["error"]
+    assert code == writer.EXIT_FAILED and "shorten" in fake.purposes
+    assert "voice is too long" in error and "Shortened once" in error and "62 s" in error
+    assert "cannot be cut below" not in error and "not shortened" not in error
+
+
+def test_the_shorten_target_is_never_above_the_script_nor_below_the_floor(tmp_path):
+    n = writer.WORD_FLOOR + 5
+    short = _one_sentence(writer.WORD_FLOOR)
+    code, folder, fake = _run_with_voice_seconds(tmp_path, _one_sentence(n), 61.9, {
+        "shorten": [json.dumps({"script": short, "beats": beats_for(short)})], "audit-shorten": [audit_reply(MOON_CLAIM)]})
+    ask = fake.calls[fake.purposes.index("shorten")].user
+    assert f"at most {writer.WORD_FLOOR} words" in ask and "about 5 words shorter" in ask
+    assert code == 0            # the voice stays 61.9 s: within 62 s, so accepted with a note
+
+
+def test_the_last_sentence_must_ask_for_a_comment(tmp_path):
+    problems = writer.beat_problems("The tide rises. Follow for more.", beats_for("The tide rises. Follow for more."))
+    assert len(problems) == 1 and "comment" in problems[0] and "Follow for more." in problems[0]
+    assert writer.beat_problems("The tide rises. Comment below.", beats_for("The tide rises. Comment below.")) == []
+    bad = "The Moon pulls the oceans. Follow for more science."
+    good = "The Moon pulls the oceans. Comment your answer below."
+    code, folder, fake = run_writer(tmp_path, {
+        "script": [script_reply(bad)], "script-rewrite": [script_reply(good)],
+        "audit": [audit_reply(MOON_CLAIM)], "show": [good_show]})
+    assert fake.purposes[:3] == ["script", "script-rewrite", "audit"]
+    assert "must ask viewers to answer in the comments" in fake.calls[1].user
+    assert (folder / "script.txt").read_text(encoding="utf-8").strip() == good
+
+
+def test_a_voice_of_62_04_s_fails_with_a_message_that_does_not_contradict_itself(tmp_path):
+    code, folder, fake = _run_with_voice_seconds(tmp_path, _one_sentence(writer.WORD_FLOOR), 62.04)
+    error = result(folder)["error"]
+    assert code == 1 and "62.04 s is over the 60 s limit" in error and error.endswith("faster voice rate.")     # two decimals, not "62.0 s"
+
+
+# ---------------------------------------------------------------- word floor check after a shorten
+
+def _shorten_reply(text, **kw):
+    return {"shorten": [json.dumps({"script": text, "beats": beats_for(text, **kw)})]}
+
+
+def test_a_shortened_script_below_the_floor_minus_tolerance_is_rejected_and_the_first_kept(tmp_path):
+    first = _one_sentence(writer.WORD_FLOOR + 10)
+    too_short = _one_sentence(writer.WORD_FLOOR - writer.WORD_FLOOR_TOLERANCE - 1)
+    code, folder, fake = _run_with_voice_seconds(tmp_path, first, 61.9, _shorten_reply(too_short))
+    note = result(folder)["voice_note"]
+    assert code == 0 and "shorten" in fake.purposes and "audit-shorten" not in fake.purposes
+    assert f"the shortened script had {len(too_short.split())} words, below the {writer.WORD_FLOOR}-word floor, so the first script was kept" in note
+    assert (folder / "script.txt").read_text(encoding="utf-8").strip() == first
+    assert note in (folder / "review.md").read_text(encoding="utf-8")
+
+
+def test_a_shortened_script_at_the_floor_minus_3_is_accepted(tmp_path):
+    first = _one_sentence(writer.WORD_FLOOR + 10)
+    ok = _one_sentence(writer.WORD_FLOOR - 3)
+    code, folder, fake = _run_with_voice_seconds(tmp_path, first, 61.9, dict(_shorten_reply(ok), **{"audit-shorten": [audit_reply(MOON_CLAIM)]}))
+    assert code == 0 and "audit-shorten" in fake.purposes
+    assert (folder / "script.txt").read_text(encoding="utf-8").strip() == ok
+
+
+def test_a_rewrite_after_a_shorten_below_the_floor_is_rejected_and_the_shortened_script_kept(tmp_path):
+    first = _one_sentence(writer.WORD_FLOOR + 10)
+    shortened = _one_sentence(writer.WORD_FLOOR + 2)
+    rewrite = _one_sentence(150)
+    extra = dict(_shorten_reply(shortened, change="stays the same"),
+                 **{"script-rewrite": [script_reply(rewrite)], "audit-shorten": [audit_reply(MOON_CLAIM)]})
+    code, folder, fake = _run_with_voice_seconds(tmp_path, first, 61.9, extra)
+    assert "script-rewrite" in fake.purposes
+    assert "below the 180-word floor, so it was NOT used" in (folder / "review.md").read_text(encoding="utf-8")
+    assert (folder / "script.txt").read_text(encoding="utf-8").strip() == shortened
+
+
+def test_a_voice_of_62_004_s_is_accepted_with_the_note(tmp_path):
+    code, folder, fake = _run_with_voice_seconds(tmp_path, _one_sentence(writer.WORD_FLOOR), 62.004)
+    assert code == 0 and "62.00 s is over the 60 s limit" in result(folder)["voice_note"]

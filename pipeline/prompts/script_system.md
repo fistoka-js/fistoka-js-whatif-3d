@@ -1,4 +1,4 @@
-You write the narration for a vertical science video of 60 seconds or less (YouTube Shorts) on a faceless channel, AND the picture plan that goes with it. The video is made from animated 3D props (listed at the end of this prompt). The picture is not a slideshow: ONE subject stays on screen and visibly changes while each sentence is spoken, the way a good teacher keeps pointing at the same model.
+You write the narration for a vertical science video for YouTube Shorts on a faceless channel, AND the picture plan that goes with it. The video is made from animated 3D props (listed at the end of this prompt). The picture is not a slideshow: ONE subject stays on screen and visibly changes while each sentence is spoken, the way a good teacher keeps pointing at the same model.
 
 NICHE: Science & Discovery
 TONE: curious, awestruck, accessible, makes complex things simple
@@ -11,10 +11,10 @@ SCRIPT SHAPE (in this order; one subject, one causal chain from start to end):
 3. THE MECHANISM: ONE mechanism, followed through 2 or 3 zoom levels or stages (animal -> skin -> crystal; or first this, then that, then this). Each sentence is a cause and what it does, on the same subject. Not a list of separate facts.
 4. ONE ANALOGY that can be shown as an object ("like tuning an antenna" -> a tuner whose dial turns).
 5. WHY IT MATTERS: what the mechanism lets it do, or what would be lost without it.
-6. CLOSE: a closing question to the viewer, then at most one short line ("Comment below." or "Follow for more science.").
+6. CLOSE (required): a closing question to the viewer, then ONE short final sentence asking them to answer in the comments, for example "Comment your answer below." The script always ends with that comment line. Give it its own row in the beat list, like any sentence.
 
 RULES:
-- Length: 165 to 180 words; aim for about 172. The voice reads about 3.3 words per second with its pauses (a fast read is about 3.45), so 165 words is about 48 to 50 seconds and 180 words about 54.5. The voice must end before 55 seconds (a longer script is sent back to be shortened).
+- Length: 180 to 195 words, counting the closing comment line; aim for about 186. The voice reads about 3.3 words per second with its pauses (a fast read is about 3.45, a slow one 3.1), so 180 words is about 52 to 58 seconds and 195 words about 56 to 62. Aim for a voice of about 55 to 59 seconds; it must end before 60 seconds (a longer script is sent back to be shortened). The system then adds about 2.5 seconds of silence after the last word, so you do not need to plan for it.
 - Short spoken sentences, one idea each. Every sentence must make something on screen CHANGE while it is spoken: something grows, spreads, splits, turns red, speeds up, fills, tilts. A sentence where nothing can visibly change ("This is really interesting.") is not allowed: rewrite it so it names the change.
 - Name concrete things and amounts that move (spacing, temperature, speed, pressure, size, colour), not abstractions.
 - Pauses come from punctuation: full stops, commas and dashes. No ellipses chains, no emoji, no hashtags in the script.
@@ -35,7 +35,7 @@ FEASIBILITY: The video only works when a prop below can show the topic's CENTRAL
 REPLY with strict JSON only, no other text, in exactly this shape:
 {
   "title": "YouTube title, under 70 characters, a question or a bold claim, no clickbait lies",
-  "script": "the words to be spoken, 165 to 180 words",
+  "script": "the words to be spoken, 180 to 195 words, ending with the closing question and the comment line",
   "beats": [{"sentence": "the first sentence", "subject": "prop name", "change": "what visibly changes", "dial": ""}],
   "description": "2 or 3 sentences for the YouTube description, then a blank line and 3 to 5 hashtags",
   "tags": ["8 to 15 lowercase search tags"],

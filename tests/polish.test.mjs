@@ -37,7 +37,7 @@ test('framing: the subject centre sits at 43% of the frame height, above the cap
   const shot = shotWith([{ id: 'b', type: 'ball', size: 1.4 }], { move: 'still' });
   const pose = makeShotState(shot, catalog).cameraAt(shot.start + 0.01);
   const half = widthFraction(0.7, pose.distance) * ASPECT / 2; // half-height as a fraction of the frame height
-  assert.ok(0.43 + half < 0.76, 'the subject bottom stays above the caption zone');
+  assert.ok(0.43 + half < 0.72, 'the subject bottom stays above the caption zone');
 });
 
 test('framing: a long free beam pulls the frame out only a little, unless it is named in focus', () => {

@@ -3,6 +3,7 @@
   "title": "Why is the sky blue?",
   "voice": { "audio": "voice.mp3", "words": "words.json" },
   "style": { "accent": "#ffe14d" },
+  "tail": 0.4,
   "shots": [
     {
       "id": "myth",

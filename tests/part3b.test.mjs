@@ -302,13 +302,13 @@ test('icon colour: a second change that starts during the first takes over from 
 
 test('icon: an "until" past the scene end warns and ends with the scene', () => {
   const s = iconShow();
-  s.shots[0].actions[0].until = { time: 9 };   // the mini words end at 7.14 s; the scene ends at 7.54 s
+  s.shots[0].actions[0].until = { time: 12 };   // the mini words end at 7.14 s; the scene ends at 9.64 s (2.5 s tail)
   const r = resolveMini(s);
   assert.deepEqual(r.errors, []);
   assert.ok(r.warnings.some(w => w.path === 'shots[0].actions[0].until' && /after the scene ends/.test(w.message)), JSON.stringify(r.warnings));
   // ...and it is cut to the scene end, which is the end of the scene's last shot.
   close(r.show.shots[0].actions[0].until, r.show.shots[1].end);
-  close(r.show.shots[1].end, 7.54);
+  close(r.show.shots[1].end, 9.64);
 });
 
 test('icon: a colour change after the icon has gone warns (it would change nothing)', () => {
@@ -402,7 +402,7 @@ test('framing check: a large hero whose turned box spills out, but whose real sh
   const big = { kind: 'prop', id: 'hero', x: -291, y: -188, w: 1110, h: 1238 };
   const fails = framingFindings(show, [sample([big])], frame);
   assert.ok(fails.some(f => f.code === 'prop-outside'), 'the box alone fails');
-  // Its real shape: large (60% of the frame height) but inside the frame and clear of the caption zone (bottom 24%).
+  // Its real shape: large (60% of the frame height) but inside the frame and clear of the caption zone (bottom 28%).
   const shape = { x: 40, y: 120, w: 460, h: 580 };
   const ok = framingFindings(show, [sample([{ ...big, shape }])], frame);
   assert.deepEqual(ok.map(f => f.code), []);

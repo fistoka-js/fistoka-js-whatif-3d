@@ -10,7 +10,7 @@ test('shot windows: each shot runs to the next start; the last to the last word 
   assert.equal(show.shots[0].start, 0);
   assert.equal(show.shots[0].end, 5.0, 'ends where "What if sunlight" starts');
   assert.equal(show.shots[1].start, 5.0);
-  assert.equal(show.duration, 7.54, 'last word ends 7.14, default tail 0.4');
+  assert.equal(show.duration, 9.64, 'last word ends 7.14, default tail 2.5');
   assert.equal(show.shots[1].end, show.duration);
 });
 
@@ -59,11 +59,14 @@ test('actions get times, default over, and are sorted by time', () => {
   assert.equal(acts[1].over, 1);
 });
 
-test('captions: max 4 words / 22 characters, break at sentence ends', () => {
+test('captions: max 4 words / 19 characters, break at sentence ends', () => {
   const chunks = buildChunks(WORDS);
   for (const c of chunks) {
     assert.ok(c.words.length <= 4, c.words.map(w => w.text).join(' '));
-    assert.ok(c.words.map(w => w.text).join(' ').length <= 22 || c.words.length === 1);
+    assert.ok(c.words.map(w => w.text).join(' ').length <= 19 || c.words.length === 1);
   }
-  assert.equal(chunks.map(c => c.words.map(w => w.text).join(' ')).find(t => t.includes('ocean.')), 'reflects the ocean.');
+  const lines = chunks.map(c => c.words.map(w => w.text).join(' '));
+  // Exact text pinned: a sentence end closes the line ("ocean." stands alone, "wrong." too).
+  assert.deepEqual(lines.slice(0, 6), ['Everyone says the', 'sky is blue because', 'it reflects the', 'ocean.', "That's completely", 'wrong.']);
+  assert.deepEqual(lines.filter(t => t.includes('ocean.')), ['ocean.', 'the ocean.']);
 });

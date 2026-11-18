@@ -119,6 +119,7 @@ export function checkVideo(slug, dir, show, videoArg) {
   const info = probeVideo(file);
   const audioName = show.voice && show.voice.audio;
   info.voiceSeconds = audioName && fs.existsSync(path.join(dir, audioName)) ? probeSeconds(path.join(dir, audioName)) : null;
+  info.tail = show.tail;   // the video runs this long after the voice ends
   info.lufs = info.hasAudio ? measureLoudness(file) : null;
   info.file = file;
   return { findings: videoFindings(info), info };

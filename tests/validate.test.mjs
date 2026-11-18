@@ -4,6 +4,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
+import fs from 'node:fs';
+import { loadShow } from '../tools/lib/showfiles.mjs';
+import { formatProblem } from '../kit/engine/show.js';
 import { resolve, demoShow, REPO, WORDS } from './helpers.mjs';
 
 // Applies `edit` to a copy of the demo show and returns the single matching error (by path).
@@ -83,3 +86,13 @@ test('CLI: exit 2 for a bad command or an unknown show', () => {
   assert.equal(r.code, 2);
   assert.match(r.out, /Shows here: .*demo-sky/);
 });
+
+// Guards default changes (like the tail): every non-zz-* show folder in the working tree that has show.json and words.json must still validate. zz-* are scratch.
+for (const name of fs.readdirSync(path.join(REPO, 'shows')).filter(n => !n.startsWith('zz-'))) {
+  const dir = path.join(REPO, 'shows', name);
+  if (!fs.existsSync(path.join(dir, 'show.json')) || !fs.existsSync(path.join(dir, 'words.json'))) continue;
+  test(`show "${name}" validates`, () => {
+    const { errors } = loadShow(dir);
+    assert.deepEqual(errors.map(formatProblem), [], `show "${name}" has errors`);
+  });
+}

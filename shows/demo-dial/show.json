@@ -2,6 +2,7 @@
   "format": 1,
   "title": "Demo: one dial drives the sky (dials, bindings, continuing shots, dive, until)",
   "voice": { "audio": "voice.mp3", "words": "words.json" },
+  "tail": 0.4,
   "dials": {
     "red": {
       "start": 0,

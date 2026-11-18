@@ -20,7 +20,7 @@ npm test
 
 `node tools/catalog.mjs` rewrites `docs/CATALOG.md` (for people) and `kit/catalog.json` (the list the script-writing model sees). Never edit those two by hand. `npm test` runs the same tool again and checks that every registered prop builds in Node and fits the unit box. Also run `.\.venv\Scripts\python.exe -m pytest tests/py -q`.
 
-6. Look at it. Make a scratch show `shows/zz-<name>/` (the `zz-` prefix is git-ignored, so scratch shows are never committed; delete the folder when you are done): copy `voice.mp3` and `words.json` from `shows/demo-sky/`, and write a `show.json` with a few shots that each show your prop, none longer than 12 s. The shots must cover the whole voice (54.7 s), so you need at least 5 shots; if you have fewer than 5 props, repeat a prop in the extra shots. Follow the 5-shot example in "Write a show by hand" below. Then:
+6. Look at it. Make a scratch show `shows/zz-<name>/` (the `zz-` prefix is git-ignored, so scratch shows are never committed; delete the folder when you are done): copy `voice.mp3` and `words.json` from `shows/demo-sky/`, and write a `show.json` with a few shots that each show your prop, none longer than 12 s. The shots must cover the whole show (56.8 s: the 54.3 s voice plus the 2.5 s tail), so you need at least 5 shots; if you have fewer than 5 props, repeat a prop in the extra shots. Follow the 5-shot example in "Write a show by hand" below. Then:
 
 ```powershell
 node tools/validate.mjs zz-<name>
@@ -45,7 +45,7 @@ Check free memory before a browser job (`docs/HELPER-RULES.md`).
 
 ## Write a show by hand
 
-A show is a folder `shows/<slug>/` with `voice.mp3`, `words.json` (every spoken word with start and end seconds) and `show.json`. A shot may last 1.5 to 12 seconds (`validate` reports a shot over 12 s as an error, and shots over 9 s as a warning), so a show needs enough shots to cover the whole voice. A shot's camera `move` is one of `drift` (default), `push_in`, `pull_out`, `orbit`, `rise`, `pan`, `still`. This one works with the 54.7 s voice copied from `shows/demo-sky/` (it passes `validate` with warnings about long shots):
+A show is a folder `shows/<slug>/` with `voice.mp3`, `words.json` (every spoken word with start and end seconds) and `show.json`. A shot may last 1.5 to 12 seconds (`validate` reports a shot over 12 s as an error, and shots over 9 s as a warning), so a show needs enough shots to cover the whole voice. A shot's camera `move` is one of `drift` (default), `push_in`, `pull_out`, `orbit`, `rise`, `pan`, `still`. This one works with the 56.8 s show (54.3 s voice plus the 2.5 s tail) copied from `shows/demo-sky/` (it passes `validate` with warnings about long shots):
 
 ```json
 {
@@ -56,8 +56,8 @@ A show is a folder `shows/<slug>/` with `voice.mp3`, `words.json` (every spoken 
     { "id": "s1", "env": "studio", "props": [ { "id": "a", "type": "ball", "at": "center", "size": 1.2 } ], "camera": { "move": "drift", "framing": "medium", "angle": "three-quarter" }, "actions": [] },
     { "id": "s2", "start": { "time": 11 }, "env": "studio", "props": [ { "id": "b", "type": "ball", "at": "center", "size": 1.2 } ], "camera": { "move": "drift", "framing": "medium", "angle": "front" }, "actions": [] },
     { "id": "s3", "start": { "time": 22 }, "env": "studio", "props": [ { "id": "c", "type": "ball", "at": "center", "size": 1.2 } ], "camera": { "move": "drift", "framing": "medium", "angle": "front" }, "actions": [] },
-    { "id": "s4", "start": { "time": 33 }, "env": "studio", "props": [ { "id": "d", "type": "ball", "at": "center", "size": 1.2 } ], "camera": { "move": "drift", "framing": "medium", "angle": "front" }, "actions": [] },
-    { "id": "s5", "start": { "time": 44 }, "env": "studio", "props": [ { "id": "e", "type": "ball", "at": "center", "size": 1.2 } ], "camera": { "move": "drift", "framing": "medium", "angle": "front" }, "actions": [] }
+    { "id": "s4", "start": { "time": 33.5 }, "env": "studio", "props": [ { "id": "d", "type": "ball", "at": "center", "size": 1.2 } ], "camera": { "move": "drift", "framing": "medium", "angle": "front" }, "actions": [] },
+    { "id": "s5", "start": { "time": 45 }, "env": "studio", "props": [ { "id": "e", "type": "ball", "at": "center", "size": 1.2 } ], "camera": { "move": "drift", "framing": "medium", "angle": "front" }, "actions": [] }
   ]
 }
 ```

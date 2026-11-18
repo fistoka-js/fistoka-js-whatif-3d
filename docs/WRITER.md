@@ -18,8 +18,8 @@ Tests: `tests/py/test_writer.py`, `test_fact_check.py`, `test_fallback.py`, `tes
    `tags`, `feasible`, `mechanism_prop`, `missing`, `claims`.
    - Script shape: hook (a belief or the question) -> "here is what really happens" -> ONE mechanism
      followed through 2-3 zoom levels or stages -> one analogy shown as an object -> why it matters ->
-     closing question. One subject, one chain of cause and effect, 165-180 words (the voice reads about
-     3.3 words a second, so 180 words is about 54.5 s and fits the 55 s limit; a fast read of 165 words stays near 48 s).
+     closing question, then one required last line asking the viewer to comment their answer ("Comment your answer below."). One subject, one chain of cause and effect, 180-195 words counting that last line (the voice reads about
+     3.3 words a second: voice stats of the sample shows ran 3.13 to 3.45 words a second, so 180 words is about 52 to 58 s and 195 words about 56 to 62 s; the aim is 186 words, which is about 54 to 59.5 s at those speeds, and a script over the 60 s limit is shortened).
    - `beats` has one entry per sentence: `subject` (the thing that stays on screen), `change` (what
      visibly changes while the sentence is spoken, as a verb; a camera move, a label, spin, bob, orbit, pulse or shake does not count) and `dial` (the number that drives it, if any).
      The check is tiny on purpose: it flags a change only when it is empty or exactly one of a short fixed list of phrases (`NO_VISIBLE_CHANGE` in `pipeline/writer.py`: "none", "nothing happens", "stays the same", "spins", "zoom in", "the camera pulls back", "a label appears", ...), ignoring case, apostrophes and end punctuation (any non-letter, non-digit at either end).
@@ -49,13 +49,13 @@ Tests: `tests/py/test_writer.py`, `test_fact_check.py`, `test_fallback.py`, `tes
    flagged goes into `review.md` under **NEEDS FACT CHECK**. "simplified" never flags. The fact check
    itself never stops the run.
 3. **Voice.** Free Edge TTS (`pipeline.voice.make_voice`) makes `voice.mp3` and `words.json`. If the
-   voice is longer than `max_seconds` (55 s), the model is asked once to shorten the script by the needed
-   number of words (the prompt gives a word target; if that target is under 165 words it wins over the usual 165-180 range; with a new beat list, checked as in step 1; the shortened words always get their own fact check, `audit-shorten`, before they are voiced, so `final_audit`, the claims list and `review.md` describe the script that is voiced. The rewrite, redraft and shorten prompts each ask for a new `claims` list, because a reply with no `claims` does not keep the old list: the list is empty and `review.md` says so. If a redraft failed but the shortened script's audit is clean, nothing is marked NEEDS FACT CHECK; if the review cannot list a flagged claim it says so instead of printing an empty list), then it is voiced again. If that shortened script needs the one beat rewrite, the rewrite is told the same word target (it wins over the 165 word floor). One rule holds both: a shortened script over the target is still used (it is shorter than the long one), and review.md's Voice line says it was over the target; a rewrite over the target is used only when it is no longer than the shortened script it replaces (review.md says so), otherwise it is not used: the shortened script is kept, voiced, and review.md says so. 55 s of
-   voice plus the 0.4 s tail keeps the finished video at 60 s or less. The writer only re-voices when the script text changed
+   voice is longer than `max_seconds` (60 s), the model is asked once to shorten the script by the needed
+   number of words (the prompt gives a word target; the target is never below 180 words (`WORD_FLOOR` in writer.py, also written in the shorten prompt as "never below N words") and wins over the usual 180-195 range at the top; with a new beat list, checked as in step 1; the shortened words always get their own fact check, `audit-shorten`, before they are voiced, so `final_audit`, the claims list and `review.md` describe the script that is voiced. The rewrite, redraft and shorten prompts each ask for a new `claims` list, because a reply with no `claims` does not keep the old list: the list is empty and `review.md` says so. If a redraft failed but the shortened script's audit is clean, nothing is marked NEEDS FACT CHECK; if the review cannot list a flagged claim it says so instead of printing an empty list), then it is voiced again. If that shortened script needs the one beat rewrite, the rewrite is told the same word target (it wins over the 180-195 word length). Two rules follow: a shortened script over the target is still used (it is shorter than the long one), and review.md's Voice line says it was over the target; a rewrite over the target is used only when it is no longer than the shortened script it replaces (review.md says so), otherwise it is not used: the shortened script is kept, voiced, and review.md says so. The finished video is the voice plus the 2.5 s ending tail (default `tail` in show.json; the music fades out after the last word), so about 57.5 to 62.5 s for a 55 to 60 s voice, 64.5 s at the very most (62 s voice plus the tail). The writer only re-voices when the script text changed
    (`voice.stats.json` keeps a fingerprint, also of the long script a shorten replaced), so a resumed run
    never voices again and keeps the same word times. The voice files on disk always belong to the script
    in `script.txt` and `review.md`: if a resumed run ends up keeping the long script after all (for
    example the shorten reply was removed and answered badly), the long script is voiced again.
+   Length limits: a script already at the 180-word floor is not shortened. If the voice is still over 60 s afterwards, up to 62 s is accepted (`voice_note` in `writer.json` and `review.md` says "ACCEPTED, a little over the limit"); more than 62 s fails the run (exit 1, `error` says the voice is too long). The limits are compared at the two decimals printed (62.004 s counts as 62.00 s). A shortened script, or a beat rewrite after a shorten, with fewer than 175 words (the 180-word floor minus a tolerance of 5, `WORD_FLOOR_TOLERANCE`, because the model counts approximately) is rejected in code: the earlier script is kept and `voice_note` (shorten) or the beat note (rewrite) says so; no extra model call is made.
 4. **Show.** The model gets the show rules, the compact catalogue (now including dials, bindings,
    continuing shots, `until` ramps and the camera's `fill` and `glide`), one worked example (the
    chameleon video), the script as numbered sentences with every word's start time, and the beat list.
@@ -126,7 +126,7 @@ missing uses the default). The writer reads only these keys:
 | `max_repairs` | `3` | validator repair rounds for the show |
 | `qa` | `true` | run the picture check |
 | `qa_repair` | `true` | one repair round when the picture check fails |
-| `max_seconds` | `55` | the voice must end before this (55 s + 0.4 s tail keeps the video at 60 s or less) |
+| `max_seconds` | `60` | the voice should end before this; up to 2 s over is accepted with a note, more fails the run (the 2.5 s ending tail then makes the video 64.5 s at the very most) |
 | `voice` | `en-US-AndrewNeural` | Edge voice |
 | `rate` | `+12%` | Edge speaking rate |
 | `fallback_seed` | `0` | which variant of the fallback show |
@@ -152,7 +152,9 @@ missing uses the default). The writer reads only these keys:
  "beat_rewrite": false,
  "beats_note": "script has sentences with no visible change, or the picture plan does not fit the script (when still wrong, else null)",
  "beat_problems": [],
- "needs_fact_check": false, "voice_seconds": 41.5, "mode": "api", "model": "claude-sonnet-5-5",
+ "needs_fact_check": false, "voice_seconds": 41.5,
+ "voice_note": "empty text normally; says if the voice was shortened or accepted a little over 60 s",
+ "mode": "api", "model": "claude-sonnet-5-5",
  "tokens": {"input_tokens": 0, "output_tokens": 0, "cache_read_tokens": 0, "cache_write_tokens": 0},
  "cost_usd": 0.13, "cost_is_estimate": false, "calls": [{"purpose": "script", "...": "..."}], "error": null}
 ```
@@ -199,7 +201,7 @@ Measured on 2026-11-13 (round 2), tokens = characters / 4:
 | part | tokens |
 |---|---|
 | show system prompt (rules ~3,400 + catalogue ~4,700 + the chameleon example ~5,900); 56,521 characters | ~14,000 |
-| show user part (words with times + beat list, 55 s script) | ~1,400 |
+| show user part (words with times + beat list, 60 s script) | ~1,500 |
 | script system prompt (rules + beat list + prop/env names); 14,064 characters, was 11,964 | ~3,500 |
 | fact-check prompt | ~1,100 |
 | a show reply (compact JSON, 3-4 scenes with dials; the chameleon example is ~4,300) | ~2,500 to 4,500 |
