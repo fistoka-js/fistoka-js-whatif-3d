@@ -134,6 +134,24 @@ Animatable with `set` (also usable as a starting value):
 - `progress` 0..1, default 1: how far the beam has travelled (0 = not yet, 1 = all the way)
 - `brightness` 0..2, default 1: how bright
 
+### wire
+
+An electric wire between two points; "lift" bends it into a loop. Animate "current" 0->1 to send charge dots along it.
+
+Floats: yes. Stage-space: drawn between its points.
+
+| field | type | what |
+|---|---|---|
+| `from` | point: a slot, [x, y, z], or the id of a prop in this shot; default "left" | where the wire starts (slot, [x,y,z] or prop id; a prop id means its centre) |
+| `to` | point: a slot, [x, y, z], or the id of a prop in this shot; default "right" | where it ends (slot, [x,y,z] or prop id) |
+| `lift` | number -3..3; default 0 | bend: 0 = straight; above 0 goes up and across (like over the top of a loop) so the top is the higher end plus lift; below 0 goes down and across so the bottom is the lower end plus lift (lift is negative). It does not steer around props. Floor: when both ends are at y 0 or higher, the wire never sinks into the floor: its centre is held at least half its thickness plus 0.01 above y 0 (y 0.04 at the default width), even if an end is at y 0, so a wire already at floor level stays straight. If either end is below y 0 (space, no ground) there is no floor and nothing is held up |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#d9822b" | wire colour (copper by default; red or blue for insulated) |
+| `width` | number 0.02..0.2; default 0.06 | thickness of the wire |
+
+Animatable with `set` (also usable as a starting value):
+
+- `current` 0..1, default 0: electric current: 0 = plain wire, 1 = bright charge dots racing along it
+
 ### mountain
 
 A chunky low-poly mountain with a snow cap; styles rock, snow, desert; 1 to 3 peaks. Good for places.

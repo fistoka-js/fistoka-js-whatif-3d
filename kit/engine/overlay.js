@@ -36,10 +36,13 @@ export function overlapArea(a, b) {
 }
 export const rectsOverlap = (a, b) => overlapArea(a, b) > 0.5;
 
+// The point a label aims at: rect.mid if the prop names one on itself (a wire), else the middle of its rectangle.
+const rectMid = rect => rect.mid ? { cx: rect.mid.x, cy: rect.mid.y } : { cx: rect.x + rect.w / 2, cy: rect.y + rect.h / 2 };
+
 // Top-left corner of a label box of `size` ({w,h}) on one side of a prop rectangle. `along` slides it along that side.
 // line: the prop is a beam or arrow, so only the middle of its rectangle is on it (the label sits beside that point).
 export function labelBox(rect, size, side, gap, along = 0, line = false) {
-  const cx = rect.x + rect.w / 2, cy = rect.y + rect.h / 2;
+  const { cx, cy } = rectMid(rect);
   const r = line ? { x: cx, y: cy, w: 0, h: 0 } : rect;
   const dy = line ? 0 : r.h * 0.2;
   let x, y;
@@ -57,7 +60,7 @@ export function labelBox(rect, size, side, gap, along = 0, line = false) {
 export function chooseLabelPlacement({ rect, line = false, size, preferred = 'top', bounds, obstacles = [], gap }) {
   const sides = [preferred, ...['top', 'right', 'left', 'bottom'].filter(x => x !== preferred)];
   const frame = { x: bounds.left, y: bounds.top, w: bounds.right - bounds.left, h: bounds.bottom - bounds.top };
-  const cx = rect.x + rect.w / 2, cy = rect.y + rect.h / 2;
+  const { cx, cy } = rectMid(rect);
   const target = line ? { x: cx - gap * 0.4, y: cy - gap * 0.4, w: gap * 0.8, h: gap * 0.8 } : rect;
   let best = null;
   for (const gm of [1, 1.8, 2.8]) for (const mul of [0, 0.5, -0.5, 1, -1, 1.5, -1.5]) for (const side of sides) {
@@ -223,7 +226,7 @@ export function makeOverlay(root, svg, show, stage) {
     const top = hasTitle ? Math.max(ctx.top, TITLE_BAND.bottom * ctx.H) : ctx.top;
     let place;
     if (rect) {
-      const cx = rect.x + rect.w / 2;
+      const { cx } = rectMid(rect);
       let preferred = a.side;
       if (preferred === 'auto') preferred = rect.w > 0.45 * ctx.W ? 'top' : cx < ctx.W / 2 ? 'right' : 'left';
       const bounds = { left: ctx.left, right: ctx.right, top, bottom: ctx.bottom };
@@ -288,9 +291,9 @@ export function makeOverlay(root, svg, show, stage) {
       if (!it.place || it.place.key !== ctx.key) decide(it, ctx, t);
       const pl = it.place;
       const box = placedBox(r, pl, ctx), lx = box.x, ly = box.y, lw = box.w, lh = box.h;
-      const cx = r.x + r.w / 2, cy = r.y + r.h / 2, side = pl.side;
+      const { cx, cy } = rectMid(r), side = pl.side;
       let ax, ay;
-      if (r.line) { ax = cx; ay = cy; } // a beam or arrow: point at its middle, which is on the line
+      if (r.line) { ax = cx; ay = cy; } // a beam, arrow or wire: point at its middle, which is on the line (a wire names it as rect.mid)
       else if (side === 'top') { ax = cx; ay = cy - r.h * 0.3; }
       else if (side === 'bottom') { ax = cx; ay = cy + r.h * 0.3; }
       else if (side === 'right') { ax = cx + r.w * 0.3; ay = cy - r.h * 0.2; }

@@ -195,7 +195,11 @@ export function buildStage(show, catalog, renderer) {
       x0 = Math.min(x0, q.x); y0 = Math.min(y0, q.y); x1 = Math.max(x1, q.x); y1 = Math.max(y1, q.y);
     }
     // line: true for props drawn between points (beam, arrow): their middle is on the line, their corners are not.
-    return { x: x0, y: y0, w: x1 - x0, h: y1 - y0, line: pr.p.stageSpace };
+    const rect = { x: x0, y: y0, w: x1 - x0, h: y1 - y0, line: pr.p.stageSpace };
+    // A bent prop (wire) names a point on itself for labels, because its box middle can be empty air.
+    const lp = pr.inst.labelPoint && pr.inst.labelPoint();
+    if (lp) { const q = project(pr.wrapper.localToWorld(lp).toArray()); rect.mid = { x: q.x, y: q.y }; }
+    return rect;
   }
 
   // Screen rectangle of the prop's real shape in the current frame (its visible mesh points, sampled), or null when it

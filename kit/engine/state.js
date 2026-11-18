@@ -143,7 +143,13 @@ export function makeShotState(shot, catalog, prev = null) {
   function extentOf(id, t) {
     const p = props.get(id);
     if (!p.stageSpace) { const st = propAt(id, t, true); return [{ at: st.position, r: 0.5 * p.size * st.scale }]; }
-    const pts = Object.values(pointsOf(p, t)).map(q => ({ at: q.at, r: 0, free: true }));
+    const ends = Object.values(pointsOf(p, t));
+    const pts = ends.map(q => ({ at: q.at, r: 0, free: true }));
+    // meta.reachParam names a param that adds height above (or, if negative, below) the points (wire "lift"); unlike free ends, these count fully.
+    const reach = catalog.props[p.type].meta.reachParam, up = reach ? p.params[reach] : 0;
+    // never below the floor, where a wire cannot go (but with an end below y 0 there is no ground, so no clamp)
+    const grounded = ends.every(q => q.at[1] >= 0);
+    if (up) for (const q of ends) pts.push({ at: [q.at[0], grounded ? Math.max(q.at[1] + up, 0) : q.at[1] + up, q.at[2]], r: 0 });
     return pts.length ? pts : [{ at: p.at, r: 0.3 }];
   }
 

@@ -767,6 +767,7 @@ def test_show_prompt_contains_rules_catalogue_and_examples():
                  "Story rules", "S7 [22.46-28.68] When a chameleon is relaxed"):
         assert must in text, must
     assert 'place it with "turn": 0' in text and 'drive all turning with "spin"' in text   # the planet turns by itself
+    assert '"wire" is a stage-space cable' in text and '"lift": 0.7' in text   # how to draw a circuit
     assert "## Example 2" not in text                     # the old slideshow examples are out
     assert "7 to 10" not in text and "fresh stage" not in text
     assert "{{" not in text

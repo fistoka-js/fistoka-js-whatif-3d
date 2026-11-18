@@ -2,8 +2,9 @@
 // camera "fill" and "glide", icon size / plain style / until into a later shot / colour, the studio "haze" param,
 // and the validator messages for their mistakes.
 import { test } from 'node:test';
+import { readFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
-import { buildStage } from '../kit/engine/stage.js';
+import { buildStage, buildProp } from '../kit/engine/stage.js';
 import { makeShotState } from '../kit/engine/state.js';
 import { catalog } from '../kit/engine/registry.js';
 import { resolveMini } from './helpers.mjs';
@@ -484,3 +485,149 @@ test('validator: a glide out of range gives one error, not a second "longer than
 });
 
 function close(a, b, eps = 1e-6) { assert.ok(Math.abs(a - b) < eps, `${a} != ${b}`); }
+
+test('framing: a wire\'s lift (meta.reachParam) counts toward auto-framing, so the loop is not cut off', () => {
+  const frameWith = lift => {
+    const s = { format: 1, title: 'Wire', voice: { audio: 'voice.mp3', words: 'words.json' },
+      shots: [{ id: 'one', env: { type: 'studio' }, props: [{ id: 'b', type: 'battery', at: [-1, 0, 0] },
+        { id: 'w', type: 'wire', from: [-1, 1, 0], to: [1, 1, 0], lift }] }] };
+    return makeShotState(resolved(s).shots[0], catalog).baseFocus;
+  };
+  const flat = frameWith(0), loop = frameWith(3);
+  assert.ok(loop.center[1] > flat.center[1] + 0.5, `the frame rises to hold the loop: ${flat.center[1]} -> ${loop.center[1]}`);
+  assert.ok(loop.radius > flat.radius, `and widens: ${flat.radius} -> ${loop.radius}`);
+});
+
+test('framing: a wire\'s negative lift (a dip below its ends) also counts toward auto-framing', () => {
+  const frameWith = lift => {
+    const s = { format: 1, title: 'Wire', voice: { audio: 'voice.mp3', words: 'words.json' },
+      shots: [{ id: 'one', env: { type: 'studio' }, props: [{ id: 'w', type: 'wire', from: [-1, 3, 0], to: [1, 3, 0], lift }] }] };
+    return makeShotState(resolved(s).shots[0], catalog).baseFocus;
+  };
+  const flat = frameWith(0), dip = frameWith(-3);
+  assert.ok(dip.center[1] < flat.center[1] - 0.5, `the frame drops to hold the dip: ${flat.center[1]} -> ${dip.center[1]}`);
+});
+
+test('framing: a wire\'s negative lift near the floor is clamped at the floor, so the frame never reaches below y 0', () => {
+  const frameWith = lift => {
+    const s = { format: 1, title: 'Wire', voice: { audio: 'voice.mp3', words: 'words.json' },
+      shots: [{ id: 'one', env: { type: 'studio' }, props: [{ id: 'w', type: 'wire', from: [-1, 0, 0], to: [1, 1.5, 0], lift }] }] };
+    return makeShotState(resolved(s).shots[0], catalog).baseFocus;
+  };
+  const flat = frameWith(0), dip = frameWith(-1.5), deep = frameWith(-3);
+  assert.ok(dip.center[1] >= 0, `the frame is not pulled below the floor: ${dip.center[1]}`);
+  close(dip.center[1], deep.center[1]); // a deeper dip adds nothing once it is at the floor
+  assert.ok(flat.center[1] > dip.center[1], 'but the floor-level run of the wire still counts');
+});
+
+test('framing: a wire with an end below y 0 (no ground) is not clamped at the floor', () => {
+  const frameWith = lift => {
+    const s = { format: 1, title: 'Wire', voice: { audio: 'voice.mp3', words: 'words.json' },
+      shots: [{ id: 'one', env: { type: 'space' }, props: [{ id: 'w', type: 'wire', from: [-1, -2, 0], to: [1, -2, 0], lift }] }] };
+    return makeShotState(resolved(s).shots[0], catalog).baseFocus;
+  };
+  assert.ok(frameWith(-3).center[1] < frameWith(0).center[1] - 0.5, 'the frame drops to hold a dip below y 0');
+});
+
+// Builds one wire headless and runs one update; current is forced (1 = full) since no action animates it here.
+function buildWire(params, env = 'studio', current = 1) {
+  const s = { format: 1, title: 'Wire', voice: { audio: 'voice.mp3', words: 'words.json' },
+    shots: [{ id: 'one', env: { type: env }, props: [{ id: 'w', type: 'wire', ...params }] }] };
+  const shot = resolved(s).shots[0];
+  const pr = buildProp(shot.props[0], shot, catalog, '#ffe14d');
+  const st = makeShotState(shot, catalog).propAt('w', 1);
+  pr.inst.update(1, { ...st, params: { ...st.params, current } });
+  const kids = pr.inst.object.children;
+  const tube = kids.find(k => k.geometry.type === 'TubeGeometry'), caps = kids.filter(k => k.geometry.type === 'SphereGeometry');
+  const dots = kids.filter(k => k.isSprite);
+  tube.geometry.computeBoundingBox();
+  return { pr, tube, caps, dots, top: tube.geometry.boundingBox.max.y, bottom: tube.geometry.boundingBox.min.y };
+}
+
+test('wire: ends at y 0 are lifted onto the floor (y 0.04 at the default width); an end below y 0 means no floor', () => {
+  const flat = buildWire({ from: [-1, 0, 0], to: [1, 0, 0] });
+  close(flat.caps[0].position.y, 0.04); close(flat.caps[1].position.y, 0.04);
+  close(buildWire({ from: [-1, 0, 0], to: [1, 0, 0], width: 0.2 }).caps[0].position.y, 0.11);
+  const space = buildWire({ from: [-1, -1, 0], to: [1, 0, 0] }, 'space');
+  close(space.caps[0].position.y, -1); close(space.caps[1].position.y, 0);
+});
+
+test('wire: end caps sit on the path ends', () => {
+  const w = buildWire({ from: [-1, 0.5, 0.2], to: [1, 1, -0.3], lift: 0.4 });
+  assert.deepEqual(w.caps[0].position.toArray().map(v => +v.toFixed(6)), [-1, 0.5, 0.2]);
+  assert.deepEqual(w.caps[1].position.toArray().map(v => +v.toFixed(6)), [1, 1, -0.3]);
+});
+
+test('wire: lift puts the top at the higher end plus lift, also for a vertical or zero-length wire', () => {
+  const half = 0.03; // half the default width: a flat top's outer surface is this far above its centre line
+  // A fold (vertical or zero-length wire) ends in a point, so its tube reaches only the centre-line height.
+  close(buildWire({ from: [-1, 1, 0], to: [1, 1, 0], lift: 0.5 }).top, 1.5 + half, 0.02);
+  close(buildWire({ from: [0, 0, 0], to: [0, 1, 0], lift: 0.5 }).top, 1.5, 0.02);
+  close(buildWire({ from: [0, 1, 0], to: [0, 1, 0], lift: 0.7 }).top, 1.7, 0.02);
+  close(buildWire({ from: [0, 3, 0], to: [0, 3, 0], lift: -0.7 }).bottom, 2.3, 0.02);
+});
+
+test('wire: current 0 hides the dots, current 1 shows them', () => {
+  assert.ok(buildWire({ from: [-1, 1, 0], to: [1, 1, 0] }, 'studio', 0).dots.every(d => d.material.opacity === 0));
+  assert.ok(buildWire({ from: [-1, 1, 0], to: [1, 1, 0] }).dots.every(d => d.material.opacity > 0.99));
+});
+
+test('wire: a zero-length wire shows no dots (they would pile into a white blob); with lift it is a loop and keeps them', () => {
+  assert.ok(buildWire({ from: [0, 1, 0], to: [0, 1, 0] }).dots.every(d => d.material.opacity === 0));
+  assert.ok(buildWire({ from: [0, 1, 0], to: [0, 1, 0], lift: 0.7 }).dots.every(d => d.material.opacity > 0.99));
+});
+
+test('wire: setColor recolours the tube, its glow and the dots, and repeating it changes nothing', () => {
+  const w = buildWire({ from: [-1, 1, 0], to: [1, 1, 0] });
+  w.pr.inst.setColor(0x2255ff);
+  const mat = w.tube.material;
+  assert.equal(mat.color.getHex(), 0x2255ff); assert.equal(mat.emissive.getHex(), 0x2255ff);
+  const hot = new THREE.Color(0x2255ff).lerp(new THREE.Color(0xffffff), 0.6).getHex();
+  assert.ok(w.dots.every(d => d.material.color.getHex() === hot));
+  w.pr.inst.setColor(0x2255ff);
+  assert.equal(mat.color.getHex(), 0x2255ff);
+});
+
+test('wire: a label points at the wire\'s own middle, not the empty gap under a loop', () => {
+  const w = buildWire({ from: [-1, 1, 0], to: [1, 1, 0], lift: 1 });
+  const p = w.pr.inst.labelPoint();
+  close(p.y, 2, 0.01); close(p.x, 0, 0.01); // the top of the arch, not y 1.5 (the box middle)
+});
+
+test('wire: with no ground (an end below y 0) the dots always depth-test; on a floor only the low ones skip it', () => {
+  assert.ok(buildWire({ from: [-1, -3, 0], to: [1, 1, 0] }, 'space').dots.every(d => d.material.depthTest === true));
+  const floor = buildWire({ from: [-1, 0, 0], to: [1, 0, 0] }); // all dots sit at y 0.04, under half their size
+  assert.ok(floor.dots.every(d => d.material.depthTest === false));
+});
+
+test('wire: the glow action raises the emissive, and the dots fade with the prop opacity', () => {
+  const w = buildWire({ from: [-1, 1, 0], to: [1, 1, 0] });
+  const mat = w.tube.material, st = makeShotState(resolved({ format: 1, title: 'W', voice: { audio: 'voice.mp3', words: 'words.json' },
+    shots: [{ id: 'one', env: { type: 'studio' }, props: [{ id: 'w', type: 'wire', from: [-1, 1, 0], to: [1, 1, 0] }] }] }).shots[0], catalog).propAt('w', 1);
+  const before = mat.emissiveIntensity;
+  w.pr.inst.setGlow(1); w.pr.inst.update(1, { ...st, params: { ...st.params, current: 1 } });
+  assert.ok(mat.emissiveIntensity > before + 0.5, `${mat.emissiveIntensity} vs ${before}`);
+  w.pr.inst.update(1, { ...st, opacity: 0.5, params: { ...st.params, current: 1 } });
+  assert.ok(w.dots.every(d => Math.abs(d.material.opacity - 0.5) < 1e-9));
+});
+
+// The prompt tells the writer where a battery and a bulb top out; build the real props and check those numbers.
+test('prompt: the "0.79 x size" battery and "exactly its size" bulb claims match the real props', () => {
+  const prompt = readFileSync(new URL('../pipeline/prompts/show_system.md', import.meta.url), 'utf8');
+  const claim = prompt.match(/a "battery" is ([\d.]+) x its size tall.*?"lightbulb" exactly its size tall/s);
+  assert.ok(claim, 'the prompt line about battery and bulb heights is missing');
+  // The real stage places the prop on the floor; the top is the highest solid mesh (the bulb's halo sprite does not count).
+  const topOf = (type, size) => {
+    const s = { format: 1, title: 'T', voice: { audio: 'voice.mp3', words: 'words.json' },
+      shots: [{ id: 'one', env: { type: 'studio' }, props: [{ id: 'p', type, size }] }] };
+    const stage = buildStage(resolved(s), catalog, fakeRenderer());
+    stage.render(1);
+    const wrap = stage.shots[0].byId.get('p').wrapper;
+    wrap.updateMatrixWorld(true);
+    let top = -Infinity; const box = new THREE.Box3();
+    wrap.traverse(o => { if (o.isMesh && !o.isSprite) top = Math.max(top, box.setFromObject(o).max.y); });
+    return top;
+  };
+  close(topOf('battery', 1.2) / 1.2, Number(claim[1]), 0.01); // 0.79 x size
+  close(topOf('lightbulb', 1), 1, 0.01);
+});
