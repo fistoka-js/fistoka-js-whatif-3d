@@ -11,6 +11,7 @@ Moved from `STATUS.md` on 2026-11-17. When you fix one, delete it here and say s
 - In `pipeline/run.py` the writer step checks a fallback by `status`, while upload checks `fallback_note`. It works today, but it is two different fields.
 - Out of scope from round 8: `pipeline/prompts/show_system.md` line 40 says label text up to 32 characters and line 77 says under 22 characters (older lines). Fix: make them agree.
 - Sample videos (`shows/moon-gone`, `shows/sky-blue`) are first-pass quality.
+- Added 17 Nov: the shorten step can take a script below the 165-word floor (volcano at 161 words). Fix: re-check the word count after a shorten.
 
 ## Engine and props
 
@@ -20,6 +21,8 @@ Moved from `STATUS.md` on 2026-11-17. When you fix one, delete it here and say s
 - Props that float (plane, submarine, blast) sink half into the ground on ground environments unless the show lifts them. The writer's prompt must say so, or the engine should handle it.
 - A changing heart rate mid-shot makes the beat skip once.
 - Out of scope from round 8: `tools/lib/story-rules.mjs` line 36 splits sentences differently from Python `sentences()` (curly closing quotes and "..." are not sentence ends in the JS split), so S numbers and story-rules sentence indexes can disagree.
+- Added 17 Nov, wire: a width 0.2 wire shows a small dark wedge inside its bends when zoomed in (cause not found).
+- Added 17 Nov, wire: the label side-choice change in `overlay.js` has no automated test.
 - A colour dial from blue to orange passes through grey in the middle (seen on the microwave ball at 4.5 s, 30.5 s and 48.5 s), so the change reads as "gets dull".
 
 ## Picture checks
@@ -37,5 +40,6 @@ Moved from `STATUS.md` on 2026-11-17. When you fix one, delete it here and say s
 ## Workflow
 
 - `.github/workflows/produce.yml` treats exit code 3 (needs props) as a red run, so a run where every topic needs props shows as a failure.
-- `npm test`'s "2-chunk render" test is skipped (not run, so not tested) when Chrome is missing or less than 2 GB of memory is free (machine memory, not code). Close other programs and run it again.
+- (superseded 17 Nov) `npm test`'s "2-chunk render" test is skipped (not run, so not tested) when Chrome is missing or less than 2 GB of memory is free (machine memory, not code). Close other programs and run it again.
+- With less than 2 GB of memory free (machine memory, not code), the full `npm test` fails 2 browser tests: the gallery test and the 2-chunk render test (a RAM guard stops them). Both pass when run alone with more free RAM. Check free RAM first, close other programs and run again. If Chrome is missing the render test also cannot run.
 - Both this repo and the old 3D repo exist only on this PC (`DECISIONS-FOR-JACOB.md` items 1 and 2).

@@ -1,0 +1,175 @@
+{
+  "format": 1,
+  "title": "How Does a Battery Really Light a Bulb?",
+  "voice": {"audio": "voice.mp3", "words": "words.json"},
+  "dials": {
+    "flow": {"start": 0, "keys": [
+      {"at": "pushing", "to": 1, "over": 1.2},
+      {"at": "creeps slowly", "to": 0.35, "over": 1.0},
+      {"at": "push arrives", "to": 1, "over": 0.8},
+      {"at": "Break the", "to": 0, "over": 0.6},
+      {"at": "Which part", "to": 0.6, "over": 0.8}
+    ]},
+    "lit": {"start": 0, "keys": [
+      {"at": "bulb lights", "to": 1, "over": 0.6},
+      {"at": "the glow", "to": 0, "over": 0.9},
+      {"at": "Which part", "to": 0.4, "over": 0.8}
+    ]},
+    "heat": {"start": 0, "keys": [
+      {"at": "squeeze through", "to": 0.3},
+      {"at": "crash into", "to": 0.55},
+      {"at": "heating", "to": 0.85},
+      {"at": "Hot metal", "to": 1, "over": 1.5}
+    ]},
+    "chain": {"start": 0, "keys": [
+      {"at": "turns", "to": 0.4},
+      {"at": "battery is", "to": 1, "over": 1.5}
+    ]}
+  },
+  "shots": [
+    {
+      "id": "drain",
+      "env": {"type": "lab", "color": {"dial": "lit", "colors": ["#0f1a26", "#33290f"]}},
+      "camera": {"focus": ["bat"], "framing": "close", "fill": 1.2, "angle": "front", "move": "push_in", "amount": 0.3},
+      "props": [
+        {"id": "bat", "type": "battery", "at": [-0.9, 0, 0], "size": 1.2, "charge": 0.9}
+      ],
+      "actions": [
+        {"at": "What if", "do": "set", "prop": "bat", "param": "charge", "to": 0.1, "until": {"phrase": "ran out", "edge": "end"}}
+      ]
+    },
+    {
+      "id": "circuit",
+      "start": "Here is",
+      "continue": true,
+      "camera": {"framing": "medium", "fill": 1.0, "angle": "front", "move": "drift", "amount": 0.3, "glide": 1.2},
+      "props": [
+        {"id": "bulb", "type": "lightbulb", "at": [0.9, 0, 0], "size": 1.2, "on": {"dial": "lit"}},
+        {"id": "wiretop", "type": "wire", "from": [-0.9, 0.95, 0], "to": [0.9, 1.2, 0], "lift": 0.7, "width": 0.07, "current": {"dial": "flow"}},
+        {"id": "wireret", "type": "wire", "from": [-0.9, 0.04, 0.45], "to": [0.9, 0.04, 0.45], "lift": 0, "width": 0.07, "current": {"dial": "flow"}},
+        {"id": "elec", "type": "particles", "shape": "stream", "count": 80, "look": "dots", "dot": 0.1, "color": "#ffe14d", "at": [0, 0.35, 0.45], "size": 1.8, "spread": 0.3, "speed": {"dial": "flow", "to": [0.1, 2]}}
+      ],
+      "actions": [
+        {"at": "Here is", "do": "appear", "prop": "bulb", "style": "pop"},
+        {"at": "what really", "do": "appear", "prop": "wiretop", "style": "fade"},
+        {"at": {"phrase": "what really", "offset": 0.15}, "do": "appear", "prop": "wireret", "style": "fade"},
+        {"at": "wire is", "do": "appear", "prop": "elec", "style": "grow", "over": 0.8},
+        {"at": "tiny electrons", "do": "set", "prop": "elec", "param": "spread", "to": 1.3, "until": {"phrase": "anything", "edge": "end"}},
+        {"at": "tiny electrons", "do": "label", "prop": "elec", "text": "ELECTRONS", "until": "Close the"}
+      ]
+    },
+    {
+      "id": "push",
+      "start": "Close the",
+      "continue": true,
+      "camera": {"framing": "medium", "fill": 1.0, "angle": "three-quarter", "move": "push_in", "amount": 0.4, "glide": 1.2},
+      "actions": [
+        {"at": "Close the", "do": "glow", "prop": "bat", "to": 0.6, "over": 0.8}
+      ]
+    },
+    {
+      "id": "instant",
+      "start": "But the push",
+      "continue": true,
+      "camera": {"framing": "medium", "fill": 1.05, "angle": "front", "move": "drift", "amount": 0.3, "glide": 1.2},
+      "actions": [
+        {"at": "bulb lights", "do": "glow", "prop": "bat", "to": 0.3, "over": 0.8}
+      ]
+    },
+    {
+      "id": "filament",
+      "start": "Inside the bulb",
+      "transition": "dive",
+      "env": {"type": "lab", "color": {"dial": "heat", "colors": ["#10161c", "#3a1f0c", "#5a3a10"]}},
+      "camera": {"focus": ["bulb2", "therm"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "push_in", "amount": 0.3},
+      "props": [
+        {"id": "bulb2", "type": "lightbulb", "at": [-0.2, 0, 0], "size": 2, "on": {"dial": "heat"}, "glow": {"dial": "heat", "to": [0, 1]}},
+        {"id": "therm", "type": "thermometer", "at": [1.5, 0, 0], "size": 1.3, "level": {"dial": "heat", "to": [0.05, 1]}},
+        {"id": "elec2", "type": "particles", "shape": "stream", "count": 60, "look": "dots", "dot": 0.08, "color": "#7fd4ff", "at": [-0.2, 1.1, 0.3], "size": 1.1, "spread": 0.4, "speed": 1.5}
+      ],
+      "actions": [
+        {"at": "electrons must", "do": "appear", "prop": "elec2", "style": "grow", "over": 0.6},
+        {"at": "hair-thin", "do": "label", "prop": "bulb2", "text": "FILAMENT", "until": "It is"}
+      ]
+    },
+    {
+      "id": "crash",
+      "start": "It is so narrow",
+      "continue": true,
+      "camera": {"focus": ["bulb2", "therm"], "framing": "medium", "fill": 1.05, "angle": "three-quarter", "move": "push_in", "amount": 0.3, "glide": 1.0},
+      "actions": [
+        {"at": "crash into", "do": "set", "prop": "elec2", "param": "spread", "to": 1.2, "over": 1.0}
+      ]
+    },
+    {
+      "id": "hot",
+      "start": "Each crash",
+      "continue": true,
+      "camera": {"focus": ["bulb2", "therm"], "framing": "medium", "fill": 1.1, "angle": "front", "move": "drift", "amount": 0.3, "glide": 1.0},
+      "actions": [
+        {"at": "Each crash", "do": "color", "prop": "elec2", "to": "#ffb347", "over": 1.2}
+      ]
+    },
+    {
+      "id": "glows",
+      "start": "Hot metal",
+      "continue": true,
+      "camera": {"focus": ["bulb2", "therm"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "pull_out", "amount": 0.4, "glide": 1.0},
+      "actions": [
+        {"at": "light you", "do": "color", "prop": "elec2", "to": "#ffffff", "over": 0.8}
+      ]
+    },
+    {
+      "id": "chain",
+      "start": "Think of",
+      "transition": "dip",
+      "env": {"type": "lab", "color": {"dial": "chain", "colors": ["#0f1a26", "#23304a"]}},
+      "camera": {"focus": ["gear", "bat2", "bulb3"], "framing": "medium", "fill": 0.95, "angle": "front", "move": "drift", "amount": 0.3},
+      "props": [
+        {"id": "gear", "type": "gear", "count": 3, "at": [0, 0, 0], "size": 1.5, "color": {"dial": "chain", "colors": ["#4a8fd9", "#ffd24a"]}, "glow": {"dial": "chain", "to": [0, 0.9]}},
+        {"id": "bat2", "type": "battery", "at": [-2.0, 0, 0], "size": 1.0, "charge": 0.8},
+        {"id": "bulb3", "type": "lightbulb", "at": [2.0, 0, 0], "size": 1.0, "on": {"dial": "chain"}}
+      ],
+      "actions": [
+        {"at": "Think of", "do": "appear", "prop": "gear", "style": "grow", "over": 0.8},
+        {"at": "Pedal at", "do": "appear", "prop": "bat2", "style": "pop"},
+        {"at": "wheel at", "do": "appear", "prop": "bulb3", "style": "pop"}
+      ]
+    },
+    {
+      "id": "pedal-wheel",
+      "start": "The battery is",
+      "continue": true,
+      "camera": {"focus": ["gear", "bat2", "bulb3"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "push_in", "amount": 0.3, "glide": 1.0},
+      "actions": [
+        {"at": "pedal", "do": "label", "prop": "bat2", "text": "PEDAL", "until": "and the bulb"},
+        {"at": "wheel", "do": "label", "prop": "bulb3", "text": "WHEEL"}
+      ]
+    },
+    {
+      "id": "break",
+      "start": "Break the",
+      "transition": "dip",
+      "env": {"type": "lab", "color": {"dial": "lit", "colors": ["#0f1a26", "#33290f"]}},
+      "camera": {"framing": "medium", "fill": 1.0, "angle": "front", "move": "push_in", "amount": 0.3},
+      "props": [
+        {"id": "bat3", "type": "battery", "at": [-0.9, 0, 0], "size": 1.2, "charge": 0.7},
+        {"id": "bulb4", "type": "lightbulb", "at": [0.9, 0, 0], "size": 1.2, "on": {"dial": "lit"}},
+        {"id": "wiretop2", "type": "wire", "from": [-0.9, 0.95, 0], "to": [0.9, 1.2, 0], "lift": 0.7, "width": 0.07, "current": {"dial": "flow"}},
+        {"id": "wireret2", "type": "wire", "from": [-0.9, 0.04, 0.45], "to": [0.9, 0.04, 0.45], "lift": 0, "width": 0.07, "current": {"dial": "flow"}}
+      ],
+      "actions": [
+        {"at": "anywhere", "do": "disappear", "prop": "wiretop2", "style": "fade", "over": 0.4}
+      ]
+    },
+    {
+      "id": "ask",
+      "start": "Which part",
+      "continue": true,
+      "camera": {"framing": "medium", "fill": 1.0, "angle": "front", "move": "pull_out", "amount": 0.3, "glide": 0.8},
+      "actions": [
+        {"at": "Which part", "do": "appear", "prop": "wiretop2", "style": "fade", "over": 0.5}
+      ]
+    }
+  ]
+}

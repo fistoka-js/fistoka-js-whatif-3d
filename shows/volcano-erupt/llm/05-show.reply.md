@@ -1,0 +1,187 @@
+{
+  "format": 1,
+  "title": "Why Do Volcanoes Erupt? It's Not What You Think",
+  "voice": {"audio": "voice.mp3", "words": "words.json"},
+  "dials": {
+    "pressure": {"start": 0.2, "keys": [
+      {"at": "fill up", "to": 0.55, "over": 0.7},
+      {"at": "That is", "to": 0.15, "over": 0.6},
+      {"at": "Here is", "to": 0.3, "over": 0.8},
+      {"at": "melts into", "to": 0.4, "over": 1.2},
+      {"at": "lighter than", "to": 0.5, "over": 1.0},
+      {"at": "it rises", "to": 0.58, "over": 1.2},
+      {"at": "flows in", "to": 0.68, "over": 1.0},
+      {"at": "chamber swells", "to": 0.82, "over": 1.0},
+      {"at": "pressure climbs", "to": 0.95, "over": 1.0},
+      {"at": "pressure beats", "to": 1.0, "over": 1.5},
+      {"at": "Would you", "to": 0.6, "over": 0.5},
+      {"at": "Comment below", "to": 0.3, "over": 0.5}
+    ]},
+    "blast": {"start": 0, "keys": [
+      {"at": "cracks open", "to": 0.55, "over": 0.9},
+      {"at": "blasts out", "to": 1, "over": 1.2},
+      {"at": "Would you", "to": 0.3, "over": 0.6},
+      {"at": "Comment below", "to": 0.1, "over": 0.5}
+    ]},
+    "heat": {"start": 0.15, "keys": [
+      {"at": "rock melts", "to": 0.6, "over": 1.2},
+      {"at": "one thousand", "to": 1, "over": 1.0}
+    ]},
+    "gas": {"start": 0.35, "keys": [
+      {"at": "dissolved", "to": 0, "over": 1.2},
+      {"at": "pressure drops", "to": 0.2, "over": 1.0},
+      {"at": "gas bubbles", "to": 0.55, "over": 1.2},
+      {"at": "spreading", "to": 1, "over": 1.6}
+    ]},
+    "speed": {"start": 0.15, "keys": [
+      {"at": "speed up", "to": 0.9, "over": 1.0}
+    ]},
+    "cooker": {"start": 0.1, "keys": [
+      {"at": "needle climbs", "to": 0.95, "over": 1.3}
+    ]},
+    "ash": {"start": 0.1, "keys": [
+      {"at": "throw up", "to": 0.5, "over": 1.2},
+      {"at": "cool the", "to": 1, "over": 1.6}
+    ]},
+    "air": {"start": 0.25, "keys": [
+      {"at": "Early volcanic", "to": 0.6, "over": 1.2},
+      {"at": "build", "to": 1, "over": 1.5}
+    ]}
+  },
+  "shots": [
+    {
+      "id": "hook",
+      "env": {"type": "studio", "floor": true, "color": {"dial": "pressure", "colors": ["#14233a", "#2a1f3a", "#4a1a14"]}, "haze": 0},
+      "camera": {"focus": ["v"], "framing": "close", "fill": 1.15, "angle": "front", "move": "drift", "amount": 0.3},
+      "props": [
+        {"id": "v", "type": "volcano", "at": "center", "size": 1.5, "glow": {"dial": "pressure", "from": [0, 1], "to": [0.2, 1.6]}, "eruption": {"dial": "blast", "from": [0, 1], "to": [0.12, 1]}}
+      ],
+      "actions": []
+    },
+    {
+      "id": "melt",
+      "start": "Deep underground",
+      "continue": true,
+      "camera": {"focus": ["v", "th"], "framing": "medium", "angle": "front", "move": "push_in", "amount": 0.3, "glide": 1.2},
+      "props": [
+        {"id": "th", "type": "thermometer", "at": [0.95, 0, 0], "size": 1.1, "level": {"dial": "heat", "from": [0, 1], "to": [0.05, 1]}}
+      ],
+      "actions": [
+        {"at": "Deep underground", "do": "appear", "prop": "th", "style": "grow", "over": 0.6}
+      ]
+    },
+    {
+      "id": "swell",
+      "start": "As more",
+      "continue": true,
+      "camera": {"focus": ["v", "th"], "framing": "medium", "angle": "three-quarter", "move": "drift", "amount": 0.3, "fill": 1.0, "glide": 1.2},
+      "actions": [
+        {"at": "chamber swells", "do": "scale", "prop": "v", "to": 1.12, "over": 1.2}
+      ]
+    },
+    {
+      "id": "gas-in",
+      "start": "Inside the",
+      "transition": "dive",
+      "env": {"type": "studio", "floor": false, "color": {"dial": "gas", "colors": ["#141f33", "#1d3a52", "#3a2a5a"]}, "haze": 0},
+      "camera": {"focus": ["gas"], "framing": "close", "fill": 1.15, "angle": "front", "move": "pull_out", "amount": 0.3},
+      "props": [
+        {"id": "gas", "type": "particles", "at": "center", "size": 1.6, "shape": "sphere", "count": 300, "look": "dots", "dot": 0.1, "color": {"dial": "gas", "colors": ["#ffd27a", "#ff7a3a"]}, "spread": {"dial": "gas", "from": [0, 1], "to": [0.3, 2.2]}, "speed": {"dial": "speed", "from": [0, 1], "to": [0.2, 2.5]}}
+      ],
+      "actions": []
+    },
+    {
+      "id": "rise",
+      "start": "As the magma",
+      "continue": true,
+      "camera": {"focus": ["gas", "ar"], "framing": "medium", "angle": "front", "move": "drift", "amount": 0.3, "fill": 1.0, "glide": 1.0},
+      "props": [
+        {"id": "ar", "type": "arrow", "from": [1.15, -0.8, 0], "to": [1.15, 0.8, 0], "color": "#ff9a3a", "thickness": 0.12, "length": 0}
+      ],
+      "actions": [
+        {"at": "As the magma", "do": "appear", "prop": "ar", "style": "fade", "over": 0.3},
+        {"at": "magma rises", "do": "set", "prop": "ar", "param": "length", "to": 1, "over": 1.2}
+      ]
+    },
+    {
+      "id": "shove",
+      "start": "Those bubbles",
+      "continue": true,
+      "camera": {"focus": ["gas", "ar"], "framing": "medium", "angle": "front", "move": "push_in", "amount": 0.3, "fill": 1.0, "glide": 1.0},
+      "actions": [
+        {"at": "shoving", "do": "color", "prop": "ar", "to": "#ff3a2a", "over": 0.8}
+      ]
+    },
+    {
+      "id": "crack",
+      "start": "When the",
+      "transition": "dip",
+      "env": {"type": "studio", "floor": true, "color": {"dial": "pressure", "colors": ["#14233a", "#2a1f3a", "#4a1a14"]}, "haze": 0},
+      "camera": {"focus": ["v2", "th2"], "framing": "medium", "angle": "low", "move": "push_in", "amount": 0.4, "fill": 1.0},
+      "props": [
+        {"id": "v2", "type": "volcano", "at": "center", "size": 1.5, "glow": {"dial": "pressure", "from": [0, 1], "to": [0.2, 1.6]}, "eruption": {"dial": "blast", "from": [0, 1], "to": [0.12, 1]}},
+        {"id": "th2", "type": "thermometer", "at": [1.0, 0, 0], "size": 1.1, "level": {"dial": "heat", "from": [0, 1], "to": [0.05, 1]}}
+      ],
+      "actions": [
+        {"at": "cracks open", "do": "shake", "strength": 0.5, "for": 0.5}
+      ]
+    },
+    {
+      "id": "blast",
+      "start": "Magma blasts",
+      "continue": true,
+      "camera": {"focus": ["v2", "th2"], "framing": "medium", "angle": "front", "move": "pull_out", "amount": 0.4, "fill": 1.0, "glide": 1.0},
+      "actions": []
+    },
+    {
+      "id": "cooker",
+      "start": "It is like",
+      "continue": true,
+      "camera": {"focus": ["g"], "framing": "close", "angle": "front", "move": "drift", "amount": 0.3, "fill": 1.1, "glide": 1.0},
+      "props": [
+        {"id": "g", "type": "gauge", "at": [-1.0, 0, 0.3], "size": 1.0, "arc": "green-red", "value": {"dial": "cooker", "from": [0, 1], "to": [0, 1]}}
+      ],
+      "actions": [
+        {"at": "pressure cooker", "do": "appear", "prop": "g", "style": "pop", "over": 0.4},
+        {"at": "gives way", "do": "pulse", "prop": "g", "strength": 0.2}
+      ]
+    },
+    {
+      "id": "ash",
+      "start": "Eruptions throw",
+      "transition": "dip",
+      "env": {"type": "space", "nebula": "blue", "stars": 1},
+      "camera": {"focus": ["earth", "ashc"], "framing": "medium", "angle": "front", "move": "drift", "amount": 0.3, "fill": 1.05},
+      "props": [
+        {"id": "earth", "type": "planet", "at": "center", "size": 1.2, "look": "earth", "atmosphere": {"dial": "air", "from": [0, 1], "to": [0.2, 1.4]}, "glow": {"dial": "air", "from": [0, 1], "to": [0, 0.6]}},
+        {"id": "ashc", "type": "particles", "at": "center", "size": 2.4, "shape": "sphere", "count": 250, "look": "dots", "dot": 0.08, "color": "#b8ada3", "speed": 0.2, "spread": {"dial": "ash", "from": [0, 1], "to": [0.5, 2.2]}}
+      ],
+      "actions": []
+    },
+    {
+      "id": "air",
+      "start": "Early volcanic",
+      "continue": true,
+      "camera": {"focus": ["earth", "mol"], "framing": "medium", "angle": "front", "move": "pull_out", "amount": 0.3, "fill": 1.0, "glide": 1.0},
+      "props": [
+        {"id": "mol", "type": "molecule", "at": [-0.9, 0.9, 0.4], "size": 0.6, "formula": "co2"}
+      ],
+      "actions": [
+        {"at": "Early volcanic", "do": "disappear", "prop": "ashc", "style": "fade", "over": 0.6},
+        {"at": "volcanic gas", "do": "appear", "prop": "mol", "style": "pop", "over": 0.5}
+      ]
+    },
+    {
+      "id": "close",
+      "start": "Would you",
+      "transition": "dip",
+      "env": {"type": "studio", "floor": true, "color": {"dial": "pressure", "colors": ["#14233a", "#2a1f3a", "#4a1a14"]}, "haze": 0},
+      "camera": {"focus": ["v3", "p"], "framing": "medium", "angle": "front", "move": "drift", "amount": 0.3, "fill": 1.0},
+      "props": [
+        {"id": "v3", "type": "volcano", "at": "center", "size": 1.5, "glow": {"dial": "pressure", "from": [0, 1], "to": [0.2, 1.6]}, "eruption": {"dial": "blast", "from": [0, 1], "to": [0.12, 1]}},
+        {"id": "p", "type": "person", "at": [1.0, 0, 0.5], "size": 0.7, "color": "#3a7bd5", "pose": "stand"}
+      ],
+      "actions": []
+    }
+  ]
+}

@@ -2,21 +2,19 @@
  "slug": "earth-stops-spinning",
  "topic": "What if Earth stopped spinning?",
  "status": "ok",
- "title": "What if Earth suddenly stopped spinning?",
- "description": "What would really happen if Earth stopped spinning? The air and oceans would keep moving, and one side of the planet would bake while the other froze.\n\n#science #earth #whatif #physics #space",
+ "title": "What If Earth Suddenly Stopped Spinning?",
+ "description": "What would really happen if Earth stopped spinning? Winds, oceans, a six-month day and a weaker magnetic shield, explained step by step with real physics.\n\n#science #earth #whatif #space #physics",
  "tags": [
-  "what if",
   "earth stops spinning",
+  "what if earth stopped spinning",
   "earth rotation",
   "science explained",
-  "physics",
+  "what if",
   "planet earth",
+  "magnetic field",
   "day and night",
-  "winds",
-  "oceans",
-  "climate",
-  "space",
-  "science shorts"
+  "physics",
+  "space science"
  ],
  "show": "llm",
  "repairs": 0,
@@ -25,152 +23,146 @@
   {
    "sentence": "What if Earth suddenly stopped spinning?",
    "subject": "planet",
-   "change": "the air glow around the planet settles to a calm thin halo",
-   "dial": "air_speed"
+   "change": "the planet's air glow thins and the lit and dark halves settle in place",
+   "dial": ""
   },
   {
-   "sentence": "You might picture the world gently coming to rest.",
+   "sentence": "Many people imagine one calm, endless afternoon.",
    "subject": "planet",
-   "change": "the air glow stays smooth and quiet",
-   "dial": "air_speed"
-  },
-  {
-   "sentence": "That's the thing, it would be anything but.",
-   "subject": "planet",
-   "change": "the air glow flares thick and bright",
-   "dial": "air_speed"
+   "change": "the air glow turns calm and bright across the lit half",
+   "dial": ""
   },
   {
    "sentence": "Here is what really happens.",
    "subject": "planet",
-   "change": "the air glow swells further around the planet",
-   "dial": "air_speed"
+   "change": "the air glow flares and turns stormy",
+   "dial": "storm"
   },
   {
    "sentence": "Right now, the ground at the equator moves at about one thousand miles an hour.",
    "subject": "planet",
-   "change": "the air glow settles back to the normal thin halo",
-   "dial": "air_speed"
+   "change": "the air glow thickens and streams along the equator",
+   "dial": "storm"
   },
   {
-   "sentence": "The air and the oceans are carried along with it.",
-   "subject": "planet",
-   "change": "the air glow hugs the surface evenly",
-   "dial": "air_speed"
+   "sentence": "Stop the ground, and the air keeps going at that speed.",
+   "subject": "particles",
+   "change": "the air streams rush faster and spread out in one direction",
+   "dial": "storm"
   },
   {
-   "sentence": "If the rock stopped, the air would not.",
+   "sentence": "The oceans keep sliding too, then surge toward the poles as the equator bulge fades.",
    "subject": "planet",
-   "change": "the air glow starts to surge outward",
-   "dial": "air_speed"
+   "change": "the air glow shifts and thickens toward the poles",
+   "dial": "storm"
   },
   {
-   "sentence": "It would keep racing eastward, and winds would scour the surface at hundreds of miles an hour.",
+   "sentence": "Dry land would rise near the equator, and new seas would swell near the poles.",
    "subject": "planet",
-   "change": "the air glow grows thick, bright and stormy",
-   "dial": "air_speed"
+   "change": "the air glow fades near the equator and swells near the poles",
+   "dial": "storm"
   },
   {
-   "sentence": "Oceans would surge onto the land, flooding the coasts.",
-   "subject": "planet",
-   "change": "the planet's blue tint swells and spreads over its colour",
-   "dial": "air_speed"
-  },
-  {
-   "sentence": "One day would last about a year.",
-   "subject": "planet",
-   "change": "the sunlit face glows brighter while the far face darkens",
+   "sentence": "Now the Sun takes a year to cross the sky.",
+   "subject": "sun",
+   "change": "the sun glows brighter and slows to a steady shine on one side",
    "dial": "heat"
   },
   {
-   "sentence": "For roughly six months the sunny side would bake, and the dark side would freeze.",
+   "sentence": "So one side bakes in daylight for about six months.",
    "subject": "planet",
-   "change": "the sunlit face turns hot orange and the dark face turns icy blue",
+   "change": "the lit half glows hotter and its air glow brightens",
    "dial": "heat"
   },
   {
-   "sentence": "It's like a kebab that stops turning over a fire.",
+   "sentence": "The other side freezes in darkness for the same time.",
+   "subject": "planet",
+   "change": "the dark half turns colder and its air glow vanishes",
+   "dial": "heat"
+  },
+  {
+   "sentence": "It is like holding one side of a marshmallow over a fire.",
    "subject": "fire",
-   "change": "the flames grow taller and brighter on one side",
+   "change": "the flames grow taller and glow hotter",
    "dial": "heat"
   },
   {
-   "sentence": "One side burns, and the other side stays raw.",
-   "subject": "fire",
-   "change": "the flames flare even bigger",
-   "dial": "heat"
-  },
-  {
-   "sentence": "Spinning is what shares the sunlight out evenly.",
+   "sentence": "The spin also helps stir the liquid metal in Earth's core.",
    "subject": "planet",
-   "change": "the hot and cold colours blend back into one even glow",
-   "dial": "heat"
+   "change": "the air glow settles and the planet turns still",
+   "dial": ""
   },
   {
-   "sentence": "Without it, the temperature gap would grow, and most life would struggle.",
-   "subject": "planet",
-   "change": "the hot face and cold face pull apart in colour again",
-   "dial": "heat"
+   "sentence": "That stirring makes our magnetic shield, so the shield would probably weaken.",
+   "subject": "shield_dome",
+   "change": "the dome's shimmer fades and thins",
+   "dial": "shield"
   },
   {
-   "sentence": "Which side would you pick, bright or dark?",
-   "subject": "planet",
-   "change": "the bright face glows stronger while the dark face deepens",
-   "dial": "heat"
+   "sentence": "Then more harsh radiation from the Sun would reach the ground.",
+   "subject": "shield_dome",
+   "change": "the dome grows fainter and more transparent",
+   "dial": "shield"
   },
   {
-   "sentence": "Comment below.",
+   "sentence": "Our daily spin gives us gentle days, steady air and a shield overhead.",
+   "subject": "shield_dome",
+   "change": "the dome shimmers strong again and fills out",
+   "dial": "shield"
+  },
+  {
+   "sentence": "Would you rather live on the sunny side or the dark side?",
    "subject": "planet",
-   "change": "the dark face fades to its deepest blue",
+   "change": "the lit half brightens while the dark half deepens",
    "dial": "heat"
   }
  ],
  "beat_rewrite": false,
  "beats_note": null,
  "beat_problems": [],
- "qa": "not_run",
+ "qa": "pass",
  "needs_fact_check": false,
- "voice_seconds": 45.84,
+ "voice_seconds": 51.168,
  "mode": "files",
  "model": "claude-sonnet-5-5",
  "tokens": {
-  "input_tokens": 20393,
-  "output_tokens": 3701,
+  "input_tokens": 21188,
+  "output_tokens": 4474,
   "cache_read_tokens": 0,
   "cache_write_tokens": 0
  },
- "cost_usd": 0.0778,
+ "cost_usd": 0.0871,
  "cost_is_estimate": true,
  "calls": [
   {
    "purpose": "script",
    "model": "files",
-   "input_tokens": 3601,
-   "output_tokens": 1213,
+   "input_tokens": 3637,
+   "output_tokens": 1245,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.01933
+   "cost_usd": 0.01972
   },
   {
    "purpose": "audit",
    "model": "files",
-   "input_tokens": 1166,
-   "output_tokens": 584,
+   "input_tokens": 1185,
+   "output_tokens": 632,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.00817
+   "cost_usd": 0.00869
   },
   {
    "purpose": "show",
    "model": "files",
-   "input_tokens": 15626,
-   "output_tokens": 1904,
+   "input_tokens": 16366,
+   "output_tokens": 2597,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.05029
+   "cost_usd": 0.0587
   }
  ],
  "error": null

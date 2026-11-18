@@ -2,173 +2,188 @@
  "slug": "volcano-erupt",
  "topic": "Why do volcanoes erupt?",
  "status": "ok",
- "title": "Why Do Volcanoes Actually Erupt?",
- "description": "Volcanoes are not leaks from a sea of liquid fire. Rising magma, trapped gas and falling pressure make the bubbles that blast it out.\n\n#volcano #science #geology #shorts",
+ "title": "Why Do Volcanoes Erupt? It's Not What You Think",
+ "description": "Volcanoes do not erupt just because they fill up. Rising magma loses pressure, dissolved gas bubbles out and expands, and the blast cracks the rock open. Here is the whole chain in under a minute.\n\n#volcano #science #geology #shorts #earthscience",
  "tags": [
   "volcano",
-  "volcanoes",
   "why do volcanoes erupt",
   "magma",
   "lava",
   "geology",
   "earth science",
   "science explained",
+  "eruption",
   "pressure",
-  "gas bubbles"
+  "volcanic gas",
+  "science shorts"
  ],
  "show": "llm",
  "repairs": 0,
  "fallback_note": null,
  "beats": [
   {
-   "sentence": "Is the Earth full of liquid fire?",
+   "sentence": "What if volcanoes erupt because they fill up with lava?",
    "subject": "volcano",
-   "change": "the cone sits calm while its crater glows faintly",
-   "dial": "eruption"
+   "change": "the crater glow fills up and brightens",
+   "dial": "pressure"
   },
   {
-   "sentence": "Not quite.",
+   "sentence": "That is not quite it.",
    "subject": "volcano",
-   "change": "the glow in the crater dims to a dark rim",
-   "dial": "eruption"
+   "change": "the crater glow drops back to a dim ember",
+   "dial": "pressure"
   },
   {
    "sentence": "Here is what really happens.",
    "subject": "volcano",
-   "change": "the cone turns see-through to reveal a chamber inside",
-   "dial": "eruption"
+   "change": "the crater glow settles to a steady orange",
+   "dial": "pressure"
   },
   {
-   "sentence": "Deep down, rock is mostly solid, but in places a little melts into magma.",
+   "sentence": "Deep underground, rock melts into glowing magma.",
    "subject": "volcano",
-   "change": "a pocket of orange magma appears deep inside the cone",
-   "dial": "eruption"
+   "change": "the crater glow turns hotter orange",
+   "dial": "pressure"
   },
   {
-   "sentence": "That magma is lighter than the rock around it, so it rises into a chamber.",
+   "sentence": "Magma is lighter than the rock around it, so it rises and pools in a chamber.",
    "subject": "volcano",
-   "change": "the magma pocket climbs and swells into a large chamber",
-   "dial": "eruption"
+   "change": "the glow climbs brighter as magma rises",
+   "dial": "pressure"
   },
   {
-   "sentence": "Dissolved gas, mostly water vapour and carbon dioxide, is trapped inside.",
+   "sentence": "As more magma flows in, the chamber swells and the pressure climbs.",
    "subject": "volcano",
-   "change": "tiny gas dots appear inside the magma",
-   "dial": "eruption"
+   "change": "the crater swells with brighter, stronger glow",
+   "dial": "pressure"
   },
   {
-   "sentence": "As the magma climbs, the pressure drops, and the gas forms bubbles.",
-   "subject": "volcano",
-   "change": "the magma rises up the vent and the bubbles form",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "The bubbles grow, and they push the magma upward faster.",
-   "subject": "volcano",
-   "change": "the bubbles swell and the magma surges up the vent",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "It is like a shaken fizzy drink.",
+   "sentence": "Inside the magma, dissolved gas is packed tight.",
    "subject": "particles",
-   "change": "a packed clump of bubbles spreads and speeds up",
-   "dial": "eruption"
+   "change": "gas dots squeeze into a tight, dense cloud",
+   "dial": "gas"
   },
   {
-   "sentence": "Open the cap, the pressure drops, and the bubbles burst out.",
+   "sentence": "As the magma rises, the pressure drops and the gas bubbles out, spreading wider and wider.",
    "subject": "particles",
-   "change": "the bubbles rush upward out of the box",
-   "dial": "eruption"
+   "change": "the gas cloud spreads wide apart",
+   "dial": "gas"
   },
   {
-   "sentence": "The pressure finally breaks the rock plug in the crater.",
-   "subject": "volcano",
-   "change": "the crater glows bright orange and the plug cracks",
-   "dial": "eruption"
+   "sentence": "Those bubbles expand and speed up, shoving the magma upward.",
+   "subject": "particles",
+   "change": "the gas dots move faster and push outward",
+   "dial": "gas"
   },
   {
-   "sentence": "Lava, ash and gas blast out into the air.",
+   "sentence": "When the pressure beats the strength of the rock above, the cone cracks open.",
    "subject": "volcano",
-   "change": "lava and ash burst out of the crater",
-   "dial": "eruption"
+   "change": "the crater bursts into a growing eruption",
+   "dial": "pressure"
   },
   {
-   "sentence": "Thick, sticky magma traps gas longer, so the blast is bigger.",
+   "sentence": "Magma blasts out of the vent, glowing at about one thousand degrees Celsius.",
    "subject": "volcano",
-   "change": "the crater erupts harder and the plume grows taller",
-   "dial": "eruption"
+   "change": "the eruption grows to full blast",
+   "dial": "pressure"
   },
   {
-   "sentence": "Runny magma lets gas escape, so lava just flows down the slopes.",
-   "subject": "volcano",
-   "change": "the eruption calms to a gentle flow down the slopes",
-   "dial": "eruption"
+   "sentence": "It is like a pressure cooker, where the needle climbs until the lid gives way.",
+   "subject": "gauge",
+   "change": "the needle swings up into the red",
+   "dial": "pressure"
   },
   {
-   "sentence": "Over millions of years, this gas probably helped build our air and oceans.",
-   "subject": "volcano",
-   "change": "the cone grows taller and the plume spreads wide",
-   "dial": "eruption"
+   "sentence": "Eruptions throw up ash that can cool the planet for a year or two.",
+   "subject": "particles",
+   "change": "the ash cloud spreads far and wide",
+   "dial": "gas"
   },
   {
-   "sentence": "Would you live next to one for its rich soil?",
+   "sentence": "Early volcanic gas probably helped build Earth's air and oceans.",
+   "subject": "planet",
+   "change": "the blue air glow around the planet grows thicker",
+   "dial": ""
+  },
+  {
+   "sentence": "Would you watch one?",
    "subject": "volcano",
-   "change": "the eruption fades and the crater glow settles",
-   "dial": "eruption"
+   "change": "the eruption eases to a gentle glowing crater",
+   "dial": "pressure"
   },
   {
    "sentence": "Comment below.",
    "subject": "volcano",
-   "change": "the glow dims to a small ember",
-   "dial": "eruption"
+   "change": "the crater glow settles calm and steady",
+   "dial": "pressure"
   }
  ],
  "beat_rewrite": false,
  "beats_note": null,
  "beat_problems": [],
- "qa": "not_run",
+ "qa": "pass",
  "needs_fact_check": false,
- "voice_seconds": 51.096,
+ "voice_seconds": 51.504,
  "mode": "files",
  "model": "claude-sonnet-5-5",
  "tokens": {
-  "input_tokens": 20403,
-  "output_tokens": 6287,
+  "input_tokens": 26309,
+  "output_tokens": 5803,
   "cache_read_tokens": 0,
   "cache_write_tokens": 0
  },
- "cost_usd": 0.1037,
+ "cost_usd": 0.1106,
  "cost_is_estimate": true,
  "calls": [
   {
    "purpose": "script",
    "model": "files",
-   "input_tokens": 3599,
-   "output_tokens": 1292,
+   "input_tokens": 3635,
+   "output_tokens": 1336,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.02012
+   "cost_usd": 0.02063
   },
   {
    "purpose": "audit",
    "model": "files",
-   "input_tokens": 1164,
-   "output_tokens": 863,
+   "input_tokens": 1192,
+   "output_tokens": 641,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.01096
+   "cost_usd": 0.00879
+  },
+  {
+   "purpose": "shorten",
+   "model": "files",
+   "input_tokens": 4025,
+   "output_tokens": 1064,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.01869
+  },
+  {
+   "purpose": "audit-shorten",
+   "model": "files",
+   "input_tokens": 1171,
+   "output_tokens": 580,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.00814
   },
   {
    "purpose": "show",
    "model": "files",
-   "input_tokens": 15640,
-   "output_tokens": 4132,
+   "input_tokens": 16286,
+   "output_tokens": 2182,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.0726
+   "cost_usd": 0.05439
   }
  ],
  "error": null

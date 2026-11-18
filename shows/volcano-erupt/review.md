@@ -1,71 +1,65 @@
-# Review: Why Do Volcanoes Actually Erupt?
+# Review: Why Do Volcanoes Erupt? It's Not What You Think
 
 - Topic: Why do volcanoes erupt?
 - Slug: volcano-erupt
 - Status: ok
 - Show: first try
-- Picture check (QA): not_run (QA ERROR: only 0.8 GB of memory is free; browser jobs need 2 GB. Close something and try again.)
-- Voice: 51.1 s, 161 words
+- Picture check (QA): pass
+- Voice: 51.5 s, 161 words (shortened once (13 words asked))
 - Mode: files; model priced as claude-sonnet-5-5
-- Written: 2026-11-17 04:07 UTC
+- Written: 2026-11-18 00:58 UTC
 
 ## Script
-Is the Earth full of liquid fire? Not quite. Here is what really happens. Deep down, rock is mostly solid, but in places a little melts into magma. That magma is lighter than the rock around it, so it rises into a chamber. Dissolved gas, mostly water vapour and carbon dioxide, is trapped inside. As the magma climbs, the pressure drops, and the gas forms bubbles. The bubbles grow, and they push the magma upward faster. It is like a shaken fizzy drink. Open the cap, the pressure drops, and the bubbles burst out. The pressure finally breaks the rock plug in the crater. Lava, ash and gas blast out into the air. Thick, sticky magma traps gas longer, so the blast is bigger. Runny magma lets gas escape, so lava just flows down the slopes. Over millions of years, this gas probably helped build our air and oceans. Would you live next to one for its rich soil? Comment below.
+What if volcanoes erupt because they fill up with lava? That is not quite it. Here is what really happens. Deep underground, rock melts into glowing magma. Magma is lighter than the rock around it, so it rises and pools in a chamber. As more magma flows in, the chamber swells and the pressure climbs. Inside the magma, dissolved gas is packed tight. As the magma rises, the pressure drops and the gas bubbles out, spreading wider and wider. Those bubbles expand and speed up, shoving the magma upward. When the pressure beats the strength of the rock above, the cone cracks open. Magma blasts out of the vent, glowing at about one thousand degrees Celsius. It is like a pressure cooker, where the needle climbs until the lid gives way. Eruptions throw up ash that can cool the planet for a year or two. Early volcanic gas probably helped build Earth's air and oceans. Would you watch one? Comment below.
 
 ## Picture plan (the beat list that goes with the script above)
-- S1: volcano | the cone sits calm while its crater glows faintly | dial: eruption
-- S2: volcano | the glow in the crater dims to a dark rim | dial: eruption
-- S3: volcano | the cone turns see-through to reveal a chamber inside | dial: eruption
-- S4: volcano | a pocket of orange magma appears deep inside the cone | dial: eruption
-- S5: volcano | the magma pocket climbs and swells into a large chamber | dial: eruption
-- S6: volcano | tiny gas dots appear inside the magma | dial: eruption
-- S7: volcano | the magma rises up the vent and the bubbles form | dial: eruption
-- S8: volcano | the bubbles swell and the magma surges up the vent | dial: eruption
-- S9: particles | a packed clump of bubbles spreads and speeds up | dial: eruption
-- S10: particles | the bubbles rush upward out of the box | dial: eruption
-- S11: volcano | the crater glows bright orange and the plug cracks | dial: eruption
-- S12: volcano | lava and ash burst out of the crater | dial: eruption
-- S13: volcano | the crater erupts harder and the plume grows taller | dial: eruption
-- S14: volcano | the eruption calms to a gentle flow down the slopes | dial: eruption
-- S15: volcano | the cone grows taller and the plume spreads wide | dial: eruption
-- S16: volcano | the eruption fades and the crater glow settles | dial: eruption
-- S17: volcano | the glow dims to a small ember | dial: eruption
+- S1: volcano | the crater glow fills up and brightens | dial: pressure
+- S2: volcano | the crater glow drops back to a dim ember | dial: pressure
+- S3: volcano | the crater glow settles to a steady orange | dial: pressure
+- S4: volcano | the crater glow turns hotter orange | dial: pressure
+- S5: volcano | the glow climbs brighter as magma rises | dial: pressure
+- S6: volcano | the crater swells with brighter, stronger glow | dial: pressure
+- S7: particles | gas dots squeeze into a tight, dense cloud | dial: gas
+- S8: particles | the gas cloud spreads wide apart | dial: gas
+- S9: particles | the gas dots move faster and push outward | dial: gas
+- S10: volcano | the crater bursts into a growing eruption | dial: pressure
+- S11: volcano | the eruption grows to full blast | dial: pressure
+- S12: gauge | the needle swings up into the red | dial: pressure
+- S13: particles | the ash cloud spreads far and wide | dial: gas
+- S14: planet | the blue air glow around the planet grows thicker
+- S15: volcano | the eruption eases to a gentle glowing crater | dial: pressure
+- S16: volcano | the crater glow settles calm and steady | dial: pressure
 
 ## Claims to check (tick each one you have verified)
-- [ ] The Earth's mantle is mostly solid rock
-- [ ] Magma forms where a little rock melts
-- [ ] Magma is less dense than the surrounding rock so it rises
-- [ ] Magma gathers in a chamber under a volcano
-- [ ] Magma contains dissolved gas, mostly water vapour and carbon dioxide
-- [ ] Falling pressure makes dissolved gas form bubbles
-- [ ] Growing bubbles push magma upward faster
-- [ ] Thick magma traps gas more and tends to erupt more explosively
-- [ ] Runny magma lets gas escape and lava flows
-- [ ] Volcanic gas probably helped build the atmosphere and oceans
+- [ ] Magma forms when rock deep underground melts
+- [ ] Magma is less dense than the surrounding rock, so it rises and collects in a chamber
+- [ ] Magma contains dissolved gas under high pressure
+- [ ] As magma rises the pressure falls and gas comes out as expanding bubbles
+- [ ] Eruptions happen when pressure exceeds the strength of the overlying rock
+- [ ] Erupting lava is roughly a thousand degrees Celsius
+- [ ] Large eruptions can cool the planet for a year or two
+- [ ] Volcanic gas probably helped build Earth's early air and oceans
 
 ## Automatic fact check (final audit)
-- supported: Rock deep inside the Earth is mostly solid, not liquid (Note: The mantle is solid rock that flows very slowly; general knowledge, not in the research.)
-- supported: In some places a little rock melts into magma (Note: Partial melting happens at hot spots, rifts and subduction zones; general knowledge, not in the research.)
-- supported: Magma is lighter than the surrounding rock, so it rises (Note: Melt is less dense than solid rock and rises by buoyancy; general knowledge, not in the research.)
-- supported: Magma contains dissolved gas, mostly water vapour and carbon dioxide (Note: Water and carbon dioxide are the main volcanic gases; general knowledge, not in the research.)
-- supported: Falling pressure as magma rises makes the dissolved gas form bubbles (Note: Gas comes out of solution as pressure falls; general knowledge, not in the research.)
-- simplified: Growing bubbles push the magma upward faster (Note: Expanding gas lowers density and drives the magma up; the full picture is more complex.)
-- supported: Opening a shaken fizzy drink drops the pressure and bubbles burst out (Note: Standard analogy for dissolved gas coming out of a liquid; general knowledge, not in the research.)
-- simplified: Pressure can break the rock plug in the crater (Note: Some eruptions follow a plugged vent breaking, but not all volcanoes have a plug.)
-- supported: Eruptions blast out lava, ash and gas (Note: General knowledge, not in the research.)
-- simplified: Thick, sticky magma traps gas longer, making bigger blasts (Note: High-viscosity magma tends to give more explosive eruptions; it is a tendency, not a rule.)
-- supported: Runny magma lets gas escape, so lava flows down the slopes (Note: Low-viscosity basaltic magma gives effusive eruptions; general knowledge, not in the research.)
-- supported: Volcanic gas probably helped build Earth's air and oceans over millions of years (Note: Outgassing is widely thought to have contributed to the atmosphere and oceans, and it is hedged with probably.)
-- supported: Volcanic land has rich soil (Note: Volcanic ash and rock weather into fertile soil; general knowledge, not in the research.)
+- supported: Magma forms when rock deep underground melts (Note: General knowledge, not in the research.)
+- supported: Magma is less dense than surrounding rock, so it rises and collects in a chamber (Note: General knowledge, not in the research.)
+- supported: Added magma raises pressure in the chamber (Note: General knowledge, not in the research.)
+- supported: Magma contains dissolved gas under pressure (Note: Water vapour and carbon dioxide are dissolved in magma at depth.)
+- supported: Falling pressure lets dissolved gas form bubbles (Note: This is how gas exsolves, like opening a fizzy drink.)
+- simplified: Gas bubbles expand and drive magma upward (Note: Expanding gas does drive the ascent, though the speed-up is simplified.)
+- simplified: Eruption happens when pressure exceeds rock strength (Note: True in essence; eruptions often start by fracturing rock in the conduit.)
+- supported: Erupting magma is about one thousand degrees Celsius (Note: Lava is roughly 700 to 1200 degrees Celsius.)
+- supported: Big eruptions can cool the planet for a year or two (Note: Sulphur aerosols from large eruptions cool the climate for a year or two.)
+- supported: Volcanic gas probably helped build Earth's air and oceans (Note: Widely accepted, and hedged with probably.)
 - Redrafted: no
 
 ## Description
-Volcanoes are not leaks from a sea of liquid fire. Rising magma, trapped gas and falling pressure make the bubbles that blast it out.
+Volcanoes do not erupt just because they fill up. Rising magma loses pressure, dissolved gas bubbles out and expands, and the blast cracks the rock open. Here is the whole chain in under a minute.
 
-#volcano #science #geology #shorts
+#volcano #science #geology #shorts #earthscience
 
 ## Tags
-volcano, volcanoes, why do volcanoes erupt, magma, lava, geology, earth science, science explained, pressure, gas bubbles
+volcano, why do volcanoes erupt, magma, lava, geology, earth science, science explained, eruption, pressure, volcanic gas, science shorts
 
 ## How the show was made
 - show: valid (0 warning(s))
@@ -73,10 +67,12 @@ volcano, volcanoes, why do volcanoes erupt, magma, lava, geology, earth science,
 ## Cost (estimate)
 | call | input | output | cache read | cache write | $ |
 |---|---|---|---|---|---|
-| script | 3599 | 1292 | 0 | 0 | 0.0201 |
-| audit | 1164 | 863 | 0 | 0 | 0.0110 |
-| show | 15640 | 4132 | 0 | 0 | 0.0726 |
-| **total** | 20403 | 6287 | 0 | 0 | 0.1037 |
+| script | 3635 | 1336 | 0 | 0 | 0.0206 |
+| audit | 1192 | 641 | 0 | 0 | 0.0088 |
+| shorten | 4025 | 1064 | 0 | 0 | 0.0187 |
+| audit-shorten | 1171 | 580 | 0 | 0 | 0.0081 |
+| show | 16286 | 2182 | 0 | 0 | 0.0544 |
+| **total** | 26309 | 5803 | 0 | 0 | 0.1106 |
 
 files mode: tokens are characters / 4, priced as claude-sonnet-5-5; nothing was paid.
 
@@ -88,7 +84,7 @@ review.md, script.txt, show.json, voice.mp3, voice.stats.json, words.json, write
 
 - Topic: Why do volcanoes erupt?
 - Final video: `E:/Youtube Project/whatif-3d/shows/volcano-erupt/out/volcano-erupt-final.mp4`
-- Length: 51.166667 s, loudness: -16 LUFS
+- Length: 51.566667 s, loudness: -16 LUFS
 - Picture check: **pass** (0 findings, see `out/qa.json` and `out/qa-sheet.jpg`)
 - Writer status: ok
 - Upload: not uploaded

@@ -1,9 +1,18 @@
 {
- "sha256": "171a083fa9510c6052e6a0f3c78d08b4ff4cdb43239dc0e3129cd6aa11bf8e26",
+ "sha256": "61797a881ede9d5a3005eb398c3c7c1d75cf2eaf1ee5a0e7febaf24e23d14a87",
  "stats": {
-  "duration": 51.096,
+  "duration": 51.504,
   "word_count": 161,
-  "words_per_second": 3.18,
-  "longest_pause": 0.413
+  "words_per_second": 3.15,
+  "longest_pause": 0.391
+ },
+ "shortened_from": {
+  "sha256": "126c68ce8f74c9b4ff00e617110ad30344a85610b404b2eb806088583a1d2505",
+  "stats": {
+   "duration": 57.0,
+   "word_count": 177,
+   "words_per_second": 3.13,
+   "longest_pause": 0.391
+  }
  }
 }

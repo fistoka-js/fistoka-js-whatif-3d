@@ -22,9 +22,12 @@ The video must EXPLAIN, not illustrate. The approved style: one subject stays on
 1. THE CHAIN. Read the sentence table and the picture plan. Name the one mechanism and its cause -> effect chain. Name the HERO: the prop that shows the mechanism changing (a lattice, a wave, a layer stack, a tuner). It stays on screen for most of the video.
 2. SCENES. Make 2 to 4 main scenes for the mechanism (for example: whole thing -> zoom in -> the mechanism up close -> the analogy), plus at most one short opening scene for the hook and one short closing scene. Never a new scene per sentence. Inside a scene, change the view with a continuing shot (new camera, often with "glide"); zoom into the subject with "transition": "dive".
 3. DIALS. Choose at least one dial for the quantity that changes (spacing, temperature, speed, wavelength). Bind it to TWO OR MORE things that the viewer should see change together: the hero's value AND its colour, the effect next to it, the background colour. Key it on the spoken words where the quantity changes ("sit close" -> low, "spread apart" -> high).
-4. A CHANGE IN EVERY SENTENCE. For each sentence, the plan says what changes; make it happen inside that sentence: a dial key, or an action on a prop ("set", "move", "scale", "color", "glow", "appear", "disappear", "pulse", "shake"), ideally ramped with "until" from one word to the next. Nothing on screen may stay unchanged for more than 3.5 seconds of narration (2.5 s is better). Camera moves, spin, bob, orbit, labels, text and icons do NOT count as a change.
+4. A CHANGE IN EVERY SENTENCE. For each sentence, the plan says what changes; make it happen inside that sentence: a dial key, or an action on a prop ("set", "move", "scale", "color", "glow", "appear", "disappear"), ideally ramped with "until" from one word to the next. Nothing on screen may stay unchanged for more than 3.5 seconds of narration (2.5 s is better). Camera moves, spin, bob, orbit, pulse, shake, labels, text and icons do NOT count as a change.
 5. CAUSE AND EFFECT TOGETHER. Put the cause and its effect in the same frame where possible (the crystals spreading on top, the reflected colour below; the chameleon's skin turning the same colour). Labels only name parts ("CRYSTALS", "SKIN"); the picture carries the explanation.
-6. WRITE THE JSON. Then run the checklist in section 4 against it before you reply.
+6. EMPHASIS ONLY. "pulse" and "shake" are emphasis, never the sentence's change: at most 3 pulses and 2 shakes in the whole video (a camera shake counts as a shake), never on the same prop twice in a row. A video of things bouncing and shaking is bad; use a real change (set, move, scale, color, glow, a dial) instead.
+7. CLOUDS HOLD STILL. A particle cloud's spread or speed changes only on the words that need it, then holds. Do not keep it swelling and shrinking.
+8. VARIETY. Keep the one hero, but inside each scene (except the first shot, which keeps the one-small-prop limit in section 4) bring in 1 or 2 supporting props that show the thing being talked about (the real object of an analogy where the catalogue has it, the parts the script names) instead of only re-animating the hero. The scene count and the rule that at least one prop is on screen for 30% or more of the video stay as they are.
+9. WRITE THE JSON. Then run the checklist in section 4 against it before you reply.
 
 Stand-ins: for side things a simple prop is fine (a clock for time, a thermometer for heat, particles for air or dust). The mechanism itself must be shown by a prop that can change; an icon, a bar chart or a label is never the mechanism.
 
@@ -38,7 +41,7 @@ Shape:
 - An action that changes a value bound to a dial ("set" on a bound param, "color" on a bound colour, "glow" on a bound glow, "scale" on a bound size, "move" or "orbit" on a bound "at") is an error: change the dial instead.
 - Action fields: "at" (WHEN, an anchor), "do", "prop" where the action takes one, "over" (seconds) ONLY on actions that list a default over, or "until" where listed, plus the fields listed for that action.
 - "set" may only animate a param listed in that prop's "anim" list, inside its range. If an anim param has the same name as a prop field (the fire's "size"), "size" on the prop means the prop's scale; change the anim value only with "set".
-- Stage-space props ("arrow", "beam") have "from" and "to" (a slot, [x, y, z] or a prop id in the shot) and NO "at", "size" or "rotate". They cannot move, scale, spin, orbit, bob, shake or pulse.
+- Stage-space props ("arrow", "beam", "wire") have "from" and "to" (a slot, [x, y, z] or a prop id in the shot) and NO "at", "size" or "rotate". They cannot move, scale, spin, orbit, bob, shake or pulse.
 - "icon" goes on a prop with "prop", or at a place with "place" (slot or [x, y, z]). Its "at" is the TIME, like every action.
 - "glide" only on a continuing shot, not with "dip" or "dive", and not longer than the shot. "fill" 0.5 to 1.3.
 - Text limits: label text up to 32 characters, text up to 40, count unit up to 16. Colours: a palette name or "#rrggbb".
@@ -89,12 +92,15 @@ Colour and camera:
 Good to know (not obvious from the catalogue):
 - "ring": its radius comes from "size" (size 2.6 rings a planet of size 1.3); "tilt" 0 faces the camera like a hoop, 90 is edge-on, 70-78 looks like Saturn's rings.
 - "particles" with "shape": "ring" lie flat (like a plate): seen from angle "front" they look like a line; use angle "top" or "high" to show the circle. Use 20 or more of them for a ring that reads as a ring.
+- "planet" turns by itself (its "turn" param, default 0.02 turns/s, clouds faster); to show it stopping or starting, place it with "turn": 0 and drive all turning with "spin" (speed 0 stops it).
+- "wire" is a stage-space cable (like "beam"): for a circuit use two wires between [x, y, z] points, e.g. over the top with "lift": 0.7 and a return along the floor at y 0.04 (floor is y 0, props stand on it); "current" 0 to 1 sends glowing charge along it. This floor layout needs an environment with a ground (with no ground, pick your own heights). On the ground, a "battery" is 0.79 x its size tall to the top of its cap and a "lightbulb" exactly its size tall (a size 1.2 battery tops out at y 0.95, a size 1.0 bulb at y 1.0); start or end a wire at a prop's x and z with the y of its top. A positive "lift" puts the top at the higher end plus "lift"; a negative "lift" bends the wire down instead (the bottom is the lower end plus "lift"), and it does not go around props. When both ends are at y 0 or above, the wire never goes into the floor (its centre is held at y 0.04 or higher, even if an end is given at y 0, so a wire already at the floor stays straight); if either end is below y 0 there is no floor clamp and the wire goes exactly where you put it.
 - "bars" draws the values relative to the tallest bar; give 2 to 4 values for a clear comparison and start it at "grow": 0 to make it rise on a word.
 
 CHECKLIST before replying:
 [ ] 2 to 4 main scenes (plus at most a short opening and closing scene); one hero prop that stays on screen for much of the video; first shot has no "start"; every other shot's "start" is a phrase from the word list; each shot 1.5 to 12 s (over 9 s gives a warning; aim for 3 to 8).
 [ ] At least one dial, bound to two or more things that are on screen together; its keys are on the words where the quantity changes.
 [ ] Every sentence has a change starting inside it (a dial key or a real action), and nothing stays unchanged for more than 3.5 s.
+[ ] At most 3 pulses and 2 shakes in the video (a camera shake counts), none as a sentence's change, never on the same prop twice in a row; particle clouds change only on the words that need it; the first shot keeps its one-small-prop limit; inside each scene (except the first shot) bring in 1 or 2 supporting props.
 [ ] Continuing shots have no "env" and only new prop ids; no action changes a dial-bound value.
 [ ] Every anchor is a phrase spoken inside that shot, and repeated words are made unique with more words.
 [ ] Every prop type, env type, param, action, field and value appears in the catalogue for THAT prop or action.
@@ -110,6 +116,7 @@ PROPS (name [floats/STAGE-SPACE] (params) anim: animatable params for the "set" 
 - particles [floats] (shape=sphere|box|ring|stream, count 1..1500, color, color2, mix 0..1, look=balls|dots, dot 0.01..0.3, seed) anim: spread 0..3 [starts 1], speed 0..5 [starts 0.3] -- A cloud of small balls or glowing dots in a box, sphere, ring or stream (molecules, dust, atoms).
 - arrow [STAGE-SPACE] (from=point, to=point, color, thickness 0.02..0.3) anim: length 0..1 [starts 1] -- A solid 3D arrow from one point or prop to another.
 - beam [STAGE-SPACE] (from=point, to=point, color, width 0.01..0.6) anim: progress 0..1 [starts 1], brightness 0..2 [starts 1] -- A glowing light ray from one point or prop to another.
+- wire [STAGE-SPACE] (from=point, to=point, lift -3..3, color, width 0.02..0.2) anim: current 0..1 [starts 0] -- An electric wire between two points; "lift" bends it into a loop.
 - mountain (style=rock|snow|desert, peaks 1..3, seed) -- A chunky low-poly mountain with a snow cap; styles rock, snow, desert; 1 to 3 peaks. Good for places.
 - volcano (color, seed) anim: eruption 0..1 [starts 0.3] -- A volcano cone with a glowing crater.
 - cloud [floats] (style=fair|storm, color, seed) anim: rain 0..1 [starts 0] -- A puffy low-poly cloud, fair or storm. For weather and water cycle.
@@ -266,21 +273,21 @@ S18 [60.04-60.64] Comment below.
 
 THE PICTURE PLAN from the script writer (S n here is S n above): what stays on screen, what visibly changes while that sentence is spoken, and the dial that drives it. Follow it; improve it where the catalogue offers a better way to show the same change.
 S1 subject: chameleon | change: its skin turns to match the background | dial: skin
-S2 subject: chameleon | change: it pulses and the background snaps back | dial: surround
-S3 subject: chameleon | change: it pulses on "they really"
+S2 subject: chameleon | change: the background snaps back from green to orange to purple while the chameleon stays put (one small pulse on "That's" for emphasis) | dial: surround
+S3 subject: chameleon | change: it grows a little (scale up) on "they really"
 S4 subject: layer_stack | change: the stack slices open, layer by layer, until "special cells"
 S5 subject: layer_stack | change: granules spread out, then pull together; the skin darkens, then lightens
 S6 subject: layer_stack | change: the deep crystal layer brightens while the others dim; the lattice grows in, its crystals open and close, then it tilts | dial: gap
 S7 subject: lattice | change: crystals sit close; a wave comes in and a short blue-green wave reflects out | dial: gap
-S8 subject: lattice | change: it shakes, then the crystals spread apart; the small chameleon shakes | dial: gap
+S8 subject: lattice | change: the lattice's own wobble builds, then settles as the crystals spread apart | dial: gap
 S9 subject: lattice | change: gaps grow; the reflected wave lengthens and turns yellow, orange, red | dial: wavelength
 S10 subject: tuner | change: its dial swings and the colour follows the words | dial: wavelength
-S11 subject: tuner | change: a box (the paint box) pops in and shakes; the tuner's dial swings back | dial: wavelength
-S12 subject: tuner | change: a water_drop (the dye drop) pops in and shakes; the tuner's dial drops to blue | dial: wavelength
+S11 subject: tuner | change: a box (the paint box) pops in with one short shake for emphasis; the tuner's dial swings back | dial: wavelength
+S12 subject: tuner | change: a water_drop (the dye drop) pops in with one short shake for emphasis; the tuner's dial drops to blue | dial: wavelength
 S13 subject: tuner | change: an atom pops in; the tuner's dial swings up again | dial: wavelength
 S14 subject: chameleon | change: two chameleons each change colour on every reason (emotions, mates, rivals, temperature) | dial: top
-S15 subject: chameleon | change: the two chameleons shake and their colours fade to grey | dial: top
-S16 subject: chameleon | change: it pulses and its colour shifts | dial: finale
+S15 subject: chameleon | change: the two chameleons shrink a little and their colours fade to grey | dial: top
+S16 subject: chameleon | change: its colour shifts (one soft pulse on "elegant light" for emphasis) | dial: finale
 S17 subject: chameleon | change: its colour swings to red, then back | dial: finale
 S18 subject: chameleon | change: its colour warms once more on "Comment below" | dial: finale
 
@@ -310,7 +317,7 @@ OUTPUT (the reply):
         {"at": "That's", "do": "pulse", "prop": "hero", "strength": 0.05},
         {"at": "That's", "do": "icon", "name": "no", "style": "plain", "size": 2.5, "place": [-0.62, 1, 0.6], "until": "So why"},
         {"at": "So why", "do": "icon", "name": "question", "style": "plain", "size": 3, "color": "#d6c64a", "place": [0.45, 1, 0.6]},
-        {"at": "they really", "do": "pulse", "prop": "hero", "strength": 0.4}
+        {"at": "they really", "do": "scale", "prop": "hero", "to": 1.15, "over": 0.8}
       ]
     },
     {
@@ -387,7 +394,6 @@ OUTPUT (the reply):
       "camera": {"focus": ["lat", "small"], "framing": "medium", "angle": "front", "move": "drift", "amount": 0.4, "fill": 1.3, "glide": 1.2},
       "actions": [
         {"at": "gets excited", "do": "set", "prop": "lat", "param": "shake", "to": 0.6, "over": 0.7},
-        {"at": "gets excited", "do": "shake", "prop": "small", "strength": 0.2, "for": 3},
         {"at": "the crystals spread", "do": "set", "prop": "lat", "param": "shake", "to": 0, "over": 0.8},
         {"at": "But when", "do": "set", "prop": "lat", "param": "tilt", "to": 1.0, "over": 1.2},
         {"at": "crystals", "do": "scale", "prop": "lat", "to": 0.76, "over": 1}
@@ -469,8 +475,8 @@ OUTPUT (the reply):
       "continue": true,
       "camera": {"focus": ["ctop", "cbot"], "framing": "medium", "fill": 1.3, "angle": "front", "move": "push_in", "amount": 0.3},
       "actions": [
-        {"at": "lose their", "do": "shake", "prop": "ctop", "strength": 0.1, "for": 0.5},
-        {"at": "lose their", "do": "shake", "prop": "cbot", "strength": 0.1, "for": 0.5},
+        {"at": "lose their", "do": "scale", "prop": "ctop", "to": 0.9, "over": 2},
+        {"at": "lose their", "do": "scale", "prop": "cbot", "to": 0.9, "over": 2},
         {"at": "Without this", "do": "icon", "name": "heart", "style": "plain", "size": 1.84, "color": "#c9ced4", "place": [-0.66, 0.25, 0.6], "id": "g-heart"},
         {"at": "Without this", "do": "icon", "name": "sun", "style": "plain", "size": 1.96, "color": "#c9ced4", "place": [0.66, 0.25, 0.6], "id": "g-sun"},
         {"at": {"phrase": "they'd lose", "offset": -0.25}, "do": "color", "icon": "g-heart", "to": "#59606a", "over": 0.5},
@@ -495,63 +501,218 @@ OUTPUT (the reply):
 
 === USER ===
 
-TITLE: Why Do Volcanoes Actually Erupt?
+TITLE: How Does a Battery Really Light a Bulb?
 
 THE SCRIPT AS SPOKEN, sentence by sentence (S1, S2, ...), with the sentence's start and end in seconds, then each word with its start time. Anchors must be copied from these words.
-S1 [0.09-1.52] Is the Earth full of liquid fire?
-   Is 0.09 | the 0.19 | Earth 0.29 | full 0.53 | of 0.76 | liquid 0.86 | fire? 1.14
-S2 [1.89-2.34] Not quite.
-   Not 1.89 | quite. 2.02
-S3 [2.73-3.76] Here is what really happens.
-   Here 2.73 | is 2.85 | what 2.92 | really 3.08 | happens. 3.26
-S4 [4.13-8.25] Deep down, rock is mostly solid, but in places a little melts into magma.
-   Deep 4.13 | down, 4.33 | rock 5.03 | is 5.25 | mostly 5.36 | solid, 5.72 | but 6.42 | in 6.53 | places 6.62 | a 7.00 | little 7.07 | melts 7.34 | into 7.63 | magma. 7.79
-S5 [8.62-12.64] That magma is lighter than the rock around it, so it rises into a chamber.
-   That 8.62 | magma 8.77 | is 9.26 | lighter 9.41 | than 9.75 | the 9.88 | rock 9.96 | around 10.23 | it, 10.58 | so 11.06 | it 11.26 | rises 11.39 | into 11.80 | a 12.11 | chamber. 12.16
-S6 [13.01-17.21] Dissolved gas, mostly water vapour and carbon dioxide, is trapped inside.
-   Dissolved 13.01 | gas, 13.40 | mostly 14.05 | water 14.40 | vapour 14.70 | and 15.08 | carbon 15.18 | dioxide, 15.50 | is 16.37 | trapped 16.45 | inside. 16.77
-S7 [17.57-21.27] As the magma climbs, the pressure drops, and the gas forms bubbles.
-   As 17.57 | the 17.69 | magma 17.77 | climbs, 18.17 | the 18.88 | pressure 18.98 | drops, 19.31 | and 20.01 | the 20.11 | gas 20.20 | forms 20.52 | bubbles. 20.82
-S8 [21.65-24.70] The bubbles grow, and they push the magma upward faster.
-   The 21.65 | bubbles 21.73 | grow, 22.08 | and 22.70 | they 22.79 | push 22.90 | the 23.19 | magma 23.29 | upward 23.84 | faster. 24.17
-S9 [25.07-26.51] It is like a shaken fizzy drink.
-   It 25.07 | is 25.14 | like 25.25 | a 25.38 | shaken 25.42 | fizzy 25.83 | drink. 26.11
-S10 [26.86-29.94] Open the cap, the pressure drops, and the bubbles burst out.
-   Open 26.86 | the 27.08 | cap, 27.15 | the 27.72 | pressure 27.82 | drops, 28.14 | and 28.81 | the 28.89 | bubbles 28.97 | burst 29.36 | out. 29.70
-S11 [30.32-32.72] The pressure finally breaks the rock plug in the crater.
-   The 30.32 | pressure 30.39 | finally 30.74 | breaks 31.14 | the 31.45 | rock 31.54 | plug 31.86 | in 32.21 | the 32.28 | crater. 32.34
-S12 [33.09-35.55] Lava, ash and gas blast out into the air.
-   Lava, 33.09 | ash 33.76 | and 34.01 | gas 34.11 | blast 34.42 | out 34.80 | into 34.94 | the 35.12 | air. 35.22
-S13 [35.96-39.40] Thick, sticky magma traps gas longer, so the blast is bigger.
-   Thick, 35.96 | sticky 36.37 | magma 36.72 | traps 37.06 | gas 37.42 | longer, 37.70 | so 38.35 | the 38.46 | blast 38.56 | is 38.92 | bigger. 39.03
-S14 [39.77-43.57] Runny magma lets gas escape, so lava just flows down the slopes.
-   Runny 39.77 | magma 39.95 | lets 40.47 | gas 40.66 | escape, 40.93 | so 41.65 | lava 41.80 | just 42.23 | flows 42.43 | down 42.78 | the 42.99 | slopes. 43.06
-S15 [43.94-47.71] Over millions of years, this gas probably helped build our air and oceans.
-   Over 43.94 | millions 44.13 | of 44.56 | years, 44.63 | this 45.25 | gas 45.44 | probably 45.75 | helped 46.14 | build 46.44 | our 46.67 | air 46.88 | and 47.12 | oceans. 47.22
-S16 [48.08-49.82] Would you live next to one for its rich soil?
-   Would 48.08 | you 48.19 | live 48.30 | next 48.49 | to 48.72 | one 48.80 | for 49.06 | its 49.20 | rich 49.32 | soil? 49.49
-S17 [50.19-50.76] Comment below.
-   Comment 50.19 | below. 50.45
+S1 [0.09-3.27] What if a battery poured electricity into a bulb until it ran out?
+   What 0.09 | if 0.18 | a 0.26 | battery 0.34 | poured 0.76 | electricity 1.05 | into 1.76 | a 2.01 | bulb 2.08 | until 2.49 | it 2.73 | ran 2.82 | out? 3.02
+S2 [3.66-4.69] Here is what really happens.
+   Here 3.66 | is 3.77 | what 3.85 | really 4.01 | happens. 4.18
+S3 [5.07-9.40] The wire is already full of tiny electrons, even before you connect anything.
+   The 5.07 | wire 5.14 | is 5.51 | already 5.71 | full 6.09 | of 6.46 | tiny 6.56 | electrons, 6.94 | even 7.96 | before 8.16 | you 8.53 | connect 8.64 | anything. 9.02
+S4 [9.77-13.54] Close the loop, and the battery starts pushing electrons out of its negative end.
+   Close 9.77 | the 10.03 | loop, 10.13 | and 10.68 | the 10.75 | battery 10.84 | starts 11.25 | pushing 11.54 | electrons 11.92 | out 12.46 | of 12.64 | its 12.72 | negative 12.85 | end. 13.25
+S5 [13.91-18.01] Every electron shoves the next, so the whole line creeps slowly around the loop.
+   Every 13.91 | electron 14.14 | shoves 14.68 | the 15.03 | next, 15.11 | so 15.79 | the 15.90 | whole 15.98 | line 16.24 | creeps 16.47 | slowly 16.91 | around 17.40 | the 17.67 | loop. 17.73
+S6 [18.39-22.32] But the push arrives almost instantly, so the bulb lights as soon as you connect.
+   But 18.39 | the 18.48 | push 18.57 | arrives 18.77 | almost 19.27 | instantly, 19.70 | so 20.42 | the 20.55 | bulb 20.67 | lights 20.95 | as 21.28 | soon 21.39 | as 21.70 | you 21.80 | connect. 21.89
+S7 [22.69-26.51] Inside the bulb, the electrons must squeeze through a hair-thin filament.
+   Inside 22.69 | the 23.10 | bulb, 23.18 | the 23.73 | electrons 23.80 | must 24.35 | squeeze 24.69 | through 25.27 | a 25.43 | hair-thin 25.50 | filament. 26.02
+S8 [26.88-30.40] It is so narrow that they crash into its atoms, again and again.
+   It 26.88 | is 26.95 | so 27.07 | narrow 27.28 | that 27.68 | they 27.81 | crash 27.95 | into 28.40 | its 28.65 | atoms, 28.78 | again 29.43 | and 29.95 | again. 30.05
+S9 [30.77-35.69] Each crash shakes the atoms harder, heating the filament past two thousand degrees Celsius.
+   Each 30.77 | crash 30.96 | shakes 31.54 | the 31.90 | atoms 32.08 | harder, 32.39 | heating 33.10 | the 33.33 | filament 33.41 | past 33.83 | two 34.20 | thousand 34.41 | degrees 34.74 | Celsius. 35.09
+S10 [36.07-38.86] Hot metal glows, and that glow is the light you see.
+   Hot 36.07 | metal 36.27 | glows, 36.54 | and 37.25 | that 37.37 | glow 37.56 | is 37.95 | the 38.05 | light 38.16 | you 38.41 | see. 38.53
+S11 [39.26-40.26] Think of a bicycle chain.
+   Think 39.26 | of 39.39 | a 39.45 | bicycle 39.52 | chain. 39.97
+S12 [40.64-45.00] Pedal at one end, and the wheel at the other turns, while each link only goes round.
+   Pedal 40.64 | at 40.86 | one 40.95 | end, 41.16 | and 41.80 | the 41.88 | wheel 41.98 | at 42.24 | the 42.32 | other 42.42 | turns, 42.65 | while 43.35 | each 43.53 | link 43.72 | only 44.14 | goes 44.35 | round. 44.61
+S13 [45.38-47.91] The battery is the pedal, and the bulb is the wheel.
+   The 45.38 | battery 45.46 | is 45.95 | the 46.05 | pedal, 46.14 | and 46.83 | the 46.89 | bulb 46.99 | is 47.40 | the 47.49 | wheel. 47.60
+S14 [48.29-50.52] Break the loop anywhere, and the glow dies.
+   Break 48.29 | the 48.50 | loop 48.62 | anywhere, 48.97 | and 49.66 | the 49.73 | glow 49.81 | dies. 50.06
+S15 [50.90-52.15] Which part surprised you most?
+   Which 50.90 | part 51.04 | surprised 51.24 | you 51.67 | most? 51.75
 
 THE PICTURE PLAN from the script writer (S n here is S n above): what stays on screen, what visibly changes while that sentence is spoken, and the dial that drives it. Follow it; improve it where the catalogue offers a better way to show the same change.
-S1 subject: volcano | change: the cone sits calm while its crater glows faintly | dial: eruption
-S2 subject: volcano | change: the glow in the crater dims to a dark rim | dial: eruption
-S3 subject: volcano | change: the cone turns see-through to reveal a chamber inside | dial: eruption
-S4 subject: volcano | change: a pocket of orange magma appears deep inside the cone | dial: eruption
-S5 subject: volcano | change: the magma pocket climbs and swells into a large chamber | dial: eruption
-S6 subject: volcano | change: tiny gas dots appear inside the magma | dial: eruption
-S7 subject: volcano | change: the magma rises up the vent and the bubbles form | dial: eruption
-S8 subject: volcano | change: the bubbles swell and the magma surges up the vent | dial: eruption
-S9 subject: particles | change: a packed clump of bubbles spreads and speeds up | dial: eruption
-S10 subject: particles | change: the bubbles rush upward out of the box | dial: eruption
-S11 subject: volcano | change: the crater glows bright orange and the plug cracks | dial: eruption
-S12 subject: volcano | change: lava and ash burst out of the crater | dial: eruption
-S13 subject: volcano | change: the crater erupts harder and the plume grows taller | dial: eruption
-S14 subject: volcano | change: the eruption calms to a gentle flow down the slopes | dial: eruption
-S15 subject: volcano | change: the cone grows taller and the plume spreads wide | dial: eruption
-S16 subject: volcano | change: the eruption fades and the crater glow settles | dial: eruption
-S17 subject: volcano | change: the glow dims to a small ember | dial: eruption
+S1 subject: battery | change: the charge window slowly drains lower | dial: charge
+S2 subject: lightbulb | change: the bulb lights up warm and bright | dial: current
+S3 subject: particles | change: glowing electrons fill the whole length of the wire evenly | dial: spread
+S4 subject: particles | change: the electrons start streaming away from the battery end | dial: current
+S5 subject: particles | change: the whole line of electrons shifts forward together at a slow crawl | dial: current
+S6 subject: lightbulb | change: the bulb switches on at once | dial: current
+S7 subject: lightbulb | change: the filament starts to glow dull orange | dial: heat
+S8 subject: lightbulb | change: the filament glow flickers brighter with hot spots | dial: heat
+S9 subject: lightbulb | change: the filament turns from orange to white-hot | dial: heat
+S10 subject: lightbulb | change: the whole glass fills with bright warm light | dial: heat
+S11 subject: gear | change: the linked gears start to turn together | dial: speed
+S12 subject: gear | change: the far gear speeds up to match the first | dial: speed
+S13 subject: gear | change: the gears turn faster and faster together | dial: speed
+S14 subject: lightbulb | change: the light fades out and the bulb goes dark | dial: current
+S15 subject: lightbulb | change: the bulb flickers back on to a soft glow | dial: current
 
-The last word ends at 50.76 s; the video is 51.16 s long. Make 2 to 4 main scenes (a scene = a shot plus its "continue": true shots), plus at most a short opening and a short closing scene. Each shot lasts 1.5 to 12 seconds (over 9 s gives a warning); aim for 3 to 8.
+The last word ends at 52.15 s; the video is 52.55 s long. Make 2 to 4 main scenes (a scene = a shot plus its "continue": true shots), plus at most a short opening and a short closing scene. Each shot lasts 1.5 to 12 seconds (over 9 s gives a warning); aim for 3 to 8.
 
 Think through the scenes and the changes first (section 2), then reply with the complete show.json and nothing else: no code fence, no comments, no text before or after it.
+
+
+---
+Your previous reply is below. The checker rejected it with the errors listed after it. Fix every error. Keep everything else the same unless a fix needs it. Reply with the complete corrected show.json only: no code fence, no text before or after it.
+
+YOUR PREVIOUS REPLY:
+{
+  "format": 1,
+  "title": "How Does a Battery Really Light a Bulb?",
+  "voice": {"audio": "voice.mp3", "words": "words.json"},
+  "dials": {"flow": {"start": 0, "keys": [{"at": "pushing", "to": 1, "over": 1.2}, {"at": "creeps slowly", "to": 0.35, "over": 1.0}, {"at": "push arrives", "to": 1, "over": 0.8}, {"at": "Break the", "to": 0, "over": 0.6}, {"at": "Which part", "to": 0.6, "over": 0.8}]}, "lit": {"start": 0, "keys": [{"at": "bulb lights", "to": 1, "over": 0.6}, {"at": "the glow", "to": 0, "over": 0.9}, {"at": "Which part", "to": 0.4, "over": 0.8}]}, "heat": {"start": 0, "keys": [{"at": "squeeze through", "to": 0.3}, {"at": "crash into", "to": 0.55}, {"at": "heating", "to": 0.85}, {"at": "Hot metal", "to": 1, "over": 1.5}]}, "chain": {"start": 0, "keys": [{"at": "turns", "to": 0.4}, {"at": "battery is", "to": 1, "over": 1.5}]}},
+  "shots": [
+    {
+      "id": "drain",
+      "env": {"type": "lab", "color": {"dial": "lit", "colors": ["#0f1a26", "#33290f"]}},
+      "camera": {"focus": ["bat"], "framing": "close", "fill": 1.2, "angle": "front", "move": "push_in", "amount": 0.3},
+      "props": [
+        {"id": "bat", "type": "battery", "at": [-0.9, 0, 0], "size": 1.2, "charge": 0.9}
+      ],
+      "actions": [
+        {"at": "What if", "do": "set", "prop": "bat", "param": "charge", "to": 0.1, "until": {"phrase": "ran out", "edge": "end"}}
+      ]
+    },
+    {
+      "id": "circuit",
+      "start": "Here is",
+      "continue": true,
+      "camera": {"framing": "medium", "fill": 1.0, "angle": "front", "move": "drift", "amount": 0.3, "glide": 1.2},
+      "props": [
+        {"id": "bulb", "type": "lightbulb", "at": [0.9, 0, 0], "size": 1.2, "on": {"dial": "lit", "to": [0, 1]}},
+        {"id": "wiretop", "type": "wire", "from": [-0.9, 0.95, 0], "to": [0.9, 1.2, 0], "lift": 0.7, "width": 0.07, "current": {"dial": "flow", "to": [0, 1]}},
+        {"id": "wireret", "type": "wire", "from": [-0.9, 0.04, 0.45], "to": [0.9, 0.04, 0.45], "lift": 0, "width": 0.07, "current": {"dial": "flow", "to": [0, 1]}},
+        {"id": "elec", "type": "particles", "shape": "stream", "count": 80, "look": "dots", "dot": 0.1, "color": "#ffe14d", "at": [0, 0.35, 0.45], "size": 1.8, "spread": 0.3, "speed": {"dial": "flow", "to": [0.1, 2]}}
+      ],
+      "actions": [
+        {"at": "Here is", "do": "appear", "prop": "bulb", "style": "pop"},
+        {"at": "what really", "do": "appear", "prop": "wiretop", "style": "fade"},
+        {"at": {"phrase": "what really", "offset": 0.15}, "do": "appear", "prop": "wireret", "style": "fade"},
+        {"at": "wire is", "do": "appear", "prop": "elec", "style": "grow", "over": 0.8},
+        {"at": "tiny electrons", "do": "set", "prop": "elec", "param": "spread", "to": 1.3, "until": {"phrase": "anything", "edge": "end"}},
+        {"at": "tiny electrons", "do": "label", "prop": "elec", "text": "ELECTRONS", "until": "Close the"}
+      ]
+    },
+    {
+      "id": "push",
+      "start": "Close the",
+      "continue": true,
+      "camera": {"framing": "medium", "fill": 1.0, "angle": "three-quarter", "move": "push_in", "amount": 0.4, "glide": 1.2},
+      "actions": [
+        {"at": "Close the", "do": "glow", "prop": "bat", "to": 0.6, "over": 0.8}
+      ]
+    },
+    {
+      "id": "instant",
+      "start": "But the push",
+      "continue": true,
+      "camera": {"framing": "medium", "fill": 1.05, "angle": "front", "move": "drift", "amount": 0.3, "glide": 1.2},
+      "actions": [
+        {"at": "bulb lights", "do": "glow", "prop": "bat", "to": 0.3, "over": 0.8}
+      ]
+    },
+    {
+      "id": "filament",
+      "start": "Inside the bulb",
+      "transition": "dive",
+      "env": {"type": "lab", "color": {"dial": "heat", "colors": ["#10161c", "#3a1f0c", "#5a3a10"]}},
+      "camera": {"focus": ["bulb2", "therm"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "push_in", "amount": 0.3},
+      "props": [
+        {"id": "bulb2", "type": "lightbulb", "at": [-0.2, 0, 0], "size": 2, "on": {"dial": "heat", "to": [0, 1]}, "glow": {"dial": "heat", "to": [0, 1]}},
+        {"id": "therm", "type": "thermometer", "at": [1.5, 0, 0], "size": 1.3, "level": {"dial": "heat", "to": [0.05, 1]}},
+        {"id": "elec2", "type": "particles", "shape": "stream", "count": 60, "look": "dots", "dot": 0.08, "color": "#7fd4ff", "at": [-0.2, 1.1, 0.3], "size": 1.1, "spread": 0.4, "speed": 1.5}
+      ],
+      "actions": [
+        {"at": "electrons must", "do": "appear", "prop": "elec2", "style": "grow", "over": 0.6},
+        {"at": "hair-thin", "do": "label", "prop": "bulb2", "text": "FILAMENT", "until": "It is"}
+      ]
+    },
+    {
+      "id": "crash",
+      "start": "It is so narrow",
+      "continue": true,
+      "camera": {"focus": ["bulb2", "therm"], "framing": "medium", "fill": 1.05, "angle": "three-quarter", "move": "push_in", "amount": 0.3, "glide": 1.0},
+      "actions": [
+        {"at": "crash into", "do": "set", "prop": "elec2", "param": "spread", "to": 1.2, "over": 1.0}
+      ]
+    },
+    {
+      "id": "hot",
+      "start": "Each crash",
+      "continue": true,
+      "camera": {"focus": ["bulb2", "therm"], "framing": "medium", "fill": 1.1, "angle": "front", "move": "drift", "amount": 0.3, "glide": 1.0},
+      "actions": [
+        {"at": "Each crash", "do": "color", "prop": "elec2", "to": "#ffb347", "over": 1.2}
+      ]
+    },
+    {
+      "id": "glows",
+      "start": "Hot metal",
+      "continue": true,
+      "camera": {"focus": ["bulb2", "therm"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "pull_out", "amount": 0.4, "glide": 1.0},
+      "actions": [
+        {"at": "light you", "do": "color", "prop": "elec2", "to": "#ffffff", "over": 0.8}
+      ]
+    },
+    {
+      "id": "chain",
+      "start": "Think of",
+      "transition": "dip",
+      "env": {"type": "lab", "color": {"dial": "chain", "colors": ["#0f1a26", "#23304a"]}},
+      "camera": {"focus": ["gear", "bat2", "bulb3"], "framing": "medium", "fill": 0.95, "angle": "front", "move": "drift", "amount": 0.3},
+      "props": [
+        {"id": "gear", "type": "gear", "count": 3, "at": [0, 0, 0], "size": 1.5, "color": {"dial": "chain", "colors": ["#4a8fd9", "#ffd24a"]}, "glow": {"dial": "chain", "to": [0, 0.9]}},
+        {"id": "bat2", "type": "battery", "at": [-2.0, 0, 0], "size": 1.0, "charge": 0.8},
+        {"id": "bulb3", "type": "lightbulb", "at": [2.0, 0, 0], "size": 1.0, "on": {"dial": "chain", "to": [0, 1]}}
+      ],
+      "actions": [
+        {"at": "Think of", "do": "appear", "prop": "gear", "style": "grow", "over": 0.8},
+        {"at": "Pedal at", "do": "appear", "prop": "bat2", "style": "pop"},
+        {"at": "wheel at", "do": "appear", "prop": "bulb3", "style": "pop"}
+      ]
+    },
+    {
+      "id": "pedal-wheel",
+      "start": "The battery is",
+      "continue": true,
+      "camera": {"focus": ["gear", "bat2", "bulb3"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "push_in", "amount": 0.3, "glide": 1.0},
+      "actions": [
+        {"at": "pedal", "do": "label", "prop": "bat2", "text": "PEDAL", "until": "and the bulb"},
+        {"at": "wheel", "do": "label", "prop": "bulb3", "text": "WHEEL"}
+      ]
+    },
+    {
+      "id": "break",
+      "start": "Break the",
+      "transition": "dip",
+      "env": {"type": "lab", "color": {"dial": "lit", "colors": ["#0f1a26", "#33290f"]}},
+      "camera": {"framing": "medium", "fill": 1.0, "angle": "front", "move": "push_in", "amount": 0.3},
+      "props": [
+        {"id": "bat3", "type": "battery", "at": [-0.9, 0, 0], "size": 1.2, "charge": 0.7},
+        {"id": "bulb4", "type": "lightbulb", "at": [0.9, 0, 0], "size": 1.2, "on": {"dial": "lit", "to": [0, 1]}},
+        {"id": "wiretop2", "type": "wire", "from": [-0.9, 0.95, 0], "to": [0.9, 1.2, 0], "lift": 0.7, "width": 0.07, "current": {"dial": "flow", "to": [0, 1]}},
+        {"id": "wireret2", "type": "wire", "from": [-0.9, 0.04, 0.45], "to": [0.9, 0.04, 0.45], "lift": 0, "width": 0.07, "current": {"dial": "flow", "to": [0, 1]}}
+      ],
+      "actions": [
+        {"at": "anywhere", "do": "disappear", "prop": "wiretop2", "style": "fade", "over": 0.4}
+      ]
+    },
+    {
+      "id": "ask",
+      "start": "Which part",
+      "continue": true,
+      "camera": {"framing": "medium", "fill": 1.0, "angle": "front", "move": "pull_out", "amount": 0.3, "glide": 0.8},
+      "actions": [
+        {"at": "Which part", "do": "appear", "prop": "wiretop2", "style": "fade", "over": 0.5}
+      ]
+    }
+  ]
+}
+
+ERRORS FROM THE CHECKER (path: problem. hint). Errors whose path starts with "story." mean the picture does not follow the words. For "story.sentences" and "story.stillness": add a dial key or a real action (set, move, scale, color, glow, appear...) inside that sentence or stretch, on a prop that is on screen. For "story.scenes", "story.subject" and "story.dial": follow that error's own hint (join shots with "continue", keep one subject on screen, bind one dial to two or more things). Do not fix them with labels, icons or camera moves.
+- story.stillness: nothing on screen changes from 12.75 to 16.50 s (3.75 s; at most 3.5 s allowed, 2.5 s is better) while the narrator says "negative end. Every electron shoves the next, so the whole line creeps". Add a change in that stretch: a "set", "move", "scale", "color" or "glow" on a prop (give it "until": a later phrase so it runs from word to word), or a dial key there with the dial bound to a prop on screen. Camera moves, spin, bob, orbit, pulse, shake, labels and text do not count.

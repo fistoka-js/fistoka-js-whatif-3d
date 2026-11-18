@@ -22,9 +22,12 @@ The video must EXPLAIN, not illustrate. The approved style: one subject stays on
 1. THE CHAIN. Read the sentence table and the picture plan. Name the one mechanism and its cause -> effect chain. Name the HERO: the prop that shows the mechanism changing (a lattice, a wave, a layer stack, a tuner). It stays on screen for most of the video.
 2. SCENES. Make 2 to 4 main scenes for the mechanism (for example: whole thing -> zoom in -> the mechanism up close -> the analogy), plus at most one short opening scene for the hook and one short closing scene. Never a new scene per sentence. Inside a scene, change the view with a continuing shot (new camera, often with "glide"); zoom into the subject with "transition": "dive".
 3. DIALS. Choose at least one dial for the quantity that changes (spacing, temperature, speed, wavelength). Bind it to TWO OR MORE things that the viewer should see change together: the hero's value AND its colour, the effect next to it, the background colour. Key it on the spoken words where the quantity changes ("sit close" -> low, "spread apart" -> high).
-4. A CHANGE IN EVERY SENTENCE. For each sentence, the plan says what changes; make it happen inside that sentence: a dial key, or an action on a prop ("set", "move", "scale", "color", "glow", "appear", "disappear", "pulse", "shake"), ideally ramped with "until" from one word to the next. Nothing on screen may stay unchanged for more than 3.5 seconds of narration (2.5 s is better). Camera moves, spin, bob, orbit, labels, text and icons do NOT count as a change.
+4. A CHANGE IN EVERY SENTENCE. For each sentence, the plan says what changes; make it happen inside that sentence: a dial key, or an action on a prop ("set", "move", "scale", "color", "glow", "appear", "disappear"), ideally ramped with "until" from one word to the next. Nothing on screen may stay unchanged for more than 3.5 seconds of narration (2.5 s is better). Camera moves, spin, bob, orbit, pulse, shake, labels, text and icons do NOT count as a change.
 5. CAUSE AND EFFECT TOGETHER. Put the cause and its effect in the same frame where possible (the crystals spreading on top, the reflected colour below; the chameleon's skin turning the same colour). Labels only name parts ("CRYSTALS", "SKIN"); the picture carries the explanation.
-6. WRITE THE JSON. Then run the checklist in section 4 against it before you reply.
+6. EMPHASIS ONLY. "pulse" and "shake" are emphasis, never the sentence's change: at most 3 pulses and 2 shakes in the whole video (a camera shake counts as a shake), never on the same prop twice in a row. A video of things bouncing and shaking is bad; use a real change (set, move, scale, color, glow, a dial) instead.
+7. CLOUDS HOLD STILL. A particle cloud's spread or speed changes only on the words that need it, then holds. Do not keep it swelling and shrinking.
+8. VARIETY. Keep the one hero, but inside each scene (except the first shot, which keeps the one-small-prop limit in section 4) bring in 1 or 2 supporting props that show the thing being talked about (the real object of an analogy where the catalogue has it, the parts the script names) instead of only re-animating the hero. The scene count and the rule that at least one prop is on screen for 30% or more of the video stay as they are.
+9. WRITE THE JSON. Then run the checklist in section 4 against it before you reply.
 
 Stand-ins: for side things a simple prop is fine (a clock for time, a thermometer for heat, particles for air or dust). The mechanism itself must be shown by a prop that can change; an icon, a bar chart or a label is never the mechanism.
 
@@ -38,7 +41,7 @@ Shape:
 - An action that changes a value bound to a dial ("set" on a bound param, "color" on a bound colour, "glow" on a bound glow, "scale" on a bound size, "move" or "orbit" on a bound "at") is an error: change the dial instead.
 - Action fields: "at" (WHEN, an anchor), "do", "prop" where the action takes one, "over" (seconds) ONLY on actions that list a default over, or "until" where listed, plus the fields listed for that action.
 - "set" may only animate a param listed in that prop's "anim" list, inside its range. If an anim param has the same name as a prop field (the fire's "size"), "size" on the prop means the prop's scale; change the anim value only with "set".
-- Stage-space props ("arrow", "beam") have "from" and "to" (a slot, [x, y, z] or a prop id in the shot) and NO "at", "size" or "rotate". They cannot move, scale, spin, orbit, bob, shake or pulse.
+- Stage-space props ("arrow", "beam", "wire") have "from" and "to" (a slot, [x, y, z] or a prop id in the shot) and NO "at", "size" or "rotate". They cannot move, scale, spin, orbit, bob, shake or pulse.
 - "icon" goes on a prop with "prop", or at a place with "place" (slot or [x, y, z]). Its "at" is the TIME, like every action.
 - "glide" only on a continuing shot, not with "dip" or "dive", and not longer than the shot. "fill" 0.5 to 1.3.
 - Text limits: label text up to 32 characters, text up to 40, count unit up to 16. Colours: a palette name or "#rrggbb".
@@ -89,12 +92,15 @@ Colour and camera:
 Good to know (not obvious from the catalogue):
 - "ring": its radius comes from "size" (size 2.6 rings a planet of size 1.3); "tilt" 0 faces the camera like a hoop, 90 is edge-on, 70-78 looks like Saturn's rings.
 - "particles" with "shape": "ring" lie flat (like a plate): seen from angle "front" they look like a line; use angle "top" or "high" to show the circle. Use 20 or more of them for a ring that reads as a ring.
+- "planet" turns by itself (its "turn" param, default 0.02 turns/s, clouds faster); to show it stopping or starting, place it with "turn": 0 and drive all turning with "spin" (speed 0 stops it).
+- "wire" is a stage-space cable (like "beam"): for a circuit use two wires between [x, y, z] points, e.g. over the top with "lift": 0.7 and a return along the floor at y 0.04 (floor is y 0, props stand on it); "current" 0 to 1 sends glowing charge along it. This floor layout needs an environment with a ground (with no ground, pick your own heights). On the ground, a "battery" is 0.79 x its size tall to the top of its cap and a "lightbulb" exactly its size tall (a size 1.2 battery tops out at y 0.95, a size 1.0 bulb at y 1.0); start or end a wire at a prop's x and z with the y of its top. A positive "lift" puts the top at the higher end plus "lift"; a negative "lift" bends the wire down instead (the bottom is the lower end plus "lift"), and it does not go around props. When both ends are at y 0 or above, the wire never goes into the floor (its centre is held at y 0.04 or higher, even if an end is given at y 0, so a wire already at the floor stays straight); if either end is below y 0 there is no floor clamp and the wire goes exactly where you put it.
 - "bars" draws the values relative to the tallest bar; give 2 to 4 values for a clear comparison and start it at "grow": 0 to make it rise on a word.
 
 CHECKLIST before replying:
 [ ] 2 to 4 main scenes (plus at most a short opening and closing scene); one hero prop that stays on screen for much of the video; first shot has no "start"; every other shot's "start" is a phrase from the word list; each shot 1.5 to 12 s (over 9 s gives a warning; aim for 3 to 8).
 [ ] At least one dial, bound to two or more things that are on screen together; its keys are on the words where the quantity changes.
 [ ] Every sentence has a change starting inside it (a dial key or a real action), and nothing stays unchanged for more than 3.5 s.
+[ ] At most 3 pulses and 2 shakes in the video (a camera shake counts), none as a sentence's change, never on the same prop twice in a row; particle clouds change only on the words that need it; the first shot keeps its one-small-prop limit; inside each scene (except the first shot) bring in 1 or 2 supporting props.
 [ ] Continuing shots have no "env" and only new prop ids; no action changes a dial-bound value.
 [ ] Every anchor is a phrase spoken inside that shot, and repeated words are made unique with more words.
 [ ] Every prop type, env type, param, action, field and value appears in the catalogue for THAT prop or action.
@@ -110,6 +116,7 @@ PROPS (name [floats/STAGE-SPACE] (params) anim: animatable params for the "set" 
 - particles [floats] (shape=sphere|box|ring|stream, count 1..1500, color, color2, mix 0..1, look=balls|dots, dot 0.01..0.3, seed) anim: spread 0..3 [starts 1], speed 0..5 [starts 0.3] -- A cloud of small balls or glowing dots in a box, sphere, ring or stream (molecules, dust, atoms).
 - arrow [STAGE-SPACE] (from=point, to=point, color, thickness 0.02..0.3) anim: length 0..1 [starts 1] -- A solid 3D arrow from one point or prop to another.
 - beam [STAGE-SPACE] (from=point, to=point, color, width 0.01..0.6) anim: progress 0..1 [starts 1], brightness 0..2 [starts 1] -- A glowing light ray from one point or prop to another.
+- wire [STAGE-SPACE] (from=point, to=point, lift -3..3, color, width 0.02..0.2) anim: current 0..1 [starts 0] -- An electric wire between two points; "lift" bends it into a loop.
 - mountain (style=rock|snow|desert, peaks 1..3, seed) -- A chunky low-poly mountain with a snow cap; styles rock, snow, desert; 1 to 3 peaks. Good for places.
 - volcano (color, seed) anim: eruption 0..1 [starts 0.3] -- A volcano cone with a glowing crater.
 - cloud [floats] (style=fair|storm, color, seed) anim: rain 0..1 [starts 0] -- A puffy low-poly cloud, fair or storm. For weather and water cycle.
@@ -266,21 +273,21 @@ S18 [60.04-60.64] Comment below.
 
 THE PICTURE PLAN from the script writer (S n here is S n above): what stays on screen, what visibly changes while that sentence is spoken, and the dial that drives it. Follow it; improve it where the catalogue offers a better way to show the same change.
 S1 subject: chameleon | change: its skin turns to match the background | dial: skin
-S2 subject: chameleon | change: it pulses and the background snaps back | dial: surround
-S3 subject: chameleon | change: it pulses on "they really"
+S2 subject: chameleon | change: the background snaps back from green to orange to purple while the chameleon stays put (one small pulse on "That's" for emphasis) | dial: surround
+S3 subject: chameleon | change: it grows a little (scale up) on "they really"
 S4 subject: layer_stack | change: the stack slices open, layer by layer, until "special cells"
 S5 subject: layer_stack | change: granules spread out, then pull together; the skin darkens, then lightens
 S6 subject: layer_stack | change: the deep crystal layer brightens while the others dim; the lattice grows in, its crystals open and close, then it tilts | dial: gap
 S7 subject: lattice | change: crystals sit close; a wave comes in and a short blue-green wave reflects out | dial: gap
-S8 subject: lattice | change: it shakes, then the crystals spread apart; the small chameleon shakes | dial: gap
+S8 subject: lattice | change: the lattice's own wobble builds, then settles as the crystals spread apart | dial: gap
 S9 subject: lattice | change: gaps grow; the reflected wave lengthens and turns yellow, orange, red | dial: wavelength
 S10 subject: tuner | change: its dial swings and the colour follows the words | dial: wavelength
-S11 subject: tuner | change: a box (the paint box) pops in and shakes; the tuner's dial swings back | dial: wavelength
-S12 subject: tuner | change: a water_drop (the dye drop) pops in and shakes; the tuner's dial drops to blue | dial: wavelength
+S11 subject: tuner | change: a box (the paint box) pops in with one short shake for emphasis; the tuner's dial swings back | dial: wavelength
+S12 subject: tuner | change: a water_drop (the dye drop) pops in with one short shake for emphasis; the tuner's dial drops to blue | dial: wavelength
 S13 subject: tuner | change: an atom pops in; the tuner's dial swings up again | dial: wavelength
 S14 subject: chameleon | change: two chameleons each change colour on every reason (emotions, mates, rivals, temperature) | dial: top
-S15 subject: chameleon | change: the two chameleons shake and their colours fade to grey | dial: top
-S16 subject: chameleon | change: it pulses and its colour shifts | dial: finale
+S15 subject: chameleon | change: the two chameleons shrink a little and their colours fade to grey | dial: top
+S16 subject: chameleon | change: its colour shifts (one soft pulse on "elegant light" for emphasis) | dial: finale
 S17 subject: chameleon | change: its colour swings to red, then back | dial: finale
 S18 subject: chameleon | change: its colour warms once more on "Comment below" | dial: finale
 
@@ -310,7 +317,7 @@ OUTPUT (the reply):
         {"at": "That's", "do": "pulse", "prop": "hero", "strength": 0.05},
         {"at": "That's", "do": "icon", "name": "no", "style": "plain", "size": 2.5, "place": [-0.62, 1, 0.6], "until": "So why"},
         {"at": "So why", "do": "icon", "name": "question", "style": "plain", "size": 3, "color": "#d6c64a", "place": [0.45, 1, 0.6]},
-        {"at": "they really", "do": "pulse", "prop": "hero", "strength": 0.4}
+        {"at": "they really", "do": "scale", "prop": "hero", "to": 1.15, "over": 0.8}
       ]
     },
     {
@@ -387,7 +394,6 @@ OUTPUT (the reply):
       "camera": {"focus": ["lat", "small"], "framing": "medium", "angle": "front", "move": "drift", "amount": 0.4, "fill": 1.3, "glide": 1.2},
       "actions": [
         {"at": "gets excited", "do": "set", "prop": "lat", "param": "shake", "to": 0.6, "over": 0.7},
-        {"at": "gets excited", "do": "shake", "prop": "small", "strength": 0.2, "for": 3},
         {"at": "the crystals spread", "do": "set", "prop": "lat", "param": "shake", "to": 0, "over": 0.8},
         {"at": "But when", "do": "set", "prop": "lat", "param": "tilt", "to": 1.0, "over": 1.2},
         {"at": "crystals", "do": "scale", "prop": "lat", "to": 0.76, "over": 1}
@@ -469,8 +475,8 @@ OUTPUT (the reply):
       "continue": true,
       "camera": {"focus": ["ctop", "cbot"], "framing": "medium", "fill": 1.3, "angle": "front", "move": "push_in", "amount": 0.3},
       "actions": [
-        {"at": "lose their", "do": "shake", "prop": "ctop", "strength": 0.1, "for": 0.5},
-        {"at": "lose their", "do": "shake", "prop": "cbot", "strength": 0.1, "for": 0.5},
+        {"at": "lose their", "do": "scale", "prop": "ctop", "to": 0.9, "over": 2},
+        {"at": "lose their", "do": "scale", "prop": "cbot", "to": 0.9, "over": 2},
         {"at": "Without this", "do": "icon", "name": "heart", "style": "plain", "size": 1.84, "color": "#c9ced4", "place": [-0.66, 0.25, 0.6], "id": "g-heart"},
         {"at": "Without this", "do": "icon", "name": "sun", "style": "plain", "size": 1.96, "color": "#c9ced4", "place": [0.66, 0.25, 0.6], "id": "g-sun"},
         {"at": {"phrase": "they'd lose", "offset": -0.25}, "do": "color", "icon": "g-heart", "to": "#59606a", "over": 0.5},
@@ -495,63 +501,60 @@ OUTPUT (the reply):
 
 === USER ===
 
-TITLE: What if Earth suddenly stopped spinning?
+TITLE: What If Earth Suddenly Stopped Spinning?
 
 THE SCRIPT AS SPOKEN, sentence by sentence (S1, S2, ...), with the sentence's start and end in seconds, then each word with its start time. Anchors must be copied from these words.
 S1 [0.09-1.45] What if Earth suddenly stopped spinning?
    What 0.09 | if 0.18 | Earth 0.29 | suddenly 0.46 | stopped 0.81 | spinning? 1.10
-S2 [1.82-4.08] You might picture the world gently coming to rest.
-   You 1.82 | might 1.90 | picture 2.12 | the 2.43 | world 2.51 | gently 2.98 | coming 3.30 | to 3.56 | rest. 3.64
-S3 [4.46-6.51] That's the thing, it would be anything but.
-   That's 4.46 | the 4.62 | thing, 4.71 | it 5.30 | would 5.37 | be 5.49 | anything 5.75 | but. 6.17
-S4 [6.90-7.92] Here is what really happens.
-   Here 6.90 | is 7.01 | what 7.09 | really 7.24 | happens. 7.42
-S5 [8.29-12.27] Right now, the ground at the equator moves at about one thousand miles an hour.
-   Right 8.29 | now, 8.45 | the 9.00 | ground 9.09 | at 9.39 | the 9.45 | equator 9.54 | moves 10.00 | at 10.40 | about 10.55 | one 10.86 | thousand 11.16 | miles 11.56 | an 11.86 | hour. 11.94
-S6 [12.63-14.74] The air and the oceans are carried along with it.
-   The 12.63 | air 12.72 | and 13.16 | the 13.24 | oceans 13.36 | are 13.74 | carried 13.84 | along 14.14 | with 14.43 | it. 14.60
-S7 [15.11-16.94] If the rock stopped, the air would not.
-   If 15.11 | the 15.21 | rock 15.29 | stopped, 15.53 | the 16.16 | air 16.24 | would 16.48 | not. 16.61
-S8 [17.31-21.74] It would keep racing eastward, and winds would scour the surface at hundreds of miles an hour.
-   It 17.31 | would 17.39 | keep 17.52 | racing 17.77 | eastward, 18.19 | and 18.95 | winds 19.11 | would 19.43 | scour 19.57 | the 19.93 | surface 20.02 | at 20.46 | hundreds 20.56 | of 20.97 | miles 21.04 | an 21.33 | hour. 21.41
-S9 [22.11-24.74] Oceans would surge onto the land, flooding the coasts.
-   Oceans 22.11 | would 22.43 | surge 22.58 | onto 22.95 | the 23.14 | land, 23.24 | flooding 23.88 | the 24.15 | coasts. 24.23
-S10 [25.12-26.35] One day would last about a year.
-   One 25.12 | day 25.25 | would 25.40 | last 25.55 | about 25.84 | a 26.02 | year. 26.04
-S11 [26.75-30.73] For roughly six months the sunny side would bake, and the dark side would freeze.
-   For 26.75 | roughly 26.88 | six 27.18 | months 27.53 | the 27.89 | sunny 27.99 | side 28.29 | would 28.59 | bake, 28.76 | and 29.43 | the 29.49 | dark 29.59 | side 29.83 | would 30.11 | freeze. 30.25
-S12 [31.09-33.26] It's like a kebab that stops turning over a fire.
-   It's 31.09 | like 31.20 | a 31.35 | kebab 31.42 | that 31.83 | stops 31.95 | turning 32.32 | over 32.63 | a 32.81 | fire. 32.86
-S13 [33.64-35.95] One side burns, and the other side stays raw.
-   One 33.64 | side 33.82 | burns, 34.11 | and 34.75 | the 34.84 | other 34.93 | side 35.13 | stays 35.39 | raw. 35.66
-S14 [36.33-38.47] Spinning is what shares the sunlight out evenly.
-   Spinning 36.33 | is 36.65 | what 36.75 | shares 36.88 | the 37.22 | sunlight 37.32 | out 37.79 | evenly. 38.04
-S15 [38.85-42.27] Without it, the temperature gap would grow, and most life would struggle.
-   Without 38.85 | it, 39.14 | the 39.49 | temperature 39.58 | gap 40.01 | would 40.38 | grow, 40.51 | and 41.13 | most 41.24 | life 41.50 | would 41.74 | struggle. 41.85
-S16 [42.65-44.56] Which side would you pick, bright or dark?
-   Which 42.65 | side 42.77 | would 42.97 | you 43.08 | pick, 43.18 | bright 43.70 | or 44.11 | dark? 44.20
-S17 [44.93-45.50] Comment below.
-   Comment 44.93 | below. 45.19
+S2 [1.82-4.50] Many people imagine one calm, endless afternoon.
+   Many 1.82 | people 2.01 | imagine 2.32 | one 2.79 | calm, 3.00 | endless 3.76 | afternoon. 4.01
+S3 [4.89-5.92] Here is what really happens.
+   Here 4.89 | is 5.00 | what 5.08 | really 5.23 | happens. 5.41
+S4 [6.28-10.26] Right now, the ground at the equator moves at about one thousand miles an hour.
+   Right 6.28 | now, 6.44 | the 6.99 | ground 7.08 | at 7.38 | the 7.44 | equator 7.53 | moves 7.99 | at 8.39 | about 8.54 | one 8.85 | thousand 9.15 | miles 9.55 | an 9.86 | hour. 9.93
+S5 [10.62-13.29] Stop the ground, and the air keeps going at that speed.
+   Stop 10.62 | the 10.91 | ground, 10.98 | and 11.65 | the 11.74 | air 11.83 | keeps 12.09 | going 12.37 | at 12.61 | that 12.70 | speed. 12.88
+S6 [13.66-18.23] The oceans keep sliding too, then surge toward the poles as the equator bulge fades.
+   The 13.66 | oceans 13.77 | keep 14.16 | sliding 14.38 | too, 14.80 | then 15.41 | surge 15.55 | toward 15.91 | the 16.16 | poles 16.25 | as 16.68 | the 16.83 | equator 16.91 | bulge 17.38 | fades. 17.69
+S7 [18.59-22.87] Dry land would rise near the equator, and new seas would swell near the poles.
+   Dry 18.59 | land 18.83 | would 19.22 | rise 19.38 | near 19.73 | the 19.91 | equator, 19.99 | and 20.85 | new 20.97 | seas 21.15 | would 21.55 | swell 21.68 | near 22.14 | the 22.29 | poles. 22.38
+S8 [23.24-25.19] Now the Sun takes a year to cross the sky.
+   Now 23.24 | the 23.35 | Sun 23.44 | takes 23.70 | a 23.95 | year 24.00 | to 24.35 | cross 24.44 | the 24.73 | sky. 24.81
+S9 [25.56-27.98] So one side bakes in daylight for about six months.
+   So 25.56 | one 25.69 | side 25.88 | bakes 26.17 | in 26.43 | daylight 26.52 | for 26.90 | about 27.04 | six 27.25 | months. 27.51
+S10 [28.36-30.84] The other side freezes in darkness for the same time.
+   The 28.36 | other 28.46 | side 28.68 | freezes 29.02 | in 29.50 | darkness 29.61 | for 30.07 | the 30.18 | same 30.26 | time. 30.50
+S11 [31.20-33.88] It is like holding one side of a marshmallow over a fire.
+   It 31.20 | is 31.28 | like 31.38 | holding 31.53 | one 31.91 | side 32.10 | of 32.40 | a 32.47 | marshmallow 32.52 | over 33.25 | a 33.44 | fire. 33.48
+S12 [34.25-36.98] The spin also helps stir the liquid metal in Earth's core.
+   The 34.25 | spin 34.31 | also 34.65 | helps 34.94 | stir 35.23 | the 35.54 | liquid 35.66 | metal 35.99 | in 36.27 | Earth's 36.37 | core. 36.62
+S13 [37.35-40.65] That stirring makes our magnetic shield, so the shield would probably weaken.
+   That 37.35 | stirring 37.45 | makes 37.85 | our 38.08 | magnetic 38.17 | shield, 38.59 | so 39.27 | the 39.41 | shield 39.49 | would 39.82 | probably 39.95 | weaken. 40.35
+S14 [41.02-43.87] Then more harsh radiation from the Sun would reach the ground.
+   Then 41.02 | more 41.18 | harsh 41.42 | radiation 41.75 | from 42.29 | the 42.42 | Sun 42.50 | would 43.00 | reach 43.16 | the 43.38 | ground. 43.47
+S15 [44.24-48.05] Our daily spin gives us gentle days, steady air and a shield overhead.
+   Our 44.24 | daily 44.38 | spin 44.68 | gives 45.03 | us 45.26 | gentle 45.38 | days, 45.68 | steady 46.27 | air 46.61 | and 47.11 | a 47.19 | shield 47.23 | overhead. 47.60
+S16 [48.41-50.83] Would you rather live on the sunny side or the dark side?
+   Would 48.41 | you 48.53 | rather 48.63 | live 48.88 | on 49.09 | the 49.16 | sunny 49.24 | side 49.55 | or 50.08 | the 50.17 | dark 50.26 | side? 50.48
 
 THE PICTURE PLAN from the script writer (S n here is S n above): what stays on screen, what visibly changes while that sentence is spoken, and the dial that drives it. Follow it; improve it where the catalogue offers a better way to show the same change.
-S1 subject: planet | change: the air glow around the planet settles to a calm thin halo | dial: air_speed
-S2 subject: planet | change: the air glow stays smooth and quiet | dial: air_speed
-S3 subject: planet | change: the air glow flares thick and bright | dial: air_speed
-S4 subject: planet | change: the air glow swells further around the planet | dial: air_speed
-S5 subject: planet | change: the air glow settles back to the normal thin halo | dial: air_speed
-S6 subject: planet | change: the air glow hugs the surface evenly | dial: air_speed
-S7 subject: planet | change: the air glow starts to surge outward | dial: air_speed
-S8 subject: planet | change: the air glow grows thick, bright and stormy | dial: air_speed
-S9 subject: planet | change: the planet's blue tint swells and spreads over its colour | dial: air_speed
-S10 subject: planet | change: the sunlit face glows brighter while the far face darkens | dial: heat
-S11 subject: planet | change: the sunlit face turns hot orange and the dark face turns icy blue | dial: heat
-S12 subject: fire | change: the flames grow taller and brighter on one side | dial: heat
-S13 subject: fire | change: the flames flare even bigger | dial: heat
-S14 subject: planet | change: the hot and cold colours blend back into one even glow | dial: heat
-S15 subject: planet | change: the hot face and cold face pull apart in colour again | dial: heat
-S16 subject: planet | change: the bright face glows stronger while the dark face deepens | dial: heat
-S17 subject: planet | change: the dark face fades to its deepest blue | dial: heat
+S1 subject: planet | change: the planet's air glow thins and the lit and dark halves settle in place
+S2 subject: planet | change: the air glow turns calm and bright across the lit half
+S3 subject: planet | change: the air glow flares and turns stormy | dial: storm
+S4 subject: planet | change: the air glow thickens and streams along the equator | dial: storm
+S5 subject: particles | change: the air streams rush faster and spread out in one direction | dial: storm
+S6 subject: planet | change: the air glow shifts and thickens toward the poles | dial: storm
+S7 subject: planet | change: the air glow fades near the equator and swells near the poles | dial: storm
+S8 subject: sun | change: the sun glows brighter and slows to a steady shine on one side | dial: heat
+S9 subject: planet | change: the lit half glows hotter and its air glow brightens | dial: heat
+S10 subject: planet | change: the dark half turns colder and its air glow vanishes | dial: heat
+S11 subject: fire | change: the flames grow taller and glow hotter | dial: heat
+S12 subject: planet | change: the air glow settles and the planet turns still
+S13 subject: shield_dome | change: the dome's shimmer fades and thins | dial: shield
+S14 subject: shield_dome | change: the dome grows fainter and more transparent | dial: shield
+S15 subject: shield_dome | change: the dome shimmers strong again and fills out | dial: shield
+S16 subject: planet | change: the lit half brightens while the dark half deepens | dial: heat
 
-The last word ends at 45.50 s; the video is 45.90 s long. Make 2 to 4 main scenes (a scene = a shot plus its "continue": true shots), plus at most a short opening and a short closing scene. Each shot lasts 1.5 to 12 seconds (over 9 s gives a warning); aim for 3 to 8.
+The last word ends at 50.83 s; the video is 51.23 s long. Make 2 to 4 main scenes (a scene = a shot plus its "continue": true shots), plus at most a short opening and a short closing scene. Each shot lasts 1.5 to 12 seconds (over 9 s gives a warning); aim for 3 to 8.
 
 Think through the scenes and the changes first (section 2), then reply with the complete show.json and nothing else: no code fence, no comments, no text before or after it.

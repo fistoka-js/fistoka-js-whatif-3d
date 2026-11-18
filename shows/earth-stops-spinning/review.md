@@ -1,75 +1,76 @@
-# Review: What if Earth suddenly stopped spinning?
+# Review: What If Earth Suddenly Stopped Spinning?
 
 - Topic: What if Earth stopped spinning?
 - Slug: earth-stops-spinning
 - Status: ok
 - Show: first try
-- Picture check (QA): not_run (QA ERROR: only 1.0 GB of memory is free; browser jobs need 2 GB. Close something and try again.)
-- Voice: 45.8 s, 158 words
+- Picture check (QA): pass
+- Voice: 51.2 s, 175 words
 - Mode: files; model priced as claude-sonnet-5-5
-- Written: 2026-11-17 04:14 UTC
+- Written: 2026-11-18 00:36 UTC
 
 ## Script
-What if Earth suddenly stopped spinning? You might picture the world gently coming to rest. That's the thing, it would be anything but. Here is what really happens. Right now, the ground at the equator moves at about one thousand miles an hour. The air and the oceans are carried along with it. If the rock stopped, the air would not. It would keep racing eastward, and winds would scour the surface at hundreds of miles an hour. Oceans would surge onto the land, flooding the coasts. One day would last about a year. For roughly six months the sunny side would bake, and the dark side would freeze. It's like a kebab that stops turning over a fire. One side burns, and the other side stays raw. Spinning is what shares the sunlight out evenly. Without it, the temperature gap would grow, and most life would struggle. Which side would you pick, bright or dark? Comment below.
+What if Earth suddenly stopped spinning? Many people imagine one calm, endless afternoon. Here is what really happens. Right now, the ground at the equator moves at about one thousand miles an hour. Stop the ground, and the air keeps going at that speed. The oceans keep sliding too, then surge toward the poles as the equator bulge fades. Dry land would rise near the equator, and new seas would swell near the poles. Now the Sun takes a year to cross the sky. So one side bakes in daylight for about six months. The other side freezes in darkness for the same time. It is like holding one side of a marshmallow over a fire. The spin also helps stir the liquid metal in Earth's core. That stirring makes our magnetic shield, so the shield would probably weaken. Then more harsh radiation from the Sun would reach the ground. Our daily spin gives us gentle days, steady air and a shield overhead. Would you rather live on the sunny side or the dark side?
 
 ## Picture plan (the beat list that goes with the script above)
-- S1: planet | the air glow around the planet settles to a calm thin halo | dial: air_speed
-- S2: planet | the air glow stays smooth and quiet | dial: air_speed
-- S3: planet | the air glow flares thick and bright | dial: air_speed
-- S4: planet | the air glow swells further around the planet | dial: air_speed
-- S5: planet | the air glow settles back to the normal thin halo | dial: air_speed
-- S6: planet | the air glow hugs the surface evenly | dial: air_speed
-- S7: planet | the air glow starts to surge outward | dial: air_speed
-- S8: planet | the air glow grows thick, bright and stormy | dial: air_speed
-- S9: planet | the planet's blue tint swells and spreads over its colour | dial: air_speed
-- S10: planet | the sunlit face glows brighter while the far face darkens | dial: heat
-- S11: planet | the sunlit face turns hot orange and the dark face turns icy blue | dial: heat
-- S12: fire | the flames grow taller and brighter on one side | dial: heat
-- S13: fire | the flames flare even bigger | dial: heat
-- S14: planet | the hot and cold colours blend back into one even glow | dial: heat
-- S15: planet | the hot face and cold face pull apart in colour again | dial: heat
-- S16: planet | the bright face glows stronger while the dark face deepens | dial: heat
-- S17: planet | the dark face fades to its deepest blue | dial: heat
+- S1: planet | the planet's air glow thins and the lit and dark halves settle in place
+- S2: planet | the air glow turns calm and bright across the lit half
+- S3: planet | the air glow flares and turns stormy | dial: storm
+- S4: planet | the air glow thickens and streams along the equator | dial: storm
+- S5: particles | the air streams rush faster and spread out in one direction | dial: storm
+- S6: planet | the air glow shifts and thickens toward the poles | dial: storm
+- S7: planet | the air glow fades near the equator and swells near the poles | dial: storm
+- S8: sun | the sun glows brighter and slows to a steady shine on one side | dial: heat
+- S9: planet | the lit half glows hotter and its air glow brightens | dial: heat
+- S10: planet | the dark half turns colder and its air glow vanishes | dial: heat
+- S11: fire | the flames grow taller and glow hotter | dial: heat
+- S12: planet | the air glow settles and the planet turns still
+- S13: shield_dome | the dome's shimmer fades and thins | dial: shield
+- S14: shield_dome | the dome grows fainter and more transparent | dial: shield
+- S15: shield_dome | the dome shimmers strong again and fills out | dial: shield
+- S16: planet | the lit half brightens while the dark half deepens | dial: heat
 
 ## Claims to check (tick each one you have verified)
-- [ ] The ground at the equator moves at about one thousand miles an hour.
-- [ ] The air and oceans move along with the rotating Earth.
-- [ ] If the ground stopped suddenly, the air would keep moving and cause extremely strong winds.
-- [ ] Oceans would surge onto land.
-- [ ] Without rotation a solar day would last about a year.
-- [ ] One side would be sunlit for about six months and the other dark for about six months.
-- [ ] Rotation spreads sunlight out evenly across the planet.
+- [ ] Ground at the equator moves at about one thousand miles an hour because of Earth's spin
+- [ ] If the ground stopped suddenly, the air would keep moving at that speed
+- [ ] The equatorial bulge would fade without spin, so oceans would flow toward the poles
+- [ ] Without spin, the Sun would take a year to cross the sky, so day and night would each last about six months
+- [ ] Earth's spin helps drive the liquid metal motion in the core that makes the magnetic field, so the field would probably weaken
 
 ## Automatic fact check (final audit)
-- supported: The ground at the equator moves at about one thousand miles an hour. (Note: Equatorial rotation speed is about 1,040 mph; general knowledge, not in the research.)
-- supported: The air and oceans are carried along with Earth's rotation. (Note: Atmosphere and oceans co-rotate with the planet; general knowledge, not in the research.)
-- supported: If the ground stopped suddenly, the air would keep moving. (Note: Inertia would keep the atmosphere moving; general knowledge, not in the research.)
-- simplified: Winds would reach hundreds of miles an hour at the surface. (Note: Near the equator winds would approach about a thousand mph at first, then slow with friction.)
-- simplified: Oceans would surge onto land and flood coasts. (Note: Oceans would keep moving and flood coasts, mostly in the east-moving direction; fine as a short summary.)
-- supported: One day would last about a year. (Note: Without spin, the sun cycle matches the orbital period; general knowledge, not in the research.)
-- supported: About six months of sunlight then six months of darkness for each side. (Note: Follows from a year-long day; general knowledge, not in the research.)
-- supported: Rotation spreads sunlight evenly around the planet. (Note: Day and night cycles even out heating; general knowledge, not in the research.)
-- supported: A large temperature gap would make life struggle. (Note: Hedged and widely accepted; general knowledge, not in the research.)
+- supported: Ground at the equator moves at about 1000 miles an hour (Note: Equatorial rotation speed is about 1,040 mph.)
+- simplified: If the ground stopped, the air would keep moving at that speed (Note: Momentum would carry the air east; friction would slow it over time, but the initial effect is as stated.)
+- simplified: Oceans would keep moving and then flow toward the poles as the equatorial bulge fades (Note: Without spin the centrifugal bulge goes and water redistributes poleward.)
+- supported: Dry land would rise near the equator and new seas near the poles (Note: Widely cited consequence of the oceans moving poleward.)
+- simplified: Without spin the Sun would take a year to cross the sky (Note: A day would last about a year, roughly six months of light then six of dark.)
+- supported: One side would have about six months of daylight and the other about six months of darkness (Note: Follows from a day lasting a year; general knowledge.)
+- supported: The dark side would freeze for the same time (Note: General knowledge.)
+- simplified: Earth's spin helps stir the liquid metal in the core that makes the magnetic field (Note: Rotation organises core convection in the dynamo; widely accepted.)
+- simplified: The magnetic field would probably weaken without spin (Note: Hedged with probably; the dynamo depends on rotation.)
+- simplified: A weaker field would let more harsh solar radiation reach the ground (Note: Atmosphere also shields the ground, but more radiation would reach the surface overall.)
 - Redrafted: no
 
 ## Description
-What would really happen if Earth stopped spinning? The air and oceans would keep moving, and one side of the planet would bake while the other froze.
+What would really happen if Earth stopped spinning? Winds, oceans, a six-month day and a weaker magnetic shield, explained step by step with real physics.
 
-#science #earth #whatif #physics #space
+#science #earth #whatif #space #physics
 
 ## Tags
-what if, earth stops spinning, earth rotation, science explained, physics, planet earth, day and night, winds, oceans, climate, space, science shorts
+earth stops spinning, what if earth stopped spinning, earth rotation, science explained, what if, planet earth, magnetic field, day and night, physics, space science
 
 ## How the show was made
-- show: valid (0 warning(s))
+- show: valid (1 warning(s))
+
+## Checker warnings on the accepted show
+- story.stillness: nothing on screen changes from 9.00 to 11.75 s (2.75 s; at most 3.5 s allowed, 2.5 s is better) while the narrator says "thousand miles an hour. Stop the ground, and the". Add a change in that stretch: a "set", "move", "scale", "color" or "glow" on a prop (give it "until": a later phrase so it runs from word to word), or a dial key there with the dial bound to a prop on screen. Camera moves, spin, bob, orbit, pulse, shake, labels and text do not count.
 
 ## Cost (estimate)
 | call | input | output | cache read | cache write | $ |
 |---|---|---|---|---|---|
-| script | 3601 | 1213 | 0 | 0 | 0.0193 |
-| audit | 1166 | 584 | 0 | 0 | 0.0082 |
-| show | 15626 | 1904 | 0 | 0 | 0.0503 |
-| **total** | 20393 | 3701 | 0 | 0 | 0.0778 |
+| script | 3637 | 1245 | 0 | 0 | 0.0197 |
+| audit | 1185 | 632 | 0 | 0 | 0.0087 |
+| show | 16366 | 2597 | 0 | 0 | 0.0587 |
+| **total** | 21188 | 4474 | 0 | 0 | 0.0871 |
 
 files mode: tokens are characters / 4, priced as claude-sonnet-5-5; nothing was paid.
 
@@ -81,7 +82,7 @@ review.md, script.txt, show.json, voice.mp3, voice.stats.json, words.json, write
 
 - Topic: What if Earth stopped spinning?
 - Final video: `E:/Youtube Project/whatif-3d/shows/earth-stops-spinning/out/earth-stops-spinning-final.mp4`
-- Length: 45.9 s, loudness: -15.9 LUFS
+- Length: 51.233333 s, loudness: -16 LUFS
 - Picture check: **pass** (0 findings, see `out/qa.json` and `out/qa-sheet.jpg`)
 - Writer status: ok
 - Upload: not uploaded

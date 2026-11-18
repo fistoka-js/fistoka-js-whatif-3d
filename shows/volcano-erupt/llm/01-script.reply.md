@@ -1,136 +1,39 @@
 {
- "title": "Why Do Volcanoes Actually Erupt?",
- "script": "Is the Earth full of liquid fire? Not quite. Here is what really happens. Deep down, rock is mostly solid, but in places a little melts into magma. That magma is lighter than the rock around it, so it rises into a chamber. Dissolved gas, mostly water vapour and carbon dioxide, is trapped inside. As the magma climbs, the pressure drops, and the gas forms bubbles. The bubbles grow, and they push the magma upward faster. It is like a shaken fizzy drink. Open the cap, the pressure drops, and the bubbles burst out. The pressure finally breaks the rock plug in the crater. Lava, ash and gas blast out into the air. Thick, sticky magma traps gas longer, so the blast is bigger. Runny magma lets gas escape, so lava just flows down the slopes. Over millions of years, this gas probably helped build our air and oceans. Would you live next to one for its rich soil? Comment below.",
- "beats": [
-  {
-   "sentence": "Is the Earth full of liquid fire?",
-   "subject": "volcano",
-   "change": "the cone sits calm while its crater glows faintly",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "Not quite.",
-   "subject": "volcano",
-   "change": "the glow in the crater dims to a dark rim",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "Here is what really happens.",
-   "subject": "volcano",
-   "change": "the cone turns see-through to reveal a chamber inside",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "Deep down, rock is mostly solid, but in places a little melts into magma.",
-   "subject": "volcano",
-   "change": "a pocket of orange magma appears deep inside the cone",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "That magma is lighter than the rock around it, so it rises into a chamber.",
-   "subject": "volcano",
-   "change": "the magma pocket climbs and swells into a large chamber",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "Dissolved gas, mostly water vapour and carbon dioxide, is trapped inside.",
-   "subject": "volcano",
-   "change": "tiny gas dots appear inside the magma",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "As the magma climbs, the pressure drops, and the gas forms bubbles.",
-   "subject": "volcano",
-   "change": "the magma rises up the vent and the bubbles form",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "The bubbles grow, and they push the magma upward faster.",
-   "subject": "volcano",
-   "change": "the bubbles swell and the magma surges up the vent",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "It is like a shaken fizzy drink.",
-   "subject": "particles",
-   "change": "a packed clump of bubbles spreads and speeds up",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "Open the cap, the pressure drops, and the bubbles burst out.",
-   "subject": "particles",
-   "change": "the bubbles rush upward out of the box",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "The pressure finally breaks the rock plug in the crater.",
-   "subject": "volcano",
-   "change": "the crater glows bright orange and the plug cracks",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "Lava, ash and gas blast out into the air.",
-   "subject": "volcano",
-   "change": "lava and ash burst out of the crater",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "Thick, sticky magma traps gas longer, so the blast is bigger.",
-   "subject": "volcano",
-   "change": "the crater erupts harder and the plume grows taller",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "Runny magma lets gas escape, so lava just flows down the slopes.",
-   "subject": "volcano",
-   "change": "the eruption calms to a gentle flow down the slopes",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "Over millions of years, this gas probably helped build our air and oceans.",
-   "subject": "volcano",
-   "change": "the cone grows taller and the plume spreads wide",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "Would you live next to one for its rich soil?",
-   "subject": "volcano",
-   "change": "the eruption fades and the crater glow settles",
-   "dial": "eruption"
-  },
-  {
-   "sentence": "Comment below.",
-   "subject": "volcano",
-   "change": "the glow dims to a small ember",
-   "dial": "eruption"
-  }
- ],
- "description": "Volcanoes are not leaks from a sea of liquid fire. Rising magma, trapped gas and falling pressure make the bubbles that blast it out.\n\n#volcano #science #geology #shorts",
- "tags": [
-  "volcano",
-  "volcanoes",
-  "why do volcanoes erupt",
-  "magma",
-  "lava",
-  "geology",
-  "earth science",
-  "science explained",
-  "pressure",
-  "gas bubbles"
- ],
- "feasible": true,
- "mechanism_prop": "",
- "missing": [],
- "claims": [
-  "The Earth's mantle is mostly solid rock",
-  "Magma forms where a little rock melts",
-  "Magma is less dense than the surrounding rock so it rises",
-  "Magma gathers in a chamber under a volcano",
-  "Magma contains dissolved gas, mostly water vapour and carbon dioxide",
-  "Falling pressure makes dissolved gas form bubbles",
-  "Growing bubbles push magma upward faster",
-  "Thick magma traps gas more and tends to erupt more explosively",
-  "Runny magma lets gas escape and lava flows",
-  "Volcanic gas probably helped build the atmosphere and oceans"
- ]
+  "title": "Why Do Volcanoes Erupt? It's Not What You Think",
+  "script": "What if volcanoes erupt because they fill up with lava? That is not quite it. Here is what really happens. Deep underground, rock melts into glowing magma. Magma is lighter than the rock around it, so it rises and pools in a chamber. As more magma flows in, the chamber swells and the pressure climbs. Inside the magma, dissolved gas is packed tight. As the magma rises, the pressure drops and the gas bubbles out, spreading wider and wider. Those bubbles expand and speed up, shoving the magma upward. When the pressure beats the strength of the rock above, the cone cracks open. Magma blasts out of the vent, glowing at about one thousand degrees Celsius. It is like a pressure cooker, where the needle climbs until the lid gives way. Sticky magma traps more gas, so it erupts more violently. Eruptions throw up ash and gas that can cool the planet for a year or two. Early volcanic gas probably helped build Earth's air and oceans. Would you stand and watch one up close? Comment below.",
+  "beats": [
+    {"sentence": "What if volcanoes erupt because they fill up with lava?", "subject": "volcano", "change": "the crater glow fills up and brightens", "dial": "pressure"},
+    {"sentence": "That is not quite it.", "subject": "volcano", "change": "the crater glow drops back to a dim ember", "dial": "pressure"},
+    {"sentence": "Here is what really happens.", "subject": "volcano", "change": "the crater glow settles to a steady orange", "dial": "pressure"},
+    {"sentence": "Deep underground, rock melts into glowing magma.", "subject": "volcano", "change": "the crater glow turns hotter orange", "dial": "pressure"},
+    {"sentence": "Magma is lighter than the rock around it, so it rises and pools in a chamber.", "subject": "volcano", "change": "the glow climbs brighter as magma rises", "dial": "pressure"},
+    {"sentence": "As more magma flows in, the chamber swells and the pressure climbs.", "subject": "volcano", "change": "the crater swells with brighter, stronger glow", "dial": "pressure"},
+    {"sentence": "Inside the magma, dissolved gas is packed tight.", "subject": "particles", "change": "gas dots squeeze into a tight, dense cloud", "dial": "gas"},
+    {"sentence": "As the magma rises, the pressure drops and the gas bubbles out, spreading wider and wider.", "subject": "particles", "change": "the gas cloud spreads wide apart", "dial": "gas"},
+    {"sentence": "Those bubbles expand and speed up, shoving the magma upward.", "subject": "particles", "change": "the gas dots move faster and push outward", "dial": "gas"},
+    {"sentence": "When the pressure beats the strength of the rock above, the cone cracks open.", "subject": "volcano", "change": "the crater bursts into a growing eruption", "dial": "pressure"},
+    {"sentence": "Magma blasts out of the vent, glowing at about one thousand degrees Celsius.", "subject": "volcano", "change": "the eruption grows to full blast", "dial": "pressure"},
+    {"sentence": "It is like a pressure cooker, where the needle climbs until the lid gives way.", "subject": "gauge", "change": "the needle swings up into the red", "dial": "pressure"},
+    {"sentence": "Sticky magma traps more gas, so it erupts more violently.", "subject": "particles", "change": "the gas dots pack tight and then burst outward", "dial": "gas"},
+    {"sentence": "Eruptions throw up ash and gas that can cool the planet for a year or two.", "subject": "particles", "change": "the ash cloud spreads far and wide", "dial": "gas"},
+    {"sentence": "Early volcanic gas probably helped build Earth's air and oceans.", "subject": "planet", "change": "the blue air glow around the planet grows thicker", "dial": ""},
+    {"sentence": "Would you stand and watch one up close?", "subject": "volcano", "change": "the eruption eases to a gentle glowing crater", "dial": "pressure"},
+    {"sentence": "Comment below.", "subject": "volcano", "change": "the crater glow settles calm and steady", "dial": "pressure"}
+  ],
+  "description": "Volcanoes do not erupt just because they fill up. Rising magma loses pressure, dissolved gas bubbles out and expands, and the blast cracks the rock open. Here is the whole chain in under a minute.\n\n#volcano #science #geology #shorts #earthscience",
+  "tags": ["volcano", "why do volcanoes erupt", "magma", "lava", "geology", "earth science", "science explained", "eruption", "pressure", "volcanic gas", "science shorts"],
+  "feasible": true,
+  "mechanism_prop": "",
+  "missing": [],
+  "claims": [
+    "Magma forms when rock deep underground melts",
+    "Magma is less dense than the surrounding solid rock, so it rises and collects in a chamber",
+    "Magma contains dissolved gases such as water vapour and carbon dioxide under high pressure",
+    "As magma rises the pressure falls and the gas comes out of solution as bubbles that expand",
+    "Eruptions happen when pressure from magma and gas exceeds the strength of the overlying rock",
+    "Erupting lava is roughly 700 to 1200 degrees Celsius, so about a thousand degrees is a fair figure",
+    "Thick, sticky magma traps gas and tends to produce more explosive eruptions",
+    "Large eruptions can cool global climate for a year or two",
+    "Volcanic outgassing probably helped build Earth's early atmosphere and oceans"
+  ]
 }

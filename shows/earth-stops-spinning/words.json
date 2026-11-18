@@ -30,763 +30,848 @@
   "end": 1.451
  },
  {
-  "text": "You",
+  "text": "Many",
   "start": 1.819,
-  "end": 1.886
+  "end": 1.998
  },
  {
-  "text": "might",
-  "start": 1.897,
-  "end": 2.109
+  "text": "people",
+  "start": 2.009,
+  "end": 2.31
  },
  {
-  "text": "picture",
-  "start": 2.121,
-  "end": 2.422
- },
- {
-  "text": "the",
-  "start": 2.433,
-  "end": 2.5
- },
- {
-  "text": "world",
-  "start": 2.511,
-  "end": 2.891
- },
- {
-  "text": "gently",
-  "start": 2.98,
-  "end": 3.292
- },
- {
-  "text": "coming",
-  "start": 3.304,
-  "end": 3.549
- },
- {
-  "text": "to",
-  "start": 3.56,
-  "end": 3.627
- },
- {
-  "text": "rest.",
-  "start": 3.638,
-  "end": 4.085
- },
- {
-  "text": "That's",
-  "start": 4.464,
-  "end": 4.609
- },
- {
-  "text": "the",
-  "start": 4.621,
-  "end": 4.699
- },
- {
-  "text": "thing,",
-  "start": 4.71,
-  "end": 5.056
- },
- {
-  "text": "it",
-  "start": 5.301,
-  "end": 5.357
- },
- {
-  "text": "would",
-  "start": 5.368,
-  "end": 5.48
- },
- {
-  "text": "be",
-  "start": 5.491,
-  "end": 5.681
- },
- {
-  "text": "anything",
-  "start": 5.748,
-  "end": 6.161
- },
- {
-  "text": "but.",
-  "start": 6.172,
-  "end": 6.507
- },
- {
-  "text": "Here",
-  "start": 6.897,
-  "end": 6.998
- },
- {
-  "text": "is",
-  "start": 7.009,
-  "end": 7.076
- },
- {
-  "text": "what",
-  "start": 7.087,
-  "end": 7.232
- },
- {
-  "text": "really",
-  "start": 7.243,
-  "end": 7.411
- },
- {
-  "text": "happens.",
-  "start": 7.422,
-  "end": 7.924
- },
- {
-  "text": "Right",
-  "start": 8.292,
-  "end": 8.437
- },
- {
-  "text": "now,",
-  "start": 8.449,
-  "end": 8.75
- },
- {
-  "text": "the",
-  "start": 8.996,
-  "end": 9.074
- },
- {
-  "text": "ground",
-  "start": 9.085,
-  "end": 9.375
- },
- {
-  "text": "at",
-  "start": 9.386,
-  "end": 9.442
- },
- {
-  "text": "the",
-  "start": 9.453,
-  "end": 9.531
- },
- {
-  "text": "equator",
-  "start": 9.542,
-  "end": 9.989
- },
- {
-  "text": "moves",
-  "start": 10.0,
-  "end": 10.391
- },
- {
-  "text": "at",
-  "start": 10.402,
-  "end": 10.536
- },
- {
-  "text": "about",
-  "start": 10.547,
-  "end": 10.848
+  "text": "imagine",
+  "start": 2.321,
+  "end": 2.779
  },
  {
   "text": "one",
-  "start": 10.859,
-  "end": 11.15
+  "start": 2.79,
+  "end": 2.991
+ },
+ {
+  "text": "calm,",
+  "start": 3.002,
+  "end": 3.415
+ },
+ {
+  "text": "endless",
+  "start": 3.761,
+  "end": 3.996
+ },
+ {
+  "text": "afternoon.",
+  "start": 4.007,
+  "end": 4.498
+ },
+ {
+  "text": "Here",
+  "start": 4.888,
+  "end": 4.989
+ },
+ {
+  "text": "is",
+  "start": 5.0,
+  "end": 5.067
+ },
+ {
+  "text": "what",
+  "start": 5.078,
+  "end": 5.223
+ },
+ {
+  "text": "really",
+  "start": 5.234,
+  "end": 5.402
+ },
+ {
+  "text": "happens.",
+  "start": 5.413,
+  "end": 5.915
+ },
+ {
+  "text": "Right",
+  "start": 6.284,
+  "end": 6.429
+ },
+ {
+  "text": "now,",
+  "start": 6.44,
+  "end": 6.741
+ },
+ {
+  "text": "the",
+  "start": 6.987,
+  "end": 7.065
+ },
+ {
+  "text": "ground",
+  "start": 7.076,
+  "end": 7.366
+ },
+ {
+  "text": "at",
+  "start": 7.377,
+  "end": 7.433
+ },
+ {
+  "text": "the",
+  "start": 7.444,
+  "end": 7.522
+ },
+ {
+  "text": "equator",
+  "start": 7.534,
+  "end": 7.98
+ },
+ {
+  "text": "moves",
+  "start": 7.991,
+  "end": 8.382
+ },
+ {
+  "text": "at",
+  "start": 8.393,
+  "end": 8.527
+ },
+ {
+  "text": "about",
+  "start": 8.538,
+  "end": 8.839
+ },
+ {
+  "text": "one",
+  "start": 8.85,
+  "end": 9.141
  },
  {
   "text": "thousand",
-  "start": 11.161,
-  "end": 11.551
+  "start": 9.152,
+  "end": 9.542
  },
  {
   "text": "miles",
-  "start": 11.562,
-  "end": 11.853
+  "start": 9.554,
+  "end": 9.844
  },
  {
   "text": "an",
-  "start": 11.864,
-  "end": 11.931
+  "start": 9.855,
+  "end": 9.922
  },
  {
   "text": "hour.",
-  "start": 11.942,
-  "end": 12.266
+  "start": 9.933,
+  "end": 10.257
  },
  {
-  "text": "The",
-  "start": 12.634,
-  "end": 12.712
+  "text": "Stop",
+  "start": 10.625,
+  "end": 10.904
  },
  {
-  "text": "air",
-  "start": 12.723,
-  "end": 13.103
+  "text": "the",
+  "start": 10.915,
+  "end": 10.971
+ },
+ {
+  "text": "ground,",
+  "start": 10.982,
+  "end": 11.373
  },
  {
   "text": "and",
-  "start": 13.159,
-  "end": 13.225
+  "start": 11.652,
+  "end": 11.73
  },
  {
   "text": "the",
-  "start": 13.237,
-  "end": 13.348
+  "start": 11.741,
+  "end": 11.819
+ },
+ {
+  "text": "air",
+  "start": 11.83,
+  "end": 12.076
+ },
+ {
+  "text": "keeps",
+  "start": 12.087,
+  "end": 12.355
+ },
+ {
+  "text": "going",
+  "start": 12.366,
+  "end": 12.6
+ },
+ {
+  "text": "at",
+  "start": 12.612,
+  "end": 12.69
+ },
+ {
+  "text": "that",
+  "start": 12.701,
+  "end": 12.868
+ },
+ {
+  "text": "speed.",
+  "start": 12.879,
+  "end": 13.292
+ },
+ {
+  "text": "The",
+  "start": 13.661,
+  "end": 13.761
  },
  {
   "text": "oceans",
-  "start": 13.359,
-  "end": 13.728
+  "start": 13.772,
+  "end": 14.152
  },
  {
-  "text": "are",
-  "start": 13.739,
-  "end": 13.828
+  "text": "keep",
+  "start": 14.163,
+  "end": 14.364
  },
  {
-  "text": "carried",
-  "start": 13.839,
-  "end": 14.129
+  "text": "sliding",
+  "start": 14.375,
+  "end": 14.788
  },
  {
-  "text": "along",
-  "start": 14.141,
-  "end": 14.42
+  "text": "too,",
+  "start": 14.799,
+  "end": 15.078
  },
  {
-  "text": "with",
-  "start": 14.431,
-  "end": 14.587
+  "text": "then",
+  "start": 15.413,
+  "end": 15.536
  },
  {
-  "text": "it.",
-  "start": 14.598,
-  "end": 14.743
+  "text": "surge",
+  "start": 15.547,
+  "end": 15.904
  },
  {
-  "text": "If",
-  "start": 15.112,
-  "end": 15.201
- },
- {
-  "text": "the",
-  "start": 15.212,
-  "end": 15.279
- },
- {
-  "text": "rock",
-  "start": 15.29,
-  "end": 15.513
- },
- {
-  "text": "stopped,",
-  "start": 15.525,
-  "end": 15.949
+  "text": "toward",
+  "start": 15.915,
+  "end": 16.15
  },
  {
   "text": "the",
   "start": 16.161,
-  "end": 16.228
+  "end": 16.239
  },
  {
-  "text": "air",
-  "start": 16.239,
-  "end": 16.473
+  "text": "poles",
+  "start": 16.25,
+  "end": 16.674
  },
  {
-  "text": "would",
-  "start": 16.484,
-  "end": 16.596
- },
- {
-  "text": "not.",
-  "start": 16.607,
-  "end": 16.942
- },
- {
-  "text": "It",
-  "start": 17.31,
-  "end": 17.377
- },
- {
-  "text": "would",
-  "start": 17.388,
-  "end": 17.511
- },
- {
-  "text": "keep",
-  "start": 17.522,
-  "end": 17.757
- },
- {
-  "text": "racing",
-  "start": 17.768,
-  "end": 18.181
- },
- {
-  "text": "eastward,",
-  "start": 18.192,
-  "end": 18.694
- },
- {
-  "text": "and",
-  "start": 18.951,
-  "end": 19.096
- },
- {
-  "text": "winds",
-  "start": 19.107,
-  "end": 19.42
- },
- {
-  "text": "would",
-  "start": 19.431,
-  "end": 19.554
- },
- {
-  "text": "scour",
-  "start": 19.565,
-  "end": 19.922
+  "text": "as",
+  "start": 16.685,
+  "end": 16.819
  },
  {
   "text": "the",
-  "start": 19.933,
-  "end": 20.011
+  "start": 16.83,
+  "end": 16.897
  },
  {
-  "text": "surface",
-  "start": 20.022,
-  "end": 20.446
+  "text": "equator",
+  "start": 16.909,
+  "end": 17.366
  },
  {
-  "text": "at",
-  "start": 20.458,
-  "end": 20.547
+  "text": "bulge",
+  "start": 17.377,
+  "end": 17.679
  },
  {
-  "text": "hundreds",
-  "start": 20.558,
+  "text": "fades.",
+  "start": 17.69,
+  "end": 18.225
+ },
+ {
+  "text": "Dry",
+  "start": 18.594,
+  "end": 18.817
+ },
+ {
+  "text": "land",
+  "start": 18.828,
+  "end": 19.208
+ },
+ {
+  "text": "would",
+  "start": 19.219,
+  "end": 19.364
+ },
+ {
+  "text": "rise",
+  "start": 19.375,
+  "end": 19.721
+ },
+ {
+  "text": "near",
+  "start": 19.732,
+  "end": 19.9
+ },
+ {
+  "text": "the",
+  "start": 19.911,
+  "end": 19.978
+ },
+ {
+  "text": "equator,",
+  "start": 19.989,
+  "end": 20.491
+ },
+ {
+  "text": "and",
+  "start": 20.848,
   "end": 20.96
  },
  {
-  "text": "of",
+  "text": "new",
   "start": 20.971,
-  "end": 21.027
+  "end": 21.138
  },
  {
-  "text": "miles",
-  "start": 21.038,
-  "end": 21.317
- },
- {
-  "text": "an",
-  "start": 21.328,
-  "end": 21.395
- },
- {
-  "text": "hour.",
-  "start": 21.406,
-  "end": 21.741
- },
- {
-  "text": "Oceans",
-  "start": 22.109,
-  "end": 22.422
+  "text": "seas",
+  "start": 21.15,
+  "end": 21.54
  },
  {
   "text": "would",
-  "start": 22.433,
-  "end": 22.567
+  "start": 21.551,
+  "end": 21.674
  },
  {
-  "text": "surge",
-  "start": 22.578,
-  "end": 22.935
+  "text": "swell",
+  "start": 21.685,
+  "end": 22.132
  },
  {
-  "text": "onto",
-  "start": 22.946,
-  "end": 23.125
+  "text": "near",
+  "start": 22.143,
+  "end": 22.277
  },
  {
   "text": "the",
-  "start": 23.136,
-  "end": 23.225
+  "start": 22.288,
+  "end": 22.366
  },
  {
-  "text": "land,",
+  "text": "poles.",
+  "start": 22.377,
+  "end": 22.868
+ },
+ {
+  "text": "Now",
   "start": 23.237,
-  "end": 23.65
- },
- {
-  "text": "flooding",
-  "start": 23.884,
-  "end": 24.141
+  "end": 23.337
  },
  {
   "text": "the",
-  "start": 24.152,
-  "end": 24.219
+  "start": 23.348,
+  "end": 23.426
  },
  {
-  "text": "coasts.",
-  "start": 24.23,
-  "end": 24.743
+  "text": "Sun",
+  "start": 23.438,
+  "end": 23.694
  },
  {
-  "text": "One",
-  "start": 25.123,
-  "end": 25.234
+  "text": "takes",
+  "start": 23.705,
+  "end": 23.94
  },
  {
-  "text": "day",
-  "start": 25.246,
-  "end": 25.391
+  "text": "a",
+  "start": 23.951,
+  "end": 23.984
  },
  {
-  "text": "would",
-  "start": 25.402,
-  "end": 25.536
+  "text": "year",
+  "start": 23.996,
+  "end": 24.342
  },
  {
-  "text": "last",
-  "start": 25.547,
-  "end": 25.826
+  "text": "to",
+  "start": 24.353,
+  "end": 24.431
+ },
+ {
+  "text": "cross",
+  "start": 24.442,
+  "end": 24.721
+ },
+ {
+  "text": "the",
+  "start": 24.732,
+  "end": 24.799
+ },
+ {
+  "text": "sky.",
+  "start": 24.81,
+  "end": 25.19
+ },
+ {
+  "text": "So",
+  "start": 25.558,
+  "end": 25.681
+ },
+ {
+  "text": "one",
+  "start": 25.692,
+  "end": 25.871
+ },
+ {
+  "text": "side",
+  "start": 25.882,
+  "end": 26.161
+ },
+ {
+  "text": "bakes",
+  "start": 26.172,
+  "end": 26.417
+ },
+ {
+  "text": "in",
+  "start": 26.429,
+  "end": 26.507
+ },
+ {
+  "text": "daylight",
+  "start": 26.518,
+  "end": 26.886
+ },
+ {
+  "text": "for",
+  "start": 26.897,
+  "end": 27.031
  },
  {
   "text": "about",
-  "start": 25.837,
-  "end": 26.004
- },
- {
-  "text": "a",
-  "start": 26.016,
-  "end": 26.027
- },
- {
-  "text": "year.",
-  "start": 26.038,
-  "end": 26.35
- },
- {
-  "text": "For",
-  "start": 26.752,
-  "end": 26.864
- },
- {
-  "text": "roughly",
-  "start": 26.875,
-  "end": 27.165
+  "start": 27.042,
+  "end": 27.243
  },
  {
   "text": "six",
-  "start": 27.176,
-  "end": 27.522
+  "start": 27.254,
+  "end": 27.5
  },
  {
-  "text": "months",
-  "start": 27.534,
-  "end": 27.88
- },
- {
-  "text": "the",
-  "start": 27.891,
+  "text": "months.",
+  "start": 27.511,
   "end": 27.98
  },
  {
-  "text": "sunny",
-  "start": 27.991,
-  "end": 28.281
- },
- {
-  "text": "side",
-  "start": 28.292,
-  "end": 28.583
- },
- {
-  "text": "would",
-  "start": 28.594,
-  "end": 28.75
- },
- {
-  "text": "bake,",
-  "start": 28.761,
-  "end": 29.096
- },
- {
-  "text": "and",
-  "start": 29.431,
-  "end": 29.475
- },
- {
-  "text": "the",
-  "start": 29.487,
-  "end": 29.576
- },
- {
-  "text": "dark",
-  "start": 29.587,
-  "end": 29.821
- },
- {
-  "text": "side",
-  "start": 29.833,
-  "end": 30.1
- },
- {
-  "text": "would",
-  "start": 30.112,
-  "end": 30.234
- },
- {
-  "text": "freeze.",
-  "start": 30.246,
-  "end": 30.725
- },
- {
-  "text": "It's",
-  "start": 31.094,
-  "end": 31.194
- },
- {
-  "text": "like",
-  "start": 31.205,
-  "end": 31.339
- },
- {
-  "text": "a",
-  "start": 31.35,
-  "end": 31.406
- },
- {
-  "text": "kebab",
-  "start": 31.417,
-  "end": 31.819
- },
- {
-  "text": "that",
-  "start": 31.83,
-  "end": 31.942
- },
- {
-  "text": "stops",
-  "start": 31.953,
-  "end": 32.31
- },
- {
-  "text": "turning",
-  "start": 32.321,
-  "end": 32.623
- },
- {
-  "text": "over",
-  "start": 32.634,
-  "end": 32.801
- },
- {
-  "text": "a",
-  "start": 32.812,
-  "end": 32.846
- },
- {
-  "text": "fire.",
-  "start": 32.857,
-  "end": 33.259
- },
- {
-  "text": "One",
-  "start": 33.638,
-  "end": 33.806
- },
- {
-  "text": "side",
-  "start": 33.817,
-  "end": 34.096
- },
- {
-  "text": "burns,",
-  "start": 34.107,
-  "end": 34.531
- },
- {
-  "text": "and",
-  "start": 34.754,
-  "end": 34.833
- },
- {
-  "text": "the",
-  "start": 34.844,
-  "end": 34.922
+  "text": "The",
+  "start": 28.359,
+  "end": 28.449
  },
  {
   "text": "other",
-  "start": 34.933,
-  "end": 35.123
+  "start": 28.46,
+  "end": 28.672
  },
  {
   "text": "side",
-  "start": 35.134,
-  "end": 35.379
+  "start": 28.683,
+  "end": 29.007
  },
  {
-  "text": "stays",
-  "start": 35.391,
-  "end": 35.647
+  "text": "freezes",
+  "start": 29.018,
+  "end": 29.487
  },
  {
-  "text": "raw.",
-  "start": 35.658,
-  "end": 35.949
+  "text": "in",
+  "start": 29.498,
+  "end": 29.598
  },
  {
-  "text": "Spinning",
-  "start": 36.328,
-  "end": 36.641
+  "text": "darkness",
+  "start": 29.609,
+  "end": 30.056
+ },
+ {
+  "text": "for",
+  "start": 30.067,
+  "end": 30.167
+ },
+ {
+  "text": "the",
+  "start": 30.179,
+  "end": 30.246
+ },
+ {
+  "text": "same",
+  "start": 30.257,
+  "end": 30.491
+ },
+ {
+  "text": "time.",
+  "start": 30.502,
+  "end": 30.837
+ },
+ {
+  "text": "It",
+  "start": 31.205,
+  "end": 31.272
  },
  {
   "text": "is",
-  "start": 36.652,
-  "end": 36.741
+  "start": 31.284,
+  "end": 31.373
  },
  {
-  "text": "what",
-  "start": 36.752,
-  "end": 36.864
+  "text": "like",
+  "start": 31.384,
+  "end": 31.518
  },
  {
-  "text": "shares",
-  "start": 36.875,
-  "end": 37.21
+  "text": "holding",
+  "start": 31.529,
+  "end": 31.897
  },
  {
-  "text": "the",
-  "start": 37.221,
-  "end": 37.31
- },
- {
-  "text": "sunlight",
-  "start": 37.321,
-  "end": 37.779
- },
- {
-  "text": "out",
-  "start": 37.79,
-  "end": 37.924
- },
- {
-  "text": "evenly.",
-  "start": 38.036,
-  "end": 38.471
- },
- {
-  "text": "Without",
-  "start": 38.85,
-  "end": 39.129
- },
- {
-  "text": "it,",
-  "start": 39.141,
-  "end": 39.252
- },
- {
-  "text": "the",
-  "start": 39.487,
-  "end": 39.565
- },
- {
-  "text": "temperature",
-  "start": 39.576,
-  "end": 40.0
- },
- {
-  "text": "gap",
-  "start": 40.011,
-  "end": 40.301
- },
- {
-  "text": "would",
-  "start": 40.379,
-  "end": 40.502
- },
- {
-  "text": "grow,",
-  "start": 40.513,
-  "end": 40.859
- },
- {
-  "text": "and",
-  "start": 41.127,
-  "end": 41.228
- },
- {
-  "text": "most",
-  "start": 41.239,
-  "end": 41.484
- },
- {
-  "text": "life",
-  "start": 41.496,
-  "end": 41.73
- },
- {
-  "text": "would",
-  "start": 41.741,
-  "end": 41.842
- },
- {
-  "text": "struggle.",
-  "start": 41.853,
-  "end": 42.266
- },
- {
-  "text": "Which",
-  "start": 42.645,
-  "end": 42.757
+  "text": "one",
+  "start": 31.909,
+  "end": 32.087
  },
  {
   "text": "side",
-  "start": 42.768,
-  "end": 42.958
+  "start": 32.098,
+  "end": 32.388
+ },
+ {
+  "text": "of",
+  "start": 32.4,
+  "end": 32.455
+ },
+ {
+  "text": "a",
+  "start": 32.467,
+  "end": 32.511
+ },
+ {
+  "text": "marshmallow",
+  "start": 32.522,
+  "end": 33.136
+ },
+ {
+  "text": "over",
+  "start": 33.248,
+  "end": 33.426
+ },
+ {
+  "text": "a",
+  "start": 33.438,
+  "end": 33.471
+ },
+ {
+  "text": "fire.",
+  "start": 33.482,
+  "end": 33.884
+ },
+ {
+  "text": "The",
+  "start": 34.252,
+  "end": 34.297
+ },
+ {
+  "text": "spin",
+  "start": 34.308,
+  "end": 34.643
+ },
+ {
+  "text": "also",
+  "start": 34.654,
+  "end": 34.933
+ },
+ {
+  "text": "helps",
+  "start": 34.944,
+  "end": 35.223
+ },
+ {
+  "text": "stir",
+  "start": 35.234,
+  "end": 35.525
+ },
+ {
+  "text": "the",
+  "start": 35.536,
+  "end": 35.647
+ },
+ {
+  "text": "liquid",
+  "start": 35.658,
+  "end": 35.982
+ },
+ {
+  "text": "metal",
+  "start": 35.993,
+  "end": 36.261
+ },
+ {
+  "text": "in",
+  "start": 36.272,
+  "end": 36.362
+ },
+ {
+  "text": "Earth's",
+  "start": 36.373,
+  "end": 36.607
+ },
+ {
+  "text": "core.",
+  "start": 36.618,
+  "end": 36.975
+ },
+ {
+  "text": "That",
+  "start": 37.355,
+  "end": 37.444
+ },
+ {
+  "text": "stirring",
+  "start": 37.455,
+  "end": 37.835
+ },
+ {
+  "text": "makes",
+  "start": 37.846,
+  "end": 38.069
+ },
+ {
+  "text": "our",
+  "start": 38.08,
+  "end": 38.158
+ },
+ {
+  "text": "magnetic",
+  "start": 38.17,
+  "end": 38.583
+ },
+ {
+  "text": "shield,",
+  "start": 38.594,
+  "end": 38.951
+ },
+ {
+  "text": "so",
+  "start": 39.275,
+  "end": 39.397
+ },
+ {
+  "text": "the",
+  "start": 39.408,
+  "end": 39.475
+ },
+ {
+  "text": "shield",
+  "start": 39.487,
+  "end": 39.81
  },
  {
   "text": "would",
-  "start": 42.969,
-  "end": 43.069
+  "start": 39.821,
+  "end": 39.944
+ },
+ {
+  "text": "probably",
+  "start": 39.955,
+  "end": 40.335
+ },
+ {
+  "text": "weaken.",
+  "start": 40.346,
+  "end": 40.647
+ },
+ {
+  "text": "Then",
+  "start": 41.016,
+  "end": 41.172
+ },
+ {
+  "text": "more",
+  "start": 41.183,
+  "end": 41.406
+ },
+ {
+  "text": "harsh",
+  "start": 41.417,
+  "end": 41.741
+ },
+ {
+  "text": "radiation",
+  "start": 41.752,
+  "end": 42.277
+ },
+ {
+  "text": "from",
+  "start": 42.288,
+  "end": 42.411
+ },
+ {
+  "text": "the",
+  "start": 42.422,
+  "end": 42.489
+ },
+ {
+  "text": "Sun",
+  "start": 42.5,
+  "end": 42.812
+ },
+ {
+  "text": "would",
+  "start": 43.002,
+  "end": 43.147
+ },
+ {
+  "text": "reach",
+  "start": 43.158,
+  "end": 43.371
+ },
+ {
+  "text": "the",
+  "start": 43.382,
+  "end": 43.46
+ },
+ {
+  "text": "ground.",
+  "start": 43.471,
+  "end": 43.873
+ },
+ {
+  "text": "Our",
+  "start": 44.241,
+  "end": 44.364
+ },
+ {
+  "text": "daily",
+  "start": 44.375,
+  "end": 44.665
+ },
+ {
+  "text": "spin",
+  "start": 44.676,
+  "end": 45.022
+ },
+ {
+  "text": "gives",
+  "start": 45.033,
+  "end": 45.246
+ },
+ {
+  "text": "us",
+  "start": 45.257,
+  "end": 45.368
+ },
+ {
+  "text": "gentle",
+  "start": 45.379,
+  "end": 45.67
+ },
+ {
+  "text": "days,",
+  "start": 45.681,
+  "end": 46.071
+ },
+ {
+  "text": "steady",
+  "start": 46.272,
+  "end": 46.596
+ },
+ {
+  "text": "air",
+  "start": 46.607,
+  "end": 46.931
+ },
+ {
+  "text": "and",
+  "start": 47.109,
+  "end": 47.176
+ },
+ {
+  "text": "a",
+  "start": 47.188,
+  "end": 47.221
+ },
+ {
+  "text": "shield",
+  "start": 47.232,
+  "end": 47.589
+ },
+ {
+  "text": "overhead.",
+  "start": 47.6,
+  "end": 48.047
+ },
+ {
+  "text": "Would",
+  "start": 48.415,
+  "end": 48.516
  },
  {
   "text": "you",
-  "start": 43.08,
-  "end": 43.17
+  "start": 48.527,
+  "end": 48.616
  },
  {
-  "text": "pick,",
-  "start": 43.181,
-  "end": 43.493
+  "text": "rather",
+  "start": 48.627,
+  "end": 48.873
  },
  {
-  "text": "bright",
-  "start": 43.705,
-  "end": 44.029
+  "text": "live",
+  "start": 48.884,
+  "end": 49.074
+ },
+ {
+  "text": "on",
+  "start": 49.085,
+  "end": 49.152
+ },
+ {
+  "text": "the",
+  "start": 49.163,
+  "end": 49.23
+ },
+ {
+  "text": "sunny",
+  "start": 49.241,
+  "end": 49.542
+ },
+ {
+  "text": "side",
+  "start": 49.554,
+  "end": 49.944
  },
  {
   "text": "or",
-  "start": 44.107,
-  "end": 44.185
+  "start": 50.078,
+  "end": 50.156
  },
  {
-  "text": "dark?",
-  "start": 44.196,
-  "end": 44.565
+  "text": "the",
+  "start": 50.167,
+  "end": 50.246
  },
  {
-  "text": "Comment",
-  "start": 44.933,
-  "end": 45.179
+  "text": "dark",
+  "start": 50.257,
+  "end": 50.469
  },
  {
-  "text": "below.",
-  "start": 45.19,
-  "end": 45.502
+  "text": "side?",
+  "start": 50.48,
+  "end": 50.826
  }
 ]
