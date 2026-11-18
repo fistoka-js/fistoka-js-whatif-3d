@@ -101,7 +101,7 @@ Animatable with `set` (also usable as a starting value):
 
 ### arrow
 
-A solid 3D arrow from one point or prop to another. Animate "length" (0..1) to make it grow.
+A flat, bold 2D-style arrow from one point or prop to another. Animate "length" (0..1) to grow it.
 
 Floats: yes. Stage-space: drawn between its points.
 
@@ -110,7 +110,7 @@ Floats: yes. Stage-space: drawn between its points.
 | `from` | point: a slot, [x, y, z], or the id of a prop in this shot; default "left" | where the arrow starts (slot, [x,y,z] or prop id) |
 | `to` | point: a slot, [x, y, z], or the id of a prop in this shot; default "right" | where it points (slot, [x,y,z] or prop id) |
 | `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "accent" | colour |
-| `thickness` | number 0.02..0.3; default 0.07 | shaft thickness |
+| `thickness` | number 0.02..0.3; default 0.07 | shaft width is 1.35 times this number; the head is 3 times wider than the shaft. An arrow shorter than 3 shaft widths (e.g. while growing from 0) shrinks evenly, so it is narrower. |
 
 Animatable with `set` (also usable as a starting value):
 
