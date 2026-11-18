@@ -64,7 +64,7 @@ After the prop is built and reviewed, run the pipeline again (see `docs/HOW-IT-W
 Read and obey docs/HELPER-RULES.md first. Work only in E:\Youtube Project\whatif-3d. No paid calls, no uploads.
 
 Run: .\.venv\Scripts\python.exe -m pipeline.run --topic "[topic]" --slug [slug] --llm files --no-upload
-It stops with exit code 4 and says only that it waits for a reply file in shows/[slug]/llm/. Open that folder and find the .prompt.md file that has no matching .reply.md (the newest one; shows/[slug]/out/run.log also shows it). Read that whole prompt file in chunks of under 100 lines, including the worked example and its OUTPUT JSON. Write only the answer (for example the JSON) to the reply file with the same name but ending .reply.md. Run the same command again. Repeat until it finishes or exits 3 (needs props) or 1 (failed). Report the last output lines.
+It stops with exit code 4 and says only that it waits for a reply file in shows/[slug]/llm/. Open that folder and find the .prompt.md file that has no matching .reply.md (the newest one; shows/[slug]/out/run.log also shows it). Read that whole prompt file in chunks of under 100 lines, including any worked example and the JSON shape the prompt asks for (not every prompt has a worked example). Write only the answer (for example the JSON) to the reply file with the same name but ending .reply.md. Run the same command again. Repeat until it finishes or exits 3 (needs props) or 1 (failed). Report the last output lines.
 ```
 
 ## Tips

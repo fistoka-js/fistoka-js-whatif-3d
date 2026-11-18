@@ -134,12 +134,15 @@ class FakeLLM:
 
 
 QA_PASS = lambda slug: {"result": "pass", "findings": []}
+# The tests written before the storyboard step run with it off: they test the other steps, and they also
+# prove that `"storyboard": false` keeps the old calls, numbering and prompts. Storyboard tests turn it on.
+OLD_DEFAULTS = dict(writer.DEFAULTS, storyboard=False)
 
 
 def run_writer(tmp_path, replies, qa=QA_PASS, settings=None, slug="moon"):
     folder = tmp_path / slug
     fake = FakeLLM(folder, replies)
-    s = dict(writer.DEFAULTS, **(settings or {}))
+    s = dict(OLD_DEFAULTS, **(settings or {}))
     code = writer.write("What if the Moon vanished?", slug, mode="api", settings=s, complete=fake,
                         voice_fn=fake_voice, qa_fn=qa, shows_dir=tmp_path)
     return code, folder, fake
@@ -282,7 +285,7 @@ def test_not_feasible_topic_goes_to_the_needs_props_queue(tmp_path, monkeypatch)
         assert "pipeline.writer" in " ".join(cmd), cmd          # nothing after the writer may run
         slug = cmd[cmd.index("--slug") + 1]
         fake = FakeLLM(tmp_path / "shows" / slug, {"script": [reply]})
-        return writer.write(cmd[cmd.index("--topic") + 1], slug, mode="api", settings=dict(writer.DEFAULTS),
+        return writer.write(cmd[cmd.index("--topic") + 1], slug, mode="api", settings=dict(OLD_DEFAULTS),
                             complete=fake, voice_fn=fake_voice, qa_fn=QA_PASS, shows_dir=tmp_path / "shows")
 
     monkeypatch.setattr(run, "run_cmd", fake_cmd)
@@ -387,7 +390,7 @@ def test_unshowable_sentence_triggers_one_rewrite_before_the_voice(tmp_path):
     folder = tmp_path / "moon"
     fake = FakeLLM(folder, {"script": [script_reply(beats=bad)], "script-rewrite": [script_reply(rewritten)],
                             "audit": [audit_reply(GOOD_CLAIM)], "show": [good_show]})
-    code = writer.write("What if the Moon vanished?", "moon", mode="api", settings=dict(writer.DEFAULTS),
+    code = writer.write("What if the Moon vanished?", "moon", mode="api", settings=dict(OLD_DEFAULTS),
                         complete=fake, voice_fn=voice, qa_fn=QA_PASS, shows_dir=tmp_path)
     assert code == 0
     assert fake.purposes == ["script", "script-rewrite", "audit", "show"]   # rewrite comes before any voice
@@ -522,7 +525,7 @@ def test_a_shortened_script_gets_the_beat_check_before_it_is_voiced(tmp_path):
         "audit-shorten": [json.dumps({"claims": [
             {"claim": "The Moon drags the oceans.", "quote": "The Moon drags the oceans",
              "verdict": "unsupported", "note": "needs a source"}]})]})
-    code = writer.write("What if the Moon vanished?", "moon", mode="api", settings=dict(writer.DEFAULTS),
+    code = writer.write("What if the Moon vanished?", "moon", mode="api", settings=dict(OLD_DEFAULTS),
                         complete=fake, voice_fn=voice, qa_fn=QA_PASS, shows_dir=tmp_path)
     assert code == 0
     assert fake.purposes == ["script", "audit", "shorten", "script-rewrite", "audit-shorten", "show"]
@@ -602,7 +605,7 @@ def test_other_warnings_are_listed_in_review_and_blocking_ones_repaired(tmp_path
     folder = tmp_path / "moon"
     fake = FakeLLM(folder, {"script": [script_reply()], "audit": [audit_reply(GOOD_CLAIM)],
                             "show": [good_show], "repair": [good_show]})
-    code = writer.write("What if the Moon vanished?", "moon", mode="api", settings=dict(writer.DEFAULTS),
+    code = writer.write("What if the Moon vanished?", "moon", mode="api", settings=dict(OLD_DEFAULTS),
                         complete=fake, voice_fn=fake_voice, validate_fn=lambda f, **k: next(answers),
                         qa_fn=QA_PASS, shows_dir=tmp_path)
     assert code == 0 and fake.purposes == ["script", "audit", "show", "repair1"]
@@ -647,7 +650,7 @@ def test_script_prompt_has_the_shape_beats_and_mechanism_rules():
 
 def test_files_mode_waits_for_each_reply_and_continues(tmp_path, capsys):
     folder = tmp_path / "moon"
-    s = dict(writer.DEFAULTS)
+    s = dict(OLD_DEFAULTS)
 
     def go():
         return writer.write("What if the Moon vanished?", "moon", mode="files", settings=s,
@@ -855,7 +858,7 @@ def test_a_worse_qa_repair_is_not_kept(tmp_path):
 
 def test_files_mode_resume_after_a_shorten_does_not_voice_again(tmp_path):
     folder = tmp_path / "moon"
-    s = dict(writer.DEFAULTS)
+    s = dict(OLD_DEFAULTS)
     voiced = []
 
     def counting_voice(script, folder_, settings):
@@ -1023,7 +1026,7 @@ def test_a_rewrite_after_a_shorten_is_told_the_word_limit_and_a_longer_one_is_no
         "shorten": [json.dumps({"script": short, "beats": beats_for(short, change="stays the same")})],
         "script-rewrite": [script_reply(LONG_SCRIPT)],            # grows back to 208 words
         "audit-shorten": [audit_reply(MOON_CLAIM)], "show": [good_show]})
-    code = writer.write("What if the Moon vanished?", "moon", mode="api", settings=dict(writer.DEFAULTS),
+    code = writer.write("What if the Moon vanished?", "moon", mode="api", settings=dict(OLD_DEFAULTS),
                         complete=fake, voice_fn=voice, qa_fn=QA_PASS, shows_dir=tmp_path)
     assert code == 0
     assert fake.purposes == ["script", "audit", "shorten", "script-rewrite", "audit-shorten", "show"]
@@ -1161,7 +1164,7 @@ def test_files_mode_reset_shorten_failure_voices_the_long_script_again(tmp_path)
     """A resumed run whose shorten reply was removed and then answered badly keeps the long script: the
     voice files on disk must be the long script's, not the shortened one's from before."""
     folder = tmp_path / "moon"
-    s = dict(writer.DEFAULTS)
+    s = dict(OLD_DEFAULTS)
     voiced = []
 
     def counting_voice(script, folder_, settings):
@@ -1277,7 +1280,7 @@ def test_not_feasible_rewrite_of_the_first_script_does_not_voice_or_list_old_voi
     bad = beats_for(SCRIPT)
     bad[3]["change"] = "none"
     fake = FakeLLM(folder, {"script": [script_reply(beats=bad)], "script-rewrite": [NOT_FEASIBLE]})
-    code = writer.write("What if the Moon vanished?", "moon", mode="api", settings=dict(writer.DEFAULTS),
+    code = writer.write("What if the Moon vanished?", "moon", mode="api", settings=dict(OLD_DEFAULTS),
                         complete=fake, voice_fn=lambda *a: voiced.append(a), qa_fn=QA_PASS, shows_dir=tmp_path)
     assert code == 3 and voiced == []
     assert (folder / "script.txt").read_text(encoding="utf-8") == "[]"      # not rewritten with the unaudited draft
@@ -1353,7 +1356,7 @@ def test_a_shortened_script_over_the_target_is_named_and_a_rewrite_no_longer_tha
         "script": [script_reply(LONG_SCRIPT)], "audit": [audit_reply(MOON_CLAIM)],
         "shorten": [json.dumps({"script": over, "beats": beats_for(over, change="stays the same")})],
         "script-rewrite": [script_reply(rewrite)], "audit-shorten": [audit_reply(MOON_CLAIM)], "show": [good_show]})
-    assert writer.write("Moon", "moon", mode="api", settings=dict(writer.DEFAULTS), complete=fake,
+    assert writer.write("Moon", "moon", mode="api", settings=dict(OLD_DEFAULTS), complete=fake,
                         voice_fn=voice_fn, qa_fn=QA_PASS, shows_dir=tmp_path / "c") == 0
     assert voiced == [208, target + 4]
     review = (folder / "review.md").read_text(encoding="utf-8")
@@ -1367,7 +1370,7 @@ def test_a_shortened_script_over_the_target_is_named_and_a_rewrite_no_longer_tha
         "shorten": [json.dumps({"script": over, "beats": beats_for(over, change="stays the same")})],
         "script-rewrite": [script_reply(_one_sentence(target + 12))], "audit-shorten": [audit_reply(MOON_CLAIM)],
         "show": [good_show]})
-    writer.write("Moon", "moon", mode="api", settings=dict(writer.DEFAULTS), complete=fake,
+    writer.write("Moon", "moon", mode="api", settings=dict(OLD_DEFAULTS), complete=fake,
                  voice_fn=voice_fn, qa_fn=QA_PASS, shows_dir=tmp_path / "d")
     assert voiced == [208, target + 9]
     assert "so it was NOT used; kept the shortened script" in (folder / "review.md").read_text(encoding="utf-8")
@@ -1377,7 +1380,7 @@ def test_files_mode_reset_then_not_feasible_after_a_shorten_leaves_matching_voic
     """A shortened run that made a show is reset; the shorten's beat rewrite then answers not feasible. The
     voice files must be the long script's (the one review.md shows) and the old show.json is not listed."""
     folder = tmp_path / "moon"
-    s = dict(writer.DEFAULTS)
+    s = dict(OLD_DEFAULTS)
     voiced = []
 
     def counting_voice(script, folder_, settings):
@@ -1460,7 +1463,7 @@ def test_the_voice_note_counts_the_voiced_rewrite_not_the_shorten_reply(tmp_path
 def test_an_old_review_is_removed_while_a_files_mode_run_waits(tmp_path):
     (tmp_path / "moon").mkdir()
     (tmp_path / "moon" / "review.md").write_text("- Status: needs_props", encoding="utf-8")
-    code = writer.write("Moon", "moon", mode="files", settings=dict(writer.DEFAULTS), voice_fn=fake_voice,
+    code = writer.write("Moon", "moon", mode="files", settings=dict(OLD_DEFAULTS), voice_fn=fake_voice,
                         qa_fn=QA_PASS, shows_dir=tmp_path)
     assert code == writer.EXIT_WAITING and not (tmp_path / "moon" / "review.md").exists()
 
@@ -1477,7 +1480,7 @@ def _run_with_voice_seconds(tmp_path, script, seconds, extra=None):
     replies = {"script": [script_reply(script)], "audit": [audit_reply(MOON_CLAIM)], "show": [good_show]}
     replies.update(extra or {})
     fake = FakeLLM(folder, replies)
-    code = writer.write("Moon", "moon", mode="api", settings=dict(writer.DEFAULTS), complete=fake,
+    code = writer.write("Moon", "moon", mode="api", settings=dict(OLD_DEFAULTS), complete=fake,
                         voice_fn=voice, qa_fn=QA_PASS, shows_dir=tmp_path)
     return code, folder, fake
 

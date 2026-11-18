@@ -15,7 +15,7 @@ A video is described by `shows/<slug>/show.json` (full contract: `docs/SPEC.md`)
 
 | Step | What it runs | Reads | Writes (in `shows/<slug>/`) |
 |---|---|---|---|
-| writer | `python -m pipeline.writer` (script, fact check, voice, show file, repair loop, fallback; `docs/WRITER.md`) | the topic, `kit/catalog.json`, `pipeline/prompts/` | `script.txt`, `voice.mp3`, `words.json`, `show.json`, `review.md`, `writer.json`, and `llm/` in files mode |
+| writer | `python -m pipeline.writer` (script, fact check, voice, storyboard, show file, repair loop, fallback; `docs/WRITER.md`) | the topic, `kit/catalog.json`, `pipeline/prompts/` | `script.txt`, `voice.mp3`, `words.json`, `storyboard.json`, `storyboard.md`, `show.json`, `review.md`, `writer.json`, and `llm/` in files mode |
 | timeline | `tools/validate.mjs` then `tools/timeline.mjs` | `show.json`, `words.json` | `out/timeline.json` (shot times, sound events) |
 | render | `tools/render.mjs` (`docs/RENDERING.md`) | `show.json`, `words.json`, `voice.mp3` | `out/<slug>.mp4` (picture and voice) |
 | mix | `pipeline.mix` (`docs/AUDIO.md`) | the video, voice, timeline, optional music | `out/<slug>-final.mp4` (voice, effects, music, loudness) |

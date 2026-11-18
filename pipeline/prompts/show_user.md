@@ -4,7 +4,7 @@ THE SCRIPT AS SPOKEN, sentence by sentence (S1, S2, ...), with the sentence's st
 {{WORDS}}
 
 THE PICTURE PLAN from the script writer (S n here is S n above): what stays on screen, what visibly changes while that sentence is spoken, and the dial that drives it. Follow it; improve it where the catalogue offers a better way to show the same change.
-{{BEATS}}
+{{BEATS}}{{STORYBOARD}}
 
 The last word ends at {{LAST_END}} s; the video is {{DURATION}} s long. Make 2 to 4 main scenes (a scene = a shot plus its "continue": true shots), plus at most a short opening and a short closing scene. Each shot lasts 1.5 to 12 seconds (over 9 s gives a warning); aim for 3 to 8.
 

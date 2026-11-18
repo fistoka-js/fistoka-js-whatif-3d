@@ -1,7 +1,8 @@
 // Checks a show against the catalogue and its words file, without a browser (SPEC §9), plus the story rules (SPEC §14).
 // Usage: node tools/validate.mjs shows/<slug> [--json] [--story-rules | --no-story-rules]
 // Prints one line per problem: "ERROR <path>: <message> <hint>" (warnings as WARNING). --json prints
-// { ok, errors: [{path, message, hint}], warnings: [...] } for the repair loop.
+// { ok, errors: [{path, message, hint}], warnings: [...], overlays: [{do, text, to, unit, decimals, t0, until, shot}] }
+// for the repair loop (overlays: every label, text and count with its times, for the writer's storyboard check).
 // The story rules (does the picture change with every sentence?) run when the show itself is valid; whether they run
 // without a flag is STORY_RULES_DEFAULT in tools/lib/story-rules.mjs. Their problems have paths starting with "story.".
 // Exit codes: 0 = ok (warnings allowed), 1 = errors, 2 = bad command.
@@ -31,7 +32,13 @@ function main(argv) {
     warnings.push(...r.warnings.map(plain));
   }
   if (json) {
-    console.log(JSON.stringify({ ok: errors.length === 0, errors, warnings }, null, 2));
+    // overlays: every label, text and count with its resolved times (a label/text/count ends with its shot), so the
+    // writer can check them against the storyboard without resolving anchors itself. Only for a show without errors.
+    const overlays = show && errors.length === 0 ? show.shots.flatMap(s => s.actions
+      .filter(a => ['label', 'text', 'count'].includes(a.do))
+      .map(a => ({ do: a.do, text: a.text ?? null, to: a.to ?? null, unit: a.unit ?? null, decimals: a.decimals ?? null,
+                   t0: a.t0, until: a.until, shot: s.id }))) : [];
+    console.log(JSON.stringify({ ok: errors.length === 0, errors, warnings, overlays }, null, 2));
   } else {
     for (const p of errors) console.log(formatProblem(p, 'ERROR'));
     for (const p of warnings) console.log(formatProblem(p, 'WARNING'));

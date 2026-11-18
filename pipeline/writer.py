@@ -1,4 +1,4 @@
-"""The writer: topic -> script -> voice -> show.json, with checks and repairs.
+"""The writer: topic -> script -> voice -> storyboard -> show.json, with checks and repairs.
 
     python -m pipeline.writer --topic "What if the Moon disappeared?" --slug moon-gone [--mode api|files]
 
@@ -12,13 +12,17 @@ Steps (docs/WRITER.md explains each in plain words):
      not feasible) -> anything still flagged is listed under NEEDS FACT CHECK in review.md.
   3. Voice (pipeline.voice.make_voice, free Edge TTS). Longer than the limit -> one "shorten" call
      (its script is beat-checked and fact-audited, "audit-shorten", before it is voiced), then voice again.
-  4. Show call (gets the beat list) -> shows/<slug>/show.json -> node tools/validate.mjs --story-rules.
-     Errors, the story.scenes / story.subject warnings, or no dial bound to two or more things ->
-     up to 3 repair rounds.
-  5. Picture check (node tools/qa.mjs). fail -> one repair round, then check again; keep the best.
-  6. No valid show at all -> pipeline/fallback.py builds a plain one, marked
+  4. Storyboard (setting "storyboard", on by default): a "storyboard" call plans every sentence's picture
+     (storyboard.json, storyboard.md), a code check and a separate "storyboard-review" call judge it, and
+     up to "storyboard_repairs" (setting, default 2) "storyboard-repairN" calls fix it. Still failing -> exit 1.
+     A "central" gap -> NEEDS-PROPS.md, exit 3.
+  5. Show call (gets the beat list and the storyboard) -> shows/<slug>/show.json -> node tools/validate.mjs
+     --story-rules. Errors, the story.scenes / story.subject warnings, no dial bound to two or more things,
+     or a storyboard prop, text or flow direction the show misses -> up to 3 repair rounds.
+  6. Picture check (node tools/qa.mjs). fail -> one repair round, then check again; keep the best.
+  7. No valid show at all -> pipeline/fallback.py builds a plain one, marked
      "fallback: not good enough to publish" (it is checked without the story rules).
-  7. review.md (for the human) and writer.json (for the pipeline runner).
+  8. review.md (for the human) and writer.json (for the pipeline runner).
 
 Exit codes: 0 show written (by the LLM or the fallback), 1 failed, 2 bad command,
 3 topic needs props the catalogue lacks, 4 files mode is waiting for a reply file.
@@ -30,7 +34,10 @@ import math
 import re
 import subprocess
 import sys
+import unicodedata
+from collections import Counter
 from datetime import datetime, timezone
+from decimal import Decimal
 from pathlib import Path
 
 from . import catalog_text, fact_check, fallback, llm
@@ -56,6 +63,8 @@ DEFAULTS = {
     "voice": "en-US-AndrewNeural",
     "rate": "+12%",
     "fallback_seed": 0,
+    "storyboard": True,           # plan and review every sentence's picture before the show call
+    "storyboard_repairs": 2,      # storyboard repair rounds after a failed review
 }
 TAIL_SECONDS = fallback.TAIL      # quiet seconds after the last word (same default as kit/engine/show.js)
 WORD_FLOOR = 180                   # the script prompt asks for 180 to 195 words; a shorten never goes below this
@@ -63,6 +72,11 @@ WORD_FLOOR_TOLERANCE = 5           # the model counts words approximately: a rep
 STILL_OK_SECONDS = 2.0            # a voice up to this much over max_seconds is accepted with a note ("a little over 60 s is fine")
 SCRIPT_MAX_TOKENS = 16000          # a cap, not a cost: thinking (always on) plus the JSON must fit
 SHOW_MAX_TOKENS = 16000
+STORYBOARD_MAX_TOKENS = 16000
+TEXT_MIN_SECONDS = 2.5             # on-screen text and key numbers stay up at least this long (storyboard prompts say so)
+TEXT_START_TOLERANCE = 1.5         # coverage check: the show's text may start this far from the storyboard's phrase
+TEXT_END_TOLERANCE = 0.5           # coverage check: ... and may go away this much before the storyboard says
+FLOW_PROPS = ("wire", "arrow", "beam")   # drawn from "from" to "to", so their direction can be checked
 
 EXIT_OK, EXIT_FAILED, EXIT_USAGE, EXIT_NEEDS_PROPS, EXIT_WAITING = 0, 1, 2, 3, 4
 
@@ -359,11 +373,13 @@ def script_system_prompt(cat=None):
     return fill(read_prompt("script_system.md"), CATALOG_NAMES=catalog_names(cat))
 
 
-def show_user_prompt(title, words, script="", beats=None):
+def show_user_prompt(title, words, script="", beats=None, board=None):
+    """board: the approved storyboard (None when the storyboard step is off: the prompt is then as before)."""
     dur = show_duration(words)
+    story = "" if not board else fill(read_prompt("show_storyboard.md"), BOARD=storyboard_text(board))
     return fill(read_prompt("show_user.md"), TITLE=title, WORDS=words_block(words),
                 LAST_END=f"{words[-1]['end']:.2f}", DURATION=f"{dur:.2f}",
-                BEATS=beats_block(script, beats, len(sentences(words))))
+                BEATS=beats_block(script, beats, len(sentences(words))), STORYBOARD=story)
 
 
 # ---------------------------------------------------------------- parsing replies
@@ -383,7 +399,7 @@ def parse_show_reply(text):
     """The show reply must be one JSON object (after stripping one code fence)."""
     try:
         obj = json.loads(strip_fence(text))
-    except json.JSONDecodeError as e:
+    except (ValueError, RecursionError) as e:     # JSONDecodeError, and "Exceeds the limit (4300 digits)"
         raise BadReply(f"the reply is not valid JSON ({e})") from e
     if not isinstance(obj, dict):
         raise BadReply("the reply is JSON but not an object")
@@ -398,7 +414,7 @@ def parse_loose_json(text):
         raw = raw[start:end]
     try:
         obj = json.loads(raw)
-    except json.JSONDecodeError as e:
+    except (ValueError, RecursionError) as e:     # JSONDecodeError, and "Exceeds the limit (4300 digits)"
         raise BadReply(f"the reply is not valid JSON ({e})") from e
     if not isinstance(obj, dict):
         raise BadReply("the reply is JSON but not an object")
@@ -494,6 +510,9 @@ class Run:
         self.repairs = 0
         self.history = []                # one line per show attempt
         self.qa = {"result": "not_run", "reason": "no show", "findings": []}
+        # The storyboard step (None when it is off): the board, the reviewer's last verdict and notes, repairs.
+        self.storyboard = None
+        self.props_wanted = []           # non-central gaps: drawn with a stand-in, listed for prop building
         self.status = "failed"
         self.error = None
 
@@ -819,10 +838,13 @@ def dial_reach(show):
     return best
 
 
-def story_problems(show, result):
+def story_problems(show, result, board=None, words=None):
     """Why a show is not accepted beyond the checker's errors, in the checker's {path, message, hint}
-    shape: a blocking story warning, or no dial bound to two or more things."""
+    shape: a blocking story warning, no dial bound to two or more things, or (with an approved storyboard)
+    a storyboard prop, text or flow direction the show misses."""
     problems = [w for w in result.get("warnings", []) if str(w.get("path", "")).startswith(BLOCKING_WARNINGS)]
+    if board and words:
+        problems += coverage_problems(board, show, words, result)
     if dial_reach(show) < 2:
         problems.append({"path": "story.dial", "message": "no dial is bound to two or more things in one scene.",
                          "hint": 'Add a "dials" entry for the quantity that changes and bind it with '
@@ -836,7 +858,8 @@ def show_step(run, complete, validate_fn, cat, words):
     folder = run.folder
     title = run.draft.get("title") or run.topic
     system = show_system_prompt(cat)
-    original = show_user_prompt(title, words, run.draft.get("script", ""), run.draft.get("beats"))
+    board = (run.storyboard or {}).get("board")
+    original = show_user_prompt(title, words, run.draft.get("script", ""), run.draft.get("beats"), board)
     user, purpose = original, "show"
     max_rounds = int(run.settings["max_repairs"])
     for attempt in range(max_rounds + 1):
@@ -858,7 +881,7 @@ def show_step(run, complete, validate_fn, cat, words):
         else:
             (folder / "show.json").write_text(json.dumps(show, indent=1, ensure_ascii=False), encoding="utf-8")
             result = validate_fn(folder)
-            blocking = story_problems(show, result) if result.get("ok") else []   # a rejected show is not story-checked
+            blocking = story_problems(show, result, board, words) if result.get("ok") else []   # a rejected show is not story-checked
             if result.get("ok") and not blocking:
                 run.warnings = list(result.get("warnings", []))
                 run.history.append(f"{purpose}: valid ({len(run.warnings)} warning(s))")
@@ -870,6 +893,566 @@ def show_step(run, complete, validate_fn, cat, words):
         user = fill(read_prompt("repair_user.md"), ORIGINAL=original, PREVIOUS=previous, ERRORS=errors_text)
         purpose = f"repair{attempt + 1}"
     return None
+
+
+# ---------------------------------------------------------------- storyboard
+#
+# Between the voice and the show: a storyboard call plans every sentence's picture (objects, look and place,
+# change, camera, on-screen text, flow directions, gaps the catalogue cannot draw), a short code check and a
+# separate reviewer call judge it, and repair calls fix it. The show call then builds exactly that plan, and
+# coverage_problems() checks the finished show against it. docs/WRITER.md explains it in plain words.
+
+def _text(v):
+    """A plain string from a model value (a list or dict where a string belongs counts as empty)."""
+    return "" if v is None or isinstance(v, (dict, list)) else str(v).strip()
+
+
+def _dicts(v):
+    return [x for x in v if isinstance(x, dict)] if isinstance(v, list) else []
+
+
+def _ends(v):
+    """A text's "ends": a sentence number, "end", or whatever the model wrote (the code check reports it)."""
+    if isinstance(v, float) and v.is_integer() and abs(v) < 10 ** 6:
+        v = int(v)                    # 3.0 is sentence 3
+    t = _text(v)
+    if re.fullmatch(r"[Ss]?\d{1,6}", t):     # longer digit strings are not a sentence number (int() would choke)
+        return int(t.lstrip("Ss"))
+    return "end" if t.lower() == "end" else t
+
+
+def normalise_storyboard(obj):
+    """The storyboard reply in a fixed shape (every field present, the right type), so later code never
+    trips over a model that wrote a string where a list belongs."""
+    sents = []
+    for s in _dicts(obj.get("sentences")):
+        objects = [{"prop": _text(o.get("prop")), "look": _text(o.get("look")), "place": _text(o.get("place")),
+                    "stands_for": _text(o.get("stands_for")), "missing": _text(o.get("missing")),
+                    "stand_in": _text(o.get("stand_in")), "central": o.get("central") is True}
+                   for o in _dicts(s.get("objects"))]
+        sents.append({"scene": _text(s.get("scene")), "objects": objects, "change": _text(s.get("change")),
+                      "camera": _text(s.get("camera")),
+                      "texts": [{"words": _text(t.get("words")), "starts": _text(t.get("starts")),
+                                 "ends": _ends(t.get("ends"))} for t in _dicts(s.get("texts"))],
+                      "flows": [{k: _text(f.get(k)) for k in ("what", "by", "from", "to")}
+                                for f in _dicts(s.get("flows"))]})
+    ending = obj.get("ending") if isinstance(obj.get("ending"), dict) else {}
+    return {"hook": _text(obj.get("hook")), "answer": _text(obj.get("answer")), "hero": _text(obj.get("hero")),
+            "summary": _text(obj.get("summary")),
+            "scenes": [{k: _text(x.get(k)) for k in ("scene", "env", "idea")} for x in _dicts(obj.get("scenes"))],
+            "sentences": sents,
+            "ending": {k: _text(ending.get(k)) for k in ("closing_question", "comment_line", "tail")}}
+
+
+def storyboard_text(board):
+    """The storyboard as JSON with one sentence per line (S n is line n of "sentences"), for prompts. The empty
+    gap fields of ordinary objects are left out (noise for the model); storyboard.json keeps them."""
+    j = lambda v: json.dumps(v, ensure_ascii=False)
+    head = [f"  {j(k)}: {j(v)}," for k, v in board.items() if k != "sentences"]
+    def plain(o):
+        return o if o["missing"] else {k: v for k, v in o.items() if k not in ("missing", "stand_in", "central")}
+    rows = [f"    {j(dict(s, objects=[plain(o) for o in s['objects']]))}" for s in board["sentences"]]
+    return "{\n" + "\n".join(head) + '\n  "sentences": [\n' + ",\n".join(rows) + "\n  ]\n}"
+
+
+def sentence_lines(words):
+    """S1 [0.09-1.46] What if Earth had rings like Saturn?   (one line per sentence, no word times)"""
+    return "\n".join(f"S{n} [{s[0]['start']:.2f}-{s[-1]['end']:.2f}] {' '.join(w['text'] for w in s)}"
+                     for n, s in enumerate(sentences(words), 1))
+
+
+def phrase_time(sent_words, phrase):
+    """When the phrase starts inside one sentence's words (whole words, case and punctuation ignored), or None."""
+    want = _plain_words(phrase)
+    flat = [(tok, i) for i, w in enumerate(sent_words) for tok in _plain_words(w["text"])]
+    toks = [t for t, _ in flat]
+    for k in range(len(toks) - len(want) + 1):
+        if want and toks[k:k + len(want)] == want:
+            return sent_words[flat[k][1]]["start"]
+    return None
+
+
+def _text_window(t, n, sents, words):
+    """(start, end) seconds of a storyboard text in sentence n, or None where its phrase or end is unusable."""
+    start = phrase_time(sents[n - 1], t["starts"])
+    e = t["ends"]
+    if e == "end":
+        end = words[-1]["end"] + TAIL_SECONDS    # the quiet tail after the last word is on screen too
+    elif isinstance(e, int) and n < e <= len(sents):
+        end = sents[e - 1][0]["start"]
+    else:
+        end = None
+    return start, end
+
+
+def storyboard_gaps(board):
+    """[(sentence number, gap object)] for every object written as a gap."""
+    return [(n, o) for n, s in enumerate((board or {}).get("sentences", []), 1) for o in s["objects"] if o["missing"]]
+
+
+def storyboard_problems(board, words, cat):
+    """The cheap code check that runs before the reviewer: shape, catalogue names, text timing. Plain strings,
+    like the reviewer's problems, so both go to the same repair prompt."""
+    sents = sentences(words)
+    props = cat["props"]
+    out = []
+    if len(board["sentences"]) != len(sents):
+        out.append(f"the storyboard has {len(board['sentences'])} sentence entries but the narration has "
+                   f"{len(sents)} sentences: give exactly one entry per sentence, in order")
+    for k in ("hook", "answer"):
+        if not board[k]:
+            out.append(f'"{k}" is empty')
+    gaps = [o for _, o in storyboard_gaps(board)]
+    # The hero is a prop the board uses (or a gap's stand-in). A hero that cannot be drawn is the usual central
+    # gap: then it names that gap (or "none"). A central gap elsewhere does not excuse any other hero.
+    used = {o["stand_in"] if o["missing"] else o["prop"] for s in board["sentences"] for o in s["objects"]}
+    used = {u for u in used if u and u.lower() != "none"}   # a gap with no stand-in is not a prop the hero can be
+    ends = {p.lower() for p in props} | {u.lower() for u in used}   # names a flow may start or end at
+    central = [o for o in gaps if o["central"]]
+    ok_hero = board["hero"] in used or (central and (board["hero"].lower() == "none"
+                                                     or board["hero"] in [o["missing"] for o in central]))
+    if not board["hero"] or not ok_hero:
+        out.append(f'"hero" is "{board["hero"]}": it must be one of the props used in the objects '
+                   f'({", ".join(sorted(used)) or "none"})')
+    for k, v in board["ending"].items():
+        if not v:
+            out.append(f'"ending" has no "{k}"')
+    for n, (s, sent) in enumerate(zip(board["sentences"], sents), 1):
+        quote = f'S{n} "{" ".join(w["text"] for w in sent)}"'
+        if not s["objects"]:
+            out.append(f"{quote}: no objects on screen")
+        if n == 1 and len(s["objects"]) > 2:
+            out.append(f"{quote}: the first shot shows one clear subject plus at most one other small prop, not "
+                       f"{len(s['objects'])} objects: keep the hero and one small prop")
+        if not s["change"]:
+            out.append(f"{quote}: no change")
+        for o in s["objects"]:
+            if o["missing"]:
+                if o["stand_in"] and o["stand_in"].lower() != "none" and o["stand_in"] not in props:
+                    out.append(f'{quote}: the gap\'s stand-in "{o["stand_in"]}" is not a catalogue prop (or write "none")')
+            elif o["prop"] not in props:
+                out.append(f'{quote}: "{o["prop"]}" is not a catalogue prop: use one, or write it as a gap '
+                           '{"missing": ..., "stand_in": ..., "central": ...}')
+        for t in s["texts"]:
+            if not t["words"] or len(t["words"]) > 40:
+                out.append(f'{quote}: a text needs "words" of 1 to 40 characters (got "{t["words"]}")')
+                continue
+            start, end = _text_window(t, n, sents, words)
+            if start is None:
+                out.append(f'{quote}: text "{t["words"]}" starts on "{t["starts"]}", which is not words of this '
+                           f'sentence: copy them exactly')
+            if end is None:
+                later = (f"a later sentence number ({n + 1} to {len(sents)}) or " if n < len(sents) else "")
+                out.append(f'{quote}: text "{t["words"]}" has "ends": "{t["ends"]}"; use {later}"end" '
+                           f'(the end of the last sentence)')
+            if start is not None and end is not None and end - start < TEXT_MIN_SECONDS - 0.05:
+                out.append(f'{quote}: text "{t["words"]}" is on screen only {end - start:.1f} s; keep it at least '
+                           f'{TEXT_MIN_SECONDS:g} s and until the idea moves on (a later "ends")')
+        for f in s["flows"]:
+            if not f["from"] or not f["to"]:
+                out.append(f'{quote}: the flow of "{f["what"]}" needs "from" and "to"')
+            if f["by"] not in props:
+                out.append(f'{quote}: the flow of "{f["what"]}" is shown by "{f["by"]}", which is not a catalogue prop')
+            for end in ("from", "to"):
+                if f[end] and f[end].lower() not in ends:
+                    out.append(f"{quote}: flow {end} '{f[end]}' is not a prop; use a catalogue prop name such as "
+                               f"{next(iter(props), 'battery')}")
+    return out
+
+
+def parse_review(text):
+    """(verdict, problem lines) from the reviewer's reply. "pass" wins even when it lists points (they are
+    notes). "problems" with nothing readable listed is an unreadable review (BadReply): a failed round.
+    A problem may be an object or a plain string (a single string counts as one problem)."""
+    obj = parse_loose_json(text)
+    lines = []
+    listed = obj.get("problems")
+    for p in listed if isinstance(listed, list) else [listed]:
+        if isinstance(p, dict):
+            what, fix = _text(p.get("what")), _text(p.get("fix"))
+            if not what and not fix:
+                continue   # an empty problem object tells the repair nothing
+            raw = p.get("sentence")
+            if isinstance(raw, bool):
+                raw = None    # true/false is no sentence number
+            elif isinstance(raw, float) and raw.is_integer():
+                raw = int(raw)    # 3.0 is sentence 3
+            label = _text(raw)
+            m = re.fullmatch(r"\s*(?:sentence\s*)?s?\s*(\d{1,6})\s*", label, flags=re.I)
+            # Only a number is an "S4"; "whole video", "all", "ending" are shown as written.
+            if not m and re.fullmatch(r"\s*(?:-\s*\d+|\d{7,})\s*", label):
+                label = ""                # a negative or absurdly long number is no sentence: whole video
+            label = label[:60]
+            where = (f"S{int(m.group(1))}" if int(m.group(1)) else "whole video") if m else (label or "whole video")
+            detail = " ".join(x for x in (what, f"Fix: {fix}" if fix else "") if x)
+            lines.append(f"{where} ({_text(p.get('kind')) or 'problem'}): {detail}")
+        elif isinstance(p, str) and p.strip():
+            lines.append(f"whole video (problem): {p.strip()}")
+    verdict = _text(obj.get("verdict")).lower()
+    if verdict not in ("pass", "problems"):
+        raise BadReply(f'the review has no "verdict" of "pass" or "problems" (got "{verdict}")')
+    if verdict == "problems" and not lines:
+        raise BadReply('the verdict is "problems" but no problem could be read from "problems"')
+    return verdict, lines
+
+
+def storyboard_md(run, words):
+    """storyboard.md: the plan as a short shot-by-shot list a person can follow."""
+    sb = run.storyboard
+    b = sb["board"]
+    if not b:
+        lines = [f"# Storyboard: {run.draft.get('title') or run.topic}", "", "No usable storyboard was written.", "",
+                 "## Problems left", ""]
+        return "\n".join(lines + [f"- {x}" for x in sb["notes"]] + [""])
+    sents = sentences(words)
+    review = {"pass": "PASS", "problems": "PROBLEMS"}.get(sb["verdict"], "not reviewed yet")
+    lines = [f"# Storyboard: {run.draft.get('title') or run.topic}", "",
+             f"- Hook: {b['hook']}", f"- Answer the video gives: {b['answer']}", f"- Hero prop: {b['hero']}",
+             f"- Reviewer: {review}" + (f" (after {sb['repairs']} repair(s))" if sb["repairs"] else ""), "",
+             b["summary"], ""]
+    scene_info = {s["scene"]: s for s in b["scenes"]}
+    current = None
+    for n, s in enumerate(b["sentences"], 1):
+        # An empty scene continues the previous scene's heading ("not named" when it is the first sentence).
+        if (s["scene"] != current and s["scene"] != "") or current is None:
+            current = s["scene"]
+            info = scene_info.get(current, {})
+            lines += [f"## Scene {current or '(not named)'}" + (f" ({info['env']})" if info.get("env") else "")
+                      + (f": {info['idea']}" if info.get("idea") else ""), ""]
+        sent = sents[n - 1] if n <= len(sents) else []
+        said = " ".join(w["text"] for w in sent)
+        lines.append(f"**S{n}**" + (f" at {sent[0]['start']:.1f} s" if sent else "") + f": \"{said}\"")
+        for o in s["objects"]:
+            name = (f"GAP: {o['missing']} (stand-in: {o['stand_in'] or 'none'}"
+                    + (", CENTRAL" if o["central"] else "") + ")") if o["missing"] else o["prop"]
+            about = [o["look"], o["place"]] + ([f"stands for {o['stands_for']}"] if o["stands_for"] else [])
+            lines.append(f"- {name}" + (": " + "; ".join(x for x in about if x) if any(about) else ""))
+        lines.append(f"- Changes: {s['change']}")
+        if s["camera"]:
+            lines.append(f"- Camera: {s['camera']}")
+        for t in s["texts"]:
+            ends = ("until the end" if t["ends"] == "end" else f"until S{t['ends']} starts" if isinstance(t["ends"], int)
+                    else f"ends: {t['ends'][:60] or '(not given)'}")
+            lines.append(f"- Text \"{t['words']}\" from \"{t['starts']}\" {ends}")
+        for f in s["flows"]:
+            lines.append(f"- Flow: {f['what']} along the {f['by']}, from {f['from']} to {f['to']}")
+        lines.append("")
+    e = b["ending"]
+    lines += ["## Ending", f"- Closing question: {e['closing_question']}", f"- Comment line: {e['comment_line']}",
+              f"- After the last word: {e['tail']}", ""]
+    if not sb["fresh"]:
+        lines += ["NOTE: the last repair reply could not be read, so this is an older version of the plan.", ""]
+    if sb["notes"]:
+        lines += ["## Reviewer notes" if sb["verdict"] == "pass" else "## Problems left", ""]
+        lines += [f"- {x}" for x in sb["notes"]] + [""]
+    return "\n".join(lines)
+
+
+def _save_storyboard(run, words):
+    sb = run.storyboard
+    review = {"verdict": sb["verdict"], "notes": sb["notes"], "repairs": sb["repairs"]}
+    if not sb["fresh"]:
+        review["last_reply_unusable"] = True     # "board" (if any) is an older one: the newest reply did not parse
+    (run.folder / "storyboard.json").write_text(json.dumps(
+        dict(sb["board"] or {}, review=review), indent=1, ensure_ascii=False), encoding="utf-8")
+    (run.folder / "storyboard.md").write_text(storyboard_md(run, words), encoding="utf-8")
+
+
+def storyboard_step(run, complete, cat, words):
+    """Storyboard call -> code check -> review call -> up to storyboard_repairs repair rounds. Accepted:
+    run.storyboard["board"] is the plan the show call builds. Still failing: RuntimeError (exit 1). A central
+    gap: NotFeasible (NEEDS-PROPS.md, exit 3). Non-central gaps go to run.props_wanted."""
+    # "board" is the last storyboard that parsed. "fresh" is False when the newest reply did not parse, so
+    # "board" is then an older one: it is still saved (for a person to read) but never decides anything.
+    sb = run.storyboard = {"board": None, "verdict": None, "notes": [], "repairs": 0, "history": [], "fresh": False}
+    names = catalog_names(cat)
+    nums = dict(TEXT_SECONDS=f"{TEXT_MIN_SECONDS:g}", TAIL=f"{TAIL_SECONDS:g}")
+    system = fill(read_prompt("storyboard_system.md"), CATALOG_NAMES=names, **nums)
+    review_system = fill(read_prompt("storyboard_review_system.md"), CATALOG_NAMES=names, **nums)
+    lines = sentence_lines(words)
+    original = fill(read_prompt("storyboard_user.md"), TITLE=run.draft.get("title") or run.topic, TOPIC=run.topic,
+                    SENTENCES=lines, BEATS=beats_block(run.draft.get("script", ""), run.draft.get("beats"),
+                                                       len(sentences(words))))
+    user, purpose = original, "storyboard"
+    real = []                            # the real problems (code check or reviewer) of the last readable round
+    rounds = run.settings.get("storyboard_repairs")
+    # Only a real whole number counts (not a bool, string or float); anything else is the default 2. Below 0 is 0.
+    rounds = max(0, rounds) if isinstance(rounds, int) and not isinstance(rounds, bool) else 2
+    try:
+        for attempt in range(rounds + 1):
+            text = ""
+            try:
+                text = _ask(run, complete, system, user, purpose, STORYBOARD_MAX_TOKENS)
+                board = normalise_storyboard(parse_loose_json(text))
+            except (BadReply, llm.LlmError) as e:
+                # Like the show step: a refused or cut-off answer (LlmError) is a failed round, not a crash.
+                reason = str(e) if isinstance(e, BadReply) else f"the model gave no usable answer ({e})"
+                # The real problems of the earlier round stay on the list; this adds one line to them.
+                problems = real + [f"your last reply could not be read: {reason}. Reply with the JSON object only"]
+                # The repair shows the last good board when there is one, not the broken reply.
+                previous = storyboard_text(sb["board"]) if sb["board"] else (text[:60000] or "(no reply)")
+                sb["fresh"] = False
+                sb["history"].append(f"{purpose}: {reason.replace('the reply is ', '', 1)}")
+            else:
+                sb["board"], previous, sb["fresh"] = board, storyboard_text(board), True
+                problems = storyboard_problems(board, words, cat)
+                if problems:
+                    sb["history"].append(f"{purpose}: {len(problems)} problem(s) found by the code check (no review call)")
+                else:
+                    review_user = fill(read_prompt("storyboard_review_user.md"), TOPIC=run.topic, SENTENCES=lines,
+                                       STORYBOARD=previous)
+                    try:
+                        verdict, problems = parse_review(_ask(run, complete, review_system, review_user,
+                                                              "storyboard-review", STORYBOARD_MAX_TOKENS))
+                    except (BadReply, llm.LlmError) as e:
+                        # An unreadable or cut-off review is a failed round like an unreadable storyboard: it uses a repair.
+                        verdict, problems = "problems", [
+                            f"the review of this storyboard could not be read ({e}); check every rule yourself and "
+                            "reply with the complete corrected storyboard"]
+                        sb["history"].append(f"{purpose}: review reply not usable")
+                    else:
+                        sb["history"].append(f"{purpose}: review {verdict} ({len(problems)} point(s))")
+                    if verdict == "pass":
+                        sb["verdict"], sb["notes"] = "pass", problems
+                        break
+            sb["verdict"], sb["notes"] = "problems", problems
+            if sb["fresh"]:
+                real = problems          # (an unreadable round keeps the earlier real problems)
+            _save_storyboard(run, words)
+            # Only the board of the LAST reply decides a central gap, and only when that reply parsed (fresh): a
+            # board left over from an earlier round must not make the run stop for props.
+            if (attempt == rounds and sb["fresh"]
+                    and any(o["central"] for _, o in storyboard_gaps(sb["board"]))):
+                break                        # it cannot be built anyway: stop for props below, not a failure
+            if attempt == rounds:
+                raise RuntimeError(f"the storyboard still has problems after {rounds} repair round(s): "
+                                   + "; ".join(problems))
+            user = fill(read_prompt("storyboard_repair_user.md"), ORIGINAL=original, PREVIOUS=previous,
+                        PROBLEMS="\n".join(f"- {p}" for p in problems))
+            purpose = f"storyboard-repair{attempt + 1}"
+            sb["repairs"] = attempt + 1
+    except Exception:
+        # Any failure (LlmError, OSError, ...) still leaves the files for a person to read, even when no board
+        # ever parsed (the files then say so).
+        # WaitingForReply is not an Exception: files mode stops there and leaves the files of the last failed
+        # round on disk; the next run deletes them.
+        try:
+            _save_storyboard(run, words)
+        except OSError:
+            pass                         # the original error is the one to report
+        raise
+    _save_storyboard(run, words)
+    gaps = storyboard_gaps(sb["board"])
+    central = [o for _, o in gaps if o["central"]]
+    seen = set()
+    for n, o in gaps:
+        if not o["central"] and o["missing"].lower() not in seen:
+            seen.add(o["missing"].lower())
+            run.props_wanted.append({"missing": o["missing"], "stand_in": o["stand_in"] or "none", "sentence": n})
+    if central:
+        # The same stop as a "feasible": false script reply: NEEDS-PROPS.md, exit 3, topic queued for props.
+        para = " ".join(f"{o['missing']}" + (f" (it stands for {o['stands_for']})" if o["stands_for"] else "") + "."
+                        for o in central)
+        _stop_not_feasible(run, {"feasible": False, "mechanism_prop": para,
+                                 "missing": list(dict.fromkeys(o["missing"] for o in central))}, "the storyboard")
+    return sb["board"]
+
+
+# ---------------------------------------------------------------- coverage: does the show build the storyboard?
+#
+# Tolerant on purpose: a guard against the obvious misses (a planned prop, text or flow direction left out),
+# not a second director. Anything it cannot work out (an unknown phrase, a slot name as a wire end) is skipped.
+
+FILLER_WORDS = {"a", "an", "the", "of", "and", "is"}
+
+
+def _number(t):
+    """A token that is a plain number as its normal form ("3.50" -> "3.5"); anything else (even a circled
+    digit that only looks like one) stays as it is."""
+    t = t.replace("−", "-")
+    if not re.fullmatch(r"-?\d+(\.\d+)?", t):
+        return t
+    try:
+        return format(Decimal(t).normalize(), "f")
+    except ArithmeticError:
+        return t
+
+
+def _is_num(t):
+    return bool(re.fullmatch(r"-?\d+(\.\d+)?", t))
+
+
+def _tokens(text):
+    """Numbers and words of a text, units folded: "2000 °C", "2000 degrees" and "2000c" are all [2000, deg];
+    "%" and "percent" are one token; thousands commas go; numbers are compared as numbers (3.5 = 3.50);
+    accents are dropped ("Café" = "Cafe") and any alphabet counts. Case and punctuation are ignored."""
+    s = unicodedata.normalize("NFKD", str(text)).lower()     # fold first: "℃" becomes "°C", then "°c"
+    s = "".join(c for c in s if not unicodedata.combining(c))
+    s = re.sub(r"(?<=\d),(?=\d{3})", "", s)
+    s = re.sub(r"[°º]|\bdegrees?\b|\bdeg\b|\bcelsius\b|(?<=\d)\s*c\b", " deg ", s)
+    s = re.sub(r"%|\bper\s?cent\b", " percent ", s)
+    s = re.sub(r"\bkm\s*/\s*h\b|\bkph\b", " kmh ", s)
+    # A "-" or "−" right before a number (not after a letter or digit, so "3-5" stays 3 and 5) is its sign.
+    toks = [_number(t) for t in re.findall(r"(?:(?<![\w.])[-−])?\d+(?:\.\d+)?|[^\W\d_]+", s)]
+    return [t for i, t in enumerate(toks) if not (t == "c" and i and toks[i - 1] == "deg")]
+
+
+def _overlay_tokens(o):
+    """What an overlay shows. A count shows its final value ("to", with "decimals") and its unit."""
+    if o.get("do") == "count" and isinstance(o.get("to"), (int, float)):
+        dec = o.get("decimals")
+        dec = dec if isinstance(dec, int) and not isinstance(dec, bool) and 0 <= dec <= 6 else 0   # bad -> 0
+        try:
+            return _tokens(f"{float(o['to']):.{dec}f}{o.get('unit') or ''}")
+        except (OverflowError, ValueError):
+            return []                    # a count too big to print shows nothing
+    return _tokens(o.get("text") or "")
+
+
+def text_covers(planned, shown):
+    """Does one overlay (token list) show the planned text (token list)? Planned numbers: every one must be in
+    the overlay (a number-only match is accepted, the number is the key fact, so a count with no unit is fine).
+    No numbers: at least 70 percent of the planned words, whole words, in the same order. A tiny fragment
+    ("0" for "2000 °C", "hot" for "hotter") never covers."""
+    nums = [t for t in planned if _is_num(t)]
+    if nums:
+        return all(t in shown for t in nums)
+    # "The bulb" is covered by a label "Bulb"; a text of only filler words ("is") keeps them all
+    planned = [t for t in planned if t not in FILLER_WORDS] or planned
+    pos, hit = 0, 0
+    for t in planned:
+        if t in shown[pos:]:
+            pos = shown.index(t, pos) + 1
+            hit += 1
+    need = len(planned) if len(planned) <= 2 else int(0.7 * len(planned) + 0.5)   # 1-2 words: all of them
+    return bool(planned) and hit >= need
+
+
+def split_hits(want, overlays):
+    """Overlays of one shot that together show the planned text (a text split over two labels): each part
+    uses only words or numbers of the plan (and at least one), and together they hold every planned number and
+    at least 70 percent of the words. One merged {t0, until} per such shot."""
+    out = []
+    for shot in dict.fromkeys(o.get("shot") for o in overlays):
+        parts = [(o, set(_overlay_tokens(o))) for o in overlays if o.get("shot") == shot]
+        parts = [(o, t) for o, t in parts if t and t <= set(want)]
+        got = set().union(*[t for _, t in parts]) if parts else set()
+        if len(parts) >= 2 and text_covers(want, [t for t in want if t in got]):
+            out.append({"t0": min(o["t0"] for o, _ in parts), "until": max(o["until"] for o, _ in parts)}
+                       if all("t0" in o and "until" in o for o, _ in parts) else parts[0][0])
+    return out
+
+
+def _flow_pairs(show):
+    """Counter of (prop type, from type, to type) for every wire, arrow and beam whose two ends can be tied to
+    a prop: a prop id, or an [x, y, z] point within 1 unit (x and z) of a prop's "at" in the same scene.
+    Known weak spot (accepted): a prop with no "at" counts as sitting at [0, 0, 0], so a wire end near the
+    origin can be tied to the wrong prop."""
+    pairs, scene = Counter(), []
+    shots = show.get("shots") if isinstance(show.get("shots"), list) else []
+    for shot in [s for s in shots if isinstance(s, dict)]:
+        if not shot.get("continue"):
+            scene = []
+        scene = scene + [p for p in shot.get("props") or [] if isinstance(p, dict)]
+
+        def end_type(v):
+            if isinstance(v, str):
+                return next((p.get("type") for p in scene if p.get("id") == v), None)
+            if isinstance(v, list) and len(v) == 3 and all(isinstance(x, (int, float)) for x in v):
+                near = [(math.hypot(at[0] - v[0], at[2] - v[2]), p.get("type")) for p in scene
+                        if p.get("type") not in FLOW_PROPS
+                        for at in [p.get("at", [0, 0, 0])] if isinstance(at, list) and len(at) == 3
+                        and all(isinstance(x, (int, float)) for x in at)]
+                best = min(near, key=lambda t: t[0], default=None)
+                return best[1] if best and best[0] <= 1.0 else None
+            return None
+        for p in shot.get("props") or []:
+            if isinstance(p, dict) and p.get("type") in FLOW_PROPS:
+                a, b = end_type(p.get("from")), end_type(p.get("to"))
+                if a and b:
+                    pairs[(p["type"], a, b)] += 1
+    return pairs
+
+
+def coverage_problems(board, show, words, result):
+    """Storyboard misses in the finished show, as {path, message, hint} for the show repair loop:
+    a planned prop type not in the show, a planned text missing, starting far from its phrase or removed early,
+    and a wire/arrow/beam the storyboard gives a direction for that runs the other way (or is missing)."""
+    out = []
+    shots = [s for s in show.get("shots") or [] if isinstance(s, dict)] if isinstance(show.get("shots"), list) else []
+    types = {p.get("type") for s in shots for p in s.get("props") or [] if isinstance(p, dict)}
+    wanted = set()
+    for s in board["sentences"]:
+        for o in s["objects"]:
+            name = o["stand_in"] if o["missing"] else o["prop"]
+            if name and name.lower() != "none":
+                wanted.add(name)
+    for name in sorted(wanted - types):
+        out.append({"path": "storyboard.props", "message": f'the storyboard shows a "{name}", but the show has none.',
+                    "hint": f'Add a "{name}" prop where the storyboard puts it.'})
+    # Texts. validate.mjs --json lists every label, text and count with its times; without that list only
+    # the presence of the words is checked.
+    timed = isinstance(result.get("overlays"), list)
+    overlays = result["overlays"] if timed else [
+        dict(a, shot=s.get("id")) for s in shots for a in s.get("actions") or []
+        if isinstance(a, dict) and a.get("do") in ("label", "text", "count")]
+    sents = sentences(words)
+    for n, s in enumerate(board["sentences"][:len(sents)], 1):
+        for t in s["texts"]:
+            want = _tokens(t["words"])
+            # Too short to judge: nothing, or a single letter / one-character word (a single digit is a key figure).
+            if not want or (len(want) == 1 and not _is_num(want[0]) and len(want[0]) < 2):
+                continue
+            hits = [o for o in overlays if text_covers(want, _overlay_tokens(o))] or split_hits(want, overlays)
+            where = f'S{n}: the storyboard text "{t["words"]}" on "{t["starts"]}"'
+            if not hits:
+                out.append({"path": "storyboard.text", "message": f"{where} is not in the show.",
+                            "hint": "Add it as a label, text or count starting on that phrase."})
+                continue
+            start, end = _text_window(t, n, sents, words)
+            if not timed or start is None:
+                continue
+            near = sorted((o for o in hits if abs(o["t0"] - start) <= TEXT_START_TOLERANCE), key=lambda o: o["t0"])
+            if not near:
+                out.append({"path": "storyboard.text", "message": f"{where} ({start:.2f} s) starts at "
+                            f"{min(o['t0'] for o in hits):.2f} s in the show instead.",
+                            "hint": "Start it on the storyboard's phrase."})
+                continue
+            # Same words in the next shots count as one text kept up (each label/text/count ends with its shot).
+            shown_until = near[0]["until"]
+            for o in sorted(hits, key=lambda o: o["t0"]):
+                if near[0]["t0"] < o["t0"] <= shown_until + 0.6:
+                    shown_until = max(shown_until, o["until"])
+            if end is not None and shown_until < end - TEXT_END_TOLERANCE:
+                out.append({"path": "storyboard.text", "message": f"{where} goes away at {shown_until:.2f} s, but the "
+                            f"storyboard keeps it until {end:.2f} s.",
+                            "hint": 'A label, text or count ends with its shot: give it again at the start of the next '
+                                    'shot (same words), with "until" on the phrase where it should go.'})
+    # Flow directions: count each planned flow once per sentence that needs it most (a circuit lists two wires).
+    pairs, need = _flow_pairs(show), {}
+    for s in board["sentences"]:
+        here = {}
+        for f in s["flows"]:
+            if f["by"] in FLOW_PROPS and f["from"] and f["to"]:
+                key = (f["by"], f["from"], f["to"])
+                here[key] = here.get(key, 0) + 1
+        for k, c in here.items():
+            need[k] = max(need.get(k, 0), c)
+    for (by, a, b), count in sorted(need.items()):
+        forward, backward = pairs[(by, a, b)], pairs[(by, b, a)]
+        if forward >= count:
+            continue
+        if backward > (need.get((by, b, a), 0)):
+            out.append({"path": "storyboard.flow", "message": f'the storyboard sends a {by} from the {a} to the {b}, '
+                        f'but the show\'s {by} runs from the {b} to the {a}.',
+                        "hint": f'Swap that {by}\'s "from" and "to" (charge and arrows run from "from" to "to").'})
+        elif forward == 0 and backward == 0 and {a, b} <= types:
+            out.append({"path": "storyboard.flow", "message": f'the storyboard sends a {by} from the {a} to the {b}, '
+                        f'but no {by} in the show could be matched to run between them (the wire ends could not '
+                        f'be tied to the planned props, or there is none).',
+                        "hint": f'Start the {by} at the {a} and end it at the {b} (their positions), or use the prop ids '
+                                f'as "from" and "to".'})
+    return out
 
 
 def _count_fails(qa):
@@ -889,8 +1472,9 @@ def qa_step(run, complete, validate_fn, qa_fn, cat, words, show):
         return show
     fails = _count_fails(qa)
     title = run.draft.get("title") or run.topic
+    board = (run.storyboard or {}).get("board")
     user = fill(read_prompt("qa_repair_user.md"),
-                ORIGINAL=show_user_prompt(title, words, run.draft.get("script", ""), run.draft.get("beats")),
+                ORIGINAL=show_user_prompt(title, words, run.draft.get("script", ""), run.draft.get("beats"), board),
                 PREVIOUS=compact_json(show), FINDINGS=_finding_lines(qa.get("findings", [])))
     keep_old = lambda why: (run.history.append(f"qa-repair: {why}; kept the earlier show"),
                             (folder / "show.json").write_text(json.dumps(show, indent=1, ensure_ascii=False),
@@ -903,7 +1487,7 @@ def qa_step(run, complete, validate_fn, qa_fn, cat, words, show):
         return show
     (folder / "show.json").write_text(json.dumps(new, indent=1, ensure_ascii=False), encoding="utf-8")
     check = validate_fn(folder)
-    if not check.get("ok") or story_problems(new, check):
+    if not check.get("ok") or story_problems(new, check, board, words):
         keep_old("the repaired show did not pass the checker and story checks")
         return show
     qa2 = qa_fn(run.slug)
@@ -964,6 +1548,24 @@ def _beats_md(run):
     return "\n".join(lines)
 
 
+def _storyboard_review_md(run):
+    """review.md's storyboard section: the reviewer's last verdict, what is left, and the props wanted."""
+    sb = run.storyboard
+    verdict = {"pass": "pass", "problems": "PROBLEMS (not approved)"}.get(sb["verdict"], "not reviewed")
+    lines = [f"- Reviewer verdict: {verdict}, after {sb['repairs']} repair round(s)"]
+    lines += [f"- {h}" for h in sb["history"]]
+    if sb["notes"]:
+        lines.append("- Reviewer notes:" if sb["verdict"] == "pass" else "- Problems left:")
+        lines += [f"  - {x}" for x in sb["notes"]]
+    if run.show_source == "fallback":
+        lines.append("- The storyboard passed, but the show built from it never passed its checks: the slideshow fallback was used.")
+    lines.append("")
+    lines.append("### Props wanted (drawn with a stand-in for now; for the prop-building backlog)")
+    lines += [f"- {p['missing']} (stand-in: {p['stand_in']}; first in S{p['sentence']})" for p in run.props_wanted] \
+        or ["- none"]
+    return "\n".join(lines)
+
+
 def reported_beat_problems(run):
     """left_beat_problems, except when the run stopped for props: then no show is made from this script,
     so its beat list does not matter and nothing is reported (review.md, writer.json beats_note)."""
@@ -1019,9 +1621,11 @@ def review_text(run):
     no_script = stopped and no_audited_script(run)
     if stopped:
         lines += ["## Stopped for props",
-                  f"{(run.not_feasible_step or 'a model call')[:1].upper()}{(run.not_feasible_step or 'a model call')[1:]}"
-                  " answered \"feasible\": false, so the run stopped "
-                  "(see NEEDS-PROPS.md). No show was made. "
+                  ("The approved storyboard has a central gap (an object no catalogue prop can draw), so the run stopped "
+                   if run.not_feasible_step == "the storyboard" else
+                   f"{(run.not_feasible_step or 'a model call')[:1].upper()}{(run.not_feasible_step or 'a model call')[1:]}"
+                   " answered \"feasible\": false, so the run stopped ")
+                  + "(see NEEDS-PROPS.md). No show was made. "
                   + ("No script was accepted, so there is no script, claims list or fact check."
                      if no_script else
                      "The script below is the last one the run accepted "
@@ -1029,8 +1633,10 @@ def review_text(run):
                   ""]
     if not no_script:
         lines += ["## Script", d.get("script", ""), "",
-                  "## Picture plan (the beat list that goes with the script above)", _beats_md(run), "",
-                  "## Claims to check (tick each one you have verified)", _claims_md(run), ""]
+                  "## Picture plan (the beat list that goes with the script above)", _beats_md(run), ""]
+        if run.storyboard is not None:
+            lines += ["## Storyboard (see storyboard.md)", _storyboard_review_md(run), ""]
+        lines += ["## Claims to check (tick each one you have verified)", _claims_md(run), ""]
     if run.fact["needs_fact_check"]:
         fa = run.fact["final_audit"] or {}
         flagged = fact_check.flagged_claims(fa) if fa.get("available") else []
@@ -1101,6 +1707,10 @@ def writer_json(run):
         "mode": run.mode, "model": run.price_model(),
         "tokens": {k: t[k] for k in ("input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens")},
         "cost_usd": t["cost_usd"], "cost_is_estimate": t["estimated"],
+        # The storyboard step (null when it is off) and the gaps it drew with a stand-in.
+        "storyboard": None if run.storyboard is None else {
+            k: run.storyboard[k] for k in ("verdict", "repairs", "notes")},
+        "props_wanted": run.props_wanted,
         "calls": run.calls, "error": run.error,
     }
 
@@ -1121,8 +1731,9 @@ def write(topic, slug, *, mode=None, settings=None, complete=None, voice_fn=None
     folder = Path(shows_dir or REPO / "shows") / slug
     folder.mkdir(parents=True, exist_ok=True)
     # Never leave an old result readable while this run is unfinished (NEEDS-PROPS.md is written again
-    # if this run also stops for props; review.md is written again when the run ends).
-    for name in ("writer.json", "NEEDS-PROPS.md", "review.md"):
+    # if this run also stops for props; review.md is written again when the run ends; the storyboard files
+    # again by the storyboard step, so a run with the storyboard off never lists an old one).
+    for name in ("writer.json", "NEEDS-PROPS.md", "review.md", "storyboard.json", "storyboard.md"):
         if (folder / name).exists():
             (folder / name).unlink()
     complete = complete or llm.make_complete(mode, folder, model=settings["model"], effort=settings["effort"])
@@ -1135,6 +1746,8 @@ def write(topic, slug, *, mode=None, settings=None, complete=None, voice_fn=None
         write_script_step(run, complete, cat)
         voice_step(run, complete, voice_fn, cat)
         words = json.loads((folder / "words.json").read_text(encoding="utf-8"))
+        if settings["storyboard"]:
+            storyboard_step(run, complete, cat, words)
         show = show_step(run, complete, validate_fn, cat, words)
         if show is not None:
             run.show_source = "llm"
@@ -1151,9 +1764,9 @@ def write(topic, slug, *, mode=None, settings=None, complete=None, voice_fn=None
         run.status = "ok" if run.show_source == "llm" else "fallback"
         return finish(run, EXIT_OK)
     except NotFeasible:
-        # From the first script, the beat rewrite, the fact-check redraft or a rewrite after a shorten.
-        # The audit on file belongs to run.draft (see _stop_not_feasible); flag it if it found a problem,
-        # since the end of write_script_step, which normally does this, may not have been reached.
+        # From the first script, the beat rewrite, the fact-check redraft, a rewrite after a shorten, or a
+        # central gap in the storyboard (storyboard_step). The audit on file belongs to run.draft
+        # (see _stop_not_feasible); flag it if it found a problem, since the end of write_script_step, which normally does this, may not have been reached.
         fa = run.fact["final_audit"]
         if fa:
             run.fact["needs_fact_check"] = (not fa["ok"]) or run.fact["redraft_error"] is not None
@@ -1180,7 +1793,7 @@ def write(topic, slug, *, mode=None, settings=None, complete=None, voice_fn=None
 
 
 def main(argv=None):
-    ap = argparse.ArgumentParser(prog="python -m pipeline.writer", description="topic -> script -> voice -> show.json")
+    ap = argparse.ArgumentParser(prog="python -m pipeline.writer", description="topic -> script -> voice -> storyboard -> show.json")
     ap.add_argument("--topic", required=True)
     ap.add_argument("--slug", required=True)
     ap.add_argument("--mode", choices=["api", "files"])

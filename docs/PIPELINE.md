@@ -10,7 +10,7 @@ Takes the oldest topic in `queue/pending/` (or `--topic`), makes a video, option
 
 | # | step | command behind it | output |
 |---|---|---|---|
-| 1 | writer | `python -m pipeline.writer` (docs/WRITER.md) | `script.txt`, `voice.mp3`, `words.json`, `show.json`, `review.md`, `writer.json` |
+| 1 | writer | `python -m pipeline.writer` (docs/WRITER.md) | `script.txt`, `voice.mp3`, `words.json`, `storyboard.json`, `storyboard.md`, `show.json`, `review.md`, `writer.json` |
 | 2 | timeline | `tools/validate.mjs`, `tools/timeline.mjs` | `out/timeline.json` |
 | 3 | render | `tools/render.mjs` | `out/<slug>.mp4` (picture + raw voice) |
 | 4 | mix | `python -m pipeline.mix` | `out/<slug>-final.mp4` (sound effects, optional music, loudness) |

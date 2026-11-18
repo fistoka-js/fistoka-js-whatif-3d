@@ -44,7 +44,7 @@ Make a show from a topic, free, no upload. It stops with exit code 4 and prints 
 .\.venv\Scripts\python.exe -m pipeline.run --topic "Why is the sky blue?" --slug sky-blue-2 --llm files --no-upload
 ```
 
-Run only the writer (script, voice, show file; no video), in free files mode. It also stops with exit code 4; here the console itself prints "write the answer to" the reply file path and the prompt path. Write it and run the same command again:
+Run only the writer (script, voice, storyboard, show file; no video), in free files mode. It also stops with exit code 4; here the console itself prints "write the answer to" the reply file path and the prompt path. Write it and run the same command again:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pipeline.writer --topic "Why is the sky blue?" --slug sky-blue-2 --mode files
