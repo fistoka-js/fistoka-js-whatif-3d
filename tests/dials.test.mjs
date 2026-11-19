@@ -197,7 +197,7 @@ function errorFor(edit, where) {
 const CASES = [
   ['unknown dial in a binding', s => { s.shots[0].props[0].atmosphere.dial = 'heet'; }, 'shots[0].props[0].atmosphere.dial', /"heet" is not a dial \(dials in this show: heat\)\. Did you mean "heat"\?/],
   ['binding but no dials at all', s => { delete s.dials; }, 'shots[0].props[0].atmosphere.dial', /this show has no "dials"\. Add a top-level "dials"/],
-  ['binding on a build-time param', s => { s.shots[0].props[0].look = { dial: 'heat', to: [0, 1] }; }, 'shots[0].props[0].look', /"look" is fixed when the planet is built, so it cannot follow a dial\. Only animatable params \(for planet: atmosphere\), colour, glow, size and position/],
+  ['binding on a build-time param', s => { s.shots[0].props[0].look = { dial: 'heat', to: [0, 1] }; }, 'shots[0].props[0].look', /"look" is fixed when the planet is built, so it cannot follow a dial\. Only animatable params \(for planet: atmosphere, ocean, ocean_lon, ocean_lat\), colour, glow, size and position/],
   ['binding on an env param that cannot follow a dial', s => { s.shots[0].env = { type: 'space', nebula: { dial: 'heat', colors: ['#000000', '#ffffff'] } }; }, 'shots[0].env.nebula', /"nebula" of the space environment is fixed.*can follow a dial: studio \(color\), lab \(color\)/],
   ['number range outside the param', s => { s.shots[0].props[0].atmosphere.to = [0, 5]; }, 'shots[0].props[0].atmosphere.to[1]', /5 is too big \(allowed: number 0\.\.1\.5\)/],
   ['colour binding written like a number binding', s => { s.shots[0].props[0].color = { dial: 'heat', to: [0, 1] }; }, 'shots[0].props[0].color.to', /"to" is not a binding field here \(a colour follows a dial with "colors"/],

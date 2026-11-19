@@ -37,7 +37,7 @@ const CASES = [
   ['bad enum value', s => { s.shots[1].actions[0].style = 'grows'; }, 'shots[1].actions[0].style', /"grows" is not allowed here \(allowed: "pop", "fade", "grow".*Did you mean "grow"\?/],
   ['number out of range', s => { s.shots[0].props[2].size = 9; }, 'shots[0].props[2].size', /9 is too big \(allowed: number 0\.05\.\.6\)/],
   ['bad colour', s => { s.shots[0].props[2].color = 'redd'; }, 'shots[0].props[2].color', /"redd" is not a colour.*Did you mean "red"\?/],
-  ['set on a param that is not animatable', s => { s.shots[1].actions[3].param = 'atmosfere'; }, 'shots[1].actions[3].param', /"atmosfere" is not an animatable param of planet \(animatable: atmosphere\)\. Did you mean "atmosphere"\?/],
+  ['set on a param that is not animatable', s => { s.shots[1].actions[3].param = 'atmosfere'; }, 'shots[1].actions[3].param', /"atmosfere" is not an animatable param of planet \(animatable: atmosphere, ocean, ocean_lon, ocean_lat\)\. Did you mean "atmosphere"\?/],
   ['move on a stage-space prop', s => { s.shots[0].actions.push({ at: 'ocean', do: 'move', prop: 'bounce', to: 'left' }); }, 'shots[0].actions[7].do', /"bounce" \(beam\) is drawn between its points, so it cannot move/],
   ['at on a stage-space prop', s => { s.shots[0].props[0].at = 'left'; }, 'shots[0].props[0].at', /"beam" is drawn between its own points \(from, to\), so it has no "at"/],
   ['shot too short', s => { s.shots[4].start = { phrase: 'Think of it', offset: -4 }; }, 'shots[3].start', /shot "blue-scatters" lasts 1\.12 s \(21\.42-22\.54\); the shortest allowed is 1\.5 s/],

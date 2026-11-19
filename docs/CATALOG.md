@@ -46,7 +46,7 @@ Floats: no (stands on the ground)
 
 ### planet
 
-A lit planet or moon. Looks: earth, moon, mars, gas (giant), ice, lava. Optional rings and air glow.
+A planet or moon: earth, moon, mars, gas, ice, lava. Optional rings, air glow, a movable ocean bump.
 
 Floats: yes
 
@@ -56,11 +56,15 @@ Floats: yes
 | `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent) | tint the surface (default: natural colours) |
 | `rings` | true or false; default false | Saturn-style rings |
 | `turn` | number -1..1; default 0.02 | turns per second: the planet turns by itself at this rate. When the story stops or starts its rotation, place it with "turn": 0 and drive all turning with the "spin" action |
+| `ocean_color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#0f56e6" | colour of the ocean bump water (deep blue by default): it tints the land beneath it, so the continents show through, lighter teal toward the edge |
 | `seed` | whole number 0..999; default 1 | which variant of the surface |
 
 Animatable with `set` (also usable as a starting value):
 
 - `atmosphere` 0..1.5, default 0.6: glow of the air around it (the moon look has none)
+- `ocean` 0..1, default 0: raised water bump on the surface: 0 = none; it grows smoothly from a speck to 1 = a big gentle swell (the water tints the land beneath it, and clouds still show over it). Any look, made for earth. Move it with ocean_lon and ocean_lat
+- `ocean_lon` -180..180, default 0: longitude of the ocean bump centre in degrees (0 = the side facing the camera while the planet is not turned; east is positive). A move between two longitudes more than 180 degrees apart goes the long way round, and the value never wraps from 180 to -180, so use steps of less than 180 degrees
+- `ocean_lat` -90..90, default 0: latitude of the ocean bump centre in degrees (0 = equator, 90 = north pole, -90 = south pole)
 
 ### sun
 
