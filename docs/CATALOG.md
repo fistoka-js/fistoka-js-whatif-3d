@@ -941,6 +941,22 @@ Animatable with `set` (also usable as a starting value):
 
 - `value` 0..1, default 0.5: dial: marker, knob and tip/ring colour; 0 blue end, 1 red end
 
+### marshmallow
+
+Toastable, squishable marshmallow: for s'mores, campfire, food and soft-versus-hard gags.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#faf1e2" | untoasted colour |
+| `style` | one of: plain \| toasted \| charred; default "plain" | starting toast level |
+
+Animatable with `set` (also usable as a starting value):
+
+- `toast` 0..1, default 0: adds to style level; 0.5 golden, 1 dark brown, black patches
+- `squish` 0..1, default 0: 0 plump, 1 pressed wide, sides bulging
+
 ## Environments
 
 ### space
