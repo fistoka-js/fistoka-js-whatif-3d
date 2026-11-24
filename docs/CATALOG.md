@@ -409,13 +409,13 @@ Animatable with `set` (also usable as a starting value):
 
 ### rock
 
-A chunky faceted boulder or a little group of rocks. For geology, erosion, mining, landscapes.
+A chiselled boulder or group of rocks with cracks, strata and a flat base. For geology, erosion, mining.
 
 Floats: no (stands on the ground)
 
 | field | type | what |
 |---|---|---|
-| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#8d8a86" | rock colour |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#8d8a86" | rock colour; strata, crevices and lighter tops are shades of it |
 | `count` | whole number 1..6; default 1 | how many boulders (1 = one big rock) |
 | `seed` | whole number 0..999; default 1 | which variant of the shape |
 
