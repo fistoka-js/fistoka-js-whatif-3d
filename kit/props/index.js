@@ -69,5 +69,6 @@ import * as layer_stack from './layer_stack.js';
 import * as light_wave from './light_wave.js';
 import * as tuner from './tuner.js';
 import * as marshmallow from './marshmallow.js';
+import * as magma_chamber from './magma_chamber.js';
 
-export const PROPS = { ball, box, planet, sun, particles, arrow, beam, wire, mountain, volcano, cloud, black_hole, asteroid, comet, rocket, satellite, galaxy, atom, molecule, wave, magnet, lightning, ring, tree, city, house, rock, island, iceberg, fire, water_drop, crystal, person, terrain, crowd, chameleon, brain, heart, eye, virus, cell, dna, fish, bird, skeleton_bone, dinosaur, car, plane, ship, submarine, lightbulb, battery, thermometer, clock, bars, gauge, coin_stack, scale_balance, phone, gear, bomb_blast, shield_dome, lattice, layer_stack, light_wave, tuner, marshmallow };
+export const PROPS = { ball, box, planet, sun, particles, arrow, beam, wire, mountain, volcano, cloud, black_hole, asteroid, comet, rocket, satellite, galaxy, atom, molecule, wave, magnet, lightning, ring, tree, city, house, rock, island, iceberg, fire, water_drop, crystal, person, terrain, crowd, chameleon, brain, heart, eye, virus, cell, dna, fish, bird, skeleton_bone, dinosaur, car, plane, ship, submarine, lightbulb, battery, thermometer, clock, bars, gauge, coin_stack, scale_balance, phone, gear, bomb_blast, shield_dome, lattice, layer_stack, light_wave, tuner, marshmallow, magma_chamber };

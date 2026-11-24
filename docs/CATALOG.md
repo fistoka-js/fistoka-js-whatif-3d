@@ -957,6 +957,23 @@ Animatable with `set` (also usable as a starting value):
 - `toast` 0..1, default 0: adds to style level; 0.5 golden, 1 dark brown, black patches
 - `squish` 0..1, default 0: 0 plump, 1 pressed wide, sides bulging
 
+### magma_chamber
+
+Cutaway volcano: rock layers, glowing magma chamber and vent pipe. Good for what lies under a volcano.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#8a6248" | base rock colour; the strata bands are tinted red, ash and ochre around it, so grey or white still gives a slightly warm banded mountain |
+| `chamber_color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#ff4a12" | magma colour at heat 0.5; low heat is a darker shade of it, high heat a hotter shade, and eruption lava follows it. Chamber centre is 0.15 up: label beside it |
+
+Animatable with `set` (also usable as a starting value):
+
+- `fill` 0..1, default 0.5: 0 = dim chamber, 1 = magma fills the vent to the crater
+- `heat` 0..1, default 0.5: 0 = dull dark red, 1 = near-white yellow core
+- `eruption` 0..1, default 0: lava spurts from the crater (needs fill near 1)
+
 ## Environments
 
 ### space
