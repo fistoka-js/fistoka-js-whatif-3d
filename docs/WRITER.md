@@ -106,11 +106,14 @@ Tests: `tests/py/test_writer.py`, `test_storyboard.py`, `test_fact_check.py`, `t
    the video) and at least one dial bound to two or more things in one scene (`story.dial`, checked in
    `writer.py`). With a storyboard it is also checked against it (`coverage_problems`, tolerant on
    purpose): every storyboard prop type (or a gap's stand-in) is in the show; every storyboard text is a
-   label, text or count that shows it ("2000 °C" is covered by a count to 2000 with unit "°C" or " degrees", or
-   by the text "2000": every number of the planned text must be in one overlay, the number alone is enough, and
-   units like °, degrees, C, % and percent are one token; text without numbers needs 70 percent of its whole
+   label, text or count that shows it. The PROMPTS ask for a text held until the next sentence for every
+   spoken number with a unit, and a count only for a number without a unit. The CHECKER is more tolerant
+   and also accepts a count. For example "2000 °C" is covered by the text "2000 °C" or "2000", or by a
+   count to 2000 with unit "°C" or " degrees" (see `_overlay_tokens` and `text_covers` in `writer.py`).
+   The checker rule: every number of the planned text must be in one overlay, and the number alone is
+   enough; units like °, degrees, C, % and percent are one token; text without numbers needs 70 percent of its whole
    words in one overlay in order, so "0" never covers "2000 °C" and "hot" never covers "hotter"; a text in the last
-   sentence may stay until the voice end plus the 2.5 s tail),
+   sentence may stay until the voice end plus the 2.5 s tail,
    starting within 1.5 s of its phrase and not gone more than 0.5 s before its `ends` sentence (the same words
    again in the next shot count as kept up, since a label, text or count ends with its shot; the times come from
    `validate.mjs --json`'s `overlays` list); and a wire, arrow or beam the storyboard gives a `from` and `to`
@@ -234,14 +237,16 @@ All model-facing text is in `pipeline/prompts/`. Edit it there; no code change i
   2-4 scenes -> dials -> a change in every sentence -> emphasis only (pulse, shake) -> clouds hold still
   -> variety (supporting props) -> cause and effect together -> JSON), the checker's
   rules (story rules included), picture rules, a short "good to know" list (ring radius and tilt, flat
-  particle rings, bars, the planet's own turn), a checklist.
+  particle rings, bars, the planet's own turn, circuit wires, particles inside a prop, a held text for
+  every unit number), a checklist.
   `{{CATALOG}}` is filled from `kit/catalog.json` by `pipeline/catalog_text.py`; `{{EXAMPLES}}` with the
-  examples.
+  examples; `{{TEXT_SECONDS}}` from `TEXT_MIN_SECONDS` in `writer.py`.
 - `show_user.md` (gets the beat list as `{{BEATS}}` and the approved storyboard as `{{STORYBOARD}}`, which is
   empty when the step is off, else `show_storyboard.md` with the board in `{{BOARD}}`), `repair_user.md`, `qa_repair_user.md`, `shorten_user.md`: the per-call parts.
 - `storyboard_system.md`, `storyboard_user.md`, `storyboard_review_system.md`, `storyboard_review_user.md`,
   `storyboard_repair_user.md`: the storyboard step. `{{CATALOG_NAMES}}` is the same list as in the script
-  prompt; `{{TEXT_SECONDS}}` and `{{TAIL}}` are filled from `TEXT_MIN_SECONDS` and `TAIL_SECONDS` in
+  prompt; `{{TEXT_SECONDS}}` (also in `show_system.md`) and `{{TAIL}}` (the two storyboard files only) are
+  filled from `TEXT_MIN_SECONDS` and `TAIL_SECONDS` in
   `writer.py`, so the seconds never drift (a test checks that no "2.5" is typed into these two files). The
   templating is plain `{{NAME}}` replacement with no includes, so the few planning facts (stage directions,
   wire direction, battery and bulb heights, the planet's own turn) are copied word for word from

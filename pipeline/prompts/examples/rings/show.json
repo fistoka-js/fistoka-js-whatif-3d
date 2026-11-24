@@ -530,12 +530,10 @@
       "actions": [
         {
           "at": "few hundred",
-          "do": "count",
-          "from": 0,
-          "to": 300,
-          "unit": "M YEARS",
-          "pos": "top",
-          "over": 1.4
+          "do": "text",
+          "text": "~300M YEARS",
+          "style": "number",
+          "pos": "top"
         },
         {
           "at": "mostly gone",

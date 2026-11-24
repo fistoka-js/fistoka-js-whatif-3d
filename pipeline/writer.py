@@ -365,7 +365,7 @@ def examples_text():
 def show_system_prompt(cat=None):
     cat = cat or catalog_text.load_catalog()
     return fill(read_prompt("show_system.md"), CATALOG=catalog_text.catalog_text(cat).strip(),
-                EXAMPLES=examples_text())
+                EXAMPLES=examples_text(), TEXT_SECONDS=f"{TEXT_MIN_SECONDS:g}")
 
 
 def script_system_prompt(cat=None):

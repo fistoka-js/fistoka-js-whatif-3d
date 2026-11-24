@@ -401,12 +401,10 @@
         },
         {
           "at": "nine percent",
-          "do": "count",
-          "from": 0,
-          "to": 9,
-          "unit": "% LIGHTER",
-          "pos": "top",
-          "over": 1.0
+          "do": "text",
+          "text": "9% LIGHTER",
+          "style": "number",
+          "pos": "top"
         },
         {
           "at": "less dense",
