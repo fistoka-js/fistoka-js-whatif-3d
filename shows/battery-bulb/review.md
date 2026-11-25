@@ -1,97 +1,118 @@
-# Review: How Does a Battery Really Light a Bulb?
+# Review: How does a battery actually light a bulb?
 
 - Topic: How does a battery light a bulb?
 - Slug: battery-bulb
 - Status: ok
-- Show: repaired 2 time(s)
+- Show: first try
 - Picture check (QA): warn
-- Voice: 52.5 s, 169 words (shortened once (7 words asked))
+- Voice: 54.31 s, 188 words
 - Mode: files; model priced as claude-sonnet-5-5
-- Written: 2026-11-18 00:18 UTC
+- Written: 2026-11-24 07:17 UTC
 
 ## Script
-What if a battery poured electricity into a bulb until it ran out? Here is what really happens. The wire is already full of tiny electrons, even before you connect anything. Close the loop, and the battery starts pushing electrons out of its negative end. Every electron shoves the next, so the whole line creeps slowly around the loop. But the push arrives almost instantly, so the bulb lights as soon as you connect. Inside the bulb, the electrons must squeeze through a hair-thin filament. It is so narrow that they crash into its atoms, again and again. Each crash shakes the atoms harder, heating the filament past two thousand degrees Celsius. Hot metal glows, and that glow is the light you see. Think of a bicycle chain. Pedal at one end, and the wheel at the other turns, while each link only goes round. The battery is the pedal, and the bulb is the wheel. Break the loop anywhere, and the glow dies. Which part surprised you most?
+How does a battery light a bulb? Here is what really happens. The battery pushes electrons around a closed loop of wire. Inside the battery, a chemical reaction piles extra electrons onto the negative end. Those crowded electrons shove away from each other and flow out along one wire. They travel through the bulb, then back along the other wire to the positive end. The wire was already full of electrons, so the whole line moves at once. Each electron drifts slowly, only a fraction of a millimetre every second. Now zoom into the bulb. Its thin tungsten filament is a very narrow path. Electrons squeeze through it and crash into the metal atoms. Every crash makes the atoms jiggle faster. The filament heats up to about two thousand degrees Celsius. At that heat, the glowing metal gives off bright white light. Think of a crowd squeezing through a narrow gate, jostling as they go. Cut the loop anywhere and the flow stops, so the light goes out. That is why a switch works. If you broke the wire, where would the electrons stop? Comment your answer below.
 
 ## Picture plan (the beat list that goes with the script above)
-- S1: battery | the charge window slowly drains lower | dial: charge
-- S2: lightbulb | the bulb lights up warm and bright | dial: current
-- S3: particles | glowing electrons fill the whole length of the wire evenly | dial: spread
-- S4: particles | the electrons start streaming away from the battery end | dial: current
-- S5: particles | the whole line of electrons shifts forward together at a slow crawl | dial: current
-- S6: lightbulb | the bulb switches on at once | dial: current
-- S7: lightbulb | the filament starts to glow dull orange | dial: heat
-- S8: lightbulb | the filament glow flickers brighter with hot spots | dial: heat
-- S9: lightbulb | the filament turns from orange to white-hot | dial: heat
-- S10: lightbulb | the whole glass fills with bright warm light | dial: heat
-- S11: gear | the linked gears start to turn together | dial: speed
-- S12: gear | the far gear speeds up to match the first | dial: speed
-- S13: gear | the gears turn faster and faster together | dial: speed
-- S14: lightbulb | the light fades out and the bulb goes dark | dial: current
-- S15: lightbulb | the bulb flickers back on to a soft glow | dial: current
+- S1: battery | the charge window fills and turns from red to green | dial: charge
+- S2: battery | the charge window glows brighter green as the battery fills | dial: charge
+- S3: wire | glowing dots begin to flow around the closed loop of wire | dial: current
+- S4: particles | dots crowd together and pile up at the negative end of the battery | dial: spread
+- S5: wire | the dots spread apart and stream out along the wire from the battery to the bulb | dial: current
+- S6: wire | the dots pass through the bulb and stream back along the other wire to the battery | dial: current
+- S7: wire | every dot along the whole loop starts moving together at the same moment | dial: current
+- S8: wire | the dots slow down to a gentle crawl while the bulb glow stays on | dial: current
+- S9: lightbulb | the bulb switches on and its glass starts to glow warm | dial: on
+- S10: lightbulb | the filament lights up and electrons line up to enter it inside the glass | dial: on
+- S11: particles | electrons squeeze into the filament and bump into the atoms there | dial: heat
+- S12: particles | the atoms in the filament jiggle faster and turn from orange to red | dial: heat
+- S13: thermometer | the liquid rises and turns from blue to red | dial: heat
+- S14: lightbulb | the filament glows from red to bright white and the glass lights up | dial: heat
+- S15: crowd | the tiny people pack together and squeeze through the narrow gap | dial: squeeze
+- S16: wire | the loop breaks, the dots stop moving and the bulb fades dark | dial: current
+- S17: wire | the gap closes, the dots start moving again and the bulb relights | dial: current
+- S18: wire | the wire splits open and the dots bunch up on both sides of the gap | dial: current
+- S19: wire | the gap glows as the dots pile up at its edges | dial: current
+
+## Storyboard (see storyboard.md)
+- Reviewer verdict: pass, after 0 repair round(s)
+- storyboard: review pass (2 point(s))
+- Reviewer notes:
+  - S13 (text): S13 "The filament heats up to about two thousand degrees Celsius.": the 2000 °C text is held to S15, which is right, but it stays on screen over S14 where the picture is the bright white filament, so the number sits beside a different idea for one sentence. Fix: Optional: keep as is; the held number is required by the 2.5 second rule.
+  - S9 (story): S9 "Now zoom into the bulb.": the change is the glass starting to glow warm, which is small; the zoom itself is only a camera move. Fix: Optional: make the filament light up in S9 rather than S10 so S9 has a stronger prop change.
+
+### Props wanted (drawn with a stand-in for now; for the prop-building backlog)
+- none
 
 ## Claims to check (tick each one you have verified)
-- [ ] A wire is already full of electrons before a battery is connected
-- [ ] A battery pushes electrons out of its negative end around a closed loop
-- [ ] Electrons drift slowly through a wire
-- [ ] The push through the wire arrives almost instantly
-- [ ] A bulb filament is very thin and resists the flow, so electrons collide with its atoms
-- [ ] Collisions heat a tungsten filament past two thousand degrees Celsius
-- [ ] Hot metal glows, producing the light
-- [ ] Breaking the circuit anywhere stops the current and the bulb goes dark
+- [ ] A battery pushes electrons around a closed loop of wire
+- [ ] A chemical reaction inside the battery builds up extra electrons at the negative end
+- [ ] Electrons repel each other and flow out along one wire, through the bulb, and back along the other wire to the positive end
+- [ ] The wire is already full of electrons, so the whole line moves at once
+- [ ] Electrons in a wire drift slowly, a fraction of a millimetre per second
+- [ ] A bulb filament is thin tungsten metal
+- [ ] Electrons crash into the metal atoms in the filament, making them jiggle faster
+- [ ] The filament heats to about two thousand degrees Celsius
+- [ ] A hot filament gives off bright white light
+- [ ] Breaking the loop anywhere stops the flow, which is how a switch works
 
 ## Automatic fact check (final audit)
-- supported: A wire is already full of electrons before a battery is connected (Note: Metals contain free electrons throughout; general knowledge, not in the research.)
-- supported: A battery pushes electrons out of its negative end around a closed loop (Note: Electrons leave the negative terminal in a closed circuit.)
-- simplified: Electrons push each other so the whole line moves slowly together (Note: Drift is slow and the whole charge flow starts together, a fair simplification.)
-- supported: The push through the wire arrives almost instantly (Note: The electric field spreads at a large fraction of light speed.)
-- simplified: The bulb filament is very thin (Note: Filaments are around a hair's width or finer.)
-- simplified: Electrons collide with the filament's atoms (Note: Resistance is scattering of electrons off the lattice, shown here as crashes.)
-- supported: The collisions heat the filament past two thousand degrees Celsius (Note: Tungsten filaments run at roughly 2500 degrees Celsius.)
-- supported: Hot metal glows and this is the light of the bulb (Note: Incandescent glow is thermal radiation.)
-- supported: Breaking the circuit anywhere stops the bulb (Note: An open circuit carries no current.)
+- supported: A battery pushes electrons around a closed loop of wire (Note: Standard description of a simple circuit; general knowledge, not in the research.)
+- simplified: A chemical reaction in the battery builds up extra electrons at the negative end (Note: True in essence: the reactions leave the negative terminal with an excess of electrons.)
+- simplified: Electrons repel each other and flow out along one wire (Note: Electrons repel and are driven by the battery's voltage; fine for a short explainer.)
+- supported: Electrons go through the bulb and back along the other wire to the positive end (Note: Electrons flow from the negative terminal round to the positive terminal.)
+- supported: The wire is already full of electrons, so the whole line moves at once (Note: Metal wire contains free electrons throughout, and the push travels along the whole loop almost instantly.)
+- supported: Electron drift speed is a fraction of a millimetre per second (Note: Typical drift speed in household-scale currents is well below a millimetre per second.)
+- supported: A bulb filament is thin tungsten (Note: Incandescent bulbs use thin tungsten filaments.)
+- simplified: Electrons collide with the metal atoms in the filament (Note: Electrons scatter off the metal lattice; the crash picture is the common simplification.)
+- supported: Collisions make the atoms vibrate faster (Note: This is how electrical resistance heats the metal.)
+- supported: The filament reaches about 2000 degrees Celsius (Note: Tungsten filaments run roughly 2000 to 3000 degrees Celsius, so about two thousand is acceptable.)
+- supported: A glowing hot metal gives off bright white light (Note: Incandescence from a hot filament appears warm white.)
+- supported: Breaking the loop stops the flow and the light goes out (Note: A series circuit needs a complete loop.)
+- supported: A switch works by breaking the loop (Note: A switch opens or closes the circuit.)
 - Redrafted: no
 
 ## Description
-A battery does not pour electricity into a bulb. It pushes electrons that are already in the wire around a loop, and the thin filament heats until it glows. See how it works in under a minute.
+A battery does not send electricity out like water in a pipe. It pushes electrons around a closed loop, and they heat a thin filament until it glows. See the whole loop, and what happens inside the bulb.
 
-#science #physics #electricity #shorts
+#science #electricity #physics #howitworks #shorts
 
 ## Tags
-battery, lightbulb, how does a battery work, electricity, electrons, circuit, filament, physics, science explained, science shorts
+battery, light bulb, electricity, electric circuit, electrons, how it works, physics, science explained, tungsten filament, current
 
 ## How the show was made
-- show: 8 validator error(s), 0 story problem(s)
-- repair1: 1 validator error(s), 0 story problem(s)
-- repair2: valid (0 warning(s))
+- show: valid (0 warning(s))
 
 ## Picture check findings
-- WARN shot "chain" at 42.321 s: the subject is too small: visible props cover only 4% of the frame Fix: raise the props' "size" or use "framing": "close" in the shot's camera; list only the props that matter under "focus".
-- WARN shot "pedal-wheel" at 46.835 s: the subject is too small: visible props cover only 4% of the frame Fix: raise the props' "size" or use "framing": "close" in the shot's camera; list only the props that matter under "focus".
+- WARN shot "loop" at 4.765 s: the subject is too small: visible props cover only 5% of the frame Fix: raise the props' "size" or use "framing": "close" in the shot's camera; list only the props that matter under "focus".
+- WARN shot "out" at 12.785 s: the subject is too small: visible props cover only 5% of the frame Fix: raise the props' "size" or use "framing": "close" in the shot's camera; list only the props that matter under "focus".
+- WARN shot "back" at 16.557 s: the subject is too small: visible props cover only 6% of the frame Fix: raise the props' "size" or use "framing": "close" in the shot's camera; list only the props that matter under "focus".
+- WARN shot "whole" at 20.33 s: the subject is too small: visible props cover only 2% of the frame Fix: raise the props' "size" or use "framing": "close" in the shot's camera; list only the props that matter under "focus".
+- WARN shot "drift" at 24.331 s: the subject is too small: visible props cover only 4% of the frame Fix: raise the props' "size" or use "framing": "close" in the shot's camera; list only the props that matter under "focus".
+- WARN shot "crowd" at 43.689 s: the subject is too small: visible props cover only 3% of the frame Fix: raise the props' "size" or use "framing": "close" in the shot's camera; list only the props that matter under "focus".
+- WARN shot "cut" at 47.851 s: the subject is too small: visible props cover only 5% of the frame Fix: raise the props' "size" or use "framing": "close" in the shot's camera; list only the props that matter under "focus".
 
 ## Cost (estimate)
 | call | input | output | cache read | cache write | $ |
 |---|---|---|---|---|---|
-| script | 3637 | 1259 | 0 | 0 | 0.0199 |
-| audit | 1194 | 634 | 0 | 0 | 0.0087 |
-| shorten | 4027 | 1043 | 0 | 0 | 0.0185 |
-| audit-shorten | 1182 | 544 | 0 | 0 | 0.0078 |
-| show | 16313 | 2108 | 0 | 0 | 0.0537 |
-| repair1 | 18815 | 2136 | 0 | 0 | 0.0590 |
-| repair2 | 18746 | 2133 | 0 | 0 | 0.0588 |
-| **total** | 63914 | 9857 | 0 | 0 | 0.2264 |
+| script | 4049 | 1530 | 0 | 0 | 0.0234 |
+| audit | 1212 | 820 | 0 | 0 | 0.0106 |
+| storyboard | 4846 | 3497 | 0 | 0 | 0.0447 |
+| storyboard-review | 6642 | 177 | 0 | 0 | 0.0150 |
+| show | 21371 | 2711 | 0 | 0 | 0.0698 |
+| **total** | 38120 | 8735 | 0 | 0 | 0.1636 |
 
 files mode: tokens are characters / 4, priced as claude-sonnet-5-5; nothing was paid.
 
 ## Files
-review.md, script.txt, show.json, voice.mp3, voice.stats.json, words.json, writer.json, llm/ (every prompt and reply)
+review.md, script.txt, show.json, storyboard.json, storyboard.md, voice.mp3, voice.stats.json, words.json, writer.json, llm/ (every prompt and reply)
 
 <!-- pipeline-run:start -->
 ## Pipeline run
 
 - Topic: How does a battery light a bulb?
 - Final video: `E:/Youtube Project/whatif-3d/shows/battery-bulb/out/battery-bulb-final.mp4`
-- Length: 52.566667 s, loudness: -16 LUFS
-- Picture check: **warn** (2 findings, see `out/qa.json` and `out/qa-sheet.jpg`)
+- Length: 56.5 s, loudness: -16 LUFS
+- Picture check: **warn** (7 findings, see `out/qa.json` and `out/qa-sheet.jpg`)
 - Writer status: ok
 - Upload: not uploaded
 <!-- pipeline-run:end -->

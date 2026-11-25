@@ -9,16 +9,17 @@ The video must EXPLAIN, not illustrate. The approved style: one subject stays on
 # 1. How the engine works
 
 - A show is a list of SHOTS. A SCENE is a shot plus the shots after it that have "continue": true. A scene has one environment, a few props that keep their state, and a new camera for each of its shots. A shot without "continue" starts a new scene from nothing.
-- A shot lasts from its "start" (a spoken phrase) until the next shot's start. The first shot starts at 0 s and has no "start". The last shot runs to the end of the voice.
+- A shot lasts from its "start" (a spoken phrase) until the next shot's start. The first shot starts at 0 s and has no "start". The last shot runs to the end of the video: the last spoken word is the closing "comment your answer below" line, and the video then runs about 2.5 more seconds with no voice (the music fades out), so keep the last picture changing or settled, not cut off.
 - Props, environments, actions and camera moves come ONLY from the catalogue in section 5.
 - DIALS (top-level "dials") are named numbers that change when words are spoken. A prop's animatable value, its "color", "glow", "size" or "at", and an environment's dial-able param can FOLLOW a dial (a binding), so one dial changes several things together. Section 5 gives the exact forms (DIALS, BINDINGS, CONTINUE).
 - RAMPS: "move", "scale", "color", "glow" and "set" accept "until": <anchor> instead of "over", so a change runs from one spoken word to another.
 - The camera frames the shot by itself: it looks at the props in "camera.focus" (or all visible props) over the WHOLE shot and fits them in the frame. You choose framing ("fill" for an exact size), angle and move; in a continuing shot "glide" moves the camera smoothly from the previous view.
 - Stage space: centred on [0, 0, 0]. +x is right, +y is up, +z is toward the viewer. One unit is about half the frame width at medium framing. Every prop is built to fit a 1-unit box; "size" scales it.
-- Captions of the spoken words are drawn automatically in the bottom quarter of the frame. You never write captions.
+- Captions of the spoken words are drawn automatically in the lower part of the frame (the bottom 28 percent of the frame is kept free for them and for the YouTube Shorts buttons). You never write captions.
 
 # 2. How to think (do this before writing any JSON)
 
+0. THE STORYBOARD. When the input has an APPROVED STORYBOARD, it is the source of truth: build exactly it (same objects, same flow directions, text on the same phrases and kept as long, same ending). A planned text longer than 32 characters must be a "text" action (a "label" allows at most 32; a "text" up to 40). A label, text or count ends with its shot (the engine ends it with its shot): to keep it up longer, repeat the same label or text at the start of the next shot. The steps below say how. A gap object {"missing", "stand_in", "central"} means the catalogue cannot draw "missing": draw the "stand_in" prop instead (if "stand_in" is none, draw nothing for it). A storyboard text has "starts" (the words of that sentence where it appears) and "ends" (a sentence number: it must stay on screen until the START of that sentence; or the word "end": it stays until the end of the video, including the ending).
 1. THE CHAIN. Read the sentence table and the picture plan. Name the one mechanism and its cause -> effect chain. Name the HERO: the prop that shows the mechanism changing (a lattice, a wave, a layer stack, a tuner). It stays on screen for most of the video.
 2. SCENES. Make 2 to 4 main scenes for the mechanism (for example: whole thing -> zoom in -> the mechanism up close -> the analogy), plus at most one short opening scene for the hook and one short closing scene. Never a new scene per sentence. Inside a scene, change the view with a continuing shot (new camera, often with "glide"); zoom into the subject with "transition": "dive".
 3. DIALS. Choose at least one dial for the quantity that changes (spacing, temperature, speed, wavelength). Bind it to TWO OR MORE things that the viewer should see change together: the hero's value AND its colour, the effect next to it, the background colour. Key it on the spoken words where the quantity changes ("sit close" -> low, "spread apart" -> high).
@@ -41,7 +42,7 @@ Shape:
 - An action that changes a value bound to a dial ("set" on a bound param, "color" on a bound colour, "glow" on a bound glow, "scale" on a bound size, "move" or "orbit" on a bound "at") is an error: change the dial instead.
 - Action fields: "at" (WHEN, an anchor), "do", "prop" where the action takes one, "over" (seconds) ONLY on actions that list a default over, or "until" where listed, plus the fields listed for that action.
 - "set" may only animate a param listed in that prop's "anim" list, inside its range. If an anim param has the same name as a prop field (the fire's "size"), "size" on the prop means the prop's scale; change the anim value only with "set".
-- Stage-space props ("arrow", "beam", "wire") have "from" and "to" (a slot, [x, y, z] or a prop id in the shot) and NO "at", "size" or "rotate". They cannot move, scale, spin, orbit, bob, shake or pulse.
+- Stage-space props ("arrow", "beam", "wire", "light_wave") have "from" and "to" (a slot, [x, y, z] or a prop id in the shot) and NO "at", "size" or "rotate". They cannot move, scale, spin, orbit, bob, shake or pulse.
 - "icon" goes on a prop with "prop", or at a place with "place" (slot or [x, y, z]). Its "at" is the TIME, like every action.
 - "glide" only on a continuing shot, not with "dip" or "dive", and not longer than the shot. "fill" 0.5 to 1.3.
 - Text limits: label text up to 32 characters, text up to 40, count unit up to 16. Colours: a palette name or "#rrggbb".
@@ -66,7 +67,7 @@ Size and framing:
 - One prop alone at size 1 fills about 70% of the frame width at "medium" framing. The camera fits ALL framed props (and the full path of anything that moves), so two or three props, or a prop that travels far, are each drawn smaller. Give the hero "camera": {"focus": ["hero"]} and use "fill" (up to 1.3) to make it as big as the picture allows.
 - Keep sizes in a frame similar unless one prop is a backdrop. A tiny prop next to a huge one becomes a dot.
 - BACKDROP trick: for something meant to fill the background, put it behind (z about -2.5), make it large (size 4 to 5), and set "camera": {"focus": ["<the foreground prop>"], "framing": "wide"}. Never point an action at a backdrop prop (props that actions point at must stay at least 60% inside the frame).
-- Anything the narration names must be big enough to see: size 0.6 or more. "particles" meant to be noticed need "dot" 0.08 or more and "size" 1 or more.
+- Anything the narration names must be big enough to see: size 0.6 or more. "particles" meant to be noticed need "dot" 0.08 or more and "size" 1 or more; exception: particles INSIDE a prop are exempt from BOTH size minimums (size 1 and size 0.6) and follow the inside rule below (smaller than that prop) instead.
 - The first shot is the thumbnail moment: one clear subject, big (close framing or "fill"), with at most one other small prop.
 
 Ground:
@@ -77,12 +78,12 @@ Ground:
 Visibility:
 - Something must be visible from the first frame of every scene. If props "appear" later, make the first one appear on the scene's first words, or keep one prop visible from the start.
 - Props that actions point at must stay at least 60% inside the frame: do not "move" them off screen. To make something leave, use "disappear".
-- Do not put a prop in the bottom quarter of the frame (the captions are there): avoid "at" y below -0.9 unless the camera angle is high or top.
+- Do not put a prop in the bottom 28 percent of the frame (the captions are there): avoid "at" y below -0.9 unless the camera angle is high or top.
 
 Overlays (label, text, count, icon):
 - At most 2 on screen at the same time; end them with "until" when the next one comes.
 - Labels: 1 to 3 words, CAPITALS, under 22 characters, naming a part of the picture ("CRYSTALS", "SKIN CELLS"). Never a full sentence, never a copy of the caption, never the explanation itself.
-- Text "title" for a short heading, "number" for a big figure, "stamp" for a verdict like "WRONG" or "MYTH". "count" for a number that is spoken. Icons mark a moment (a "no" sign on a myth); they are never the subject.
+- Text "title" for a short heading, "number" for a big figure, "stamp" for a verdict like "WRONG" or "MYTH". "count" for a number WITHOUT a unit that is spoken (a number with a unit is a text, see the rule below). Icons mark a moment (a "no" sign on a myth); they are never the subject.
 
 Colour and camera:
 - Pick prop colours that contrast with the environment. A background bound to the same dial as the hero ("color": {"dial": ...}) makes the whole frame follow the mechanism.
@@ -93,7 +94,9 @@ Good to know (not obvious from the catalogue):
 - "ring": its radius comes from "size" (size 2.6 rings a planet of size 1.3); "tilt" 0 faces the camera like a hoop, 90 is edge-on, 70-78 looks like Saturn's rings.
 - "particles" with "shape": "ring" lie flat (like a plate): seen from angle "front" they look like a line; use angle "top" or "high" to show the circle. Use 20 or more of them for a ring that reads as a ring.
 - "planet" turns by itself (its "turn" param, default 0.02 turns/s, clouds faster); to show it stopping or starting, place it with "turn": 0 and drive all turning with "spin" (speed 0 stops it).
-- "wire" is a stage-space cable (like "beam"): for a circuit use two wires between [x, y, z] points, e.g. over the top with "lift": 0.7 and a return along the floor at y 0.04 (floor is y 0, props stand on it); "current" 0 to 1 sends glowing charge along it. This floor layout needs an environment with a ground (with no ground, pick your own heights). On the ground, a "battery" is 0.79 x its size tall to the top of its cap and a "lightbulb" exactly its size tall (a size 1.2 battery tops out at y 0.95, a size 1.0 bulb at y 1.0); start or end a wire at a prop's x and z with the y of its top. A positive "lift" puts the top at the higher end plus "lift"; a negative "lift" bends the wire down instead (the bottom is the lower end plus "lift"), and it does not go around props. When both ends are at y 0 or above, the wire never goes into the floor (its centre is held at y 0.04 or higher, even if an end is given at y 0, so a wire already at the floor stays straight); if either end is below y 0 there is no floor clamp and the wire goes exactly where you put it.
+- "wire" is a stage-space cable (like "beam"): for a circuit use two wires between [x, y, z] points, e.g. over the top with "lift": 0.7 and a return along the floor at y 0.04 (floor is y 0, props stand on it); "current" 0 to 1 sends glowing charge along it. A wire's charge dots run from its "from" end to its "to" end; an arrow points at its "to". For a closed loop the dots must circulate one way: wire 1 "from" the battery "to" the bulb, wire 2 (the return) "from" the bulb "to" the battery; never both wires "to" the bulb. This floor layout needs an environment with a ground (with no ground, pick your own heights). On the ground, a "battery" is 0.79 x its size tall to the top of its cap and a "lightbulb" exactly its size tall (a size 1.2 battery tops out at y 0.95, a size 1.0 bulb at y 1.0); start or end a wire at a prop's x and z with the y of its top. A positive "lift" puts the top at the higher end plus "lift"; a negative "lift" bends the wire down instead (the bottom is the lower end plus "lift"), and it does not go around props. When both ends are at y 0 or above, the wire never goes into the floor (its centre is held at y 0.04 or higher, even if an end is given at y 0, so a wire already at the floor stays straight); if either end is below y 0 there is no floor clamp and the wire goes exactly where you put it.
+- Only a wire, beam, arrow or light_wave has a "from" and "to". "particles" and every other prop has no point to aim at: it is placed only by its own "at" and "size". To show something INSIDE a prop (electrons in a bulb), put its "at" at that prop's x and z (same z, never nearer the camera) and at the height of the part, and make its "size" smaller than the prop's; the bulb's glass is see-through, and its filament is about 0.65 x its size above the ground. On a ground, a size 1.2 bulb at [0.9, 0, 0] gets particles "at" [0.9, 0.8, 0] with "size" 0.4.
+- A spoken number with a unit (a temperature, speed, distance, time) must show as a text. Use a "text" action of at most 40 characters, with style "number" for a big figure, never a "label"; labels stay the 1 to 3 word CAPITAL names of parts. Its words are the same as the storyboard text, for example "2000 °C". It starts on those words and stays until the start of the next sentence, or, if the next sentence starts less than 2.5 seconds after the text appears, until the start of the FIRST later sentence that starts at least 2.5 seconds after the text appears (the text must stay up at least 2.5 seconds). To do that, give the text action an "until" that is the first 1 to 6 words of that sentence, copied from the word list. If the shot ends at that point, leave "until" out; for the last sentence, or if no later sentence is long enough, also leave "until" out, so the text stays to the end of its shot (the end of the video only if it is in the last shot). This is the same as the storyboard text "ends". If the shot ends first, repeat the same text at the start of the next shot. If a sentence has 3 or more unit numbers, join them in one text if it fits 40 characters, else keep the 2 most important and drop the rest. If two unit-number texts are on screen together, put one at "pos" "top" and the other at "pos" "middle", because "pos" is the only thing that sets a text's height and the default "top" would draw them on top of each other. A unit-number text has priority over a label when the limit of 2 overlays at once is reached.
 - "bars" draws the values relative to the tallest bar; give 2 to 4 values for a clear comparison and start it at "grow": 0 to make it rise on a word.
 
 CHECKLIST before replying:
@@ -104,6 +107,7 @@ CHECKLIST before replying:
 [ ] Continuing shots have no "env" and only new prop ids; no action changes a dial-bound value.
 [ ] Every anchor is a phrase spoken inside that shot, and repeated words are made unique with more words.
 [ ] Every prop type, env type, param, action, field and value appears in the catalogue for THAT prop or action.
+[ ] Circuit wires run battery to bulb and back (never both "to" the bulb); particles inside a prop sit at its x and z and are smaller than it; every spoken number with a unit has a text held to the next sentence (or a later one if the gap is under 2.5 seconds).
 [ ] Floating props on a ground are lifted; backdrop props have no actions; at most 2 overlays at once; labels short, in capitals, naming parts.
 
 # 5. Catalogue
@@ -111,10 +115,10 @@ CHECKLIST before replying:
 PROPS (name [floats/STAGE-SPACE] (params) anim: animatable params for the "set" action -- what it is)
 - ball (color, finish=glossy|matte|metal|facets) -- A shiny or matte sphere in any colour (marble, molecule, pinball, drop).
 - box (color, finish=matte|glossy|metal, width 0.05..1, height 0.05..1, depth 0.05..1, round 0..0.5) -- A rounded box in any colour and proportions (block, crate, bumper, wall).
-- planet [floats] (look=earth|moon|mars|gas|ice|lava, color, rings:bool, turn -1..1, seed) anim: atmosphere 0..1.5 [starts 0.6] -- A lit planet or moon. Looks: earth, moon, mars, gas (giant), ice, lava. Optional rings and air glow.
+- planet [floats] (look=earth|moon|mars|gas|ice|lava, color, rings:bool, turn -1..1, ocean_color, seed) anim: atmosphere 0..1.5 [starts 0.6], ocean 0..1 [starts 0], ocean_lon -180..180 [starts 0], ocean_lat -90..90 [starts 0] -- A planet or moon: earth, moon, mars, gas, ice, lava. Optional rings, air glow, a movable ocean bump.
 - sun [floats] (color, rays:bool) anim: brightness 0..2 [starts 1] -- A glowing star with a halo and soft turning rays.
 - particles [floats] (shape=sphere|box|ring|stream, count 1..1500, color, color2, mix 0..1, look=balls|dots, dot 0.01..0.3, seed) anim: spread 0..3 [starts 1], speed 0..5 [starts 0.3] -- A cloud of small balls or glowing dots in a box, sphere, ring or stream (molecules, dust, atoms).
-- arrow [STAGE-SPACE] (from=point, to=point, color, thickness 0.02..0.3) anim: length 0..1 [starts 1] -- A solid 3D arrow from one point or prop to another.
+- arrow [STAGE-SPACE] (from=point, to=point, color, thickness 0.02..0.3) anim: length 0..1 [starts 1] -- A flat, bold 2D-style arrow from one point or prop to another.
 - beam [STAGE-SPACE] (from=point, to=point, color, width 0.01..0.6) anim: progress 0..1 [starts 1], brightness 0..2 [starts 1] -- A glowing light ray from one point or prop to another.
 - wire [STAGE-SPACE] (from=point, to=point, lift -3..3, color, width 0.02..0.2) anim: current 0..1 [starts 0] -- An electric wire between two points; "lift" bends it into a loop.
 - mountain (style=rock|snow|desert, peaks 1..3, seed) -- A chunky low-poly mountain with a snow cap; styles rock, snow, desert; 1 to 3 peaks. Good for places.
@@ -135,7 +139,7 @@ PROPS (name [floats/STAGE-SPACE] (params) anim: animatable params for the "set" 
 - tree (style=round|pine|palm|bare, color, seed) -- A chunky low-poly tree: round, pine, palm or bare. Good for forests, seasons, deforestation, carbon.
 - city (style=modern|old, seed) anim: lights 0..1 [starts 0.7] -- A city block of buildings with lit windows; styles modern or old.
 - house (color, roof) anim: glow 0..1 [starts 0] -- A simple low-poly house with roof, chimney, door and windows. For homes, energy, insulation, neighbourhoods.
-- rock (color, count 1..6, seed) -- A chunky faceted boulder or a little group of rocks. For geology, erosion, mining, landscapes.
+- rock (color, count 1..6, seed) -- A chiselled boulder or group of rocks with cracks, strata and a flat base. For geology, erosion, mining.
 - island (color, palm:bool, seed) -- A round island with a beach and optional palm on a disc of water. A "little world" base for other props.
 - iceberg (water, seed) anim: melt 0..1 [starts 0] -- An iceberg: small white tip above water, big blue bulk below. Climate stories.
 - fire (color) anim: size 0.1..1.8 [starts 1] -- A campfire with layered flickering flames, logs, stones and a glow. For heat, energy, combustion.
@@ -175,6 +179,8 @@ PROPS (name [floats/STAGE-SPACE] (params) anim: animatable params for the "set" 
 - layer_stack [floats] (names=[strings, 2-5], colors=[colors, 2-5], pigment_layer 0..4, crystal_layer -1..4) anim: reveal 0..1 [starts 1], granules 0..1 [starts 0.3], shade 0..1 [starts 0], focus -1..4 [starts -1] -- Stacked see-through slabs with name plates; they slide in, granules spread, layers shade and glow. Skin, rock layers.
 - light_wave [STAGE-SPACE] (from=point, to=point, color) anim: progress 0..1 [starts 1], wavelength 0..1 [starts 0.32], amplitude 0..1 [starts 0.5] -- A wavy beaded wave from one point to another. Light, signals.
 - tuner (color, rings 2..10) anim: value 0..1 [starts 0.5] -- Antenna on a tuning box: colour dial, knob, glowing tip, pulsing rings. Radio, signals, tuning.
+- marshmallow (color, style=plain|toasted|charred) anim: toast 0..1 [starts 0], squish 0..1 [starts 0] -- Toastable, squishable marshmallow: for s'mores, campfire, food and soft-versus-hard gags.
+- magma_chamber (color, chamber_color) anim: fill 0..1 [starts 0.5], heat 0..1 [starts 0.5], eruption 0..1 [starts 0] -- Cutaway volcano: rock layers, glowing magma chamber and vent pipe. Good for what lies under a volcano.
 
 ENVIRONMENTS (name (params) [ground or not] -- what it is)
 - space (nebula=blue|purple|teal|red|none, stars 0..2, tint) [no ground: everything floats] -- Outer space: layered stars, soft nebula glow, floating dust. For planets, stars, anything cosmic.
@@ -297,7 +303,7 @@ SCENES: hook (chameleon, S1-S3) -> skin layers (layer_stack: 1 shot + 2 continui
 DIALS: "gap" drives the lattice spacing only; from "reflect" on its keys sit on the same words as "wavelength", so the gaps and the colour change together. In the lattice scene "wavelength" drives the lattice colour, the small chameleon's colour, the reflected wave's colour, the reflected wave's length and the background, so one number changes five things in the same frame (cause on top, effect below). In the tuner scene it drives the tuner's value and the background.
 Icons and labels in the output (a "no" sign on the paint box and dye drop, question marks) are decoration on top of the plan's changes; they are never the change.
 
-Not to copy: this example has 6 scenes because of the hook and closing scenes, and runs 61 s; yours must stay at 60 s or less. The "lose" shot was split from "emotions" so no shot is over 9 s. Do not reuse its props or layout for a different topic.
+Not to copy: this example is shorter than a real script (under the 180-word minimum, and it ends "Comment below."); real scripts have 180 to 195 words and end with the closing question plus a line asking viewers to comment their answer below ("Comment your answer below."), so do not copy its length or its closing words. This example has 6 scenes because of the hook and closing scenes, and runs 63 s; yours must have a voice of up to 60 s (up to 62 s is accepted), and the video then runs a 2.5 s ending after the last word, so the finished video is about 57.5 to 62.5 s and at most 64.5 s. The "lose" shot was split from "emotions" so no shot is over 9 s. Do not reuse its props or layout for a different topic.
 
 OUTPUT (the reply):
 {
@@ -501,57 +507,100 @@ OUTPUT (the reply):
 
 === USER ===
 
-TITLE: How Does a Battery Really Light a Bulb?
+TITLE: How does a battery actually light a bulb?
 
 THE SCRIPT AS SPOKEN, sentence by sentence (S1, S2, ...), with the sentence's start and end in seconds, then each word with its start time. Anchors must be copied from these words.
-S1 [0.09-3.27] What if a battery poured electricity into a bulb until it ran out?
-   What 0.09 | if 0.18 | a 0.26 | battery 0.34 | poured 0.76 | electricity 1.05 | into 1.76 | a 2.01 | bulb 2.08 | until 2.49 | it 2.73 | ran 2.82 | out? 3.02
-S2 [3.66-4.69] Here is what really happens.
-   Here 3.66 | is 3.77 | what 3.85 | really 4.01 | happens. 4.18
-S3 [5.07-9.40] The wire is already full of tiny electrons, even before you connect anything.
-   The 5.07 | wire 5.14 | is 5.51 | already 5.71 | full 6.09 | of 6.46 | tiny 6.56 | electrons, 6.94 | even 7.96 | before 8.16 | you 8.53 | connect 8.64 | anything. 9.02
-S4 [9.77-13.54] Close the loop, and the battery starts pushing electrons out of its negative end.
-   Close 9.77 | the 10.03 | loop, 10.13 | and 10.68 | the 10.75 | battery 10.84 | starts 11.25 | pushing 11.54 | electrons 11.92 | out 12.46 | of 12.64 | its 12.72 | negative 12.85 | end. 13.25
-S5 [13.91-18.01] Every electron shoves the next, so the whole line creeps slowly around the loop.
-   Every 13.91 | electron 14.14 | shoves 14.68 | the 15.03 | next, 15.11 | so 15.79 | the 15.90 | whole 15.98 | line 16.24 | creeps 16.47 | slowly 16.91 | around 17.40 | the 17.67 | loop. 17.73
-S6 [18.39-22.32] But the push arrives almost instantly, so the bulb lights as soon as you connect.
-   But 18.39 | the 18.48 | push 18.57 | arrives 18.77 | almost 19.27 | instantly, 19.70 | so 20.42 | the 20.55 | bulb 20.67 | lights 20.95 | as 21.28 | soon 21.39 | as 21.70 | you 21.80 | connect. 21.89
-S7 [22.69-26.51] Inside the bulb, the electrons must squeeze through a hair-thin filament.
-   Inside 22.69 | the 23.10 | bulb, 23.18 | the 23.73 | electrons 23.80 | must 24.35 | squeeze 24.69 | through 25.27 | a 25.43 | hair-thin 25.50 | filament. 26.02
-S8 [26.88-30.40] It is so narrow that they crash into its atoms, again and again.
-   It 26.88 | is 26.95 | so 27.07 | narrow 27.28 | that 27.68 | they 27.81 | crash 27.95 | into 28.40 | its 28.65 | atoms, 28.78 | again 29.43 | and 29.95 | again. 30.05
-S9 [30.77-35.69] Each crash shakes the atoms harder, heating the filament past two thousand degrees Celsius.
-   Each 30.77 | crash 30.96 | shakes 31.54 | the 31.90 | atoms 32.08 | harder, 32.39 | heating 33.10 | the 33.33 | filament 33.41 | past 33.83 | two 34.20 | thousand 34.41 | degrees 34.74 | Celsius. 35.09
-S10 [36.07-38.86] Hot metal glows, and that glow is the light you see.
-   Hot 36.07 | metal 36.27 | glows, 36.54 | and 37.25 | that 37.37 | glow 37.56 | is 37.95 | the 38.05 | light 38.16 | you 38.41 | see. 38.53
-S11 [39.26-40.26] Think of a bicycle chain.
-   Think 39.26 | of 39.39 | a 39.45 | bicycle 39.52 | chain. 39.97
-S12 [40.64-45.00] Pedal at one end, and the wheel at the other turns, while each link only goes round.
-   Pedal 40.64 | at 40.86 | one 40.95 | end, 41.16 | and 41.80 | the 41.88 | wheel 41.98 | at 42.24 | the 42.32 | other 42.42 | turns, 42.65 | while 43.35 | each 43.53 | link 43.72 | only 44.14 | goes 44.35 | round. 44.61
-S13 [45.38-47.91] The battery is the pedal, and the bulb is the wheel.
-   The 45.38 | battery 45.46 | is 45.95 | the 46.05 | pedal, 46.14 | and 46.83 | the 46.89 | bulb 46.99 | is 47.40 | the 47.49 | wheel. 47.60
-S14 [48.29-50.52] Break the loop anywhere, and the glow dies.
-   Break 48.29 | the 48.50 | loop 48.62 | anywhere, 48.97 | and 49.66 | the 49.73 | glow 49.81 | dies. 50.06
-S15 [50.90-52.15] Which part surprised you most?
-   Which 50.90 | part 51.04 | surprised 51.24 | you 51.67 | most? 51.75
+S1 [0.10-1.38] How does a battery light a bulb?
+   How 0.10 | does 0.27 | a 0.40 | battery 0.47 | light 0.86 | a 1.05 | bulb? 1.09
+S2 [1.70-2.87] Here is what really happens.
+   Here 1.70 | is 1.89 | what 1.99 | really 2.16 | happens. 2.38
+S3 [3.20-6.01] The battery pushes electrons around a closed loop of wire.
+   The 3.20 | battery 3.37 | pushes 3.73 | electrons 4.07 | around 4.62 | a 4.95 | closed 5.00 | loop 5.37 | of 5.56 | wire. 5.65
+S4 [6.33-10.55] Inside the battery, a chemical reaction piles extra electrons onto the negative end.
+   Inside 6.33 | the 6.77 | battery, 6.85 | a 7.42 | chemical 7.46 | reaction 7.85 | piles 8.30 | extra 8.73 | electrons 9.02 | onto 9.58 | the 9.82 | negative 9.89 | end. 10.31
+S5 [10.88-14.37] Those crowded electrons shove away from each other and flow out along one wire.
+   Those 10.88 | crowded 11.13 | electrons 11.46 | shove 11.94 | away 12.08 | from 12.35 | each 12.52 | other 12.68 | and 13.05 | flow 13.13 | out 13.43 | along 13.55 | one 13.87 | wire. 14.03
+S6 [14.69-18.10] They travel through the bulb, then back along the other wire to the positive end.
+   They 14.69 | travel 14.85 | through 15.20 | the 15.32 | bulb, 15.41 | then 15.96 | back 16.11 | along 16.38 | the 16.65 | other 16.75 | wire 17.00 | to 17.26 | the 17.34 | positive 17.43 | end. 17.89
+S7 [18.42-21.91] The wire was already full of electrons, so the whole line moves at once.
+   The 18.42 | wire 18.58 | was 18.84 | already 18.98 | full 19.34 | of 19.60 | electrons, 19.66 | so 20.46 | the 20.55 | whole 20.62 | line 20.93 | moves 21.18 | at 21.47 | once. 21.57
+S8 [22.24-26.10] Each electron drifts slowly, only a fraction of a millimetre every second.
+   Each 22.24 | electron 22.45 | drifts 22.90 | slowly, 23.19 | only 23.89 | a 24.12 | fraction 24.19 | of 24.65 | a 24.75 | millimetre 24.80 | every 25.47 | second. 25.66
+S9 [26.42-27.39] Now zoom into the bulb.
+   Now 26.42 | zoom 26.68 | into 26.87 | the 27.02 | bulb. 27.11
+S10 [27.72-30.13] Its thin tungsten filament is a very narrow path.
+   Its 27.72 | thin 27.95 | tungsten 28.14 | filament 28.50 | is 28.90 | a 29.02 | very 29.08 | narrow 29.39 | path. 29.68
+S11 [30.45-32.94] Electrons squeeze through it and crash into the metal atoms.
+   Electrons 30.45 | squeeze 31.01 | through 31.33 | it 31.48 | and 31.58 | crash 31.69 | into 32.07 | the 32.20 | metal 32.28 | atoms. 32.53
+S12 [33.26-35.38] Every crash makes the atoms jiggle faster.
+   Every 33.26 | crash 33.57 | makes 33.97 | the 34.18 | atoms 34.28 | jiggle 34.63 | faster. 34.88
+S13 [35.71-38.48] The filament heats up to about two thousand degrees Celsius.
+   The 35.71 | filament 35.89 | heats 36.26 | up 36.50 | to 36.60 | about 36.71 | two 36.97 | thousand 37.20 | degrees 37.56 | Celsius. 37.90
+S14 [38.80-41.63] At that heat, the glowing metal gives off bright white light.
+   At 38.80 | that 38.99 | heat, 39.15 | the 39.69 | glowing 39.78 | metal 40.15 | gives 40.42 | off 40.65 | bright 40.88 | white 41.14 | light. 41.37
+S15 [41.96-45.09] Think of a crowd squeezing through a narrow gate, jostling as they go.
+   Think 41.96 | of 42.22 | a 42.28 | crowd 42.35 | squeezing 42.67 | through 43.11 | a 43.26 | narrow 43.31 | gate, 43.67 | jostling 44.16 | as 44.62 | they 44.72 | go. 44.83
+S16 [45.42-48.44] Cut the loop anywhere and the flow stops, so the light goes out.
+   Cut 45.42 | the 45.60 | loop 45.70 | anywhere 46.01 | and 46.53 | the 46.61 | flow 46.68 | stops, 46.94 | so 47.57 | the 47.66 | light 47.76 | goes 47.96 | out. 48.21
+S17 [48.77-49.96] That is why a switch works.
+   That 48.77 | is 48.96 | why 49.05 | a 49.19 | switch 49.26 | works. 49.52
+S18 [50.28-52.55] If you broke the wire, where would the electrons stop?
+   If 50.28 | you 50.45 | broke 50.52 | the 50.74 | wire, 50.82 | where 51.47 | would 51.60 | the 51.70 | electrons 51.76 | stop? 52.24
+S19 [52.87-53.99] Comment your answer below.
+   Comment 52.87 | your 53.29 | answer 53.40 | below. 53.68
 
 THE PICTURE PLAN from the script writer (S n here is S n above): what stays on screen, what visibly changes while that sentence is spoken, and the dial that drives it. Follow it; improve it where the catalogue offers a better way to show the same change.
-S1 subject: battery | change: the charge window slowly drains lower | dial: charge
-S2 subject: lightbulb | change: the bulb lights up warm and bright | dial: current
-S3 subject: particles | change: glowing electrons fill the whole length of the wire evenly | dial: spread
-S4 subject: particles | change: the electrons start streaming away from the battery end | dial: current
-S5 subject: particles | change: the whole line of electrons shifts forward together at a slow crawl | dial: current
-S6 subject: lightbulb | change: the bulb switches on at once | dial: current
-S7 subject: lightbulb | change: the filament starts to glow dull orange | dial: heat
-S8 subject: lightbulb | change: the filament glow flickers brighter with hot spots | dial: heat
-S9 subject: lightbulb | change: the filament turns from orange to white-hot | dial: heat
-S10 subject: lightbulb | change: the whole glass fills with bright warm light | dial: heat
-S11 subject: gear | change: the linked gears start to turn together | dial: speed
-S12 subject: gear | change: the far gear speeds up to match the first | dial: speed
-S13 subject: gear | change: the gears turn faster and faster together | dial: speed
-S14 subject: lightbulb | change: the light fades out and the bulb goes dark | dial: current
-S15 subject: lightbulb | change: the bulb flickers back on to a soft glow | dial: current
+S1 subject: battery | change: the charge window fills and turns from red to green | dial: charge
+S2 subject: battery | change: the charge window glows brighter green as the battery fills | dial: charge
+S3 subject: wire | change: glowing dots begin to flow around the closed loop of wire | dial: current
+S4 subject: particles | change: dots crowd together and pile up at the negative end of the battery | dial: spread
+S5 subject: wire | change: the dots spread apart and stream out along the wire from the battery to the bulb | dial: current
+S6 subject: wire | change: the dots pass through the bulb and stream back along the other wire to the battery | dial: current
+S7 subject: wire | change: every dot along the whole loop starts moving together at the same moment | dial: current
+S8 subject: wire | change: the dots slow down to a gentle crawl while the bulb glow stays on | dial: current
+S9 subject: lightbulb | change: the bulb switches on and its glass starts to glow warm | dial: on
+S10 subject: lightbulb | change: the filament lights up and electrons line up to enter it inside the glass | dial: on
+S11 subject: particles | change: electrons squeeze into the filament and bump into the atoms there | dial: heat
+S12 subject: particles | change: the atoms in the filament jiggle faster and turn from orange to red | dial: heat
+S13 subject: thermometer | change: the liquid rises and turns from blue to red | dial: heat
+S14 subject: lightbulb | change: the filament glows from red to bright white and the glass lights up | dial: heat
+S15 subject: crowd | change: the tiny people pack together and squeeze through the narrow gap | dial: squeeze
+S16 subject: wire | change: the loop breaks, the dots stop moving and the bulb fades dark | dial: current
+S17 subject: wire | change: the gap closes, the dots start moving again and the bulb relights | dial: current
+S18 subject: wire | change: the wire splits open and the dots bunch up on both sides of the gap | dial: current
+S19 subject: wire | change: the gap glows as the dots pile up at its edges | dial: current
 
-The last word ends at 52.15 s; the video is 52.55 s long. Make 2 to 4 main scenes (a scene = a shot plus its "continue": true shots), plus at most a short opening and a short closing scene. Each shot lasts 1.5 to 12 seconds (over 9 s gives a warning); aim for 3 to 8.
+THE APPROVED STORYBOARD (entry n of "sentences" is S n above). It is the source of truth: build exactly this storyboard, with the same objects (prop types), the same flow directions (a wire or arrow runs from its "from" to its "to"), each text on the phrase in its "starts" and kept until the START of the sentence in its "ends", and the same ending. A label, text or count ends with its shot (the engine ends it with its shot): to keep it up longer, repeat the same label or text at the start of the next shot. A checker compares your show with it.
+{
+  "hook": "How does a battery light a bulb?",
+  "answer": "The battery pushes electrons around a closed loop of wire, out along one wire, through the thin filament in the bulb where they crash into atoms and heat it white-hot, and back along the other wire.",
+  "hero": "wire",
+  "summary": "We open on a big battery and a small bulb, then pull back to a full loop: a battery on the left, a bulb on the right, one wire carrying glowing dots from the battery to the bulb and a second wire carrying them back. Next we move into the bulb: electrons INSIDE the glass squeeze into the filament, bump the metal atoms, and a thermometer shows the heat reaching two thousand degrees as the filament turns bright white. A crowd squeezing through a gap is the analogy. Last we return to the loop, cut it so the dots stop and the bulb goes dark, close it so it relights, and end on the broken wire with the dots piled up at the gap.",
+  "scenes": [{"scene": "1", "env": "studio", "idea": "Opening: the battery, with a bulb waiting beside it."}, {"scene": "2", "env": "lab", "idea": "The full loop: dots leave the battery on one wire, cross the bulb, and return on the other wire."}, {"scene": "3", "env": "lab", "idea": "Inside the bulb: electrons INSIDE the glass squeeze through the filament, heat it and make it glow white."}, {"scene": "4", "env": "studio", "idea": "Analogy: a crowd squeezing through a narrow gate."}, {"scene": "5", "env": "lab", "idea": "Back to the loop: break it, close it, and end on the gap."}],
+  "ending": {"closing_question": "If you broke the wire, where would the electrons stop?", "comment_line": "Comment your answer below.", "tail": "The gap keeps glowing softly while the dots slowly pile up at its edges, still changing, until the end."},
+  "sentences": [
+    {"scene": "1", "objects": [{"prop": "battery", "look": "big shiny cylinder battery, charge window red", "place": "centre, large, close framing", "stands_for": "the power source"}, {"prop": "lightbulb", "look": "small dark glass bulb", "place": "right, small, behind the battery", "stands_for": "the bulb to be lit"}], "change": "the charge window fills and turns from red to green", "camera": "close on the battery, slow push in", "texts": [], "flows": []},
+    {"scene": "1", "objects": [{"prop": "battery", "look": "big shiny battery, charge window green", "place": "centre, large", "stands_for": "the power source"}, {"prop": "lightbulb", "look": "small dark glass bulb", "place": "right, small, behind the battery", "stands_for": "the bulb to be lit"}], "change": "the charge window glows brighter green as the battery fills completely", "camera": "slow push in, close on the battery", "texts": [], "flows": []},
+    {"scene": "2", "objects": [{"prop": "wire", "look": "two glowing copper wires forming a closed loop: an upper wire arching from battery to bulb, a lower wire running back along the floor", "place": "centre, spanning left to right between the battery and the bulb", "stands_for": "the closed loop of wire"}, {"prop": "battery", "look": "green charged battery", "place": "left, medium", "stands_for": "the power source"}, {"prop": "lightbulb", "look": "dark glass bulb", "place": "right, medium", "stands_for": "the bulb"}], "change": "glowing dots start to flow around the closed loop of wire", "camera": "pull back to a wide shot of the whole loop", "texts": [], "flows": [{"what": "electrons", "by": "wire", "from": "battery", "to": "lightbulb"}, {"what": "electrons", "by": "wire", "from": "lightbulb", "to": "battery"}]},
+    {"scene": "2", "objects": [{"prop": "wire", "look": "the two glowing wires of the loop", "place": "centre, between the battery and the bulb", "stands_for": "the loop of wire"}, {"prop": "battery", "look": "green battery", "place": "left, medium, with a cloud of blue electron dots INSIDE it at its negative end", "stands_for": "where extra electrons are made"}, {"prop": "particles", "look": "small glowing blue dots", "place": "INSIDE the battery, packed at its negative end", "stands_for": "extra electrons"}], "change": "the blue dots crowd together and pile up at the negative end of the battery", "camera": "slow push in, close on the battery", "texts": [], "flows": []},
+    {"scene": "2", "objects": [{"prop": "wire", "look": "the upper wire full of blue dots", "place": "centre, running from the battery to the bulb", "stands_for": "the wire leaving the negative end"}, {"prop": "battery", "look": "green battery", "place": "left, medium", "stands_for": "the source of the push"}, {"prop": "lightbulb", "look": "dark glass bulb", "place": "right, medium", "stands_for": "the bulb"}], "change": "the crowded dots spread apart and stream out along the upper wire from the battery towards the bulb", "camera": "wide shot, slow pan right along the upper wire", "texts": [], "flows": [{"what": "electrons", "by": "wire", "from": "battery", "to": "lightbulb"}]},
+    {"scene": "2", "objects": [{"prop": "wire", "look": "both wires full of blue dots", "place": "centre, the upper wire and the lower wire", "stands_for": "the full loop"}, {"prop": "lightbulb", "look": "glass bulb starting to glow faintly", "place": "right, medium", "stands_for": "the bulb the dots pass through"}, {"prop": "battery", "look": "green battery", "place": "left, medium", "stands_for": "where the dots return"}], "change": "the dots pass through the bulb and stream back along the lower wire to the battery", "camera": "wide shot, slow pan back left along the lower wire", "texts": [], "flows": [{"what": "electrons", "by": "wire", "from": "battery", "to": "lightbulb"}, {"what": "electrons", "by": "wire", "from": "lightbulb", "to": "battery"}]},
+    {"scene": "2", "objects": [{"prop": "wire", "look": "both wires, dots filling every inch of the loop", "place": "centre", "stands_for": "the whole loop already full of electrons"}, {"prop": "lightbulb", "look": "glowing glass bulb", "place": "right, medium", "stands_for": "the bulb"}, {"prop": "battery", "look": "green battery", "place": "left, medium", "stands_for": "the pusher"}], "change": "every dot along the whole loop starts moving together at the same moment", "camera": "wide static shot of the whole loop", "texts": [], "flows": [{"what": "electrons", "by": "wire", "from": "battery", "to": "lightbulb"}, {"what": "electrons", "by": "wire", "from": "lightbulb", "to": "battery"}]},
+    {"scene": "2", "objects": [{"prop": "wire", "look": "both wires, dots moving slowly", "place": "centre", "stands_for": "the slow drift of electrons"}, {"prop": "lightbulb", "look": "glowing glass bulb", "place": "right, medium", "stands_for": "the bulb that stays lit"}, {"prop": "battery", "look": "green battery", "place": "left, medium", "stands_for": "the pusher"}], "change": "the dots slow down to a gentle crawl while the bulb stays lit", "camera": "slow push in on the wire", "texts": [], "flows": [{"what": "electrons", "by": "wire", "from": "battery", "to": "lightbulb"}, {"what": "electrons", "by": "wire", "from": "lightbulb", "to": "battery"}]},
+    {"scene": "3", "objects": [{"prop": "lightbulb", "look": "big clear glass bulb with a thin tungsten filament inside, glowing warm", "place": "centre, large, filling the frame", "stands_for": "the bulb we zoom into"}, {"prop": "particles", "look": "small blue electron dots drifting near the filament", "place": "INSIDE the bulb glass, at the filament", "stands_for": "electrons"}], "change": "the bulb fills the frame and its glass starts to glow warm", "camera": "fast push in, zoom into the bulb", "texts": [], "flows": []},
+    {"scene": "3", "objects": [{"prop": "lightbulb", "look": "big clear glass bulb, thin tungsten filament glowing orange", "place": "centre, large", "stands_for": "the bulb"}, {"prop": "particles", "look": "small blue electron dots lined up in a queue", "place": "INSIDE the bulb glass, at the filament, entering its narrow path", "stands_for": "electrons"}], "change": "the filament lights up orange and the electrons line up to enter it inside the glass", "camera": "slow push in, close on the filament", "texts": [], "flows": []},
+    {"scene": "3", "objects": [{"prop": "lightbulb", "look": "big glass bulb, filament orange", "place": "centre, large", "stands_for": "the bulb"}, {"prop": "particles", "look": "blue electron dots", "place": "INSIDE the bulb glass, squeezing into the filament", "stands_for": "electrons"}, {"prop": "particles", "look": "bigger orange metal atoms packed along the filament", "place": "INSIDE the bulb glass, in the filament", "stands_for": "the metal atoms"}], "change": "the electrons squeeze into the filament and bump into the atoms there", "camera": "close on the filament", "texts": [], "flows": []},
+    {"scene": "3", "objects": [{"prop": "lightbulb", "look": "big glass bulb, filament glowing red", "place": "centre, large", "stands_for": "the bulb"}, {"prop": "particles", "look": "orange atoms shaking in the filament and turning from orange to red", "place": "INSIDE the bulb glass, in the filament", "stands_for": "the metal atoms"}, {"prop": "particles", "look": "blue electron dots", "place": "INSIDE the bulb glass at the filament", "stands_for": "electrons"}], "change": "the atoms in the filament jiggle faster and turn from orange to red", "camera": "close on the filament", "texts": [], "flows": []},
+    {"scene": "3", "objects": [{"prop": "lightbulb", "look": "big glass bulb, filament glowing red-orange", "place": "centre, large", "stands_for": "the bulb"}, {"prop": "thermometer", "look": "tall thermometer, liquid rising from blue to red", "place": "right of the bulb, medium", "stands_for": "the filament temperature"}, {"prop": "particles", "look": "jiggling red atoms", "place": "INSIDE the bulb glass, in the filament", "stands_for": "the hot metal atoms"}], "change": "the thermometer liquid rises and turns from blue to red", "camera": "slight pull back to show the bulb and the thermometer together", "texts": [{"words": "2000 °C", "starts": "about two thousand degrees Celsius", "ends": 15}], "flows": []},
+    {"scene": "3", "objects": [{"prop": "lightbulb", "look": "big glass bulb, filament bright white, glass lit", "place": "centre, large", "stands_for": "the bulb giving light"}, {"prop": "particles", "look": "fast-jiggling white-hot atoms", "place": "INSIDE the bulb glass, in the filament", "stands_for": "the hot metal atoms"}], "change": "the filament glows from red to bright white and the glass lights up", "camera": "push in, close on the filament", "texts": [], "flows": []},
+    {"scene": "4", "objects": [{"prop": "crowd", "look": "a crowd of tiny people packed together", "place": "centre, large, approaching the gap", "stands_for": "electrons in the filament"}, {"prop": "box", "look": "two grey walls with a narrow gap between them", "place": "centre, in front of the crowd, small", "stands_for": "the narrow filament"}], "change": "the tiny people pack together and squeeze through the narrow gap", "camera": "slow push in on the gap", "texts": [], "flows": []},
+    {"scene": "5", "objects": [{"prop": "wire", "look": "the two-wire loop, the upper wire broken with a gap in the middle", "place": "centre, between the battery and the bulb", "stands_for": "the loop being cut"}, {"prop": "battery", "look": "green battery", "place": "left, medium", "stands_for": "the power source"}, {"prop": "lightbulb", "look": "glass bulb glowing white", "place": "right, medium", "stands_for": "the bulb"}], "change": "the loop breaks, the dots stop moving and the bulb fades dark", "camera": "wide shot of the whole loop", "texts": [], "flows": []},
+    {"scene": "5", "objects": [{"prop": "wire", "look": "the two-wire loop, the gap closing", "place": "centre, between the battery and the bulb", "stands_for": "the switch closing"}, {"prop": "battery", "look": "green battery", "place": "left, medium", "stands_for": "the power source"}, {"prop": "lightbulb", "look": "glass bulb, dark then relighting", "place": "right, medium", "stands_for": "the bulb"}], "change": "the gap closes, the dots start moving again and the bulb relights", "camera": "wide shot of the whole loop", "texts": [], "flows": [{"what": "electrons", "by": "wire", "from": "battery", "to": "lightbulb"}, {"what": "electrons", "by": "wire", "from": "lightbulb", "to": "battery"}]},
+    {"scene": "5", "objects": [{"prop": "wire", "look": "the upper wire split open with a gap, dots on both sides", "place": "centre, between the battery and the bulb", "stands_for": "the broken wire"}, {"prop": "battery", "look": "green battery", "place": "left, medium", "stands_for": "the power source"}, {"prop": "lightbulb", "look": "dark glass bulb", "place": "right, medium", "stands_for": "the bulb"}], "change": "the wire splits open and the dots bunch up on both sides of the gap", "camera": "slow push in on the gap", "texts": [], "flows": []},
+    {"scene": "5", "objects": [{"prop": "wire", "look": "the upper wire with a glowing gap, dots piled at its edges", "place": "centre, between the battery and the bulb", "stands_for": "the viewer's question"}, {"prop": "battery", "look": "green battery", "place": "left, medium", "stands_for": "the power source"}, {"prop": "lightbulb", "look": "dark glass bulb", "place": "right, medium", "stands_for": "the bulb"}], "change": "the gap glows brighter as the dots pile up at its edges", "camera": "slow push in on the gap", "texts": [], "flows": []}
+  ]
+}
+
+The last word ends at 53.99 s; the video is 56.49 s long. Make 2 to 4 main scenes (a scene = a shot plus its "continue": true shots), plus at most a short opening and a short closing scene. Each shot lasts 1.5 to 12 seconds (over 9 s gives a warning); aim for 3 to 8.
 
 Think through the scenes and the changes first (section 2), then reply with the complete show.json and nothing else: no code fence, no comments, no text before or after it.

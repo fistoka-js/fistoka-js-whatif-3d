@@ -2,112 +2,136 @@
  "slug": "battery-bulb",
  "topic": "How does a battery light a bulb?",
  "status": "ok",
- "title": "How Does a Battery Really Light a Bulb?",
- "description": "A battery does not pour electricity into a bulb. It pushes electrons that are already in the wire around a loop, and the thin filament heats until it glows. See how it works in under a minute.\n\n#science #physics #electricity #shorts",
+ "title": "How does a battery actually light a bulb?",
+ "description": "A battery does not send electricity out like water in a pipe. It pushes electrons around a closed loop, and they heat a thin filament until it glows. See the whole loop, and what happens inside the bulb.\n\n#science #electricity #physics #howitworks #shorts",
  "tags": [
   "battery",
-  "lightbulb",
-  "how does a battery work",
+  "light bulb",
   "electricity",
+  "electric circuit",
   "electrons",
-  "circuit",
-  "filament",
+  "how it works",
   "physics",
   "science explained",
-  "science shorts"
+  "tungsten filament",
+  "current"
  ],
  "show": "llm",
- "repairs": 2,
+ "repairs": 0,
  "fallback_note": null,
  "beats": [
   {
-   "sentence": "What if a battery poured electricity into a bulb until it ran out?",
+   "sentence": "How does a battery light a bulb?",
    "subject": "battery",
-   "change": "the charge window slowly drains lower",
+   "change": "the charge window fills and turns from red to green",
    "dial": "charge"
   },
   {
    "sentence": "Here is what really happens.",
-   "subject": "lightbulb",
-   "change": "the bulb lights up warm and bright",
+   "subject": "battery",
+   "change": "the charge window glows brighter green as the battery fills",
+   "dial": "charge"
+  },
+  {
+   "sentence": "The battery pushes electrons around a closed loop of wire.",
+   "subject": "wire",
+   "change": "glowing dots begin to flow around the closed loop of wire",
    "dial": "current"
   },
   {
-   "sentence": "The wire is already full of tiny electrons, even before you connect anything.",
+   "sentence": "Inside the battery, a chemical reaction piles extra electrons onto the negative end.",
    "subject": "particles",
-   "change": "glowing electrons fill the whole length of the wire evenly",
+   "change": "dots crowd together and pile up at the negative end of the battery",
    "dial": "spread"
   },
   {
-   "sentence": "Close the loop, and the battery starts pushing electrons out of its negative end.",
+   "sentence": "Those crowded electrons shove away from each other and flow out along one wire.",
+   "subject": "wire",
+   "change": "the dots spread apart and stream out along the wire from the battery to the bulb",
+   "dial": "current"
+  },
+  {
+   "sentence": "They travel through the bulb, then back along the other wire to the positive end.",
+   "subject": "wire",
+   "change": "the dots pass through the bulb and stream back along the other wire to the battery",
+   "dial": "current"
+  },
+  {
+   "sentence": "The wire was already full of electrons, so the whole line moves at once.",
+   "subject": "wire",
+   "change": "every dot along the whole loop starts moving together at the same moment",
+   "dial": "current"
+  },
+  {
+   "sentence": "Each electron drifts slowly, only a fraction of a millimetre every second.",
+   "subject": "wire",
+   "change": "the dots slow down to a gentle crawl while the bulb glow stays on",
+   "dial": "current"
+  },
+  {
+   "sentence": "Now zoom into the bulb.",
+   "subject": "lightbulb",
+   "change": "the bulb switches on and its glass starts to glow warm",
+   "dial": "on"
+  },
+  {
+   "sentence": "Its thin tungsten filament is a very narrow path.",
+   "subject": "lightbulb",
+   "change": "the filament lights up and electrons line up to enter it inside the glass",
+   "dial": "on"
+  },
+  {
+   "sentence": "Electrons squeeze through it and crash into the metal atoms.",
    "subject": "particles",
-   "change": "the electrons start streaming away from the battery end",
-   "dial": "current"
+   "change": "electrons squeeze into the filament and bump into the atoms there",
+   "dial": "heat"
   },
   {
-   "sentence": "Every electron shoves the next, so the whole line creeps slowly around the loop.",
+   "sentence": "Every crash makes the atoms jiggle faster.",
    "subject": "particles",
-   "change": "the whole line of electrons shifts forward together at a slow crawl",
+   "change": "the atoms in the filament jiggle faster and turn from orange to red",
+   "dial": "heat"
+  },
+  {
+   "sentence": "The filament heats up to about two thousand degrees Celsius.",
+   "subject": "thermometer",
+   "change": "the liquid rises and turns from blue to red",
+   "dial": "heat"
+  },
+  {
+   "sentence": "At that heat, the glowing metal gives off bright white light.",
+   "subject": "lightbulb",
+   "change": "the filament glows from red to bright white and the glass lights up",
+   "dial": "heat"
+  },
+  {
+   "sentence": "Think of a crowd squeezing through a narrow gate, jostling as they go.",
+   "subject": "crowd",
+   "change": "the tiny people pack together and squeeze through the narrow gap",
+   "dial": "squeeze"
+  },
+  {
+   "sentence": "Cut the loop anywhere and the flow stops, so the light goes out.",
+   "subject": "wire",
+   "change": "the loop breaks, the dots stop moving and the bulb fades dark",
    "dial": "current"
   },
   {
-   "sentence": "But the push arrives almost instantly, so the bulb lights as soon as you connect.",
-   "subject": "lightbulb",
-   "change": "the bulb switches on at once",
+   "sentence": "That is why a switch works.",
+   "subject": "wire",
+   "change": "the gap closes, the dots start moving again and the bulb relights",
    "dial": "current"
   },
   {
-   "sentence": "Inside the bulb, the electrons must squeeze through a hair-thin filament.",
-   "subject": "lightbulb",
-   "change": "the filament starts to glow dull orange",
-   "dial": "heat"
-  },
-  {
-   "sentence": "It is so narrow that they crash into its atoms, again and again.",
-   "subject": "lightbulb",
-   "change": "the filament glow flickers brighter with hot spots",
-   "dial": "heat"
-  },
-  {
-   "sentence": "Each crash shakes the atoms harder, heating the filament past two thousand degrees Celsius.",
-   "subject": "lightbulb",
-   "change": "the filament turns from orange to white-hot",
-   "dial": "heat"
-  },
-  {
-   "sentence": "Hot metal glows, and that glow is the light you see.",
-   "subject": "lightbulb",
-   "change": "the whole glass fills with bright warm light",
-   "dial": "heat"
-  },
-  {
-   "sentence": "Think of a bicycle chain.",
-   "subject": "gear",
-   "change": "the linked gears start to turn together",
-   "dial": "speed"
-  },
-  {
-   "sentence": "Pedal at one end, and the wheel at the other turns, while each link only goes round.",
-   "subject": "gear",
-   "change": "the far gear speeds up to match the first",
-   "dial": "speed"
-  },
-  {
-   "sentence": "The battery is the pedal, and the bulb is the wheel.",
-   "subject": "gear",
-   "change": "the gears turn faster and faster together",
-   "dial": "speed"
-  },
-  {
-   "sentence": "Break the loop anywhere, and the glow dies.",
-   "subject": "lightbulb",
-   "change": "the light fades out and the bulb goes dark",
+   "sentence": "If you broke the wire, where would the electrons stop?",
+   "subject": "wire",
+   "change": "the wire splits open and the dots bunch up on both sides of the gap",
    "dial": "current"
   },
   {
-   "sentence": "Which part surprised you most?",
-   "subject": "lightbulb",
-   "change": "the bulb flickers back on to a soft glow",
+   "sentence": "Comment your answer below.",
+   "subject": "wire",
+   "change": "the gap glows as the dots pile up at its edges",
    "dial": "current"
   }
  ],
@@ -116,87 +140,77 @@
  "beat_problems": [],
  "qa": "warn",
  "needs_fact_check": false,
- "voice_seconds": 52.488,
+ "voice_seconds": 54.312,
+ "voice_note": "",
  "mode": "files",
  "model": "claude-sonnet-5-5",
  "tokens": {
-  "input_tokens": 63914,
-  "output_tokens": 9857,
+  "input_tokens": 38120,
+  "output_tokens": 8735,
   "cache_read_tokens": 0,
   "cache_write_tokens": 0
  },
- "cost_usd": 0.2264,
+ "cost_usd": 0.1636,
  "cost_is_estimate": true,
+ "storyboard": {
+  "verdict": "pass",
+  "repairs": 0,
+  "notes": [
+   "S13 (text): S13 \"The filament heats up to about two thousand degrees Celsius.\": the 2000 °C text is held to S15, which is right, but it stays on screen over S14 where the picture is the bright white filament, so the number sits beside a different idea for one sentence. Fix: Optional: keep as is; the held number is required by the 2.5 second rule.",
+   "S9 (story): S9 \"Now zoom into the bulb.\": the change is the glass starting to glow warm, which is small; the zoom itself is only a camera move. Fix: Optional: make the filament light up in S9 rather than S10 so S9 has a stronger prop change."
+  ]
+ },
+ "props_wanted": [],
  "calls": [
   {
    "purpose": "script",
    "model": "files",
-   "input_tokens": 3637,
-   "output_tokens": 1259,
+   "input_tokens": 4049,
+   "output_tokens": 1530,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.01986
+   "cost_usd": 0.0234
   },
   {
    "purpose": "audit",
    "model": "files",
-   "input_tokens": 1194,
-   "output_tokens": 634,
+   "input_tokens": 1212,
+   "output_tokens": 820,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.00873
+   "cost_usd": 0.01062
   },
   {
-   "purpose": "shorten",
+   "purpose": "storyboard",
    "model": "files",
-   "input_tokens": 4027,
-   "output_tokens": 1043,
+   "input_tokens": 4846,
+   "output_tokens": 3497,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.01848
+   "cost_usd": 0.04466
   },
   {
-   "purpose": "audit-shorten",
+   "purpose": "storyboard-review",
    "model": "files",
-   "input_tokens": 1182,
-   "output_tokens": 544,
+   "input_tokens": 6642,
+   "output_tokens": 177,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.0078
+   "cost_usd": 0.01505
   },
   {
    "purpose": "show",
    "model": "files",
-   "input_tokens": 16313,
-   "output_tokens": 2108,
+   "input_tokens": 21371,
+   "output_tokens": 2711,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.05371
-  },
-  {
-   "purpose": "repair1",
-   "model": "files",
-   "input_tokens": 18815,
-   "output_tokens": 2136,
-   "cache_read_tokens": 0,
-   "cache_write_tokens": 0,
-   "estimated": true,
-   "cost_usd": 0.05899
-  },
-  {
-   "purpose": "repair2",
-   "model": "files",
-   "input_tokens": 18746,
-   "output_tokens": 2133,
-   "cache_read_tokens": 0,
-   "cache_write_tokens": 0,
-   "estimated": true,
-   "cost_usd": 0.05882
+   "cost_usd": 0.06985
   }
  ],
  "error": null

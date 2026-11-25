@@ -1,8 +1,9 @@
 """Plain text checks that the writer prompts still carry the remake rules (hook delivery, unit-number
 texts, particles inside a prop) and the planet ocean placement rules (where the bump reads as a swell,
 the frozen angle after a spin, the "ocean_lon" offset) and the Earth-video lessons (glow limits, the
-moon companion, crate size, the bus shot rules). Each phrase must appear exactly once in its
-file, so deleting a rule breaks a test. No network. The ocean test uses the stricter once_everywhere."""
+moon companion, crate size, the bus shot rules) and the battery-bulb circuit framing bullet.
+Each phrase must appear exactly once in its file, so deleting a rule breaks a test. No network.
+The ocean test uses the stricter once_everywhere."""
 import re
 
 from pipeline import writer
@@ -143,3 +144,10 @@ def test_show_prompt_fills_the_text_seconds_number():
     filled = writer.show_system_prompt()
     assert "{{TEXT_SECONDS}}" not in filled
     assert f"less than {writer.TEXT_MIN_SECONDS:g} seconds after the text appears" in filled
+
+
+def test_circuit_framing_bullet():
+    """A battery-bulb-wire circuit is told to be big: sizes, positions, medium framing with fill 1.25."""
+    once_everywhere('use a battery "size" 1.6 at [-0.8, 0, 0] and a bulb "size" 1.5 at [0.8, 0, 0]')
+    once_everywhere('"framing": "medium" with "fill": 1.25 (about 85% of the frame width')
+    assert any(ln.startswith('- To make a battery, bulb and wire circuit fill the frame') for ln in SHOW.splitlines())
