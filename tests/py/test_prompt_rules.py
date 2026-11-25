@@ -1,9 +1,11 @@
 """Plain text checks that the writer prompts still carry the remake rules (hook delivery, unit-number
 texts, particles inside a prop) and the planet ocean placement rules (where the bump reads as a swell,
 the frozen angle after a spin, the "ocean_lon" offset) and the Earth-video lessons (glow limits, the
-moon companion, crate size, the bus shot rules) and the battery-bulb circuit framing bullet.
+moon companion, crate size, the bus shot rules), the battery-bulb circuit framing bullet, the
+side-prop placement bullet (outer-edge limit) and the eruption column and cloud layout bullet.
 Each phrase must appear exactly once in its file, so deleting a rule breaks a test. No network.
-The ocean test uses the stricter once_everywhere."""
+The ocean, Earth-video, circuit, side-prop and eruption tests use the stricter once_everywhere."""
+import math
 import re
 
 from pipeline import writer
@@ -151,3 +153,53 @@ def test_circuit_framing_bullet():
     once_everywhere('use a battery "size" 1.6 at [-0.8, 0, 0] and a bulb "size" 1.5 at [0.8, 0, 0]')
     once_everywhere('"framing": "medium" with "fill": 1.25 (about 85% of the frame width')
     assert any(ln.startswith('- To make a battery, bulb and wire circuit fill the frame') for ln in SHOW.splitlines())
+
+
+def bullet(start):
+    """The one show-prompt line that starts with this text."""
+    lines = [ln for ln in SHOW.splitlines() if ln.startswith(start)]
+    assert len(lines) == 1, start
+    return lines[0]
+
+
+def test_side_prop_placement_bullet():
+    """Side props: outer edge at most a quarter of hero size past its side, z -0.5 to 0.5."""
+    once_everywhere('Measure it by its outer edge: its "at" x plus half its "size"')
+    once_everywhere("may reach no more than a quarter of the hero's \"size\" past the hero's side")
+    once_everywhere('Its "at" z is between -0.5 and 0.5.')
+    once_everywhere('This is a rule of thumb, not what the engine measures')
+    once_everywhere('so the rule errs on the safe side.')
+    once_everywhere('A ground prop toward the camera (z 0.9) sinks into the captions.')
+    # Read the worked example from the prompt and check it against the rule it states.
+    line = bullet('- A side prop beside a wide hero')
+    hero = re.search(r'beside a hero of "size" ([\d.]+) at x ([\d.-]+) \(side at x ([\d.]+), limit x ([\d.]+)\)', line)
+    size, x = float(hero[1]), float(hero[2])
+    side, limit = float(hero[3]), float(hero[4])
+    assert side == round(x + size / 2, 2) and limit == round(x + size / 2 + size / 4, 2)
+    good = re.search(r'a thermometer of "size" ([\d.]+) at x ([\d.]+) \(outer edge ([\d.]+)\) is fine', line)
+    bad = re.search(r'but one at x ([\d.]+) \(outer edge ([\d.]+)\) breaks the rule', line)
+    prop = float(good[1])
+    assert float(good[3]) == round(float(good[2]) + prop / 2, 2) <= limit
+    assert float(bad[2]) == round(float(bad[1]) + prop / 2, 2) > limit
+
+
+def test_eruption_column_and_cloud_bullet():
+    """Eruption starts at the crater, cloud above it; all within 1.3 x hero height of its top."""
+    once_everywhere("- An eruption starts at the hero's crater: its column may start a little below")
+    once_everywhere('A cloud above it sits higher, over the eruption.')
+    once_everywhere("within about 1.3 times the hero's height above the hero's top")
+    once_everywhere('so it starts inside the crater with no gap')
+    once_everywhere('"at" [0.27, 1.64, 0] with "rotate" [0, 0, 65] and "at" [-0.27, 1.64, 0]')
+    # Read the worked example from the prompt and check it against the rule it states.
+    line = bullet("- An eruption starts at the hero's crater")
+    k = float(re.search(r"within about ([\d.]+) times the hero's height", line)[1])
+    m = re.search(r'\(([\d.]+) tall, rim at y ([\d.]+), so everything stays below y ([\d.]+)\)', line)
+    height, rim, top = float(m[1]), float(m[2]), float(m[3])
+    assert round(rim + k * height, 2) == top
+    col = re.search(r'from y ([\d.]+) to ([\d.]+), so it starts inside the crater', line)
+    assert float(col[1]) < rim < float(col[2]) <= top
+    fan = re.search(r'\("size" ([\d.]+), "at" \[([\d.]+), ([\d.]+), 0\] with "rotate" \[0, 0, (\d+)\]', line)
+    half, y, angle = float(fan[1]) / 2, float(fan[3]), math.radians(float(fan[4]))
+    assert y - half * math.sin(angle) < rim and y + half * math.sin(angle) <= top
+    cloud = re.search(r'an ash cloud centred at y ([\d.]+) \(top about y ([\d.]+)\)', line)
+    assert float(cloud[1]) > rim and float(cloud[2]) <= top
