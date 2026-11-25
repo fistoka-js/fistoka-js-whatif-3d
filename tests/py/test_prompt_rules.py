@@ -1,6 +1,7 @@
 """Plain text checks that the writer prompts still carry the remake rules (hook delivery, unit-number
 texts, particles inside a prop) and the planet ocean placement rules (where the bump reads as a swell,
-the frozen angle after a spin, the "ocean_lon" offset). Each phrase must appear exactly once in its
+the frozen angle after a spin, the "ocean_lon" offset) and the Earth-video lessons (glow limits, the
+moon companion, crate size, the bus shot rules). Each phrase must appear exactly once in its
 file, so deleting a rule breaks a test. No network. The ocean test uses the stricter once_everywhere."""
 import re
 
@@ -105,6 +106,29 @@ def test_planet_ocean_placement_rules():
     once_everywhere('South of the equator it turns dark early')
     once_everywhere('"spin" speed 0.1 for 3 seconds turns the planet 108 degrees, so "ocean_lon" -108')
     once_everywhere('If you re-declare the planet in a new scene instead, "ocean_lon" counts from rotation 0 again, so do not subtract the angle')
+
+
+def test_earth_video_lessons():
+    once_everywhere('sharp with its "glow" (the param or the action) at about 0.05 or lower')
+    once_everywhere('At 0.1 a bluish veil is already visible over the surface, and from 0.2 up the continents fade into a pale haze')
+    once_everywhere('This was seen on a planet of "size" 1.3 at "angle" "front" with the default lighting.')
+    once_everywhere('Its "atmosphere" only thickens the blue rim and the surface stays readable up to 0.9 when "glow" is low, so "glow" is the value to keep small')
+    once_everywhere('Write the environment as an object with "companion": "none" to remove it.')
+    once_everywhere('so a box at "size" 1 is 1 unit along its longest side however small those numbers are')
+    once_everywhere('Beside a vehicle give a crate a "size" of about 0.2 x the vehicle\'s "size"')
+    once_everywhere('is a solid, opaque body with no cutaway')
+    once_everywhere('must start hidden inside the body, toward the front, at body height')
+    once_everywhere('come out through the front after the stop, never over the roof')
+    once_everywhere('with an "ease" "out" so the slowing reads as a stop')
+    once_everywhere('arc it down to "at" y 0 because a prop that does not float stands with its bottom at its "at" height')
+    once_everywhere('land the pieces clear of the bus front with gaps between them and well inside the frame')
+    # all 4 earth-video bullets must exist (a changed prefix fails here) and hold no semicolons
+    prefixes = ('- A planet keeps its continents', '- The "planet_surface" environment hangs',
+                '- A "box" "size" sets its longest side', '- The "car" with "style": "bus"')
+    lines = [ln for ln in SHOW.splitlines() if ln.startswith(prefixes)]
+    assert len(lines) == 4, lines
+    for line in lines:
+        assert ';' not in line, line[:60]
 
 
 def test_no_bullet_glued_onto_a_sentence():

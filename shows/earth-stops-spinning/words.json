@@ -1,877 +1,927 @@
 [
  {
   "text": "What",
-  "start": 0.089,
-  "end": 0.167
- },
- {
-  "text": "if",
-  "start": 0.179,
+  "start": 0.1,
   "end": 0.279
  },
  {
-  "text": "Earth",
+  "text": "if",
   "start": 0.29,
-  "end": 0.446
+  "end": 0.379
  },
  {
-  "text": "suddenly",
-  "start": 0.458,
-  "end": 0.804
+  "text": "Earth",
+  "start": 0.39,
+  "end": 0.569
  },
  {
   "text": "stopped",
-  "start": 0.815,
-  "end": 1.094
+  "start": 0.58,
+  "end": 0.848
  },
  {
   "text": "spinning?",
-  "start": 1.105,
-  "end": 1.451
- },
- {
-  "text": "Many",
-  "start": 1.819,
-  "end": 1.998
- },
- {
-  "text": "people",
-  "start": 2.009,
-  "end": 2.31
- },
- {
-  "text": "imagine",
-  "start": 2.321,
-  "end": 2.779
- },
- {
-  "text": "one",
-  "start": 2.79,
-  "end": 2.991
- },
- {
-  "text": "calm,",
-  "start": 3.002,
-  "end": 3.415
- },
- {
-  "text": "endless",
-  "start": 3.761,
-  "end": 3.996
- },
- {
-  "text": "afternoon.",
-  "start": 4.007,
-  "end": 4.498
- },
- {
-  "text": "Here",
-  "start": 4.888,
-  "end": 4.989
- },
- {
-  "text": "is",
-  "start": 5.0,
-  "end": 5.067
- },
- {
-  "text": "what",
-  "start": 5.078,
-  "end": 5.223
- },
- {
-  "text": "really",
-  "start": 5.234,
-  "end": 5.402
- },
- {
-  "text": "happens.",
-  "start": 5.413,
-  "end": 5.915
+  "start": 0.859,
+  "end": 1.183
  },
  {
   "text": "Right",
-  "start": 6.284,
-  "end": 6.429
+  "start": 1.501,
+  "end": 1.735
  },
  {
   "text": "now,",
-  "start": 6.44,
-  "end": 6.741
- },
- {
-  "text": "the",
-  "start": 6.987,
-  "end": 7.065
- },
- {
-  "text": "ground",
-  "start": 7.076,
-  "end": 7.366
- },
- {
-  "text": "at",
-  "start": 7.377,
-  "end": 7.433
- },
- {
-  "text": "the",
-  "start": 7.444,
-  "end": 7.522
- },
- {
-  "text": "equator",
-  "start": 7.534,
-  "end": 7.98
- },
- {
-  "text": "moves",
-  "start": 7.991,
-  "end": 8.382
- },
- {
-  "text": "at",
-  "start": 8.393,
-  "end": 8.527
- },
- {
-  "text": "about",
-  "start": 8.538,
-  "end": 8.839
- },
- {
-  "text": "one",
-  "start": 8.85,
-  "end": 9.141
- },
- {
-  "text": "thousand",
-  "start": 9.152,
-  "end": 9.542
- },
- {
-  "text": "miles",
-  "start": 9.554,
-  "end": 9.844
- },
- {
-  "text": "an",
-  "start": 9.855,
-  "end": 9.922
- },
- {
-  "text": "hour.",
-  "start": 9.933,
-  "end": 10.257
- },
- {
-  "text": "Stop",
-  "start": 10.625,
-  "end": 10.904
- },
- {
-  "text": "the",
-  "start": 10.915,
-  "end": 10.971
- },
- {
-  "text": "ground,",
-  "start": 10.982,
-  "end": 11.373
- },
- {
-  "text": "and",
-  "start": 11.652,
-  "end": 11.73
- },
- {
-  "text": "the",
-  "start": 11.741,
-  "end": 11.819
- },
- {
-  "text": "air",
-  "start": 11.83,
-  "end": 12.076
- },
- {
-  "text": "keeps",
-  "start": 12.087,
-  "end": 12.355
- },
- {
-  "text": "going",
-  "start": 12.366,
-  "end": 12.6
- },
- {
-  "text": "at",
-  "start": 12.612,
-  "end": 12.69
- },
- {
-  "text": "that",
-  "start": 12.701,
-  "end": 12.868
- },
- {
-  "text": "speed.",
-  "start": 12.879,
-  "end": 13.292
- },
- {
-  "text": "The",
-  "start": 13.661,
-  "end": 13.761
- },
- {
-  "text": "oceans",
-  "start": 13.772,
-  "end": 14.152
- },
- {
-  "text": "keep",
-  "start": 14.163,
-  "end": 14.364
- },
- {
-  "text": "sliding",
-  "start": 14.375,
-  "end": 14.788
- },
- {
-  "text": "too,",
-  "start": 14.799,
-  "end": 15.078
- },
- {
-  "text": "then",
-  "start": 15.413,
-  "end": 15.536
- },
- {
-  "text": "surge",
-  "start": 15.547,
-  "end": 15.904
- },
- {
-  "text": "toward",
-  "start": 15.915,
-  "end": 16.15
- },
- {
-  "text": "the",
-  "start": 16.161,
-  "end": 16.239
- },
- {
-  "text": "poles",
-  "start": 16.25,
-  "end": 16.674
- },
- {
-  "text": "as",
-  "start": 16.685,
-  "end": 16.819
- },
- {
-  "text": "the",
-  "start": 16.83,
-  "end": 16.897
- },
- {
-  "text": "equator",
-  "start": 16.909,
-  "end": 17.366
- },
- {
-  "text": "bulge",
-  "start": 17.377,
-  "end": 17.679
- },
- {
-  "text": "fades.",
-  "start": 17.69,
-  "end": 18.225
- },
- {
-  "text": "Dry",
-  "start": 18.594,
-  "end": 18.817
- },
- {
-  "text": "land",
-  "start": 18.828,
-  "end": 19.208
- },
- {
-  "text": "would",
-  "start": 19.219,
-  "end": 19.364
- },
- {
-  "text": "rise",
-  "start": 19.375,
-  "end": 19.721
- },
- {
-  "text": "near",
-  "start": 19.732,
-  "end": 19.9
- },
- {
-  "text": "the",
-  "start": 19.911,
-  "end": 19.978
- },
- {
-  "text": "equator,",
-  "start": 19.989,
-  "end": 20.491
- },
- {
-  "text": "and",
-  "start": 20.848,
-  "end": 20.96
- },
- {
-  "text": "new",
-  "start": 20.971,
-  "end": 21.138
- },
- {
-  "text": "seas",
-  "start": 21.15,
-  "end": 21.54
- },
- {
-  "text": "would",
-  "start": 21.551,
-  "end": 21.674
- },
- {
-  "text": "swell",
-  "start": 21.685,
-  "end": 22.132
- },
- {
-  "text": "near",
-  "start": 22.143,
-  "end": 22.277
- },
- {
-  "text": "the",
-  "start": 22.288,
-  "end": 22.366
- },
- {
-  "text": "poles.",
-  "start": 22.377,
-  "end": 22.868
- },
- {
-  "text": "Now",
-  "start": 23.237,
-  "end": 23.337
- },
- {
-  "text": "the",
-  "start": 23.348,
-  "end": 23.426
- },
- {
-  "text": "Sun",
-  "start": 23.438,
-  "end": 23.694
- },
- {
-  "text": "takes",
-  "start": 23.705,
-  "end": 23.94
- },
- {
-  "text": "a",
-  "start": 23.951,
-  "end": 23.984
- },
- {
-  "text": "year",
-  "start": 23.996,
-  "end": 24.342
- },
- {
-  "text": "to",
-  "start": 24.353,
-  "end": 24.431
- },
- {
-  "text": "cross",
-  "start": 24.442,
-  "end": 24.721
- },
- {
-  "text": "the",
-  "start": 24.732,
-  "end": 24.799
- },
- {
-  "text": "sky.",
-  "start": 24.81,
-  "end": 25.19
- },
- {
-  "text": "So",
-  "start": 25.558,
-  "end": 25.681
- },
- {
-  "text": "one",
-  "start": 25.692,
-  "end": 25.871
- },
- {
-  "text": "side",
-  "start": 25.882,
-  "end": 26.161
- },
- {
-  "text": "bakes",
-  "start": 26.172,
-  "end": 26.417
- },
- {
-  "text": "in",
-  "start": 26.429,
-  "end": 26.507
- },
- {
-  "text": "daylight",
-  "start": 26.518,
-  "end": 26.886
- },
- {
-  "text": "for",
-  "start": 26.897,
-  "end": 27.031
- },
- {
-  "text": "about",
-  "start": 27.042,
-  "end": 27.243
- },
- {
-  "text": "six",
-  "start": 27.254,
-  "end": 27.5
- },
- {
-  "text": "months.",
-  "start": 27.511,
-  "end": 27.98
- },
- {
-  "text": "The",
-  "start": 28.359,
-  "end": 28.449
- },
- {
-  "text": "other",
-  "start": 28.46,
-  "end": 28.672
- },
- {
-  "text": "side",
-  "start": 28.683,
-  "end": 29.007
- },
- {
-  "text": "freezes",
-  "start": 29.018,
-  "end": 29.487
- },
- {
-  "text": "in",
-  "start": 29.498,
-  "end": 29.598
- },
- {
-  "text": "darkness",
-  "start": 29.609,
-  "end": 30.056
- },
- {
-  "text": "for",
-  "start": 30.067,
-  "end": 30.167
- },
- {
-  "text": "the",
-  "start": 30.179,
-  "end": 30.246
- },
- {
-  "text": "same",
-  "start": 30.257,
-  "end": 30.491
- },
- {
-  "text": "time.",
-  "start": 30.502,
-  "end": 30.837
- },
- {
-  "text": "It",
-  "start": 31.205,
-  "end": 31.272
- },
- {
-  "text": "is",
-  "start": 31.284,
-  "end": 31.373
- },
- {
-  "text": "like",
-  "start": 31.384,
-  "end": 31.518
- },
- {
-  "text": "holding",
-  "start": 31.529,
-  "end": 31.897
- },
- {
-  "text": "one",
-  "start": 31.909,
-  "end": 32.087
- },
- {
-  "text": "side",
-  "start": 32.098,
-  "end": 32.388
- },
- {
-  "text": "of",
-  "start": 32.4,
-  "end": 32.455
- },
- {
-  "text": "a",
-  "start": 32.467,
-  "end": 32.511
- },
- {
-  "text": "marshmallow",
-  "start": 32.522,
-  "end": 33.136
- },
- {
-  "text": "over",
-  "start": 33.248,
-  "end": 33.426
- },
- {
-  "text": "a",
-  "start": 33.438,
-  "end": 33.471
- },
- {
-  "text": "fire.",
-  "start": 33.482,
-  "end": 33.884
- },
- {
-  "text": "The",
-  "start": 34.252,
-  "end": 34.297
- },
- {
-  "text": "spin",
-  "start": 34.308,
-  "end": 34.643
- },
- {
-  "text": "also",
-  "start": 34.654,
-  "end": 34.933
- },
- {
-  "text": "helps",
-  "start": 34.944,
-  "end": 35.223
- },
- {
-  "text": "stir",
-  "start": 35.234,
-  "end": 35.525
- },
- {
-  "text": "the",
-  "start": 35.536,
-  "end": 35.647
- },
- {
-  "text": "liquid",
-  "start": 35.658,
-  "end": 35.982
- },
- {
-  "text": "metal",
-  "start": 35.993,
-  "end": 36.261
- },
- {
-  "text": "in",
-  "start": 36.272,
-  "end": 36.362
+  "start": 1.746,
+  "end": 2.059
  },
  {
   "text": "Earth's",
-  "start": 36.373,
-  "end": 36.607
+  "start": 2.204,
+  "end": 2.416
  },
  {
-  "text": "core.",
-  "start": 36.618,
-  "end": 36.975
+  "text": "surface",
+  "start": 2.427,
+  "end": 2.762
  },
  {
-  "text": "That",
-  "start": 37.355,
-  "end": 37.444
+  "text": "races",
+  "start": 2.773,
+  "end": 3.108
  },
  {
-  "text": "stirring",
-  "start": 37.455,
-  "end": 37.835
+  "text": "along",
+  "start": 3.119,
+  "end": 3.409
  },
  {
-  "text": "makes",
-  "start": 37.846,
-  "end": 38.069
+  "text": "at",
+  "start": 3.421,
+  "end": 3.476
  },
  {
-  "text": "our",
-  "start": 38.08,
-  "end": 38.158
+  "text": "about",
+  "start": 3.487,
+  "end": 3.744
  },
  {
-  "text": "magnetic",
-  "start": 38.17,
-  "end": 38.583
+  "text": "one",
+  "start": 3.755,
+  "end": 3.912
  },
  {
-  "text": "shield,",
-  "start": 38.594,
-  "end": 38.951
+  "text": "thousand",
+  "start": 3.923,
+  "end": 4.269
  },
  {
-  "text": "so",
-  "start": 39.275,
-  "end": 39.397
+  "text": "miles",
+  "start": 4.28,
+  "end": 4.559
+ },
+ {
+  "text": "an",
+  "start": 4.57,
+  "end": 4.637
+ },
+ {
+  "text": "hour",
+  "start": 4.648,
+  "end": 4.927
+ },
+ {
+  "text": "at",
+  "start": 4.938,
+  "end": 5.005
  },
  {
   "text": "the",
-  "start": 39.408,
-  "end": 39.475
+  "start": 5.016,
+  "end": 5.072
  },
  {
-  "text": "shield",
-  "start": 39.487,
-  "end": 39.81
+  "text": "equator.",
+  "start": 5.083,
+  "end": 5.563
+ },
+ {
+  "text": "Here",
+  "start": 5.887,
+  "end": 6.066
+ },
+ {
+  "text": "is",
+  "start": 6.077,
+  "end": 6.166
+ },
+ {
+  "text": "what",
+  "start": 6.177,
+  "end": 6.333
+ },
+ {
+  "text": "really",
+  "start": 6.345,
+  "end": 6.545
+ },
+ {
+  "text": "happens:",
+  "start": 6.557,
+  "end": 7.07
+ },
+ {
+  "text": "the",
+  "start": 7.271,
+  "end": 7.349
+ },
+ {
+  "text": "ground",
+  "start": 7.36,
+  "end": 7.617
  },
  {
   "text": "would",
-  "start": 39.821,
-  "end": 39.944
+  "start": 7.628,
+  "end": 7.695
  },
  {
-  "text": "probably",
-  "start": 39.955,
-  "end": 40.335
+  "text": "stop,",
+  "start": 7.706,
+  "end": 8.075
  },
  {
-  "text": "weaken.",
-  "start": 40.346,
-  "end": 40.647
- },
- {
-  "text": "Then",
-  "start": 41.016,
-  "end": 41.172
- },
- {
-  "text": "more",
-  "start": 41.183,
-  "end": 41.406
- },
- {
-  "text": "harsh",
-  "start": 41.417,
-  "end": 41.741
- },
- {
-  "text": "radiation",
-  "start": 41.752,
-  "end": 42.277
- },
- {
-  "text": "from",
-  "start": 42.288,
-  "end": 42.411
+  "text": "but",
+  "start": 8.32,
+  "end": 8.421
  },
  {
   "text": "the",
-  "start": 42.422,
-  "end": 42.489
- },
- {
-  "text": "Sun",
-  "start": 42.5,
-  "end": 42.812
- },
- {
-  "text": "would",
-  "start": 43.002,
-  "end": 43.147
- },
- {
-  "text": "reach",
-  "start": 43.158,
-  "end": 43.371
- },
- {
-  "text": "the",
-  "start": 43.382,
-  "end": 43.46
- },
- {
-  "text": "ground.",
-  "start": 43.471,
-  "end": 43.873
- },
- {
-  "text": "Our",
-  "start": 44.241,
-  "end": 44.364
- },
- {
-  "text": "daily",
-  "start": 44.375,
-  "end": 44.665
- },
- {
-  "text": "spin",
-  "start": 44.676,
-  "end": 45.022
- },
- {
-  "text": "gives",
-  "start": 45.033,
-  "end": 45.246
- },
- {
-  "text": "us",
-  "start": 45.257,
-  "end": 45.368
- },
- {
-  "text": "gentle",
-  "start": 45.379,
-  "end": 45.67
- },
- {
-  "text": "days,",
-  "start": 45.681,
-  "end": 46.071
- },
- {
-  "text": "steady",
-  "start": 46.272,
-  "end": 46.596
+  "start": 8.432,
+  "end": 8.521
  },
  {
   "text": "air",
-  "start": 46.607,
-  "end": 46.931
+  "start": 8.532,
+  "end": 8.822
  },
  {
   "text": "and",
-  "start": 47.109,
-  "end": 47.176
+  "start": 8.99,
+  "end": 9.057
+ },
+ {
+  "text": "the",
+  "start": 9.068,
+  "end": 9.157
+ },
+ {
+  "text": "oceans",
+  "start": 9.168,
+  "end": 9.492
+ },
+ {
+  "text": "would",
+  "start": 9.503,
+  "end": 9.615
+ },
+ {
+  "text": "not.",
+  "start": 9.626,
+  "end": 9.927
+ },
+ {
+  "text": "Everything",
+  "start": 10.251,
+  "end": 10.742
+ },
+ {
+  "text": "loose",
+  "start": 10.753,
+  "end": 11.01
+ },
+ {
+  "text": "would",
+  "start": 11.021,
+  "end": 11.155
+ },
+ {
+  "text": "keep",
+  "start": 11.166,
+  "end": 11.345
+ },
+ {
+  "text": "its",
+  "start": 11.356,
+  "end": 11.479
+ },
+ {
+  "text": "old",
+  "start": 11.49,
+  "end": 11.68
+ },
+ {
+  "text": "speed",
+  "start": 11.691,
+  "end": 12.104
+ },
+ {
+  "text": "and",
+  "start": 12.115,
+  "end": 12.215
+ },
+ {
+  "text": "slide",
+  "start": 12.226,
+  "end": 12.65
+ },
+ {
+  "text": "eastward",
+  "start": 12.673,
+  "end": 13.086
+ },
+ {
+  "text": "across",
+  "start": 13.097,
+  "end": 13.409
+ },
+ {
+  "text": "the",
+  "start": 13.421,
+  "end": 13.487
+ },
+ {
+  "text": "ground.",
+  "start": 13.499,
+  "end": 13.9
+ },
+ {
+  "text": "Near",
+  "start": 14.224,
+  "end": 14.447
+ },
+ {
+  "text": "the",
+  "start": 14.459,
+  "end": 14.514
+ },
+ {
+  "text": "equator,",
+  "start": 14.525,
+  "end": 14.961
+ },
+ {
+  "text": "winds",
+  "start": 15.206,
+  "end": 15.396
+ },
+ {
+  "text": "of",
+  "start": 15.407,
+  "end": 15.452
+ },
+ {
+  "text": "about",
+  "start": 15.463,
+  "end": 15.72
+ },
+ {
+  "text": "one",
+  "start": 15.731,
+  "end": 15.865
+ },
+ {
+  "text": "thousand",
+  "start": 15.876,
+  "end": 16.211
+ },
+ {
+  "text": "miles",
+  "start": 16.222,
+  "end": 16.512
+ },
+ {
+  "text": "an",
+  "start": 16.523,
+  "end": 16.601
+ },
+ {
+  "text": "hour",
+  "start": 16.613,
+  "end": 16.892
+ },
+ {
+  "text": "would",
+  "start": 16.903,
+  "end": 17.014
+ },
+ {
+  "text": "sweep",
+  "start": 17.025,
+  "end": 17.349
+ },
+ {
+  "text": "across",
+  "start": 17.36,
+  "end": 17.662
+ },
+ {
+  "text": "the",
+  "start": 17.673,
+  "end": 17.751
+ },
+ {
+  "text": "land,",
+  "start": 17.762,
+  "end": 18.108
+ },
+ {
+  "text": "stripping",
+  "start": 18.421,
+  "end": 18.722
+ },
+ {
+  "text": "away",
+  "start": 18.733,
+  "end": 18.923
+ },
+ {
+  "text": "soil,",
+  "start": 18.934,
+  "end": 19.38
+ },
+ {
+  "text": "trees",
+  "start": 19.615,
+  "end": 20.017
+ },
+ {
+  "text": "and",
+  "start": 20.028,
+  "end": 20.128
+ },
+ {
+  "text": "buildings.",
+  "start": 20.139,
+  "end": 20.697
+ },
+ {
+  "text": "The",
+  "start": 21.021,
+  "end": 21.211
+ },
+ {
+  "text": "oceans",
+  "start": 21.222,
+  "end": 21.568
+ },
+ {
+  "text": "would",
+  "start": 21.579,
+  "end": 21.691
+ },
+ {
+  "text": "slosh",
+  "start": 21.702,
+  "end": 22.025
+ },
+ {
+  "text": "forward,",
+  "start": 22.037,
+  "end": 22.438
+ },
+ {
+  "text": "then",
+  "start": 22.706,
+  "end": 22.829
+ },
+ {
+  "text": "drain",
+  "start": 22.84,
+  "end": 23.275
+ },
+ {
+  "text": "toward",
+  "start": 23.287,
+  "end": 23.51
+ },
+ {
+  "text": "the",
+  "start": 23.521,
+  "end": 23.588
+ },
+ {
+  "text": "poles,",
+  "start": 23.599,
+  "end": 24.023
+ },
+ {
+  "text": "because",
+  "start": 24.202,
+  "end": 24.458
+ },
+ {
+  "text": "Earth",
+  "start": 24.481,
+  "end": 24.682
+ },
+ {
+  "text": "would",
+  "start": 24.693,
+  "end": 24.805
+ },
+ {
+  "text": "stay",
+  "start": 24.816,
+  "end": 25.072
+ },
+ {
+  "text": "slightly",
+  "start": 25.095,
+  "end": 25.608
+ },
+ {
+  "text": "bulged",
+  "start": 25.619,
+  "end": 25.976
+ },
+ {
+  "text": "at",
+  "start": 25.988,
+  "end": 26.077
+ },
+ {
+  "text": "the",
+  "start": 26.088,
+  "end": 26.144
+ },
+ {
+  "text": "equator.",
+  "start": 26.155,
+  "end": 26.646
+ },
+ {
+  "text": "That",
+  "start": 26.97,
+  "end": 27.137
+ },
+ {
+  "text": "would",
+  "start": 27.148,
+  "end": 27.237
+ },
+ {
+  "text": "leave",
+  "start": 27.249,
+  "end": 27.394
  },
  {
   "text": "a",
-  "start": 47.188,
-  "end": 47.221
+  "start": 27.405,
+  "end": 27.438
  },
  {
-  "text": "shield",
-  "start": 47.232,
-  "end": 47.589
+  "text": "huge",
+  "start": 27.45,
+  "end": 28.019
  },
  {
-  "text": "overhead.",
-  "start": 47.6,
-  "end": 48.047
+  "text": "belt",
+  "start": 28.03,
+  "end": 28.22
  },
  {
-  "text": "Would",
-  "start": 48.415,
-  "end": 48.516
+  "text": "of",
+  "start": 28.231,
+  "end": 28.309
  },
  {
-  "text": "you",
-  "start": 48.527,
-  "end": 48.616
+  "text": "dry",
+  "start": 28.32,
+  "end": 28.543
  },
  {
-  "text": "rather",
-  "start": 48.627,
-  "end": 48.873
+  "text": "land",
+  "start": 28.554,
+  "end": 28.878
  },
  {
-  "text": "live",
-  "start": 48.884,
-  "end": 49.074
- },
- {
-  "text": "on",
-  "start": 49.085,
-  "end": 49.152
+  "text": "around",
+  "start": 28.889,
+  "end": 29.157
  },
  {
   "text": "the",
-  "start": 49.163,
-  "end": 49.23
+  "start": 29.168,
+  "end": 29.224
  },
  {
-  "text": "sunny",
-  "start": 49.241,
-  "end": 49.542
+  "text": "middle",
+  "start": 29.235,
+  "end": 29.492
+ },
+ {
+  "text": "of",
+  "start": 29.503,
+  "end": 29.537
+ },
+ {
+  "text": "the",
+  "start": 29.548,
+  "end": 29.615
+ },
+ {
+  "text": "planet.",
+  "start": 29.626,
+  "end": 30.017
+ },
+ {
+  "text": "A",
+  "start": 30.34,
+  "end": 30.485
+ },
+ {
+  "text": "single",
+  "start": 30.496,
+  "end": 30.82
+ },
+ {
+  "text": "day",
+  "start": 30.831,
+  "end": 30.976
+ },
+ {
+  "text": "would",
+  "start": 30.988,
+  "end": 31.133
+ },
+ {
+  "text": "last",
+  "start": 31.144,
+  "end": 31.423
+ },
+ {
+  "text": "a",
+  "start": 31.434,
+  "end": 31.467
+ },
+ {
+  "text": "whole",
+  "start": 31.479,
+  "end": 31.758
+ },
+ {
+  "text": "year,",
+  "start": 31.769,
+  "end": 32.025
+ },
+ {
+  "text": "so",
+  "start": 32.371,
+  "end": 32.472
+ },
+ {
+  "text": "one",
+  "start": 32.483,
+  "end": 32.639
  },
  {
   "text": "side",
-  "start": 49.554,
-  "end": 49.944
+  "start": 32.65,
+  "end": 32.941
  },
  {
-  "text": "or",
-  "start": 50.078,
-  "end": 50.156
+  "text": "would",
+  "start": 32.952,
+  "end": 33.063
+ },
+ {
+  "text": "bake",
+  "start": 33.075,
+  "end": 33.275
+ },
+ {
+  "text": "in",
+  "start": 33.287,
+  "end": 33.365
+ },
+ {
+  "text": "sunlight",
+  "start": 33.376,
+  "end": 33.8
+ },
+ {
+  "text": "for",
+  "start": 33.811,
+  "end": 33.945
+ },
+ {
+  "text": "about",
+  "start": 33.956,
+  "end": 34.168
+ },
+ {
+  "text": "six",
+  "start": 34.179,
+  "end": 34.458
+ },
+ {
+  "text": "months",
+  "start": 34.47,
+  "end": 34.76
+ },
+ {
+  "text": "while",
+  "start": 34.771,
+  "end": 34.883
  },
  {
   "text": "the",
-  "start": 50.167,
-  "end": 50.246
+  "start": 34.894,
+  "end": 35.005
  },
  {
-  "text": "dark",
-  "start": 50.257,
-  "end": 50.469
+  "text": "other",
+  "start": 35.017,
+  "end": 35.251
  },
  {
-  "text": "side?",
-  "start": 50.48,
-  "end": 50.826
+  "text": "froze",
+  "start": 35.262,
+  "end": 35.541
+ },
+ {
+  "text": "in",
+  "start": 35.552,
+  "end": 35.642
+ },
+ {
+  "text": "darkness.",
+  "start": 35.653,
+  "end": 36.177
+ },
+ {
+  "text": "It",
+  "start": 36.501,
+  "end": 36.668
+ },
+ {
+  "text": "is",
+  "start": 36.679,
+  "end": 36.769
+ },
+ {
+  "text": "like",
+  "start": 36.78,
+  "end": 36.892
+ },
+ {
+  "text": "a",
+  "start": 36.903,
+  "end": 36.947
+ },
+ {
+  "text": "bus",
+  "start": 36.959,
+  "end": 37.215
+ },
+ {
+  "text": "braking",
+  "start": 37.226,
+  "end": 37.55
+ },
+ {
+  "text": "hard:",
+  "start": 37.561,
+  "end": 37.907
+ },
+ {
+  "text": "the",
+  "start": 38.175,
+  "end": 38.253
+ },
+ {
+  "text": "bus",
+  "start": 38.264,
+  "end": 38.476
+ },
+ {
+  "text": "stops,",
+  "start": 38.487,
+  "end": 38.912
+ },
+ {
+  "text": "but",
+  "start": 39.09,
+  "end": 39.224
+ },
+ {
+  "text": "everything",
+  "start": 39.246,
+  "end": 39.592
+ },
+ {
+  "text": "inside",
+  "start": 39.604,
+  "end": 40.039
+ },
+ {
+  "text": "keeps",
+  "start": 40.05,
+  "end": 40.273
+ },
+ {
+  "text": "flying",
+  "start": 40.284,
+  "end": 40.563
+ },
+ {
+  "text": "forward.",
+  "start": 40.575,
+  "end": 41.021
+ },
+ {
+  "text": "Earth's",
+  "start": 41.345,
+  "end": 41.646
+ },
+ {
+  "text": "slow,",
+  "start": 41.657,
+  "end": 41.958
+ },
+ {
+  "text": "steady",
+  "start": 42.215,
+  "end": 42.505
+ },
+ {
+  "text": "turn",
+  "start": 42.517,
+  "end": 42.84
+ },
+ {
+  "text": "keeps",
+  "start": 42.851,
+  "end": 43.108
+ },
+ {
+  "text": "our",
+  "start": 43.119,
+  "end": 43.22
+ },
+ {
+  "text": "winds",
+  "start": 43.231,
+  "end": 43.454
+ },
+ {
+  "text": "gentle,",
+  "start": 43.465,
+  "end": 43.833
+ },
+ {
+  "text": "our",
+  "start": 44.146,
+  "end": 44.246
+ },
+ {
+  "text": "oceans",
+  "start": 44.258,
+  "end": 44.548
+ },
+ {
+  "text": "spread",
+  "start": 44.559,
+  "end": 44.816
+ },
+ {
+  "text": "evenly,",
+  "start": 44.827,
+  "end": 45.24
+ },
+ {
+  "text": "and",
+  "start": 45.519,
+  "end": 45.608
+ },
+ {
+  "text": "our",
+  "start": 45.619,
+  "end": 45.72
+ },
+ {
+  "text": "days",
+  "start": 45.731,
+  "end": 45.954
+ },
+ {
+  "text": "short",
+  "start": 45.965,
+  "end": 46.144
+ },
+ {
+  "text": "enough",
+  "start": 46.155,
+  "end": 46.356
+ },
+ {
+  "text": "for",
+  "start": 46.367,
+  "end": 46.467
+ },
+ {
+  "text": "life",
+  "start": 46.479,
+  "end": 46.702
+ },
+ {
+  "text": "to",
+  "start": 46.713,
+  "end": 46.791
+ },
+ {
+  "text": "thrive.",
+  "start": 46.802,
+  "end": 47.215
+ },
+ {
+  "text": "If",
+  "start": 47.539,
+  "end": 47.695
+ },
+ {
+  "text": "you",
+  "start": 47.706,
+  "end": 47.773
+ },
+ {
+  "text": "had",
+  "start": 47.784,
+  "end": 47.941
+ },
+ {
+  "text": "to",
+  "start": 47.952,
+  "end": 47.996
+ },
+ {
+  "text": "survive",
+  "start": 48.008,
+  "end": 48.432
+ },
+ {
+  "text": "it,",
+  "start": 48.443,
+  "end": 48.543
+ },
+ {
+  "text": "where",
+  "start": 48.856,
+  "end": 48.99
+ },
+ {
+  "text": "on",
+  "start": 49.001,
+  "end": 49.124
+ },
+ {
+  "text": "Earth",
+  "start": 49.135,
+  "end": 49.325
+ },
+ {
+  "text": "would",
+  "start": 49.336,
+  "end": 49.414
+ },
+ {
+  "text": "you",
+  "start": 49.425,
+  "end": 49.481
+ },
+ {
+  "text": "stand?",
+  "start": 49.492,
+  "end": 49.871
+ },
+ {
+  "text": "Comment",
+  "start": 50.195,
+  "end": 50.597
+ },
+ {
+  "text": "your",
+  "start": 50.608,
+  "end": 50.708
+ },
+ {
+  "text": "answer",
+  "start": 50.72,
+  "end": 50.987
+ },
+ {
+  "text": "below.",
+  "start": 50.999,
+  "end": 51.311
  }
 ]

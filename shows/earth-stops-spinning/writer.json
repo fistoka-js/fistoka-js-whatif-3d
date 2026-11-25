@@ -3,118 +3,95 @@
  "topic": "What if Earth stopped spinning?",
  "status": "ok",
  "title": "What If Earth Suddenly Stopped Spinning?",
- "description": "What would really happen if Earth stopped spinning? Winds, oceans, a six-month day and a weaker magnetic shield, explained step by step with real physics.\n\n#science #earth #whatif #space #physics",
+ "description": "What would really happen if Earth suddenly stopped spinning? The ground would halt, but the air and oceans would keep moving, with huge winds, drained seas and days that last a year.\n\n#earth #science #whatif #physics #space",
  "tags": [
-  "earth stops spinning",
   "what if earth stopped spinning",
   "earth rotation",
   "science explained",
   "what if",
   "planet earth",
-  "magnetic field",
-  "day and night",
   "physics",
-  "space science"
+  "oceans",
+  "winds",
+  "day and night",
+  "space facts",
+  "science shorts"
  ],
  "show": "llm",
- "repairs": 0,
+ "repairs": 1,
  "fallback_note": null,
  "beats": [
   {
-   "sentence": "What if Earth suddenly stopped spinning?",
+   "sentence": "What if Earth stopped spinning?",
    "subject": "planet",
-   "change": "the planet's air glow thins and the lit and dark halves settle in place",
+   "change": "the ocean bump drifts to the side as the planet's day side keeps its lit half",
+   "dial": "spin"
+  },
+  {
+   "sentence": "Right now, Earth's surface races along at about one thousand miles an hour at the equator.",
+   "subject": "gauge",
+   "change": "the needle swings up to one thousand miles an hour and the arc fills",
+   "dial": "speed"
+  },
+  {
+   "sentence": "Here is what really happens: the ground would stop, but the air and the oceans would not.",
+   "subject": "planet",
+   "change": "the air glow thickens and the ocean bump slides forward past the stopped surface",
+   "dial": "spin"
+  },
+  {
+   "sentence": "Everything loose would keep its old speed and slide eastward across the ground.",
+   "subject": "rock",
+   "change": "the boulder lurches eastward and slides along the ground",
    "dial": ""
   },
   {
-   "sentence": "Many people imagine one calm, endless afternoon.",
+   "sentence": "Near the equator, winds of about one thousand miles an hour would sweep across the land, stripping away soil, trees and buildings.",
    "subject": "planet",
-   "change": "the air glow turns calm and bright across the lit half",
+   "change": "the air glow flares bright and streaks sideways as the winds scour the surface",
+   "dial": "wind"
+  },
+  {
+   "sentence": "The oceans would slosh forward, then drain toward the poles, because Earth would stay slightly bulged at the equator.",
+   "subject": "planet",
+   "change": "the ocean bump slides from the equator up toward the north pole and grows",
+   "dial": "ocean"
+  },
+  {
+   "sentence": "That would leave a huge belt of dry land around the middle of the planet.",
+   "subject": "planet",
+   "change": "the ocean shrinks away from the equator and bare land shows around the middle",
+   "dial": "ocean"
+  },
+  {
+   "sentence": "A single day would last a whole year, so one side would bake in sunlight for about six months while the other froze in darkness.",
+   "subject": "planet",
+   "change": "the sun side stays lit and bright while the far side goes dark and cold",
+   "dial": "daylength"
+  },
+  {
+   "sentence": "It is like a bus braking hard: the bus stops, but everything inside keeps flying forward.",
+   "subject": "car",
+   "change": "the bus brakes to a halt while the crates inside slide forward",
    "dial": ""
   },
   {
-   "sentence": "Here is what really happens.",
+   "sentence": "Earth's slow, steady turn keeps our winds gentle, our oceans spread evenly, and our days short enough for life to thrive.",
    "subject": "planet",
-   "change": "the air glow flares and turns stormy",
-   "dial": "storm"
+   "change": "the ocean bump spreads evenly again and the air glow settles to a calm soft haze",
+   "dial": "ocean"
   },
   {
-   "sentence": "Right now, the ground at the equator moves at about one thousand miles an hour.",
+   "sentence": "If you had to survive it, where on Earth would you stand?",
    "subject": "planet",
-   "change": "the air glow thickens and streams along the equator",
-   "dial": "storm"
-  },
-  {
-   "sentence": "Stop the ground, and the air keeps going at that speed.",
-   "subject": "particles",
-   "change": "the air streams rush faster and spread out in one direction",
-   "dial": "storm"
-  },
-  {
-   "sentence": "The oceans keep sliding too, then surge toward the poles as the equator bulge fades.",
-   "subject": "planet",
-   "change": "the air glow shifts and thickens toward the poles",
-   "dial": "storm"
-  },
-  {
-   "sentence": "Dry land would rise near the equator, and new seas would swell near the poles.",
-   "subject": "planet",
-   "change": "the air glow fades near the equator and swells near the poles",
-   "dial": "storm"
-  },
-  {
-   "sentence": "Now the Sun takes a year to cross the sky.",
-   "subject": "sun",
-   "change": "the sun glows brighter and slows to a steady shine on one side",
-   "dial": "heat"
-  },
-  {
-   "sentence": "So one side bakes in daylight for about six months.",
-   "subject": "planet",
-   "change": "the lit half glows hotter and its air glow brightens",
-   "dial": "heat"
-  },
-  {
-   "sentence": "The other side freezes in darkness for the same time.",
-   "subject": "planet",
-   "change": "the dark half turns colder and its air glow vanishes",
-   "dial": "heat"
-  },
-  {
-   "sentence": "It is like holding one side of a marshmallow over a fire.",
-   "subject": "fire",
-   "change": "the flames grow taller and glow hotter",
-   "dial": "heat"
-  },
-  {
-   "sentence": "The spin also helps stir the liquid metal in Earth's core.",
-   "subject": "planet",
-   "change": "the air glow settles and the planet turns still",
+   "change": "the planet's land belt and poles light up as possible places to stand",
    "dial": ""
   },
   {
-   "sentence": "That stirring makes our magnetic shield, so the shield would probably weaken.",
-   "subject": "shield_dome",
-   "change": "the dome's shimmer fades and thins",
-   "dial": "shield"
-  },
-  {
-   "sentence": "Then more harsh radiation from the Sun would reach the ground.",
-   "subject": "shield_dome",
-   "change": "the dome grows fainter and more transparent",
-   "dial": "shield"
-  },
-  {
-   "sentence": "Our daily spin gives us gentle days, steady air and a shield overhead.",
-   "subject": "shield_dome",
-   "change": "the dome shimmers strong again and fills out",
-   "dial": "shield"
-  },
-  {
-   "sentence": "Would you rather live on the sunny side or the dark side?",
+   "sentence": "Comment your answer below.",
    "subject": "planet",
-   "change": "the lit half brightens while the dark half deepens",
-   "dial": "heat"
+   "change": "the whole planet glows warmer and the air glow brightens softly",
+   "dial": ""
   }
  ],
  "beat_rewrite": false,
@@ -122,47 +99,126 @@
  "beat_problems": [],
  "qa": "pass",
  "needs_fact_check": false,
- "voice_seconds": 51.168,
+ "voice_seconds": 51.624,
+ "voice_note": "",
  "mode": "files",
  "model": "claude-sonnet-5-5",
  "tokens": {
-  "input_tokens": 21188,
-  "output_tokens": 4474,
+  "input_tokens": 100484,
+  "output_tokens": 15704,
   "cache_read_tokens": 0,
   "cache_write_tokens": 0
  },
- "cost_usd": 0.0871,
+ "cost_usd": 0.358,
  "cost_is_estimate": true,
+ "storyboard": {
+  "verdict": "pass",
+  "repairs": 2,
+  "notes": [
+   "S3 (text): S3 \"the ground would stop, but the air and the oceans would not\": the text \"1,000 mph at the equator\" from S2 stays up while the gauge needle drops to zero, which could read as a mismatch. Fix: Note only: keep the text but make sure the gauge is clearly the ground speed."
+  ]
+ },
+ "props_wanted": [],
  "calls": [
   {
    "purpose": "script",
    "model": "files",
-   "input_tokens": 3637,
-   "output_tokens": 1245,
+   "input_tokens": 4048,
+   "output_tokens": 1237,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.01972
+   "cost_usd": 0.02047
   },
   {
    "purpose": "audit",
    "model": "files",
-   "input_tokens": 1185,
-   "output_tokens": 632,
+   "input_tokens": 1207,
+   "output_tokens": 587,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.00869
+   "cost_usd": 0.00828
+  },
+  {
+   "purpose": "storyboard",
+   "model": "files",
+   "input_tokens": 4623,
+   "output_tokens": 1825,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.0275
+  },
+  {
+   "purpose": "storyboard-repair1",
+   "model": "files",
+   "input_tokens": 6552,
+   "output_tokens": 1825,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.03135
+  },
+  {
+   "purpose": "storyboard-review",
+   "model": "files",
+   "input_tokens": 5057,
+   "output_tokens": 233,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.01244
+  },
+  {
+   "purpose": "storyboard-repair2",
+   "model": "files",
+   "input_tokens": 6700,
+   "output_tokens": 2007,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.03347
+  },
+  {
+   "purpose": "storyboard-review",
+   "model": "files",
+   "input_tokens": 5238,
+   "output_tokens": 91,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.01139
   },
   {
    "purpose": "show",
    "model": "files",
-   "input_tokens": 16366,
-   "output_tokens": 2597,
+   "input_tokens": 20347,
+   "output_tokens": 2575,
    "cache_read_tokens": 0,
    "cache_write_tokens": 0,
    "estimated": true,
-   "cost_usd": 0.0587
+   "cost_usd": 0.06644
+  },
+  {
+   "purpose": "repair1",
+   "model": "files",
+   "input_tokens": 23236,
+   "output_tokens": 2654,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.07301
+  },
+  {
+   "purpose": "qa-repair",
+   "model": "files",
+   "input_tokens": 23476,
+   "output_tokens": 2670,
+   "cache_read_tokens": 0,
+   "cache_write_tokens": 0,
+   "estimated": true,
+   "cost_usd": 0.07365
   }
  ],
  "error": null
