@@ -80,6 +80,8 @@ def test_inside_a_prop_rules():
 
 def test_wire_rules():
     once(SHOW, 'never both wires "to" the bulb')
+    once(SHOW, "electrons leave the battery's negative (−) end")
+    once(SHOW, "wire 1, the out wire, from [-0.35, 0.2, 0.1]")
     once(SHOW, '("arrow", "beam", "wire", "light_wave") have')
     once(SHOW, "beam, arrow or light_wave")
     once(BOARD, "Keep the same direction in every sentence that shows the loop")
