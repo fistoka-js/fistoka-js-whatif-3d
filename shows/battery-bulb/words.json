@@ -1,942 +1,847 @@
 [
  {
-  "text": "How",
-  "start": 0.1,
-  "end": 0.256
+  "text": "What",
+  "start": 0.089,
+  "end": 0.167
  },
  {
-  "text": "does",
-  "start": 0.267,
-  "end": 0.39
+  "text": "if",
+  "start": 0.179,
+  "end": 0.246
  },
  {
   "text": "a",
-  "start": 0.401,
-  "end": 0.457
+  "start": 0.257,
+  "end": 0.324
  },
  {
   "text": "battery",
-  "start": 0.468,
-  "end": 0.848
+  "start": 0.335,
+  "end": 0.748
  },
  {
-  "text": "light",
-  "start": 0.859,
-  "end": 1.037
+  "text": "poured",
+  "start": 0.759,
+  "end": 1.038
  },
  {
-  "text": "a",
+  "text": "electricity",
   "start": 1.049,
-  "end": 1.082
- },
- {
-  "text": "bulb?",
-  "start": 1.093,
-  "end": 1.383
- },
- {
-  "text": "Here",
-  "start": 1.702,
-  "end": 1.88
- },
- {
-  "text": "is",
-  "start": 1.891,
-  "end": 1.981
- },
- {
-  "text": "what",
-  "start": 1.992,
-  "end": 2.148
- },
- {
-  "text": "really",
-  "start": 2.159,
-  "end": 2.371
- },
- {
-  "text": "happens.",
-  "start": 2.383,
-  "end": 2.874
- },
- {
-  "text": "The",
-  "start": 3.197,
-  "end": 3.354
- },
- {
-  "text": "battery",
-  "start": 3.365,
-  "end": 3.722
- },
- {
-  "text": "pushes",
-  "start": 3.733,
-  "end": 4.057
- },
- {
-  "text": "electrons",
-  "start": 4.068,
-  "end": 4.592
- },
- {
-  "text": "around",
-  "start": 4.615,
-  "end": 4.938
- },
- {
-  "text": "a",
-  "start": 4.95,
-  "end": 4.994
- },
- {
-  "text": "closed",
-  "start": 5.005,
-  "end": 5.362
- },
- {
-  "text": "loop",
-  "start": 5.374,
-  "end": 5.552
- },
- {
-  "text": "of",
-  "start": 5.563,
-  "end": 5.641
- },
- {
-  "text": "wire.",
-  "start": 5.653,
-  "end": 6.01
- },
- {
-  "text": "Inside",
-  "start": 6.333,
-  "end": 6.758
- },
- {
-  "text": "the",
-  "start": 6.769,
-  "end": 6.836
- },
- {
-  "text": "battery,",
-  "start": 6.847,
-  "end": 7.316
- },
- {
-  "text": "a",
-  "start": 7.416,
-  "end": 7.45
- },
- {
-  "text": "chemical",
-  "start": 7.461,
-  "end": 7.84
- },
- {
-  "text": "reaction",
-  "start": 7.851,
-  "end": 8.287
- },
- {
-  "text": "piles",
-  "start": 8.298,
-  "end": 8.7
- },
- {
-  "text": "extra",
-  "start": 8.733,
-  "end": 9.012
- },
- {
-  "text": "electrons",
-  "start": 9.023,
-  "end": 9.57
- },
- {
-  "text": "onto",
-  "start": 9.581,
-  "end": 9.804
- },
- {
-  "text": "the",
-  "start": 9.816,
-  "end": 9.883
- },
- {
-  "text": "negative",
-  "start": 9.894,
-  "end": 10.284
- },
- {
-  "text": "end.",
-  "start": 10.307,
-  "end": 10.552
- },
- {
-  "text": "Those",
-  "start": 10.876,
-  "end": 11.121
- },
- {
-  "text": "crowded",
-  "start": 11.133,
-  "end": 11.445
- },
- {
-  "text": "electrons",
-  "start": 11.456,
-  "end": 11.925
- },
- {
-  "text": "shove",
-  "start": 11.936,
-  "end": 12.07
- },
- {
-  "text": "away",
-  "start": 12.081,
-  "end": 12.338
- },
- {
-  "text": "from",
-  "start": 12.349,
-  "end": 12.505
- },
- {
-  "text": "each",
-  "start": 12.517,
-  "end": 12.673
- },
- {
-  "text": "other",
-  "start": 12.684,
-  "end": 12.974
- },
- {
-  "text": "and",
-  "start": 13.052,
-  "end": 13.119
- },
- {
-  "text": "flow",
-  "start": 13.13,
-  "end": 13.421
- },
- {
-  "text": "out",
-  "start": 13.432,
-  "end": 13.543
- },
- {
-  "text": "along",
-  "start": 13.554,
-  "end": 13.856
- },
- {
-  "text": "one",
-  "start": 13.867,
-  "end": 14.023
- },
- {
-  "text": "wire.",
-  "start": 14.034,
-  "end": 14.369
- },
- {
-  "text": "They",
-  "start": 14.693,
-  "end": 14.838
- },
- {
-  "text": "travel",
-  "start": 14.849,
-  "end": 15.184
- },
- {
-  "text": "through",
-  "start": 15.195,
-  "end": 15.307
- },
- {
-  "text": "the",
-  "start": 15.318,
-  "end": 15.396
- },
- {
-  "text": "bulb,",
-  "start": 15.407,
-  "end": 15.697
- },
- {
-  "text": "then",
-  "start": 15.965,
-  "end": 16.099
- },
- {
-  "text": "back",
-  "start": 16.11,
-  "end": 16.367
- },
- {
-  "text": "along",
-  "start": 16.378,
-  "end": 16.635
- },
- {
-  "text": "the",
-  "start": 16.646,
-  "end": 16.735
- },
- {
-  "text": "other",
-  "start": 16.746,
-  "end": 16.992
- },
- {
-  "text": "wire",
-  "start": 17.003,
-  "end": 17.249
- },
- {
-  "text": "to",
-  "start": 17.26,
-  "end": 17.327
- },
- {
-  "text": "the",
-  "start": 17.338,
-  "end": 17.416
- },
- {
-  "text": "positive",
-  "start": 17.427,
-  "end": 17.874
- },
- {
-  "text": "end.",
-  "start": 17.885,
-  "end": 18.097
- },
- {
-  "text": "The",
-  "start": 18.421,
-  "end": 18.566
- },
- {
-  "text": "wire",
-  "start": 18.577,
-  "end": 18.833
- },
- {
-  "text": "was",
-  "start": 18.845,
-  "end": 18.967
- },
- {
-  "text": "already",
-  "start": 18.979,
-  "end": 19.325
- },
- {
-  "text": "full",
-  "start": 19.336,
-  "end": 19.592
- },
- {
-  "text": "of",
-  "start": 19.604,
-  "end": 19.648
- },
- {
-  "text": "electrons,",
-  "start": 19.659,
-  "end": 20.251
- },
- {
-  "text": "so",
-  "start": 20.463,
-  "end": 20.541
- },
- {
-  "text": "the",
-  "start": 20.552,
-  "end": 20.608
- },
- {
-  "text": "whole",
-  "start": 20.619,
-  "end": 20.921
- },
- {
-  "text": "line",
-  "start": 20.932,
-  "end": 21.166
- },
- {
-  "text": "moves",
-  "start": 21.177,
-  "end": 21.456
- },
- {
-  "text": "at",
-  "start": 21.467,
-  "end": 21.557
- },
- {
-  "text": "once.",
-  "start": 21.568,
-  "end": 21.914
- },
- {
-  "text": "Each",
-  "start": 22.238,
-  "end": 22.438
- },
- {
-  "text": "electron",
-  "start": 22.45,
-  "end": 22.885
- },
- {
-  "text": "drifts",
-  "start": 22.896,
-  "end": 23.175
- },
- {
-  "text": "slowly,",
-  "start": 23.186,
-  "end": 23.61
- },
- {
-  "text": "only",
-  "start": 23.889,
-  "end": 24.112
- },
- {
-  "text": "a",
-  "start": 24.124,
-  "end": 24.179
- },
- {
-  "text": "fraction",
-  "start": 24.191,
-  "end": 24.637
- },
- {
-  "text": "of",
-  "start": 24.648,
-  "end": 24.737
- },
- {
-  "text": "a",
-  "start": 24.749,
-  "end": 24.793
- },
- {
-  "text": "millimetre",
-  "start": 24.804,
-  "end": 25.362
- },
- {
-  "text": "every",
-  "start": 25.474,
-  "end": 25.653
- },
- {
-  "text": "second.",
-  "start": 25.664,
-  "end": 26.099
- },
- {
-  "text": "Now",
-  "start": 26.423,
-  "end": 26.668
- },
- {
-  "text": "zoom",
-  "start": 26.679,
-  "end": 26.858
+  "end": 1.752
  },
  {
   "text": "into",
-  "start": 26.869,
-  "end": 27.014
- },
- {
-  "text": "the",
-  "start": 27.025,
-  "end": 27.104
- },
- {
-  "text": "bulb.",
-  "start": 27.115,
-  "end": 27.394
- },
- {
-  "text": "Its",
-  "start": 27.717,
-  "end": 27.941
- },
- {
-  "text": "thin",
-  "start": 27.952,
-  "end": 28.13
- },
- {
-  "text": "tungsten",
-  "start": 28.142,
-  "end": 28.488
- },
- {
-  "text": "filament",
-  "start": 28.499,
-  "end": 28.889
- },
- {
-  "text": "is",
-  "start": 28.9,
-  "end": 29.012
+  "start": 1.763,
+  "end": 1.998
  },
  {
   "text": "a",
-  "start": 29.023,
-  "end": 29.057
+  "start": 2.009,
+  "end": 2.065
  },
  {
-  "text": "very",
-  "start": 29.079,
-  "end": 29.38
+  "text": "bulb",
+  "start": 2.076,
+  "end": 2.411
  },
  {
-  "text": "narrow",
-  "start": 29.392,
-  "end": 29.671
- },
- {
-  "text": "path.",
-  "start": 29.682,
-  "end": 30.128
- },
- {
-  "text": "Electrons",
-  "start": 30.452,
-  "end": 30.999
- },
- {
-  "text": "squeeze",
-  "start": 31.01,
-  "end": 31.322
- },
- {
-  "text": "through",
-  "start": 31.334,
-  "end": 31.467
+  "text": "until",
+  "start": 2.489,
+  "end": 2.723
  },
  {
   "text": "it",
-  "start": 31.479,
-  "end": 31.568
+  "start": 2.734,
+  "end": 2.812
  },
  {
-  "text": "and",
-  "start": 31.579,
-  "end": 31.679
+  "text": "ran",
+  "start": 2.824,
+  "end": 3.013
  },
  {
-  "text": "crash",
-  "start": 31.691,
-  "end": 32.059
+  "text": "out?",
+  "start": 3.025,
+  "end": 3.27
  },
  {
-  "text": "into",
-  "start": 32.07,
-  "end": 32.193
- },
- {
-  "text": "the",
-  "start": 32.204,
-  "end": 32.271
- },
- {
-  "text": "metal",
-  "start": 32.282,
-  "end": 32.517
- },
- {
-  "text": "atoms.",
-  "start": 32.528,
-  "end": 32.941
- },
- {
-  "text": "Every",
-  "start": 33.264,
-  "end": 33.554
- },
- {
-  "text": "crash",
-  "start": 33.566,
-  "end": 33.956
- },
- {
-  "text": "makes",
-  "start": 33.967,
-  "end": 34.168
- },
- {
-  "text": "the",
-  "start": 34.179,
-  "end": 34.269
- },
- {
-  "text": "atoms",
-  "start": 34.28,
-  "end": 34.615
- },
- {
-  "text": "jiggle",
-  "start": 34.626,
-  "end": 34.871
- },
- {
-  "text": "faster.",
-  "start": 34.883,
-  "end": 35.385
- },
- {
-  "text": "The",
-  "start": 35.709,
-  "end": 35.876
- },
- {
-  "text": "filament",
-  "start": 35.887,
-  "end": 36.244
- },
- {
-  "text": "heats",
-  "start": 36.255,
-  "end": 36.49
- },
- {
-  "text": "up",
-  "start": 36.501,
-  "end": 36.59
- },
- {
-  "text": "to",
-  "start": 36.601,
-  "end": 36.702
- },
- {
-  "text": "about",
-  "start": 36.713,
-  "end": 36.958
- },
- {
-  "text": "two",
-  "start": 36.97,
-  "end": 37.193
- },
- {
-  "text": "thousand",
-  "start": 37.204,
-  "end": 37.55
- },
- {
-  "text": "degrees",
-  "start": 37.561,
-  "end": 37.885
- },
- {
-  "text": "Celsius.",
-  "start": 37.896,
-  "end": 38.476
- },
- {
-  "text": "At",
-  "start": 38.8,
-  "end": 38.979
- },
- {
-  "text": "that",
-  "start": 38.99,
-  "end": 39.135
- },
- {
-  "text": "heat,",
-  "start": 39.146,
-  "end": 39.38
- },
- {
-  "text": "the",
-  "start": 39.693,
-  "end": 39.771
- },
- {
-  "text": "glowing",
-  "start": 39.782,
-  "end": 40.139
- },
- {
-  "text": "metal",
-  "start": 40.15,
-  "end": 40.407
- },
- {
-  "text": "gives",
-  "start": 40.418,
-  "end": 40.641
- },
- {
-  "text": "off",
-  "start": 40.653,
-  "end": 40.865
- },
- {
-  "text": "bright",
-  "start": 40.876,
-  "end": 41.133
- },
- {
-  "text": "white",
-  "start": 41.144,
-  "end": 41.356
- },
- {
-  "text": "light.",
-  "start": 41.367,
-  "end": 41.635
- },
- {
-  "text": "Think",
-  "start": 41.959,
-  "end": 42.204
- },
- {
-  "text": "of",
-  "start": 42.215,
-  "end": 42.271
- },
- {
-  "text": "a",
-  "start": 42.282,
-  "end": 42.338
- },
- {
-  "text": "crowd",
-  "start": 42.349,
-  "end": 42.662
- },
- {
-  "text": "squeezing",
-  "start": 42.673,
-  "end": 43.097
- },
- {
-  "text": "through",
-  "start": 43.108,
-  "end": 43.253
- },
- {
-  "text": "a",
-  "start": 43.264,
-  "end": 43.298
- },
- {
-  "text": "narrow",
-  "start": 43.309,
-  "end": 43.655
- },
- {
-  "text": "gate,",
-  "start": 43.666,
-  "end": 43.889
- },
- {
-  "text": "jostling",
-  "start": 44.157,
-  "end": 44.604
- },
- {
-  "text": "as",
-  "start": 44.615,
-  "end": 44.704
- },
- {
-  "text": "they",
-  "start": 44.715,
-  "end": 44.816
- },
- {
-  "text": "go.",
-  "start": 44.827,
-  "end": 45.095
- },
- {
-  "text": "Cut",
-  "start": 45.418,
-  "end": 45.586
- },
- {
-  "text": "the",
-  "start": 45.597,
-  "end": 45.686
- },
- {
-  "text": "loop",
-  "start": 45.697,
-  "end": 45.898
- },
- {
-  "text": "anywhere",
-  "start": 46.01,
-  "end": 46.467
- },
- {
-  "text": "and",
-  "start": 46.534,
-  "end": 46.601
- },
- {
-  "text": "the",
-  "start": 46.612,
-  "end": 46.668
- },
- {
-  "text": "flow",
-  "start": 46.679,
-  "end": 46.925
- },
- {
-  "text": "stops,",
-  "start": 46.936,
-  "end": 47.36
- },
- {
-  "text": "so",
-  "start": 47.572,
-  "end": 47.65
- },
- {
-  "text": "the",
-  "start": 47.662,
-  "end": 47.751
- },
- {
-  "text": "light",
-  "start": 47.762,
-  "end": 47.952
- },
- {
-  "text": "goes",
-  "start": 47.963,
-  "end": 48.197
- },
- {
-  "text": "out.",
-  "start": 48.209,
-  "end": 48.443
- },
- {
-  "text": "That",
-  "start": 48.767,
-  "end": 48.945
+  "text": "Here",
+  "start": 3.661,
+  "end": 3.761
  },
  {
   "text": "is",
-  "start": 48.956,
-  "end": 49.034
+  "start": 3.772,
+  "end": 3.839
  },
  {
-  "text": "why",
-  "start": 49.046,
-  "end": 49.179
+  "text": "what",
+  "start": 3.85,
+  "end": 3.996
  },
  {
-  "text": "a",
-  "start": 49.191,
-  "end": 49.246
+  "text": "really",
+  "start": 4.007,
+  "end": 4.174
  },
  {
-  "text": "switch",
-  "start": 49.258,
-  "end": 49.514
+  "text": "happens.",
+  "start": 4.185,
+  "end": 4.688
  },
  {
-  "text": "works.",
-  "start": 49.525,
-  "end": 49.961
+  "text": "The",
+  "start": 5.067,
+  "end": 5.134
  },
  {
-  "text": "If",
-  "start": 50.284,
-  "end": 50.441
+  "text": "wire",
+  "start": 5.145,
+  "end": 5.502
+ },
+ {
+  "text": "is",
+  "start": 5.513,
+  "end": 5.703
+ },
+ {
+  "text": "already",
+  "start": 5.714,
+  "end": 6.083
+ },
+ {
+  "text": "full",
+  "start": 6.094,
+  "end": 6.451
+ },
+ {
+  "text": "of",
+  "start": 6.462,
+  "end": 6.551
+ },
+ {
+  "text": "tiny",
+  "start": 6.562,
+  "end": 6.931
+ },
+ {
+  "text": "electrons,",
+  "start": 6.942,
+  "end": 7.623
+ },
+ {
+  "text": "even",
+  "start": 7.958,
+  "end": 8.147
+ },
+ {
+  "text": "before",
+  "start": 8.159,
+  "end": 8.516
  },
  {
   "text": "you",
-  "start": 50.452,
-  "end": 50.508
+  "start": 8.527,
+  "end": 8.627
  },
  {
-  "text": "broke",
-  "start": 50.519,
-  "end": 50.731
+  "text": "connect",
+  "start": 8.638,
+  "end": 9.007
  },
  {
-  "text": "the",
-  "start": 50.742,
-  "end": 50.809
+  "text": "anything.",
+  "start": 9.018,
+  "end": 9.397
  },
  {
-  "text": "wire,",
-  "start": 50.82,
-  "end": 51.166
- },
- {
-  "text": "where",
-  "start": 51.467,
-  "end": 51.59
- },
- {
-  "text": "would",
-  "start": 51.601,
-  "end": 51.691
+  "text": "Close",
+  "start": 9.766,
+  "end": 10.022
  },
  {
   "text": "the",
-  "start": 51.702,
-  "end": 51.746
+  "start": 10.034,
+  "end": 10.123
+ },
+ {
+  "text": "loop,",
+  "start": 10.134,
+  "end": 10.413
+ },
+ {
+  "text": "and",
+  "start": 10.681,
+  "end": 10.737
+ },
+ {
+  "text": "the",
+  "start": 10.748,
+  "end": 10.826
+ },
+ {
+  "text": "battery",
+  "start": 10.837,
+  "end": 11.239
+ },
+ {
+  "text": "starts",
+  "start": 11.25,
+  "end": 11.529
+ },
+ {
+  "text": "pushing",
+  "start": 11.54,
+  "end": 11.908
  },
  {
   "text": "electrons",
-  "start": 51.758,
-  "end": 52.226
+  "start": 11.92,
+  "end": 12.444
  },
  {
-  "text": "stop?",
-  "start": 52.237,
-  "end": 52.55
+  "text": "out",
+  "start": 12.455,
+  "end": 12.634
  },
  {
-  "text": "Comment",
-  "start": 52.874,
-  "end": 53.275
+  "text": "of",
+  "start": 12.645,
+  "end": 12.712
  },
  {
-  "text": "your",
-  "start": 53.287,
-  "end": 53.387
+  "text": "its",
+  "start": 12.723,
+  "end": 12.835
  },
  {
-  "text": "answer",
-  "start": 53.398,
-  "end": 53.666
+  "text": "negative",
+  "start": 12.846,
+  "end": 13.237
  },
  {
-  "text": "below.",
-  "start": 53.677,
-  "end": 53.99
+  "text": "end.",
+  "start": 13.248,
+  "end": 13.538
+ },
+ {
+  "text": "Every",
+  "start": 13.906,
+  "end": 14.129
+ },
+ {
+  "text": "electron",
+  "start": 14.141,
+  "end": 14.665
+ },
+ {
+  "text": "shoves",
+  "start": 14.676,
+  "end": 15.022
+ },
+ {
+  "text": "the",
+  "start": 15.034,
+  "end": 15.1
+ },
+ {
+  "text": "next,",
+  "start": 15.112,
+  "end": 15.558
+ },
+ {
+  "text": "so",
+  "start": 15.792,
+  "end": 15.893
+ },
+ {
+  "text": "the",
+  "start": 15.904,
+  "end": 15.971
+ },
+ {
+  "text": "whole",
+  "start": 15.982,
+  "end": 16.228
+ },
+ {
+  "text": "line",
+  "start": 16.239,
+  "end": 16.462
+ },
+ {
+  "text": "creeps",
+  "start": 16.473,
+  "end": 16.853
+ },
+ {
+  "text": "slowly",
+  "start": 16.909,
+  "end": 17.388
+ },
+ {
+  "text": "around",
+  "start": 17.4,
+  "end": 17.656
+ },
+ {
+  "text": "the",
+  "start": 17.667,
+  "end": 17.723
+ },
+ {
+  "text": "loop.",
+  "start": 17.734,
+  "end": 18.013
+ },
+ {
+  "text": "But",
+  "start": 18.393,
+  "end": 18.471
+ },
+ {
+  "text": "the",
+  "start": 18.482,
+  "end": 18.56
+ },
+ {
+  "text": "push",
+  "start": 18.571,
+  "end": 18.761
+ },
+ {
+  "text": "arrives",
+  "start": 18.772,
+  "end": 19.196
+ },
+ {
+  "text": "almost",
+  "start": 19.275,
+  "end": 19.643
+ },
+ {
+  "text": "instantly,",
+  "start": 19.699,
+  "end": 20.156
+ },
+ {
+  "text": "so",
+  "start": 20.424,
+  "end": 20.536
+ },
+ {
+  "text": "the",
+  "start": 20.547,
+  "end": 20.659
+ },
+ {
+  "text": "bulb",
+  "start": 20.67,
+  "end": 20.938
+ },
+ {
+  "text": "lights",
+  "start": 20.949,
+  "end": 21.272
+ },
+ {
+  "text": "as",
+  "start": 21.284,
+  "end": 21.384
+ },
+ {
+  "text": "soon",
+  "start": 21.395,
+  "end": 21.685
+ },
+ {
+  "text": "as",
+  "start": 21.696,
+  "end": 21.786
+ },
+ {
+  "text": "you",
+  "start": 21.797,
+  "end": 21.875
+ },
+ {
+  "text": "connect.",
+  "start": 21.886,
+  "end": 22.321
+ },
+ {
+  "text": "Inside",
+  "start": 22.69,
+  "end": 23.092
+ },
+ {
+  "text": "the",
+  "start": 23.103,
+  "end": 23.17
+ },
+ {
+  "text": "bulb,",
+  "start": 23.181,
+  "end": 23.46
+ },
+ {
+  "text": "the",
+  "start": 23.728,
+  "end": 23.783
+ },
+ {
+  "text": "electrons",
+  "start": 23.795,
+  "end": 24.341
+ },
+ {
+  "text": "must",
+  "start": 24.353,
+  "end": 24.676
+ },
+ {
+  "text": "squeeze",
+  "start": 24.688,
+  "end": 25.257
+ },
+ {
+  "text": "through",
+  "start": 25.268,
+  "end": 25.424
+ },
+ {
+  "text": "a",
+  "start": 25.435,
+  "end": 25.491
+ },
+ {
+  "text": "hair-thin",
+  "start": 25.502,
+  "end": 26.005
+ },
+ {
+  "text": "filament.",
+  "start": 26.016,
+  "end": 26.507
+ },
+ {
+  "text": "It",
+  "start": 26.875,
+  "end": 26.942
+ },
+ {
+  "text": "is",
+  "start": 26.953,
+  "end": 27.054
+ },
+ {
+  "text": "so",
+  "start": 27.065,
+  "end": 27.266
+ },
+ {
+  "text": "narrow",
+  "start": 27.277,
+  "end": 27.667
+ },
+ {
+  "text": "that",
+  "start": 27.679,
+  "end": 27.801
+ },
+ {
+  "text": "they",
+  "start": 27.812,
+  "end": 27.935
+ },
+ {
+  "text": "crash",
+  "start": 27.946,
+  "end": 28.393
+ },
+ {
+  "text": "into",
+  "start": 28.404,
+  "end": 28.638
+ },
+ {
+  "text": "its",
+  "start": 28.65,
+  "end": 28.772
+ },
+ {
+  "text": "atoms,",
+  "start": 28.784,
+  "end": 29.275
+ },
+ {
+  "text": "again",
+  "start": 29.431,
+  "end": 29.81
+ },
+ {
+  "text": "and",
+  "start": 29.955,
+  "end": 30.034
+ },
+ {
+  "text": "again.",
+  "start": 30.045,
+  "end": 30.402
+ },
+ {
+  "text": "Each",
+  "start": 30.77,
+  "end": 30.949
+ },
+ {
+  "text": "crash",
+  "start": 30.96,
+  "end": 31.451
+ },
+ {
+  "text": "shakes",
+  "start": 31.54,
+  "end": 31.886
+ },
+ {
+  "text": "the",
+  "start": 31.897,
+  "end": 31.998
+ },
+ {
+  "text": "atoms",
+  "start": 32.076,
+  "end": 32.377
+ },
+ {
+  "text": "harder,",
+  "start": 32.388,
+  "end": 32.757
+ },
+ {
+  "text": "heating",
+  "start": 33.103,
+  "end": 33.315
+ },
+ {
+  "text": "the",
+  "start": 33.326,
+  "end": 33.404
+ },
+ {
+  "text": "filament",
+  "start": 33.415,
+  "end": 33.817
+ },
+ {
+  "text": "past",
+  "start": 33.828,
+  "end": 34.185
+ },
+ {
+  "text": "two",
+  "start": 34.196,
+  "end": 34.397
+ },
+ {
+  "text": "thousand",
+  "start": 34.408,
+  "end": 34.732
+ },
+ {
+  "text": "degrees",
+  "start": 34.743,
+  "end": 35.078
+ },
+ {
+  "text": "Celsius.",
+  "start": 35.089,
+  "end": 35.692
+ },
+ {
+  "text": "Hot",
+  "start": 36.071,
+  "end": 36.261
+ },
+ {
+  "text": "metal",
+  "start": 36.272,
+  "end": 36.529
+ },
+ {
+  "text": "glows,",
+  "start": 36.54,
+  "end": 37.009
+ },
+ {
+  "text": "and",
+  "start": 37.254,
+  "end": 37.355
+ },
+ {
+  "text": "that",
+  "start": 37.366,
+  "end": 37.545
+ },
+ {
+  "text": "glow",
+  "start": 37.556,
+  "end": 37.935
+ },
+ {
+  "text": "is",
+  "start": 37.946,
+  "end": 38.036
+ },
+ {
+  "text": "the",
+  "start": 38.047,
+  "end": 38.147
+ },
+ {
+  "text": "light",
+  "start": 38.158,
+  "end": 38.404
+ },
+ {
+  "text": "you",
+  "start": 38.415,
+  "end": 38.516
+ },
+ {
+  "text": "see.",
+  "start": 38.527,
+  "end": 38.862
+ },
+ {
+  "text": "Think",
+  "start": 39.263,
+  "end": 39.375
+ },
+ {
+  "text": "of",
+  "start": 39.386,
+  "end": 39.442
+ },
+ {
+  "text": "a",
+  "start": 39.453,
+  "end": 39.509
+ },
+ {
+  "text": "bicycle",
+  "start": 39.52,
+  "end": 39.955
+ },
+ {
+  "text": "chain.",
+  "start": 39.967,
+  "end": 40.257
+ },
+ {
+  "text": "Pedal",
+  "start": 40.636,
+  "end": 40.848
+ },
+ {
+  "text": "at",
+  "start": 40.859,
+  "end": 40.938
+ },
+ {
+  "text": "one",
+  "start": 40.949,
+  "end": 41.15
+ },
+ {
+  "text": "end,",
+  "start": 41.161,
+  "end": 41.473
+ },
+ {
+  "text": "and",
+  "start": 41.797,
+  "end": 41.864
+ },
+ {
+  "text": "the",
+  "start": 41.875,
+  "end": 41.964
+ },
+ {
+  "text": "wheel",
+  "start": 41.975,
+  "end": 42.232
+ },
+ {
+  "text": "at",
+  "start": 42.243,
+  "end": 42.31
+ },
+ {
+  "text": "the",
+  "start": 42.321,
+  "end": 42.411
+ },
+ {
+  "text": "other",
+  "start": 42.422,
+  "end": 42.634
+ },
+ {
+  "text": "turns,",
+  "start": 42.645,
+  "end": 43.114
+ },
+ {
+  "text": "while",
+  "start": 43.348,
+  "end": 43.516
+ },
+ {
+  "text": "each",
+  "start": 43.527,
+  "end": 43.705
+ },
+ {
+  "text": "link",
+  "start": 43.717,
+  "end": 44.04
+ },
+ {
+  "text": "only",
+  "start": 44.141,
+  "end": 44.342
+ },
+ {
+  "text": "goes",
+  "start": 44.353,
+  "end": 44.598
+ },
+ {
+  "text": "round.",
+  "start": 44.609,
+  "end": 45.0
+ },
+ {
+  "text": "The",
+  "start": 45.379,
+  "end": 45.446
+ },
+ {
+  "text": "battery",
+  "start": 45.458,
+  "end": 45.937
+ },
+ {
+  "text": "is",
+  "start": 45.949,
+  "end": 46.038
+ },
+ {
+  "text": "the",
+  "start": 46.049,
+  "end": 46.127
+ },
+ {
+  "text": "pedal,",
+  "start": 46.138,
+  "end": 46.496
+ },
+ {
+  "text": "and",
+  "start": 46.83,
+  "end": 46.875
+ },
+ {
+  "text": "the",
+  "start": 46.886,
+  "end": 46.975
+ },
+ {
+  "text": "bulb",
+  "start": 46.987,
+  "end": 47.277
+ },
+ {
+  "text": "is",
+  "start": 47.4,
+  "end": 47.478
+ },
+ {
+  "text": "the",
+  "start": 47.489,
+  "end": 47.589
+ },
+ {
+  "text": "wheel.",
+  "start": 47.6,
+  "end": 47.913
+ },
+ {
+  "text": "Break",
+  "start": 48.292,
+  "end": 48.493
+ },
+ {
+  "text": "the",
+  "start": 48.504,
+  "end": 48.605
+ },
+ {
+  "text": "loop",
+  "start": 48.616,
+  "end": 48.839
+ },
+ {
+  "text": "anywhere,",
+  "start": 48.973,
+  "end": 49.408
+ },
+ {
+  "text": "and",
+  "start": 49.665,
+  "end": 49.721
+ },
+ {
+  "text": "the",
+  "start": 49.732,
+  "end": 49.799
+ },
+ {
+  "text": "glow",
+  "start": 49.81,
+  "end": 50.045
+ },
+ {
+  "text": "dies.",
+  "start": 50.056,
+  "end": 50.525
+ },
+ {
+  "text": "Which",
+  "start": 50.904,
+  "end": 51.027
+ },
+ {
+  "text": "part",
+  "start": 51.038,
+  "end": 51.228
+ },
+ {
+  "text": "surprised",
+  "start": 51.239,
+  "end": 51.663
+ },
+ {
+  "text": "you",
+  "start": 51.674,
+  "end": 51.741
+ },
+ {
+  "text": "most?",
+  "start": 51.752,
+  "end": 52.154
  }
 ]

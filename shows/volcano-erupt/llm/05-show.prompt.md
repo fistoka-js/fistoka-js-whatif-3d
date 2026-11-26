@@ -9,17 +9,16 @@ The video must EXPLAIN, not illustrate. The approved style: one subject stays on
 # 1. How the engine works
 
 - A show is a list of SHOTS. A SCENE is a shot plus the shots after it that have "continue": true. A scene has one environment, a few props that keep their state, and a new camera for each of its shots. A shot without "continue" starts a new scene from nothing.
-- A shot lasts from its "start" (a spoken phrase) until the next shot's start. The first shot starts at 0 s and has no "start". The last shot runs to the end of the video: the last spoken word is the closing "comment your answer below" line, and the video then runs about 2.5 more seconds with no voice (the music fades out), so keep the last picture changing or settled, not cut off.
+- A shot lasts from its "start" (a spoken phrase) until the next shot's start. The first shot starts at 0 s and has no "start". The last shot runs to the end of the voice.
 - Props, environments, actions and camera moves come ONLY from the catalogue in section 5.
 - DIALS (top-level "dials") are named numbers that change when words are spoken. A prop's animatable value, its "color", "glow", "size" or "at", and an environment's dial-able param can FOLLOW a dial (a binding), so one dial changes several things together. Section 5 gives the exact forms (DIALS, BINDINGS, CONTINUE).
 - RAMPS: "move", "scale", "color", "glow" and "set" accept "until": <anchor> instead of "over", so a change runs from one spoken word to another.
 - The camera frames the shot by itself: it looks at the props in "camera.focus" (or all visible props) over the WHOLE shot and fits them in the frame. You choose framing ("fill" for an exact size), angle and move; in a continuing shot "glide" moves the camera smoothly from the previous view.
 - Stage space: centred on [0, 0, 0]. +x is right, +y is up, +z is toward the viewer. One unit is about half the frame width at medium framing. Every prop is built to fit a 1-unit box; "size" scales it.
-- Captions of the spoken words are drawn automatically in the lower part of the frame (the bottom 28 percent of the frame is kept free for them and for the YouTube Shorts buttons). You never write captions.
+- Captions of the spoken words are drawn automatically in the bottom quarter of the frame. You never write captions.
 
 # 2. How to think (do this before writing any JSON)
 
-0. THE STORYBOARD. When the input has an APPROVED STORYBOARD, it is the source of truth: build exactly it (same objects, same flow directions, text on the same phrases and kept as long, same ending). A planned text longer than 32 characters must be a "text" action (a "label" allows at most 32; a "text" up to 40). A label, text or count ends with its shot (the engine ends it with its shot): to keep it up longer, repeat the same label or text at the start of the next shot. The steps below say how. A gap object {"missing", "stand_in", "central"} means the catalogue cannot draw "missing": draw the "stand_in" prop instead (if "stand_in" is none, draw nothing for it). A storyboard text has "starts" (the words of that sentence where it appears) and "ends" (a sentence number: it must stay on screen until the START of that sentence; or the word "end": it stays until the end of the video, including the ending).
 1. THE CHAIN. Read the sentence table and the picture plan. Name the one mechanism and its cause -> effect chain. Name the HERO: the prop that shows the mechanism changing (a lattice, a wave, a layer stack, a tuner). It stays on screen for most of the video.
 2. SCENES. Make 2 to 4 main scenes for the mechanism (for example: whole thing -> zoom in -> the mechanism up close -> the analogy), plus at most one short opening scene for the hook and one short closing scene. Never a new scene per sentence. Inside a scene, change the view with a continuing shot (new camera, often with "glide"); zoom into the subject with "transition": "dive".
 3. DIALS. Choose at least one dial for the quantity that changes (spacing, temperature, speed, wavelength). Bind it to TWO OR MORE things that the viewer should see change together: the hero's value AND its colour, the effect next to it, the background colour. Key it on the spoken words where the quantity changes ("sit close" -> low, "spread apart" -> high).
@@ -42,7 +41,7 @@ Shape:
 - An action that changes a value bound to a dial ("set" on a bound param, "color" on a bound colour, "glow" on a bound glow, "scale" on a bound size, "move" or "orbit" on a bound "at") is an error: change the dial instead.
 - Action fields: "at" (WHEN, an anchor), "do", "prop" where the action takes one, "over" (seconds) ONLY on actions that list a default over, or "until" where listed, plus the fields listed for that action.
 - "set" may only animate a param listed in that prop's "anim" list, inside its range. If an anim param has the same name as a prop field (the fire's "size"), "size" on the prop means the prop's scale; change the anim value only with "set".
-- Stage-space props ("arrow", "beam", "wire", "light_wave") have "from" and "to" (a slot, [x, y, z] or a prop id in the shot) and NO "at", "size" or "rotate". They cannot move, scale, spin, orbit, bob, shake or pulse.
+- Stage-space props ("arrow", "beam", "wire") have "from" and "to" (a slot, [x, y, z] or a prop id in the shot) and NO "at", "size" or "rotate". They cannot move, scale, spin, orbit, bob, shake or pulse.
 - "icon" goes on a prop with "prop", or at a place with "place" (slot or [x, y, z]). Its "at" is the TIME, like every action.
 - "glide" only on a continuing shot, not with "dip" or "dive", and not longer than the shot. "fill" 0.5 to 1.3.
 - Text limits: label text up to 32 characters, text up to 40, count unit up to 16. Colours: a palette name or "#rrggbb".
@@ -67,7 +66,7 @@ Size and framing:
 - One prop alone at size 1 fills about 70% of the frame width at "medium" framing. The camera fits ALL framed props (and the full path of anything that moves), so two or three props, or a prop that travels far, are each drawn smaller. Give the hero "camera": {"focus": ["hero"]} and use "fill" (up to 1.3) to make it as big as the picture allows.
 - Keep sizes in a frame similar unless one prop is a backdrop. A tiny prop next to a huge one becomes a dot.
 - BACKDROP trick: for something meant to fill the background, put it behind (z about -2.5), make it large (size 4 to 5), and set "camera": {"focus": ["<the foreground prop>"], "framing": "wide"}. Never point an action at a backdrop prop (props that actions point at must stay at least 60% inside the frame).
-- Anything the narration names must be big enough to see: size 0.6 or more. "particles" meant to be noticed need "dot" 0.08 or more and "size" 1 or more; exception: particles INSIDE a prop are exempt from BOTH size minimums (size 1 and size 0.6) and follow the inside rule below (smaller than that prop) instead.
+- Anything the narration names must be big enough to see: size 0.6 or more. "particles" meant to be noticed need "dot" 0.08 or more and "size" 1 or more.
 - The first shot is the thumbnail moment: one clear subject, big (close framing or "fill"), with at most one other small prop.
 
 Ground:
@@ -78,12 +77,12 @@ Ground:
 Visibility:
 - Something must be visible from the first frame of every scene. If props "appear" later, make the first one appear on the scene's first words, or keep one prop visible from the start.
 - Props that actions point at must stay at least 60% inside the frame: do not "move" them off screen. To make something leave, use "disappear".
-- Do not put a prop in the bottom 28 percent of the frame (the captions are there): avoid "at" y below -0.9 unless the camera angle is high or top.
+- Do not put a prop in the bottom quarter of the frame (the captions are there): avoid "at" y below -0.9 unless the camera angle is high or top.
 
 Overlays (label, text, count, icon):
 - At most 2 on screen at the same time; end them with "until" when the next one comes.
 - Labels: 1 to 3 words, CAPITALS, under 22 characters, naming a part of the picture ("CRYSTALS", "SKIN CELLS"). Never a full sentence, never a copy of the caption, never the explanation itself.
-- Text "title" for a short heading, "number" for a big figure, "stamp" for a verdict like "WRONG" or "MYTH". "count" for a number WITHOUT a unit that is spoken (a number with a unit is a text, see the rule below). Icons mark a moment (a "no" sign on a myth); they are never the subject.
+- Text "title" for a short heading, "number" for a big figure, "stamp" for a verdict like "WRONG" or "MYTH". "count" for a number that is spoken. Icons mark a moment (a "no" sign on a myth); they are never the subject.
 
 Colour and camera:
 - Pick prop colours that contrast with the environment. A background bound to the same dial as the hero ("color": {"dial": ...}) makes the whole frame follow the mechanism.
@@ -94,9 +93,7 @@ Good to know (not obvious from the catalogue):
 - "ring": its radius comes from "size" (size 2.6 rings a planet of size 1.3); "tilt" 0 faces the camera like a hoop, 90 is edge-on, 70-78 looks like Saturn's rings.
 - "particles" with "shape": "ring" lie flat (like a plate): seen from angle "front" they look like a line; use angle "top" or "high" to show the circle. Use 20 or more of them for a ring that reads as a ring.
 - "planet" turns by itself (its "turn" param, default 0.02 turns/s, clouds faster); to show it stopping or starting, place it with "turn": 0 and drive all turning with "spin" (speed 0 stops it).
-- "wire" is a stage-space cable (like "beam"): for a circuit use two wires between [x, y, z] points, e.g. over the top with "lift": 0.7 and a return along the floor at y 0.04 (floor is y 0, props stand on it); "current" 0 to 1 sends glowing charge along it. A wire's charge dots run from its "from" end to its "to" end; an arrow points at its "to". For a closed loop the dots must circulate one way: wire 1 "from" the battery "to" the bulb, wire 2 (the return) "from" the bulb "to" the battery; never both wires "to" the bulb. This floor layout needs an environment with a ground (with no ground, pick your own heights). On the ground, a "battery" is 0.79 x its size tall to the top of its cap and a "lightbulb" exactly its size tall (a size 1.2 battery tops out at y 0.95, a size 1.0 bulb at y 1.0); start or end a wire at a prop's x and z with the y of its top. A positive "lift" puts the top at the higher end plus "lift"; a negative "lift" bends the wire down instead (the bottom is the lower end plus "lift"), and it does not go around props. When both ends are at y 0 or above, the wire never goes into the floor (its centre is held at y 0.04 or higher, even if an end is given at y 0, so a wire already at the floor stays straight); if either end is below y 0 there is no floor clamp and the wire goes exactly where you put it.
-- Only a wire, beam, arrow or light_wave has a "from" and "to". "particles" and every other prop has no point to aim at: it is placed only by its own "at" and "size". To show something INSIDE a prop (electrons in a bulb), put its "at" at that prop's x and z (same z, never nearer the camera) and at the height of the part, and make its "size" smaller than the prop's; the bulb's glass is see-through, and its filament is about 0.65 x its size above the ground. On a ground, a size 1.2 bulb at [0.9, 0, 0] gets particles "at" [0.9, 0.8, 0] with "size" 0.4.
-- A spoken number with a unit (a temperature, speed, distance, time) must show as a text. Use a "text" action of at most 40 characters, with style "number" for a big figure, never a "label"; labels stay the 1 to 3 word CAPITAL names of parts. Its words are the same as the storyboard text, for example "2000 °C". It starts on those words and stays until the start of the next sentence, or, if the next sentence starts less than 2.5 seconds after the text appears, until the start of the FIRST later sentence that starts at least 2.5 seconds after the text appears (the text must stay up at least 2.5 seconds). To do that, give the text action an "until" that is the first 1 to 6 words of that sentence, copied from the word list. If the shot ends at that point, leave "until" out; for the last sentence, or if no later sentence is long enough, also leave "until" out, so the text stays to the end of its shot (the end of the video only if it is in the last shot). This is the same as the storyboard text "ends". If the shot ends first, repeat the same text at the start of the next shot. If a sentence has 3 or more unit numbers, join them in one text if it fits 40 characters, else keep the 2 most important and drop the rest. If two unit-number texts are on screen together, put one at "pos" "top" and the other at "pos" "middle", because "pos" is the only thing that sets a text's height and the default "top" would draw them on top of each other. A unit-number text has priority over a label when the limit of 2 overlays at once is reached.
+- "wire" is a stage-space cable (like "beam"): for a circuit use two wires between [x, y, z] points, e.g. over the top with "lift": 0.7 and a return along the floor at y 0.04 (floor is y 0, props stand on it); "current" 0 to 1 sends glowing charge along it. This floor layout needs an environment with a ground (with no ground, pick your own heights). On the ground, a "battery" is 0.79 x its size tall to the top of its cap and a "lightbulb" exactly its size tall (a size 1.2 battery tops out at y 0.95, a size 1.0 bulb at y 1.0); start or end a wire at a prop's x and z with the y of its top. A positive "lift" puts the top at the higher end plus "lift"; a negative "lift" bends the wire down instead (the bottom is the lower end plus "lift"), and it does not go around props. When both ends are at y 0 or above, the wire never goes into the floor (its centre is held at y 0.04 or higher, even if an end is given at y 0, so a wire already at the floor stays straight); if either end is below y 0 there is no floor clamp and the wire goes exactly where you put it.
 - "bars" draws the values relative to the tallest bar; give 2 to 4 values for a clear comparison and start it at "grow": 0 to make it rise on a word.
 
 CHECKLIST before replying:
@@ -107,7 +104,6 @@ CHECKLIST before replying:
 [ ] Continuing shots have no "env" and only new prop ids; no action changes a dial-bound value.
 [ ] Every anchor is a phrase spoken inside that shot, and repeated words are made unique with more words.
 [ ] Every prop type, env type, param, action, field and value appears in the catalogue for THAT prop or action.
-[ ] Circuit wires run battery to bulb and back (never both "to" the bulb); particles inside a prop sit at its x and z and are smaller than it; every spoken number with a unit has a text held to the next sentence (or a later one if the gap is under 2.5 seconds).
 [ ] Floating props on a ground are lifted; backdrop props have no actions; at most 2 overlays at once; labels short, in capitals, naming parts.
 
 # 5. Catalogue
@@ -115,10 +111,10 @@ CHECKLIST before replying:
 PROPS (name [floats/STAGE-SPACE] (params) anim: animatable params for the "set" action -- what it is)
 - ball (color, finish=glossy|matte|metal|facets) -- A shiny or matte sphere in any colour (marble, molecule, pinball, drop).
 - box (color, finish=matte|glossy|metal, width 0.05..1, height 0.05..1, depth 0.05..1, round 0..0.5) -- A rounded box in any colour and proportions (block, crate, bumper, wall).
-- planet [floats] (look=earth|moon|mars|gas|ice|lava, color, rings:bool, turn -1..1, ocean_color, seed) anim: atmosphere 0..1.5 [starts 0.6], ocean 0..1 [starts 0], ocean_lon -180..180 [starts 0], ocean_lat -90..90 [starts 0] -- A planet or moon: earth, moon, mars, gas, ice, lava. Optional rings, air glow, a movable ocean bump.
+- planet [floats] (look=earth|moon|mars|gas|ice|lava, color, rings:bool, turn -1..1, seed) anim: atmosphere 0..1.5 [starts 0.6] -- A lit planet or moon. Looks: earth, moon, mars, gas (giant), ice, lava. Optional rings and air glow.
 - sun [floats] (color, rays:bool) anim: brightness 0..2 [starts 1] -- A glowing star with a halo and soft turning rays.
 - particles [floats] (shape=sphere|box|ring|stream, count 1..1500, color, color2, mix 0..1, look=balls|dots, dot 0.01..0.3, seed) anim: spread 0..3 [starts 1], speed 0..5 [starts 0.3] -- A cloud of small balls or glowing dots in a box, sphere, ring or stream (molecules, dust, atoms).
-- arrow [STAGE-SPACE] (from=point, to=point, color, thickness 0.02..0.3) anim: length 0..1 [starts 1] -- A flat, bold 2D-style arrow from one point or prop to another.
+- arrow [STAGE-SPACE] (from=point, to=point, color, thickness 0.02..0.3) anim: length 0..1 [starts 1] -- A solid 3D arrow from one point or prop to another.
 - beam [STAGE-SPACE] (from=point, to=point, color, width 0.01..0.6) anim: progress 0..1 [starts 1], brightness 0..2 [starts 1] -- A glowing light ray from one point or prop to another.
 - wire [STAGE-SPACE] (from=point, to=point, lift -3..3, color, width 0.02..0.2) anim: current 0..1 [starts 0] -- An electric wire between two points; "lift" bends it into a loop.
 - mountain (style=rock|snow|desert, peaks 1..3, seed) -- A chunky low-poly mountain with a snow cap; styles rock, snow, desert; 1 to 3 peaks. Good for places.
@@ -139,7 +135,7 @@ PROPS (name [floats/STAGE-SPACE] (params) anim: animatable params for the "set" 
 - tree (style=round|pine|palm|bare, color, seed) -- A chunky low-poly tree: round, pine, palm or bare. Good for forests, seasons, deforestation, carbon.
 - city (style=modern|old, seed) anim: lights 0..1 [starts 0.7] -- A city block of buildings with lit windows; styles modern or old.
 - house (color, roof) anim: glow 0..1 [starts 0] -- A simple low-poly house with roof, chimney, door and windows. For homes, energy, insulation, neighbourhoods.
-- rock (color, count 1..6, seed) -- A chiselled boulder or group of rocks with cracks, strata and a flat base. For geology, erosion, mining.
+- rock (color, count 1..6, seed) -- A chunky faceted boulder or a little group of rocks. For geology, erosion, mining, landscapes.
 - island (color, palm:bool, seed) -- A round island with a beach and optional palm on a disc of water. A "little world" base for other props.
 - iceberg (water, seed) anim: melt 0..1 [starts 0] -- An iceberg: small white tip above water, big blue bulk below. Climate stories.
 - fire (color) anim: size 0.1..1.8 [starts 1] -- A campfire with layered flickering flames, logs, stones and a glow. For heat, energy, combustion.
@@ -179,8 +175,6 @@ PROPS (name [floats/STAGE-SPACE] (params) anim: animatable params for the "set" 
 - layer_stack [floats] (names=[strings, 2-5], colors=[colors, 2-5], pigment_layer 0..4, crystal_layer -1..4) anim: reveal 0..1 [starts 1], granules 0..1 [starts 0.3], shade 0..1 [starts 0], focus -1..4 [starts -1] -- Stacked see-through slabs with name plates; they slide in, granules spread, layers shade and glow. Skin, rock layers.
 - light_wave [STAGE-SPACE] (from=point, to=point, color) anim: progress 0..1 [starts 1], wavelength 0..1 [starts 0.32], amplitude 0..1 [starts 0.5] -- A wavy beaded wave from one point to another. Light, signals.
 - tuner (color, rings 2..10) anim: value 0..1 [starts 0.5] -- Antenna on a tuning box: colour dial, knob, glowing tip, pulsing rings. Radio, signals, tuning.
-- marshmallow (color, style=plain|toasted|charred) anim: toast 0..1 [starts 0], squish 0..1 [starts 0] -- Toastable, squishable marshmallow: for s'mores, campfire, food and soft-versus-hard gags.
-- magma_chamber (color, chamber_color) anim: fill 0..1 [starts 0.5], heat 0..1 [starts 0.5], eruption 0..1 [starts 0] -- Cutaway volcano: rock layers, glowing magma chamber and vent pipe. Good for what lies under a volcano.
 
 ENVIRONMENTS (name (params) [ground or not] -- what it is)
 - space (nebula=blue|purple|teal|red|none, stars 0..2, tint) [no ground: everything floats] -- Outer space: layered stars, soft nebula glow, floating dust. For planets, stars, anything cosmic.
@@ -303,7 +297,7 @@ SCENES: hook (chameleon, S1-S3) -> skin layers (layer_stack: 1 shot + 2 continui
 DIALS: "gap" drives the lattice spacing only; from "reflect" on its keys sit on the same words as "wavelength", so the gaps and the colour change together. In the lattice scene "wavelength" drives the lattice colour, the small chameleon's colour, the reflected wave's colour, the reflected wave's length and the background, so one number changes five things in the same frame (cause on top, effect below). In the tuner scene it drives the tuner's value and the background.
 Icons and labels in the output (a "no" sign on the paint box and dye drop, question marks) are decoration on top of the plan's changes; they are never the change.
 
-Not to copy: this example is shorter than a real script (under the 180-word minimum, and it ends "Comment below."); real scripts have 180 to 195 words and end with the closing question plus a line asking viewers to comment their answer below ("Comment your answer below."), so do not copy its length or its closing words. This example has 6 scenes because of the hook and closing scenes, and runs 63 s; yours must have a voice of up to 60 s (up to 62 s is accepted), and the video then runs a 2.5 s ending after the last word, so the finished video is about 57.5 to 62.5 s and at most 64.5 s. The "lose" shot was split from "emotions" so no shot is over 9 s. Do not reuse its props or layout for a different topic.
+Not to copy: this example has 6 scenes because of the hook and closing scenes, and runs 61 s; yours must stay at 60 s or less. The "lose" shot was split from "emotions" so no shot is over 9 s. Do not reuse its props or layout for a different topic.
 
 OUTPUT (the reply):
 {
@@ -507,88 +501,60 @@ OUTPUT (the reply):
 
 === USER ===
 
-TITLE: Why do volcanoes really erupt?
+TITLE: Why Do Volcanoes Erupt? It's Not What You Think
 
 THE SCRIPT AS SPOKEN, sentence by sentence (S1, S2, ...), with the sentence's start and end in seconds, then each word with its start time. Anchors must be copied from these words.
-S1 [0.10-1.23] Why do volcanoes erupt?
-   Why 0.10 | do 0.29 | volcanoes 0.37 | erupt? 0.87
-S2 [1.55-5.45] A volcano erupts when trapped magma and gas push harder than the rock above can hold.
-   A 1.55 | volcano 1.68 | erupts 2.16 | when 2.48 | trapped 2.61 | magma 2.94 | and 3.38 | gas 3.48 | push 3.77 | harder 3.96 | than 4.29 | the 4.40 | rock 4.50 | above 4.78 | can 5.02 | hold. 5.13
-S3 [5.78-6.95] Here is what really happens.
-   Here 5.78 | is 5.96 | what 6.07 | really 6.23 | happens. 6.46
-S4 [7.27-10.82] Deep below the cone, a chamber of rock slowly fills with glowing magma.
-   Deep 7.27 | below 7.50 | the 7.68 | cone, 7.78 | a 8.45 | chamber 8.49 | of 8.85 | rock 8.96 | slowly 9.22 | fills 9.59 | with 9.96 | glowing 10.08 | magma. 10.42
-S5 [11.14-14.67] Down there the heat is about one thousand degrees Celsius, hot enough to melt rock.
-   Down 11.14 | there 11.37 | the 11.48 | heat 11.55 | is 11.85 | about 11.97 | one 12.21 | thousand 12.35 | degrees 12.68 | Celsius, 13.01 | hot 13.70 | enough 13.85 | to 14.07 | melt 14.16 | rock. 14.37
-S6 [14.99-18.10] Melted rock is lighter than solid rock, so it starts to rise.
-   Melted 14.99 | rock 15.38 | is 15.68 | lighter 15.80 | than 16.08 | solid 16.20 | rock, 16.57 | so 17.10 | it 17.20 | starts 17.28 | to 17.54 | rise. 17.63
-S7 [18.42-21.58] As the chamber fills, the pressure climbs and the walls squeeze tighter.
-   As 18.42 | the 18.62 | chamber 18.70 | fills, 19.03 | the 19.49 | pressure 19.59 | climbs 19.93 | and 20.40 | the 20.50 | walls 20.60 | squeeze 20.92 | tighter. 21.22
-S8 [21.90-25.36] The magma also holds dissolved gas, locked in like the fizz in a bottle.
-   The 21.90 | magma 22.06 | also 22.43 | holds 22.70 | dissolved 22.97 | gas, 23.38 | locked 24.00 | in 24.23 | like 24.31 | the 24.44 | fizz 24.52 | in 24.85 | a 24.92 | bottle. 24.97
-S9 [25.69-30.59] Higher up, the pressure drops, so the gas forms bubbles that swell and shove the magma up a narrow pipe.
-   Higher 25.69 | up, 26.04 | the 26.45 | pressure 26.53 | drops, 26.87 | so 27.45 | the 27.55 | gas 27.65 | forms 27.92 | bubbles 28.21 | that 28.51 | swell 28.63 | and 29.08 | shove 29.14 | the 29.35 | magma 29.40 | up 29.82 | a 29.94 | narrow 29.98 | pipe. 30.26
-S10 [30.91-34.27] Think of a pressure cooker, where the needle keeps climbing until the lid gives way.
-   Think 30.91 | of 31.16 | a 31.22 | pressure 31.29 | cooker, 31.62 | where 32.13 | the 32.23 | needle 32.29 | keeps 32.58 | climbing 32.82 | until 33.22 | the 33.48 | lid 33.57 | gives 33.78 | way. 34.03
-S11 [34.59-37.13] When pressure beats the rock's strength, the pipe blows open.
-   When 34.59 | pressure 34.79 | beats 35.15 | the 35.35 | rock's 35.44 | strength, 35.73 | the 36.23 | pipe 36.33 | blows 36.60 | open. 36.85
-S12 [37.45-40.62] Magma, ash and gas burst out and spray high into the sky.
-   Magma, 37.45 | ash 38.22 | and 38.49 | gas 38.57 | burst 38.95 | out 39.23 | and 39.41 | spray 39.50 | high 39.82 | into 40.05 | the 40.17 | sky. 40.25
-S13 [40.94-44.51] Once the gas escapes, the pressure drops and the eruption slowly fades.
-   Once 40.94 | the 41.21 | gas 41.31 | escapes, 41.57 | the 42.16 | pressure 42.26 | drops 42.61 | and 43.00 | the 43.17 | eruption 43.26 | slowly 43.72 | fades. 44.06
-S14 [44.84-48.30] These eruptions also build new islands and feed the soil with minerals.
-   These 44.84 | eruptions 45.07 | also 45.58 | build 45.88 | new 46.12 | islands 46.31 | and 46.81 | feed 46.91 | the 47.22 | soil 47.28 | with 47.61 | minerals. 47.74
-S15 [48.62-51.18] Which surprises you more, the heat or the gas?
-   Which 48.62 | surprises 48.82 | you 49.33 | more, 49.40 | the 50.01 | heat 50.07 | or 50.60 | the 50.67 | gas? 50.75
-S16 [51.50-52.62] Comment your answer below.
-   Comment 51.50 | your 51.91 | answer 52.02 | below. 52.30
+S1 [0.09-2.67] What if volcanoes erupt because they fill up with lava?
+   What 0.09 | if 0.20 | volcanoes 0.29 | erupt 0.81 | because 1.36 | they 1.62 | fill 1.73 | up 2.03 | with 2.19 | lava? 2.33
+S2 [3.05-3.78] That is not quite it.
+   That 3.05 | is 3.12 | not 3.21 | quite 3.39 | it. 3.66
+S3 [4.17-5.20] Here is what really happens.
+   Here 4.17 | is 4.29 | what 4.36 | really 4.52 | happens. 4.70
+S4 [5.57-8.11] Deep underground, rock melts into glowing magma.
+   Deep 5.57 | underground, 5.75 | rock 6.56 | melts 6.78 | into 7.10 | glowing 7.27 | magma. 7.66
+S5 [8.48-12.59] Magma is lighter than the rock around it, so it rises and pools in a chamber.
+   Magma 8.48 | is 8.92 | lighter 9.05 | than 9.38 | the 9.49 | rock 9.56 | around 9.84 | it, 10.18 | so 10.65 | it 10.84 | rises 10.97 | and 11.43 | pools 11.55 | in 11.99 | a 12.08 | chamber. 12.12
+S6 [12.96-16.73] As more magma flows in, the chamber swells and the pressure climbs.
+   As 12.96 | more 13.08 | magma 13.28 | flows 13.69 | in, 14.03 | the 14.56 | chamber 14.64 | swells 15.01 | and 15.67 | the 15.76 | pressure 15.84 | climbs. 16.17
+S7 [17.10-19.89] Inside the magma, dissolved gas is packed tight.
+   Inside 17.10 | the 17.48 | magma, 17.55 | dissolved 18.18 | gas 18.58 | is 19.09 | packed 19.18 | tight. 19.53
+S8 [20.26-25.32] As the magma rises, the pressure drops and the gas bubbles out, spreading wider and wider.
+   As 20.26 | the 20.38 | magma 20.46 | rises, 20.87 | the 21.53 | pressure 21.63 | drops 21.98 | and 22.42 | the 22.53 | gas 22.62 | bubbles 22.93 | out, 23.28 | spreading 23.84 | wider 24.23 | and 24.80 | wider. 24.90
+S9 [25.69-29.15] Those bubbles expand and speed up, shoving the magma upward.
+   Those 25.69 | bubbles 25.90 | expand 26.25 | and 26.98 | speed 27.08 | up, 27.42 | shoving 27.93 | the 28.26 | magma 28.33 | upward. 28.75
+S10 [29.52-33.19] When the pressure beats the strength of the rock above, the cone cracks open.
+   When 29.52 | the 29.61 | pressure 29.70 | beats 30.18 | the 30.50 | strength 30.59 | of 30.99 | the 31.07 | rock 31.15 | above, 31.45 | the 32.06 | cone 32.16 | cracks 32.55 | open. 32.94
+S11 [33.56-37.75] Magma blasts out of the vent, glowing at about one thousand degrees Celsius.
+   Magma 33.56 | blasts 33.92 | out 34.39 | of 34.55 | the 34.62 | vent, 34.69 | glowing 35.31 | at 35.77 | about 35.86 | one 36.14 | thousand 36.41 | degrees 36.77 | Celsius. 37.11
+S12 [38.11-41.60] It is like a pressure cooker, where the needle climbs until the lid gives way.
+   It 38.11 | is 38.18 | like 38.28 | a 38.43 | pressure 38.49 | cooker, 38.84 | where 39.50 | the 39.60 | needle 39.68 | climbs 39.99 | until 40.44 | the 40.65 | lid 40.76 | gives 41.05 | way. 41.30
+S13 [41.96-45.22] Eruptions throw up ash that can cool the planet for a year or two.
+   Eruptions 41.96 | throw 42.41 | up 42.71 | ash 42.96 | that 43.25 | can 43.37 | cool 43.50 | the 43.78 | planet 43.87 | for 44.21 | a 44.36 | year 44.40 | or 44.83 | two. 44.93
+S14 [45.59-49.26] Early volcanic gas probably helped build Earth's air and oceans.
+   Early 45.59 | volcanic 45.80 | gas 46.31 | probably 46.77 | helped 47.18 | build 47.45 | Earth's 47.85 | air 48.21 | and 48.66 | oceans. 48.77
+S15 [49.63-50.23] Would you watch one?
+   Would 49.63 | you 49.74 | watch 49.82 | one? 50.03
+S16 [50.60-51.17] Comment below.
+   Comment 50.60 | below. 50.86
 
 THE PICTURE PLAN from the script writer (S n here is S n above): what stays on screen, what visibly changes while that sentence is spoken, and the dial that drives it. Follow it; improve it where the catalogue offers a better way to show the same change.
-S1 subject: magma_chamber | change: the chamber glows a little and a first bubble rises in the pipe | dial: fill
-S2 subject: magma_chamber | change: the magma level climbs and the chamber glows brighter under the rock | dial: fill
-S3 subject: magma_chamber | change: the cutaway reveals the glowing chamber deep under the cone | dial: fill
-S4 subject: magma_chamber | change: the chamber fills with more and more glowing magma | dial: fill
-S5 subject: magma_chamber | change: the magma turns from dull red to bright orange-yellow | dial: heat
-S6 subject: magma_chamber | change: the magma level rises and bubbles lift up the pipe | dial: fill
-S7 subject: magma_chamber | change: the chamber fills to the top and glows hotter | dial: pressure
-S8 subject: magma_chamber | change: tiny bubbles appear inside the magma and multiply | dial: pressure
-S9 subject: magma_chamber | change: bubbles swell and the magma is pushed up the pipe toward the crater | dial: pressure
-S10 subject: gauge | change: the needle swings from green up into the red zone | dial: pressure
-S11 subject: magma_chamber | change: the top of the pipe cracks open and the first eruption flares | dial: pressure
-S12 subject: magma_chamber | change: the eruption spray shoots high above the crater | dial: pressure
-S13 subject: magma_chamber | change: the spray dies down and the magma level and glow sink | dial: pressure
-S14 subject: magma_chamber | change: the cone grows taller as the cooled magma glow fades to dark rock | dial: pressure
-S15 subject: magma_chamber | change: the chamber glows hot again and bubbles start to rise | dial: pressure
-S16 subject: magma_chamber | change: the chamber fills and glows brighter again as bubbles rise | dial: pressure
+S1 subject: volcano | change: the crater glow fills up and brightens | dial: pressure
+S2 subject: volcano | change: the crater glow drops back to a dim ember | dial: pressure
+S3 subject: volcano | change: the crater glow settles to a steady orange | dial: pressure
+S4 subject: volcano | change: the crater glow turns hotter orange | dial: pressure
+S5 subject: volcano | change: the glow climbs brighter as magma rises | dial: pressure
+S6 subject: volcano | change: the crater swells with brighter, stronger glow | dial: pressure
+S7 subject: particles | change: gas dots squeeze into a tight, dense cloud | dial: gas
+S8 subject: particles | change: the gas cloud spreads wide apart | dial: gas
+S9 subject: particles | change: the gas dots move faster and push outward | dial: gas
+S10 subject: volcano | change: the crater bursts into a growing eruption | dial: pressure
+S11 subject: volcano | change: the eruption grows to full blast | dial: pressure
+S12 subject: gauge | change: the needle swings up into the red | dial: pressure
+S13 subject: particles | change: the ash cloud spreads far and wide | dial: gas
+S14 subject: planet | change: the blue air glow around the planet grows thicker
+S15 subject: volcano | change: the eruption eases to a gentle glowing crater | dial: pressure
+S16 subject: volcano | change: the crater glow settles calm and steady | dial: pressure
 
-THE APPROVED STORYBOARD (entry n of "sentences" is S n above). It is the source of truth: build exactly this storyboard, with the same objects (prop types), the same flow directions (a wire or arrow runs from its "from" to its "to"), each text on the phrase in its "starts" and kept until the START of the sentence in its "ends", and the same ending. A label, text or count ends with its shot (the engine ends it with its shot): to keep it up longer, repeat the same label or text at the start of the next shot. A checker compares your show with it.
-{
-  "hook": "Why do volcanoes erupt?",
-  "answer": "A volcano erupts when hot rising magma and its dissolved gas build up more pressure than the rock above can hold, so the top of the pipe blows open.",
-  "hero": "magma_chamber",
-  "summary": "One cutaway volcano stays big in the middle of the frame. Its glowing chamber slowly fills and heats up, bubbles form in the magma and push it up the pipe, and a pressure gauge swings into the red as the analogy. Then the pipe blows open and lava sprays high, fades, and leaves a calm cone with a new small island. The temperature shows as text on screen while it is said, and the picture ends with the chamber glowing again as the viewer is asked to comment.",
-  "scenes": [{"scene": "1", "env": "lab", "idea": "Opening: the big cutaway volcano shows the hidden chamber under the cone and the question of why it erupts."}, {"scene": "2", "env": "lab", "idea": "The chamber fills with hot magma, the thermometer rises to about 1000 degrees, the magma rises, pressure builds, gas bubbles form and push magma up the pipe."}, {"scene": "3", "env": "lab", "idea": "The pressure cooker analogy: a big gauge whose needle climbs into the red, with the volcano small behind it."}, {"scene": "4", "env": "sky", "idea": "The pipe blows open, lava sprays high, the eruption fades, and new land forms."}, {"scene": "5", "env": "sky", "idea": "Closing: the chamber heats and fills again while the viewer is asked which part surprised them, the heat or the gas."}],
-  "ending": {"closing_question": "Which surprises you more, the heat or the gas?", "comment_line": "Comment your answer below.", "tail": "In the 2.5 seconds of silence the chamber keeps glowing and its bubbles keep rising slowly, then it settles calm and glowing, never cut off."},
-  "sentences": [
-    {"scene": "1", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano with banded brown rock layers, dim red chamber and a closed vent pipe, one first bubble in the pipe", "place": "centre, huge, fills most of the frame width and height", "stands_for": "the volcano and the magma under it"}], "change": "the chamber glows brighter and a first bubble rises in the pipe", "camera": "slow push in, close on the whole cutaway", "texts": [], "flows": []},
-    {"scene": "1", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, chamber glowing orange, magma level rising in the pipe", "place": "centre, huge, fills the frame", "stands_for": "the volcano"}, {"prop": "rock", "look": "small grey boulder with cracks", "place": "front left, small, standing on the ground in front of the cone", "stands_for": "the rock above that has to hold"}], "change": "the magma level climbs and the chamber glows brighter", "camera": "slow push in, close on the chamber and pipe", "texts": [], "flows": []},
-    {"scene": "1", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, chamber glowing orange, pipe closed", "place": "centre, huge, fills the frame", "stands_for": "the volcano"}, {"prop": "rock", "look": "small grey boulder with cracks", "place": "front left, small", "stands_for": "the rock above that has to hold"}], "change": "the chamber glows hotter and its fill rises a little", "camera": "slow push in, close on the glowing chamber", "texts": [], "flows": []},
-    {"scene": "2", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, chamber filling with glowing red-orange magma", "place": "centre, huge, fills the frame", "stands_for": "the magma chamber deep below the cone"}, {"prop": "rock", "look": "small grey boulder", "place": "front left, small", "stands_for": "solid rock around the chamber"}], "change": "the chamber fills with more and more glowing magma", "camera": "close on the chamber, slow push in", "texts": [], "flows": []},
-    {"scene": "2", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, magma turning from dull red to bright orange-yellow", "place": "centre, huge, fills the frame", "stands_for": "the hot magma chamber"}, {"prop": "thermometer", "look": "tall thermometer, liquid rising from blue to red", "place": "right, front, medium-small beside the cone", "stands_for": "the heat of the rock"}, {"prop": "rock", "look": "small grey boulder", "place": "front left, small", "stands_for": "rock hot enough to melt"}], "change": "the magma turns from dull red to bright orange-yellow and the thermometer liquid climbs to red", "camera": "close on the chamber, slow push in", "texts": [{"words": "1000 °C", "starts": "one thousand degrees Celsius", "ends": 7}], "flows": []},
-    {"scene": "2", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, bright orange magma level rising in the pipe", "place": "centre, huge, fills the frame", "stands_for": "magma rising"}, {"prop": "thermometer", "look": "thermometer with red liquid", "place": "right, front, medium-small", "stands_for": "the heat"}, {"prop": "rock", "look": "small grey boulder", "place": "front left, small", "stands_for": "heavier solid rock"}], "change": "the magma level rises up the pipe", "camera": "close on the pipe, slow push in", "texts": [], "flows": []},
-    {"scene": "2", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, chamber full and glowing hotter", "place": "centre, huge, fills the frame", "stands_for": "the pressurised chamber"}, {"prop": "thermometer", "look": "thermometer with red liquid", "place": "right, front, medium-small", "stands_for": "the heat"}, {"prop": "rock", "look": "small grey boulder", "place": "front left, small", "stands_for": "the squeezing walls"}], "change": "the chamber fills to the top and glows hotter", "camera": "close on the chamber, slow push in", "texts": [], "flows": []},
-    {"scene": "2", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, full glowing chamber with small bubbles forming inside the magma", "place": "centre, huge, fills the frame", "stands_for": "magma with dissolved gas"}, {"prop": "particles", "look": "small pale glowing bubbles rising", "place": "right, small, beside the chamber", "stands_for": "dissolved gas"}], "change": "tiny bubbles appear inside the magma and multiply", "camera": "close on the chamber, slow push in", "texts": [], "flows": []},
-    {"scene": "2", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, magma filling the pipe nearly to the crater, bubbles swelling", "place": "centre, huge, fills the frame", "stands_for": "magma pushed up the pipe by gas"}, {"prop": "particles", "look": "bigger pale glowing bubbles streaming upward", "place": "right, small, beside the pipe", "stands_for": "swelling gas bubbles"}], "change": "bubbles swell and the magma is pushed up the pipe toward the crater", "camera": "tilt up along the pipe, close on the crater", "texts": [], "flows": []},
-    {"scene": "3", "objects": [{"prop": "gauge", "look": "big dial gauge, coloured arc from green to red, needle starting in green", "place": "centre, large, fills most of the frame", "stands_for": "the pressure cooker pressure dial, the pressure in the chamber"}, {"prop": "magma_chamber", "look": "small cutaway volcano with a full glowing chamber", "place": "back right, small", "stands_for": "the volcano the gauge stands for"}], "change": "the needle swings from green up into the red zone", "camera": "slow push in, close on the gauge", "texts": [], "flows": []},
-    {"scene": "4", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, magma at the crater and the top of the pipe cracking open with the first lava flare", "place": "centre, huge, fills the frame", "stands_for": "the volcano as the pipe blows open"}, {"prop": "cloud", "look": "dark storm cloud", "place": "back top, small, above the crater", "stands_for": "ash cloud to come"}], "change": "the pipe blows open and the first lava flares at the crater", "camera": "close on the crater, slight push in", "texts": [], "flows": []},
-    {"scene": "4", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, lava spraying high from the crater, chamber bright yellow-orange", "place": "centre, huge, fills the frame", "stands_for": "the eruption"}, {"prop": "cloud", "look": "dark storm cloud", "place": "back top, small, above the crater", "stands_for": "ash"}], "change": "lava sprays high out of the crater", "camera": "tilt up with the spray, close on the crater", "texts": [], "flows": []},
-    {"scene": "4", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, lava spray dying down, chamber level sinking and glow fading", "place": "centre, huge, fills the frame", "stands_for": "the pressure released"}, {"prop": "cloud", "look": "dark storm cloud", "place": "back top, small", "stands_for": "ash"}], "change": "the spray dies down and the magma level and glow sink", "camera": "slow pull back, still close on the volcano", "texts": [], "flows": []},
-    {"scene": "4", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, calm, glow cooling to dull red", "place": "centre, huge, fills the frame", "stands_for": "the volcano after the eruption"}, {"prop": "island", "look": "small round green island with a beach", "place": "front right, small beside the cone", "stands_for": "new land built by eruptions"}], "change": "the glow cools to dull red and the small island beside it grows", "camera": "slow pull back, still close on the volcano", "texts": [], "flows": []},
-    {"scene": "5", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, chamber heating up again, red-orange", "place": "centre, huge, fills the frame", "stands_for": "the heat and the gas inside the volcano"}, {"prop": "thermometer", "look": "thermometer with liquid rising blue to red", "place": "right, front, medium-small", "stands_for": "the heat"}, {"prop": "particles", "look": "small pale glowing bubbles", "place": "left, small", "stands_for": "the gas"}], "change": "the chamber heats up again and bubbles start to rise", "camera": "slow push in, close on the chamber", "texts": [], "flows": []},
-    {"scene": "5", "objects": [{"prop": "magma_chamber", "look": "cutaway volcano, chamber filling and glowing bright orange, bubbles rising", "place": "centre, huge, fills the frame", "stands_for": "the heat and the gas inside the volcano"}, {"prop": "thermometer", "look": "thermometer with red liquid", "place": "right, front, medium-small", "stands_for": "the heat"}, {"prop": "particles", "look": "small pale glowing bubbles", "place": "left, small", "stands_for": "the gas"}], "change": "the chamber fills and glows brighter as bubbles rise", "camera": "slow push in, close on the chamber", "texts": [], "flows": []}
-  ]
-}
-
-The last word ends at 52.62 s; the video is 55.12 s long. Make 2 to 4 main scenes (a scene = a shot plus its "continue": true shots), plus at most a short opening and a short closing scene. Each shot lasts 1.5 to 12 seconds (over 9 s gives a warning); aim for 3 to 8.
+The last word ends at 51.17 s; the video is 51.57 s long. Make 2 to 4 main scenes (a scene = a shot plus its "continue": true shots), plus at most a short opening and a short closing scene. Each shot lasts 1.5 to 12 seconds (over 9 s gives a warning); aim for 3 to 8.
 
 Think through the scenes and the changes first (section 2), then reply with the complete show.json and nothing else: no code fence, no comments, no text before or after it.

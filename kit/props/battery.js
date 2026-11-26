@@ -27,6 +27,8 @@ export function build(params, ctx) {
   const white = k.mat(0xffffff, { rough: 0.4, emissive: 0.15 });
   m(rbox(0.075, 0.012, 0.02, 0.005), dark, 0, 0.495, 0); m(rbox(0.02, 0.012, 0.075, 0.005), dark, 0, 0.495, 0);
   m(rbox(0.09, 0.022, 0.012, 0.005), white, 0, 0.27, 0.285); m(rbox(0.022, 0.09, 0.012, 0.005), white, 0, 0.27, 0.285);
+  // A − on the base cap (the negative end), dark on the metal ring.
+  m(rbox(0.13, 0.032, 0.012, 0.005), dark, 0, -0.37, 0.288);
   // Charge window (frame + fill that grows from the bottom) with three tick marks.
   m(rbox(0.2, 0.5, 0.05, 0.03), dark, 0, -0.05, 0.28);
   const fillMat = k.raw(new THREE.MeshStandardMaterial({ color: 0x33cc55, roughness: 0.3, emissive: 0x33cc55, emissiveIntensity: 0.9 }));

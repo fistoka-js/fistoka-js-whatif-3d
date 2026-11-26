@@ -1,4 +1,0 @@
-{"verdict": "problems", "problems": [
-{"sentence": 6, "kind": "variety", "what": "S6 \"The oceans would slosh forward, then drain toward the poles, because Earth would stay slightly bulged at the equator.\": scene 3 has the planet alone in S6 and S7, with no supporting prop besides the hero until S8.", "fix": "Add one small supporting prop to S6 and S7 in scene 3, for example a small gauge or a small sun at the left, so the scene has a supporting prop in every sentence."},
-{"sentence": 10, "kind": "variety", "what": "S10 \"Earth's slow, steady turn keeps our winds gentle, our oceans spread evenly, and our days short enough for life to thrive.\": closing scene 5 shows only the planet in S10, S11 and S12, with no supporting prop.", "fix": "Add one small supporting prop to scene 5, for example the small sun at the left (days) in S10 and a small person for scale on the land in S11, and keep the planet as the hero."}
-]}

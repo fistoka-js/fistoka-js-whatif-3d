@@ -9,17 +9,16 @@ The video must EXPLAIN, not illustrate. The approved style: one subject stays on
 # 1. How the engine works
 
 - A show is a list of SHOTS. A SCENE is a shot plus the shots after it that have "continue": true. A scene has one environment, a few props that keep their state, and a new camera for each of its shots. A shot without "continue" starts a new scene from nothing.
-- A shot lasts from its "start" (a spoken phrase) until the next shot's start. The first shot starts at 0 s and has no "start". The last shot runs to the end of the video: the last spoken word is the closing "comment your answer below" line, and the video then runs about 2.5 more seconds with no voice (the music fades out), so keep the last picture changing or settled, not cut off.
+- A shot lasts from its "start" (a spoken phrase) until the next shot's start. The first shot starts at 0 s and has no "start". The last shot runs to the end of the voice.
 - Props, environments, actions and camera moves come ONLY from the catalogue in section 5.
 - DIALS (top-level "dials") are named numbers that change when words are spoken. A prop's animatable value, its "color", "glow", "size" or "at", and an environment's dial-able param can FOLLOW a dial (a binding), so one dial changes several things together. Section 5 gives the exact forms (DIALS, BINDINGS, CONTINUE).
 - RAMPS: "move", "scale", "color", "glow" and "set" accept "until": <anchor> instead of "over", so a change runs from one spoken word to another.
 - The camera frames the shot by itself: it looks at the props in "camera.focus" (or all visible props) over the WHOLE shot and fits them in the frame. You choose framing ("fill" for an exact size), angle and move; in a continuing shot "glide" moves the camera smoothly from the previous view.
 - Stage space: centred on [0, 0, 0]. +x is right, +y is up, +z is toward the viewer. One unit is about half the frame width at medium framing. Every prop is built to fit a 1-unit box; "size" scales it.
-- Captions of the spoken words are drawn automatically in the lower part of the frame (the bottom 28 percent of the frame is kept free for them and for the YouTube Shorts buttons). You never write captions.
+- Captions of the spoken words are drawn automatically in the bottom quarter of the frame. You never write captions.
 
 # 2. How to think (do this before writing any JSON)
 
-0. THE STORYBOARD. When the input has an APPROVED STORYBOARD, it is the source of truth: build exactly it (same objects, same flow directions, text on the same phrases and kept as long, same ending). A planned text longer than 32 characters must be a "text" action (a "label" allows at most 32; a "text" up to 40). A label, text or count ends with its shot (the engine ends it with its shot): to keep it up longer, repeat the same label or text at the start of the next shot. The steps below say how. A gap object {"missing", "stand_in", "central"} means the catalogue cannot draw "missing": draw the "stand_in" prop instead (if "stand_in" is none, draw nothing for it). A storyboard text has "starts" (the words of that sentence where it appears) and "ends" (a sentence number: it must stay on screen until the START of that sentence; or the word "end": it stays until the end of the video, including the ending).
 1. THE CHAIN. Read the sentence table and the picture plan. Name the one mechanism and its cause -> effect chain. Name the HERO: the prop that shows the mechanism changing (a lattice, a wave, a layer stack, a tuner). It stays on screen for most of the video.
 2. SCENES. Make 2 to 4 main scenes for the mechanism (for example: whole thing -> zoom in -> the mechanism up close -> the analogy), plus at most one short opening scene for the hook and one short closing scene. Never a new scene per sentence. Inside a scene, change the view with a continuing shot (new camera, often with "glide"); zoom into the subject with "transition": "dive".
 3. DIALS. Choose at least one dial for the quantity that changes (spacing, temperature, speed, wavelength). Bind it to TWO OR MORE things that the viewer should see change together: the hero's value AND its colour, the effect next to it, the background colour. Key it on the spoken words where the quantity changes ("sit close" -> low, "spread apart" -> high).
@@ -42,7 +41,7 @@ Shape:
 - An action that changes a value bound to a dial ("set" on a bound param, "color" on a bound colour, "glow" on a bound glow, "scale" on a bound size, "move" or "orbit" on a bound "at") is an error: change the dial instead.
 - Action fields: "at" (WHEN, an anchor), "do", "prop" where the action takes one, "over" (seconds) ONLY on actions that list a default over, or "until" where listed, plus the fields listed for that action.
 - "set" may only animate a param listed in that prop's "anim" list, inside its range. If an anim param has the same name as a prop field (the fire's "size"), "size" on the prop means the prop's scale; change the anim value only with "set".
-- Stage-space props ("arrow", "beam", "wire", "light_wave") have "from" and "to" (a slot, [x, y, z] or a prop id in the shot) and NO "at", "size" or "rotate". They cannot move, scale, spin, orbit, bob, shake or pulse.
+- Stage-space props ("arrow", "beam", "wire") have "from" and "to" (a slot, [x, y, z] or a prop id in the shot) and NO "at", "size" or "rotate". They cannot move, scale, spin, orbit, bob, shake or pulse.
 - "icon" goes on a prop with "prop", or at a place with "place" (slot or [x, y, z]). Its "at" is the TIME, like every action.
 - "glide" only on a continuing shot, not with "dip" or "dive", and not longer than the shot. "fill" 0.5 to 1.3.
 - Text limits: label text up to 32 characters, text up to 40, count unit up to 16. Colours: a palette name or "#rrggbb".
@@ -67,7 +66,7 @@ Size and framing:
 - One prop alone at size 1 fills about 70% of the frame width at "medium" framing. The camera fits ALL framed props (and the full path of anything that moves), so two or three props, or a prop that travels far, are each drawn smaller. Give the hero "camera": {"focus": ["hero"]} and use "fill" (up to 1.3) to make it as big as the picture allows.
 - Keep sizes in a frame similar unless one prop is a backdrop. A tiny prop next to a huge one becomes a dot.
 - BACKDROP trick: for something meant to fill the background, put it behind (z about -2.5), make it large (size 4 to 5), and set "camera": {"focus": ["<the foreground prop>"], "framing": "wide"}. Never point an action at a backdrop prop (props that actions point at must stay at least 60% inside the frame).
-- Anything the narration names must be big enough to see: size 0.6 or more. "particles" meant to be noticed need "dot" 0.08 or more and "size" 1 or more; exception: particles INSIDE a prop are exempt from BOTH size minimums (size 1 and size 0.6) and follow the inside rule below (smaller than that prop) instead.
+- Anything the narration names must be big enough to see: size 0.6 or more. "particles" meant to be noticed need "dot" 0.08 or more and "size" 1 or more.
 - The first shot is the thumbnail moment: one clear subject, big (close framing or "fill"), with at most one other small prop.
 
 Ground:
@@ -78,12 +77,12 @@ Ground:
 Visibility:
 - Something must be visible from the first frame of every scene. If props "appear" later, make the first one appear on the scene's first words, or keep one prop visible from the start.
 - Props that actions point at must stay at least 60% inside the frame: do not "move" them off screen. To make something leave, use "disappear".
-- Do not put a prop in the bottom 28 percent of the frame (the captions are there): avoid "at" y below -0.9 unless the camera angle is high or top.
+- Do not put a prop in the bottom quarter of the frame (the captions are there): avoid "at" y below -0.9 unless the camera angle is high or top.
 
 Overlays (label, text, count, icon):
 - At most 2 on screen at the same time; end them with "until" when the next one comes.
 - Labels: 1 to 3 words, CAPITALS, under 22 characters, naming a part of the picture ("CRYSTALS", "SKIN CELLS"). Never a full sentence, never a copy of the caption, never the explanation itself.
-- Text "title" for a short heading, "number" for a big figure, "stamp" for a verdict like "WRONG" or "MYTH". "count" for a number WITHOUT a unit that is spoken (a number with a unit is a text, see the rule below). Icons mark a moment (a "no" sign on a myth); they are never the subject.
+- Text "title" for a short heading, "number" for a big figure, "stamp" for a verdict like "WRONG" or "MYTH". "count" for a number that is spoken. Icons mark a moment (a "no" sign on a myth); they are never the subject.
 
 Colour and camera:
 - Pick prop colours that contrast with the environment. A background bound to the same dial as the hero ("color": {"dial": ...}) makes the whole frame follow the mechanism.
@@ -94,10 +93,7 @@ Good to know (not obvious from the catalogue):
 - "ring": its radius comes from "size" (size 2.6 rings a planet of size 1.3); "tilt" 0 faces the camera like a hoop, 90 is edge-on, 70-78 looks like Saturn's rings.
 - "particles" with "shape": "ring" lie flat (like a plate): seen from angle "front" they look like a line; use angle "top" or "high" to show the circle. Use 20 or more of them for a ring that reads as a ring.
 - "planet" turns by itself (its "turn" param, default 0.02 turns/s, clouds faster); to show it stopping or starting, place it with "turn": 0 and drive all turning with "spin" (speed 0 stops it).
-- A planet's raised water ("ocean", "ocean_lon", "ocean_lat") reads as a swell only when the bump sits near the centre of the planet's disc as the camera sees it, measured at planet size 1.3 and camera angle "front". That centre is screen longitude 0 and screen latitude 0. East and north are positive. The numbers below are where the bump sits ON SCREEN; a planet that spun needs a different value in "ocean_lon", given further down. Keep "ocean_lon" and "ocean_lat" each between -14 and 14, and judge each one on its own. "ocean_lon" 14 with "ocean_lat" 14 is the limit at the corner, and "ocean_lon" 20 with "ocean_lat" 20 sticks out as a dark lens at the edge of the planet. South of the equator it turns dark early, so keep "ocean_lat" at -7 or higher. These limits are where the bump sits ON SCREEN. For a planet that spun and stopped, the value to write in "ocean_lon" is a different number, given by the offset rule below, so that the bump lands on screen inside these limits. A turning planet carries the bump round the globe and out of view, so the bump cannot be held in view while the planet turns. For a bump that stays, place the planet with "turn": 0 and no "spin", or put the ocean after the stop as described next. If the planet must keep turning in that shot, do not show the ocean bump in that shot. A planet that spun and then stopped with "spin" speed 0 stays frozen at the angle it reached, which is the speed times 360 times the seconds it spun (if there were several spins, add their angles together), and that frozen angle lasts for the rest of the scene, in the same shot as the spin or in a continuing shot ("continue": true). After the stop, move the bump with the "set" action on "ocean_lon" with "over": 0.1, and also on "ocean" to 0.8 if it was 0. The value for "ocean_lon" is the wanted on-screen longitude minus the frozen angle in degrees, so for the bump at the centre of the disc it is minus the frozen angle. Add or subtract 360 to stay between -180 and 180. This holds for the "spin" action around its default axis "y". For example, "spin" speed 0.1 for 3 seconds turns the planet 108 degrees, so "ocean_lon" -108 puts the bump back in front of the camera. If you re-declare the planet in a new scene instead, "ocean_lon" counts from rotation 0 again, so do not subtract the angle.
-- "wire" is a stage-space cable (like "beam"): for a circuit use two wires between [x, y, z] points, e.g. over the top with "lift": 0.7 and a return along the floor at y 0.04 (floor is y 0, props stand on it); "current" 0 to 1 sends glowing charge along it. A wire's charge dots run from its "from" end to its "to" end; an arrow points at its "to". For a closed loop the dots must circulate one way: wire 1 "from" the battery "to" the bulb, wire 2 (the return) "from" the bulb "to" the battery; never both wires "to" the bulb. This floor layout needs an environment with a ground (with no ground, pick your own heights). On the ground, a "battery" is 0.79 x its size tall to the top of its cap and a "lightbulb" exactly its size tall (a size 1.2 battery tops out at y 0.95, a size 1.0 bulb at y 1.0); start or end a wire at a prop's x and z with the y of its top. A positive "lift" puts the top at the higher end plus "lift"; a negative "lift" bends the wire down instead (the bottom is the lower end plus "lift"), and it does not go around props. When both ends are at y 0 or above, the wire never goes into the floor (its centre is held at y 0.04 or higher, even if an end is given at y 0, so a wire already at the floor stays straight); if either end is below y 0 there is no floor clamp and the wire goes exactly where you put it.
-- Only a wire, beam, arrow or light_wave has a "from" and "to". "particles" and every other prop has no point to aim at: it is placed only by its own "at" and "size". To show something INSIDE a prop (electrons in a bulb), put its "at" at that prop's x and z (same z, never nearer the camera) and at the height of the part, and make its "size" smaller than the prop's; the bulb's glass is see-through, and its filament is about 0.65 x its size above the ground. On a ground, a size 1.2 bulb at [0.9, 0, 0] gets particles "at" [0.9, 0.8, 0] with "size" 0.4.
-- A spoken number with a unit (a temperature, speed, distance, time) must show as a text. Use a "text" action of at most 40 characters, with style "number" for a big figure, never a "label"; labels stay the 1 to 3 word CAPITAL names of parts. Its words are the same as the storyboard text, for example "2000 °C". It starts on those words and stays until the start of the next sentence, or, if the next sentence starts less than 2.5 seconds after the text appears, until the start of the FIRST later sentence that starts at least 2.5 seconds after the text appears (the text must stay up at least 2.5 seconds). To do that, give the text action an "until" that is the first 1 to 6 words of that sentence, copied from the word list. If the shot ends at that point, leave "until" out; for the last sentence, or if no later sentence is long enough, also leave "until" out, so the text stays to the end of its shot (the end of the video only if it is in the last shot). This is the same as the storyboard text "ends". If the shot ends first, repeat the same text at the start of the next shot. If a sentence has 3 or more unit numbers, join them in one text if it fits 40 characters, else keep the 2 most important and drop the rest. If two unit-number texts are on screen together, put one at "pos" "top" and the other at "pos" "middle", because "pos" is the only thing that sets a text's height and the default "top" would draw them on top of each other. A unit-number text has priority over a label when the limit of 2 overlays at once is reached.
+- "wire" is a stage-space cable (like "beam"): for a circuit use two wires between [x, y, z] points, e.g. over the top with "lift": 0.7 and a return along the floor at y 0.04 (floor is y 0, props stand on it); "current" 0 to 1 sends glowing charge along it. This floor layout needs an environment with a ground (with no ground, pick your own heights). On the ground, a "battery" is 0.79 x its size tall to the top of its cap and a "lightbulb" exactly its size tall (a size 1.2 battery tops out at y 0.95, a size 1.0 bulb at y 1.0); start or end a wire at a prop's x and z with the y of its top. A positive "lift" puts the top at the higher end plus "lift"; a negative "lift" bends the wire down instead (the bottom is the lower end plus "lift"), and it does not go around props. When both ends are at y 0 or above, the wire never goes into the floor (its centre is held at y 0.04 or higher, even if an end is given at y 0, so a wire already at the floor stays straight); if either end is below y 0 there is no floor clamp and the wire goes exactly where you put it.
 - "bars" draws the values relative to the tallest bar; give 2 to 4 values for a clear comparison and start it at "grow": 0 to make it rise on a word.
 
 CHECKLIST before replying:
@@ -108,7 +104,6 @@ CHECKLIST before replying:
 [ ] Continuing shots have no "env" and only new prop ids; no action changes a dial-bound value.
 [ ] Every anchor is a phrase spoken inside that shot, and repeated words are made unique with more words.
 [ ] Every prop type, env type, param, action, field and value appears in the catalogue for THAT prop or action.
-[ ] Circuit wires run battery to bulb and back (never both "to" the bulb); particles inside a prop sit at its x and z and are smaller than it; every spoken number with a unit has a text held to the next sentence (or a later one if the gap is under 2.5 seconds).
 [ ] Floating props on a ground are lifted; backdrop props have no actions; at most 2 overlays at once; labels short, in capitals, naming parts.
 
 # 5. Catalogue
@@ -116,10 +111,10 @@ CHECKLIST before replying:
 PROPS (name [floats/STAGE-SPACE] (params) anim: animatable params for the "set" action -- what it is)
 - ball (color, finish=glossy|matte|metal|facets) -- A shiny or matte sphere in any colour (marble, molecule, pinball, drop).
 - box (color, finish=matte|glossy|metal, width 0.05..1, height 0.05..1, depth 0.05..1, round 0..0.5) -- A rounded box in any colour and proportions (block, crate, bumper, wall).
-- planet [floats] (look=earth|moon|mars|gas|ice|lava, color, rings:bool, turn -1..1, ocean_color, seed) anim: atmosphere 0..1.5 [starts 0.6], ocean 0..1 [starts 0], ocean_lon -180..180 [starts 0], ocean_lat -90..90 [starts 0] -- A planet or moon: earth, moon, mars, gas, ice, lava. Optional rings, air glow, a movable ocean bump.
+- planet [floats] (look=earth|moon|mars|gas|ice|lava, color, rings:bool, turn -1..1, seed) anim: atmosphere 0..1.5 [starts 0.6] -- A lit planet or moon. Looks: earth, moon, mars, gas (giant), ice, lava. Optional rings and air glow.
 - sun [floats] (color, rays:bool) anim: brightness 0..2 [starts 1] -- A glowing star with a halo and soft turning rays.
 - particles [floats] (shape=sphere|box|ring|stream, count 1..1500, color, color2, mix 0..1, look=balls|dots, dot 0.01..0.3, seed) anim: spread 0..3 [starts 1], speed 0..5 [starts 0.3] -- A cloud of small balls or glowing dots in a box, sphere, ring or stream (molecules, dust, atoms).
-- arrow [STAGE-SPACE] (from=point, to=point, color, thickness 0.02..0.3) anim: length 0..1 [starts 1] -- A flat, bold 2D-style arrow from one point or prop to another.
+- arrow [STAGE-SPACE] (from=point, to=point, color, thickness 0.02..0.3) anim: length 0..1 [starts 1] -- A solid 3D arrow from one point or prop to another.
 - beam [STAGE-SPACE] (from=point, to=point, color, width 0.01..0.6) anim: progress 0..1 [starts 1], brightness 0..2 [starts 1] -- A glowing light ray from one point or prop to another.
 - wire [STAGE-SPACE] (from=point, to=point, lift -3..3, color, width 0.02..0.2) anim: current 0..1 [starts 0] -- An electric wire between two points; "lift" bends it into a loop.
 - mountain (style=rock|snow|desert, peaks 1..3, seed) -- A chunky low-poly mountain with a snow cap; styles rock, snow, desert; 1 to 3 peaks. Good for places.
@@ -140,7 +135,7 @@ PROPS (name [floats/STAGE-SPACE] (params) anim: animatable params for the "set" 
 - tree (style=round|pine|palm|bare, color, seed) -- A chunky low-poly tree: round, pine, palm or bare. Good for forests, seasons, deforestation, carbon.
 - city (style=modern|old, seed) anim: lights 0..1 [starts 0.7] -- A city block of buildings with lit windows; styles modern or old.
 - house (color, roof) anim: glow 0..1 [starts 0] -- A simple low-poly house with roof, chimney, door and windows. For homes, energy, insulation, neighbourhoods.
-- rock (color, count 1..6, seed) -- A chiselled boulder or group of rocks with cracks, strata and a flat base. For geology, erosion, mining.
+- rock (color, count 1..6, seed) -- A chunky faceted boulder or a little group of rocks. For geology, erosion, mining, landscapes.
 - island (color, palm:bool, seed) -- A round island with a beach and optional palm on a disc of water. A "little world" base for other props.
 - iceberg (water, seed) anim: melt 0..1 [starts 0] -- An iceberg: small white tip above water, big blue bulk below. Climate stories.
 - fire (color) anim: size 0.1..1.8 [starts 1] -- A campfire with layered flickering flames, logs, stones and a glow. For heat, energy, combustion.
@@ -180,8 +175,6 @@ PROPS (name [floats/STAGE-SPACE] (params) anim: animatable params for the "set" 
 - layer_stack [floats] (names=[strings, 2-5], colors=[colors, 2-5], pigment_layer 0..4, crystal_layer -1..4) anim: reveal 0..1 [starts 1], granules 0..1 [starts 0.3], shade 0..1 [starts 0], focus -1..4 [starts -1] -- Stacked see-through slabs with name plates; they slide in, granules spread, layers shade and glow. Skin, rock layers.
 - light_wave [STAGE-SPACE] (from=point, to=point, color) anim: progress 0..1 [starts 1], wavelength 0..1 [starts 0.32], amplitude 0..1 [starts 0.5] -- A wavy beaded wave from one point to another. Light, signals.
 - tuner (color, rings 2..10) anim: value 0..1 [starts 0.5] -- Antenna on a tuning box: colour dial, knob, glowing tip, pulsing rings. Radio, signals, tuning.
-- marshmallow (color, style=plain|toasted|charred) anim: toast 0..1 [starts 0], squish 0..1 [starts 0] -- Toastable, squishable marshmallow: for s'mores, campfire, food and soft-versus-hard gags.
-- magma_chamber (color, chamber_color) anim: fill 0..1 [starts 0.5], heat 0..1 [starts 0.5], eruption 0..1 [starts 0] -- Cutaway volcano: rock layers, glowing magma chamber and vent pipe. Good for what lies under a volcano.
 
 ENVIRONMENTS (name (params) [ground or not] -- what it is)
 - space (nebula=blue|purple|teal|red|none, stars 0..2, tint) [no ground: everything floats] -- Outer space: layered stars, soft nebula glow, floating dust. For planets, stars, anything cosmic.
@@ -304,7 +297,7 @@ SCENES: hook (chameleon, S1-S3) -> skin layers (layer_stack: 1 shot + 2 continui
 DIALS: "gap" drives the lattice spacing only; from "reflect" on its keys sit on the same words as "wavelength", so the gaps and the colour change together. In the lattice scene "wavelength" drives the lattice colour, the small chameleon's colour, the reflected wave's colour, the reflected wave's length and the background, so one number changes five things in the same frame (cause on top, effect below). In the tuner scene it drives the tuner's value and the background.
 Icons and labels in the output (a "no" sign on the paint box and dye drop, question marks) are decoration on top of the plan's changes; they are never the change.
 
-Not to copy: this example is shorter than a real script (under the 180-word minimum, and it ends "Comment below."); real scripts have 180 to 195 words and end with the closing question plus a line asking viewers to comment their answer below ("Comment your answer below."), so do not copy its length or its closing words. This example has 6 scenes because of the hook and closing scenes, and runs 63 s; yours must have a voice of up to 60 s (up to 62 s is accepted), and the video then runs a 2.5 s ending after the last word, so the finished video is about 57.5 to 62.5 s and at most 64.5 s. The "lose" shot was split from "emotions" so no shot is over 9 s. Do not reuse its props or layout for a different topic.
+Not to copy: this example has 6 scenes because of the hook and closing scenes, and runs 61 s; yours must stay at 60 s or less. The "lose" shot was split from "emotions" so no shot is over 9 s. Do not reuse its props or layout for a different topic.
 
 OUTPUT (the reply):
 {
@@ -508,73 +501,58 @@ OUTPUT (the reply):
 
 === USER ===
 
-TITLE: What If Earth Suddenly Stopped Spinning?
+TITLE: How Does a Battery Really Light a Bulb?
 
 THE SCRIPT AS SPOKEN, sentence by sentence (S1, S2, ...), with the sentence's start and end in seconds, then each word with its start time. Anchors must be copied from these words.
-S1 [0.10-1.18] What if Earth stopped spinning?
-   What 0.10 | if 0.29 | Earth 0.39 | stopped 0.58 | spinning? 0.86
-S2 [1.50-5.56] Right now, Earth's surface races along at about one thousand miles an hour at the equator.
-   Right 1.50 | now, 1.75 | Earth's 2.20 | surface 2.43 | races 2.77 | along 3.12 | at 3.42 | about 3.49 | one 3.75 | thousand 3.92 | miles 4.28 | an 4.57 | hour 4.65 | at 4.94 | the 5.02 | equator. 5.08
-S3 [5.89-9.93] Here is what really happens: the ground would stop, but the air and the oceans would not.
-   Here 5.89 | is 6.08 | what 6.18 | really 6.34 | happens: 6.56 | the 7.27 | ground 7.36 | would 7.63 | stop, 7.71 | but 8.32 | the 8.43 | air 8.53 | and 8.99 | the 9.07 | oceans 9.17 | would 9.50 | not. 9.63
-S4 [10.25-13.90] Everything loose would keep its old speed and slide eastward across the ground.
-   Everything 10.25 | loose 10.75 | would 11.02 | keep 11.17 | its 11.36 | old 11.49 | speed 11.69 | and 12.12 | slide 12.23 | eastward 12.67 | across 13.10 | the 13.42 | ground. 13.50
-S5 [14.22-20.70] Near the equator, winds of about one thousand miles an hour would sweep across the land, stripping away soil, trees and buildings.
-   Near 14.22 | the 14.46 | equator, 14.53 | winds 15.21 | of 15.41 | about 15.46 | one 15.73 | thousand 15.88 | miles 16.22 | an 16.52 | hour 16.61 | would 16.90 | sweep 17.02 | across 17.36 | the 17.67 | land, 17.76 | stripping 18.42 | away 18.73 | soil, 18.93 | trees 19.61 | and 20.03 | buildings. 20.14
-S6 [21.02-26.65] The oceans would slosh forward, then drain toward the poles, because Earth would stay slightly bulged at the equator.
-   The 21.02 | oceans 21.22 | would 21.58 | slosh 21.70 | forward, 22.04 | then 22.71 | drain 22.84 | toward 23.29 | the 23.52 | poles, 23.60 | because 24.20 | Earth 24.48 | would 24.69 | stay 24.82 | slightly 25.09 | bulged 25.62 | at 25.99 | the 26.09 | equator. 26.16
-S7 [26.97-30.02] That would leave a huge belt of dry land around the middle of the planet.
-   That 26.97 | would 27.15 | leave 27.25 | a 27.41 | huge 27.45 | belt 28.03 | of 28.23 | dry 28.32 | land 28.55 | around 28.89 | the 29.17 | middle 29.23 | of 29.50 | the 29.55 | planet. 29.63
-S8 [30.34-36.18] A single day would last a whole year, so one side would bake in sunlight for about six months while the other froze in darkness.
-   A 30.34 | single 30.50 | day 30.83 | would 30.99 | last 31.14 | a 31.43 | whole 31.48 | year, 31.77 | so 32.37 | one 32.48 | side 32.65 | would 32.95 | bake 33.08 | in 33.29 | sunlight 33.38 | for 33.81 | about 33.96 | six 34.18 | months 34.47 | while 34.77 | the 34.89 | other 35.02 | froze 35.26 | in 35.55 | darkness. 35.65
-S9 [36.50-41.02] It is like a bus braking hard: the bus stops, but everything inside keeps flying forward.
-   It 36.50 | is 36.68 | like 36.78 | a 36.90 | bus 36.96 | braking 37.23 | hard: 37.56 | the 38.17 | bus 38.26 | stops, 38.49 | but 39.09 | everything 39.25 | inside 39.60 | keeps 40.05 | flying 40.28 | forward. 40.58
-S10 [41.34-47.22] Earth's slow, steady turn keeps our winds gentle, our oceans spread evenly, and our days short enough for life to thrive.
-   Earth's 41.34 | slow, 41.66 | steady 42.22 | turn 42.52 | keeps 42.85 | our 43.12 | winds 43.23 | gentle, 43.47 | our 44.15 | oceans 44.26 | spread 44.56 | evenly, 44.83 | and 45.52 | our 45.62 | days 45.73 | short 45.97 | enough 46.16 | for 46.37 | life 46.48 | to 46.71 | thrive. 46.80
-S11 [47.54-49.87] If you had to survive it, where on Earth would you stand?
-   If 47.54 | you 47.71 | had 47.78 | to 47.95 | survive 48.01 | it, 48.44 | where 48.86 | on 49.00 | Earth 49.13 | would 49.34 | you 49.42 | stand? 49.49
-S12 [50.20-51.31] Comment your answer below.
-   Comment 50.20 | your 50.61 | answer 50.72 | below. 51.00
+S1 [0.09-3.27] What if a battery poured electricity into a bulb until it ran out?
+   What 0.09 | if 0.18 | a 0.26 | battery 0.34 | poured 0.76 | electricity 1.05 | into 1.76 | a 2.01 | bulb 2.08 | until 2.49 | it 2.73 | ran 2.82 | out? 3.02
+S2 [3.66-4.69] Here is what really happens.
+   Here 3.66 | is 3.77 | what 3.85 | really 4.01 | happens. 4.18
+S3 [5.07-9.40] The wire is already full of tiny electrons, even before you connect anything.
+   The 5.07 | wire 5.14 | is 5.51 | already 5.71 | full 6.09 | of 6.46 | tiny 6.56 | electrons, 6.94 | even 7.96 | before 8.16 | you 8.53 | connect 8.64 | anything. 9.02
+S4 [9.77-13.54] Close the loop, and the battery starts pushing electrons out of its negative end.
+   Close 9.77 | the 10.03 | loop, 10.13 | and 10.68 | the 10.75 | battery 10.84 | starts 11.25 | pushing 11.54 | electrons 11.92 | out 12.46 | of 12.64 | its 12.72 | negative 12.85 | end. 13.25
+S5 [13.91-18.01] Every electron shoves the next, so the whole line creeps slowly around the loop.
+   Every 13.91 | electron 14.14 | shoves 14.68 | the 15.03 | next, 15.11 | so 15.79 | the 15.90 | whole 15.98 | line 16.24 | creeps 16.47 | slowly 16.91 | around 17.40 | the 17.67 | loop. 17.73
+S6 [18.39-22.32] But the push arrives almost instantly, so the bulb lights as soon as you connect.
+   But 18.39 | the 18.48 | push 18.57 | arrives 18.77 | almost 19.27 | instantly, 19.70 | so 20.42 | the 20.55 | bulb 20.67 | lights 20.95 | as 21.28 | soon 21.39 | as 21.70 | you 21.80 | connect. 21.89
+S7 [22.69-26.51] Inside the bulb, the electrons must squeeze through a hair-thin filament.
+   Inside 22.69 | the 23.10 | bulb, 23.18 | the 23.73 | electrons 23.80 | must 24.35 | squeeze 24.69 | through 25.27 | a 25.43 | hair-thin 25.50 | filament. 26.02
+S8 [26.88-30.40] It is so narrow that they crash into its atoms, again and again.
+   It 26.88 | is 26.95 | so 27.07 | narrow 27.28 | that 27.68 | they 27.81 | crash 27.95 | into 28.40 | its 28.65 | atoms, 28.78 | again 29.43 | and 29.95 | again. 30.05
+S9 [30.77-35.69] Each crash shakes the atoms harder, heating the filament past two thousand degrees Celsius.
+   Each 30.77 | crash 30.96 | shakes 31.54 | the 31.90 | atoms 32.08 | harder, 32.39 | heating 33.10 | the 33.33 | filament 33.41 | past 33.83 | two 34.20 | thousand 34.41 | degrees 34.74 | Celsius. 35.09
+S10 [36.07-38.86] Hot metal glows, and that glow is the light you see.
+   Hot 36.07 | metal 36.27 | glows, 36.54 | and 37.25 | that 37.37 | glow 37.56 | is 37.95 | the 38.05 | light 38.16 | you 38.41 | see. 38.53
+S11 [39.26-40.26] Think of a bicycle chain.
+   Think 39.26 | of 39.39 | a 39.45 | bicycle 39.52 | chain. 39.97
+S12 [40.64-45.00] Pedal at one end, and the wheel at the other turns, while each link only goes round.
+   Pedal 40.64 | at 40.86 | one 40.95 | end, 41.16 | and 41.80 | the 41.88 | wheel 41.98 | at 42.24 | the 42.32 | other 42.42 | turns, 42.65 | while 43.35 | each 43.53 | link 43.72 | only 44.14 | goes 44.35 | round. 44.61
+S13 [45.38-47.91] The battery is the pedal, and the bulb is the wheel.
+   The 45.38 | battery 45.46 | is 45.95 | the 46.05 | pedal, 46.14 | and 46.83 | the 46.89 | bulb 46.99 | is 47.40 | the 47.49 | wheel. 47.60
+S14 [48.29-50.52] Break the loop anywhere, and the glow dies.
+   Break 48.29 | the 48.50 | loop 48.62 | anywhere, 48.97 | and 49.66 | the 49.73 | glow 49.81 | dies. 50.06
+S15 [50.90-52.15] Which part surprised you most?
+   Which 50.90 | part 51.04 | surprised 51.24 | you 51.67 | most? 51.75
 
 THE PICTURE PLAN from the script writer (S n here is S n above): what stays on screen, what visibly changes while that sentence is spoken, and the dial that drives it. Follow it; improve it where the catalogue offers a better way to show the same change.
-S1 subject: planet | change: the ocean bump drifts to the side as the planet's day side keeps its lit half | dial: spin
-S2 subject: gauge | change: the needle swings up to one thousand miles an hour and the arc fills | dial: speed
-S3 subject: planet | change: the air glow thickens and the ocean bump slides forward past the stopped surface | dial: spin
-S4 subject: rock | change: the boulder lurches eastward and slides along the ground
-S5 subject: planet | change: the air glow flares bright and streaks sideways as the winds scour the surface | dial: wind
-S6 subject: planet | change: the ocean bump slides from the equator up toward the north pole and grows | dial: ocean
-S7 subject: planet | change: the ocean shrinks away from the equator and bare land shows around the middle | dial: ocean
-S8 subject: planet | change: the sun side stays lit and bright while the far side goes dark and cold | dial: daylength
-S9 subject: car | change: the bus brakes to a halt while the crates inside slide forward
-S10 subject: planet | change: the ocean bump spreads evenly again and the air glow settles to a calm soft haze | dial: ocean
-S11 subject: planet | change: the planet's land belt and poles light up as possible places to stand
-S12 subject: planet | change: the whole planet glows warmer and the air glow brightens softly
+S1 subject: battery | change: the charge window slowly drains lower | dial: charge
+S2 subject: lightbulb | change: the bulb lights up warm and bright | dial: current
+S3 subject: particles | change: glowing electrons fill the whole length of the wire evenly | dial: spread
+S4 subject: particles | change: the electrons start streaming away from the battery end | dial: current
+S5 subject: particles | change: the whole line of electrons shifts forward together at a slow crawl | dial: current
+S6 subject: lightbulb | change: the bulb switches on at once | dial: current
+S7 subject: lightbulb | change: the filament starts to glow dull orange | dial: heat
+S8 subject: lightbulb | change: the filament glow flickers brighter with hot spots | dial: heat
+S9 subject: lightbulb | change: the filament turns from orange to white-hot | dial: heat
+S10 subject: lightbulb | change: the whole glass fills with bright warm light | dial: heat
+S11 subject: gear | change: the linked gears start to turn together | dial: speed
+S12 subject: gear | change: the far gear speeds up to match the first | dial: speed
+S13 subject: gear | change: the gears turn faster and faster together | dial: speed
+S14 subject: lightbulb | change: the light fades out and the bulb goes dark | dial: current
+S15 subject: lightbulb | change: the bulb flickers back on to a soft glow | dial: current
 
-THE APPROVED STORYBOARD (entry n of "sentences" is S n above). It is the source of truth: build exactly this storyboard, with the same objects (prop types), the same flow directions (a wire or arrow runs from its "from" to its "to"), each text on the phrase in its "starts" and kept until the START of the sentence in its "ends", and the same ending. A label, text or count ends with its shot (the engine ends it with its shot): to keep it up longer, repeat the same label or text at the start of the next shot. A checker compares your show with it.
-{
-  "hook": "What if Earth stopped spinning?",
-  "answer": "The ground would stop but the air and oceans would not, so huge winds would scour the land, the seas would drain toward the poles, and each day would last a year.",
-  "hero": "planet",
-  "summary": "A big Earth is shown first with a speed gauge reading about one thousand miles an hour, then the gauge drops to zero as the spin stops. On the ground a boulder and a tree are hit by a wall of fast wind and dust. Back in space, the ocean swell slides to the pole and leaves dry land around the middle, and the sun lights only one side. A toy bus braking while its crates slide forward explains why. The video ends on a calm Earth and the question of where you would stand.",
-  "scenes": [{"scene": "1", "env": "space", "idea": "Earth big in space with a speed gauge, the spin stops while the air and ocean keep going"}, {"scene": "2", "env": "planet_surface", "idea": "On the ground a boulder slides and a tree is torn over by fast wind and dust"}, {"scene": "3", "env": "space", "idea": "Earth with the ocean swell moving to the pole, dry land at the equator, then one side lit by the sun"}, {"scene": "4", "env": "studio", "idea": "A toy bus brakes while the crates inside slide forward"}, {"scene": "5", "env": "space", "idea": "A calm Earth with an even ocean, ending on the question"}],
-  "ending": {"closing_question": "If you had to survive it, where on Earth would you stand?", "comment_line": "Comment your answer below.", "tail": "the Earth keeps glowing softly and its air glow settles; it is still gently changing when the video ends, never cut off"},
-  "sentences": [
-    {"scene": "1", "objects": [{"prop": "planet", "look": "blue and green Earth with a thin air glow and a faint ocean swell at the equator, filling most of the frame", "place": "centre, very large", "stands_for": "Earth"}], "change": "the air glow brightens and the ocean swell begins to slide as the turning slows", "camera": "slow push in, close on the planet", "texts": [], "flows": []},
-    {"scene": "1", "objects": [{"prop": "planet", "look": "blue and green Earth turning, air glow on", "place": "centre, large", "stands_for": "Earth"}, {"prop": "gauge", "look": "small speed dial with a green to red arc", "place": "bottom right in front, small", "stands_for": "the speed of the surface at the equator"}], "change": "the gauge needle swings up to the top of its arc", "camera": "hold close on the planet, gauge in the corner", "texts": [{"words": "1,000 mph at the equator", "starts": "about one thousand miles an hour", "ends": 4}], "flows": []},
-    {"scene": "1", "objects": [{"prop": "planet", "look": "Earth with a thicker air glow, ocean swell slipping forward past the land", "place": "centre, large", "stands_for": "Earth, the ground now stopped"}, {"prop": "gauge", "look": "small speed dial", "place": "bottom right in front, small", "stands_for": "the speed of the ground"}], "change": "the needle drops to zero while the air glow thickens and the ocean swell slides forward", "camera": "hold close on the planet", "texts": [], "flows": []},
-    {"scene": "2", "objects": [{"prop": "rock", "look": "grey chiselled boulder with cracks", "place": "centre on the ground, large, close", "stands_for": "anything loose on the ground"}, {"prop": "particles", "look": "small tan dust grains around the boulder's base", "place": "around the boulder's base, small", "stands_for": "loose soil"}], "change": "the boulder lurches to the right and slides along the ground, kicking up dust", "camera": "low angle, close on the boulder as it slides", "texts": [], "flows": []},
-    {"scene": "2", "objects": [{"prop": "rock", "look": "grey boulder with cracks", "place": "centre-left on the ground, large", "stands_for": "the land"}, {"prop": "tree", "look": "green round tree", "place": "right of the boulder on the ground, medium", "stands_for": "trees and buildings"}, {"prop": "particles", "look": "tan dust streaks blowing from left to right", "place": "across the whole ground, in front and behind", "stands_for": "stripped soil and wind"}], "change": "the dust streaks fly sideways and the tree is bent and ripped over", "camera": "hold wide enough to see the tree and boulder", "texts": [{"words": "winds of 1,000 mph", "starts": "winds of about one thousand miles an hour", "ends": 6}], "flows": []},
-    {"scene": "3", "objects": [{"prop": "planet", "look": "Earth with a clear blue ocean swell around the equator, small air glow", "place": "centre, large", "stands_for": "Earth and its oceans"}, {"prop": "gauge", "look": "small speed dial, needle at zero", "place": "bottom right in front, small", "stands_for": "the ground, now stopped"}], "change": "the ocean swell slides from the equator up toward the north pole and grows there", "camera": "slow push in, close on the planet", "texts": [], "flows": []},
-    {"scene": "3", "objects": [{"prop": "planet", "look": "Earth with the water pulled to the poles and a wide brown and green land belt around the middle", "place": "centre, large", "stands_for": "Earth with a belt of dry land"}, {"prop": "gauge", "look": "small speed dial, needle at zero", "place": "bottom right in front, small", "stands_for": "the ground, now stopped"}], "change": "the ocean drains away from the middle so bare land is left around the equator", "camera": "hold close on the planet", "texts": [], "flows": []},
-    {"scene": "3", "objects": [{"prop": "planet", "look": "Earth, one half bright, the other half dark", "place": "centre, large", "stands_for": "Earth that no longer spins"}, {"prop": "sun", "look": "small bright yellow sun with a halo", "place": "left, behind the planet, small", "stands_for": "the sunlight on one side"}], "change": "the sun glows brighter on one side while the far side of the planet goes dark", "camera": "hold close on the planet", "texts": [{"words": "1 day = 1 year", "starts": "A single day would last a whole year", "ends": 9}, {"words": "6 months light, 6 dark", "starts": "about six months", "ends": 9}], "flows": []},
-    {"scene": "4", "objects": [{"prop": "car", "look": "chunky yellow toy bus", "place": "centre, large, side view", "stands_for": "Earth stopping"}, {"prop": "box", "look": "three small orange crates", "place": "inside the bus at the front, small", "stands_for": "air and oceans keep moving"}], "change": "the bus brakes to a halt while the crates slide forward inside", "camera": "side view, close on the bus", "texts": [], "flows": []},
-    {"scene": "5", "objects": [{"prop": "planet", "look": "calm Earth with an even blue ocean around the equator and a soft thin air glow", "place": "centre, large", "stands_for": "Earth as it is now"}, {"prop": "sun", "look": "small bright yellow sun with a halo", "place": "left, behind the planet, small", "stands_for": "the sunlight that gives us short days"}], "change": "the ocean swell spreads out evenly around the equator and the air glow settles to a calm soft haze", "camera": "slow pull back, centred on the planet", "texts": [], "flows": []},
-    {"scene": "5", "objects": [{"prop": "planet", "look": "Earth with a bright land belt and poles", "place": "centre, large", "stands_for": "places you could stand"}, {"prop": "sun", "look": "small bright yellow sun with a halo", "place": "left, behind the planet, small", "stands_for": "the sunlight"}], "change": "the land belt and the polar ice glow brighter as the ocean swell moves", "camera": "slow push in", "texts": [], "flows": []},
-    {"scene": "5", "objects": [{"prop": "planet", "look": "warm glowing Earth, steady air glow", "place": "centre, large", "stands_for": "Earth waiting for your answer"}, {"prop": "sun", "look": "small bright yellow sun with a halo", "place": "left, behind the planet, small", "stands_for": "the sunlight"}], "change": "the whole planet and its air glow warm and brighten softly", "camera": "slow push in, ending centred", "texts": [], "flows": []}
-  ]
-}
-
-The last word ends at 51.31 s; the video is 53.81 s long. Make 2 to 4 main scenes (a scene = a shot plus its "continue": true shots), plus at most a short opening and a short closing scene. Each shot lasts 1.5 to 12 seconds (over 9 s gives a warning); aim for 3 to 8.
+The last word ends at 52.15 s; the video is 52.55 s long. Make 2 to 4 main scenes (a scene = a shot plus its "continue": true shots), plus at most a short opening and a short closing scene. Each shot lasts 1.5 to 12 seconds (over 9 s gives a warning); aim for 3 to 8.
 
 Think through the scenes and the changes first (section 2), then reply with the complete show.json and nothing else: no code fence, no comments, no text before or after it.
 
@@ -585,168 +563,163 @@ Your previous reply is below. The checker rejected it with the errors listed aft
 YOUR PREVIOUS REPLY:
 {
   "format": 1,
-  "title": "What If Earth Suddenly Stopped Spinning?",
+  "title": "How Does a Battery Really Light a Bulb?",
   "voice": {"audio": "voice.mp3", "words": "words.json"},
-  "dials": {"airglow": {"start": 0, "keys": [{"at": "What if", "to": 0.4, "over": 1.0}, {"at": "air and", "to": 1, "over": 1.4}]}, "speed": {"start": 0, "keys": [{"at": "races along", "to": 1, "over": 1.6}, {"at": "would stop", "to": 0, "over": 0.8}]}, "day": {"start": 0, "keys": [{"at": "A single day", "to": 0.4, "over": 1.5}, {"at": "bake in", "to": 1, "over": 1.8}, {"at": "froze in", "to": 0.15, "over": 1.2}]}, "calm": {"start": 0, "keys": [{"at": "Earth's slow", "to": 1, "over": 3.5}]}},
+  "dials": {"flow": {"start": 0, "keys": [{"at": "pushing", "to": 1, "over": 1.2}, {"at": "creeps slowly", "to": 0.35, "over": 1.0}, {"at": "push arrives", "to": 1, "over": 0.8}, {"at": "Break the", "to": 0, "over": 0.6}, {"at": "Which part", "to": 0.6, "over": 0.8}]}, "lit": {"start": 0, "keys": [{"at": "bulb lights", "to": 1, "over": 0.6}, {"at": "the glow", "to": 0, "over": 0.9}, {"at": "Which part", "to": 0.4, "over": 0.8}]}, "heat": {"start": 0, "keys": [{"at": "squeeze through", "to": 0.3}, {"at": "crash into", "to": 0.55}, {"at": "heating", "to": 0.85}, {"at": "Hot metal", "to": 1, "over": 1.5}]}, "chain": {"start": 0, "keys": [{"at": "turns", "to": 0.4}, {"at": "battery is", "to": 1, "over": 1.5}]}},
   "shots": [
     {
-      "id": "hook",
-      "env": {"type": "space", "nebula": "blue"},
-      "camera": {"focus": ["earth"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "drift", "amount": 0.3},
-      "props": [
-        {"id": "earth", "type": "planet", "look": "earth", "at": "center", "size": 1.3, "turn": 0, "atmosphere": {"dial": "airglow", "from": [0, 1], "to": [0.6, 0.9]}},
-        {"id": "gauge", "type": "gauge", "at": [0.75, -0.55, 0.9], "size": 0.55, "arc": "green-red", "hidden": true, "value": {"dial": "speed", "to": [0.05, 0.95]}, "glow": {"dial": "speed", "to": [0, 0.6]}}
-      ],
-      "actions": [
-        {"at": "What if", "do": "spin", "prop": "earth", "speed": 0.08},
-        {"at": "Right now", "do": "appear", "prop": "gauge", "style": "pop"},
-        {"at": "about one thousand", "do": "text", "text": "1,000 mph at the equator", "style": "number"}
-      ]
-    },
-    {
-      "id": "stop",
-      "start": "Here is what",
-      "continue": true,
-      "camera": {"focus": ["earth"], "framing": "medium", "fill": 1.05, "angle": "front", "move": "push_in", "amount": 0.3, "glide": 1.0},
-      "actions": [
-        {"at": "Here is what", "do": "text", "text": "1,000 mph at the equator", "style": "number"},
-        {"at": "would stop", "do": "spin", "prop": "earth", "speed": 0},
-        {"at": "would stop", "do": "set", "prop": "earth", "param": "ocean_lon", "to": 131.14, "over": 0.1},
-        {"at": "the oceans", "do": "set", "prop": "earth", "param": "ocean", "to": 0.8, "over": 0.6},
-        {"at": "the oceans", "do": "set", "prop": "earth", "param": "ocean_lon", "to": 153.14, "over": 1.0}
-      ]
-    },
-    {
-      "id": "slide",
-      "start": "Everything loose",
-      "env": "planet_surface",
-      "camera": {"focus": ["rock"], "framing": "close", "fill": 1.0, "angle": "low", "move": "push_in", "amount": 0.3},
-      "props": [
-        {"id": "rock", "type": "rock", "at": [-0.9, 0, 0], "size": 1.3},
-        {"id": "dust", "type": "particles", "shape": "box", "count": 90, "color": "#c8a46a", "dot": 0.1, "size": 1.4, "at": [-0.5, 0.35, 0.4], "spread": 0.5, "speed": 0.3}
-      ],
-      "actions": [
-        {"at": "Everything loose", "do": "move", "prop": "rock", "to": [0.7, 0, 0], "until": {"phrase": "ground", "edge": "end"}, "ease": "out"},
-        {"at": "keep its", "do": "set", "prop": "dust", "param": "speed", "to": 1.5, "over": 0.8},
-        {"at": "slide", "do": "set", "prop": "dust", "param": "spread", "to": 2, "over": 1.0}
-      ]
-    },
-    {
-      "id": "wind",
-      "start": "Near the equator",
-      "continue": true,
-      "camera": {"focus": ["rock", "tree"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "drift", "amount": 0.3, "glide": 1.0},
-      "props": [
-        {"id": "tree", "type": "tree", "style": "round", "at": [1.0, 0, 0], "size": 1.2},
-        {"id": "gale", "type": "particles", "shape": "stream", "count": 300, "color": "#d9c08a", "dot": 0.1, "size": 2.0, "at": [0, 0.7, 0.5], "speed": 0.3, "hidden": true}
-      ],
-      "actions": [
-        {"at": "Near the equator", "do": "appear", "prop": "tree", "style": "grow"},
-        {"at": "winds of about one", "do": "text", "text": "winds of 1,000 mph", "style": "number"},
-        {"at": "winds of about one", "do": "appear", "prop": "gale", "style": "fade"},
-        {"at": "winds of about one", "do": "set", "prop": "gale", "param": "speed", "to": 3, "over": 1.5},
-        {"at": "sweep across", "do": "set", "prop": "gale", "param": "spread", "to": 2, "over": 1.0},
-        {"at": "stripping away", "do": "set", "prop": "dust", "param": "spread", "to": 3, "over": 1.0},
-        {"at": "stripping away", "do": "move", "prop": "rock", "to": [1.2, 0, 0], "over": 1.5},
-        {"at": "trees", "do": "disappear", "prop": "tree", "style": "fly_out", "to": "far-right"},
-        {"at": "buildings", "do": "set", "prop": "gale", "param": "spread", "to": 3, "over": 0.8}
-      ]
-    },
-    {
       "id": "drain",
-      "start": "The oceans",
-      "env": {"type": "space", "nebula": "blue"},
-      "transition": "dip",
-      "camera": {"focus": ["sea"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "drift", "amount": 0.3},
+      "env": {"type": "lab", "color": {"dial": "lit", "colors": ["#0f1a26", "#33290f"]}},
+      "camera": {"focus": ["bat"], "framing": "close", "fill": 1.2, "angle": "front", "move": "push_in", "amount": 0.3},
       "props": [
-        {"id": "sea", "type": "planet", "look": "earth", "at": "center", "size": 1.3, "turn": 0, "ocean": 0.8, "ocean_lon": 0, "ocean_lat": 0, "glow": {"dial": "day", "to": [0, 0.3]}},
-        {"id": "dial2", "type": "gauge", "at": [0.75, -0.55, 0.9], "size": 0.55, "arc": "green-red", "value": {"dial": "speed", "to": [0.05, 0.95]}}
+        {"id": "bat", "type": "battery", "at": [-0.9, 0, 0], "size": 1.2, "charge": 0.9}
       ],
       "actions": [
-        {"at": "slosh forward", "do": "set", "prop": "sea", "param": "ocean_lon", "to": 9, "over": 0.9},
-        {"at": "drain toward", "do": "set", "prop": "sea", "param": "ocean_lat", "to": 13, "over": 2.2},
-        {"at": "because Earth", "do": "set", "prop": "sea", "param": "ocean_lon", "to": 0, "over": 1.2},
-        {"at": "slightly bulged", "do": "set", "prop": "sea", "param": "ocean", "to": 1.0, "over": 1.0}
+        {"at": "What if", "do": "set", "prop": "bat", "param": "charge", "to": 0.1, "until": {"phrase": "ran out", "edge": "end"}}
       ]
     },
     {
-      "id": "belt",
-      "start": "That would leave",
+      "id": "circuit",
+      "start": "Here is",
       "continue": true,
-      "camera": {"focus": ["sea"], "framing": "medium", "fill": 1.1, "angle": "front", "move": "push_in", "amount": 0.3, "glide": 1.0},
+      "camera": {"framing": "medium", "fill": 1.0, "angle": "front", "move": "drift", "amount": 0.3, "glide": 1.2},
+      "props": [
+        {"id": "bulb", "type": "lightbulb", "at": [0.9, 0, 0], "size": 1.2, "on": {"dial": "lit"}},
+        {"id": "wiretop", "type": "wire", "from": [-0.9, 0.95, 0], "to": [0.9, 1.2, 0], "lift": 0.7, "width": 0.07, "current": {"dial": "flow"}},
+        {"id": "wireret", "type": "wire", "from": [-0.9, 0.04, 0.45], "to": [0.9, 0.04, 0.45], "lift": 0, "width": 0.07, "current": {"dial": "flow"}},
+        {"id": "elec", "type": "particles", "shape": "stream", "count": 80, "look": "dots", "dot": 0.1, "color": "#ffe14d", "at": [0, 0.35, 0.45], "size": 1.8, "spread": 0.3, "speed": {"dial": "flow", "to": [0.1, 2]}}
+      ],
       "actions": [
-        {"at": "huge belt", "do": "set", "prop": "sea", "param": "ocean", "to": 0.2, "over": 1.5},
-        {"at": "dry land", "do": "set", "prop": "sea", "param": "atmosphere", "to": 0.4, "over": 1.0},
-        {"at": "around the middle", "do": "set", "prop": "sea", "param": "ocean_lon", "to": -8, "over": 1.0}
+        {"at": "Here is", "do": "appear", "prop": "bulb", "style": "pop"},
+        {"at": "what really", "do": "appear", "prop": "wiretop", "style": "fade"},
+        {"at": {"phrase": "what really", "offset": 0.15}, "do": "appear", "prop": "wireret", "style": "fade"},
+        {"at": "wire is", "do": "appear", "prop": "elec", "style": "grow", "over": 0.8},
+        {"at": "tiny electrons", "do": "set", "prop": "elec", "param": "spread", "to": 1.3, "until": {"phrase": "anything", "edge": "end"}},
+        {"at": "tiny electrons", "do": "label", "prop": "elec", "text": "ELECTRONS", "until": "Close the"}
       ]
     },
     {
-      "id": "day",
-      "start": "A single day",
+      "id": "push",
+      "start": "Close the",
       "continue": true,
-      "camera": {"focus": ["sea"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "drift", "amount": 0.3, "glide": 1.0},
-      "props": [
-        {"id": "star", "type": "sun", "at": [-1.15, 0.35, -0.8], "size": 0.5, "hidden": true, "brightness": {"dial": "day", "to": [0.5, 1.7]}}
-      ],
+      "camera": {"framing": "medium", "fill": 1.0, "angle": "three-quarter", "move": "push_in", "amount": 0.4, "glide": 1.2},
       "actions": [
-        {"at": "A single day", "do": "appear", "prop": "star", "style": "grow"},
-        {"at": "A single day", "do": "text", "text": "1 day = 1 year", "style": "number"},
-        {"at": "for about six", "do": "text", "text": "6 months light, 6 dark", "style": "number", "pos": "middle"},
-        {"at": "bake in", "do": "set", "prop": "sea", "param": "atmosphere", "to": 0.7, "over": 1.5},
-        {"at": "froze in", "do": "set", "prop": "sea", "param": "ocean", "to": 0.5, "over": 1.5}
+        {"at": "Close the", "do": "glow", "prop": "bat", "to": 0.6, "over": 0.8}
       ]
     },
     {
-      "id": "bus",
-      "start": "It is like",
-      "env": {"type": "studio", "color": "#1b2a3f", "haze": 0},
-      "transition": "dip",
-      "camera": {"focus": ["bus"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "drift", "amount": 0.3},
-      "props": [
-        {"id": "bus", "type": "car", "style": "bus", "color": "#ffd23a", "driving": true, "at": [-1.0, 0, 0], "size": 1.5},
-        {"id": "crate1", "type": "box", "color": "#e0762a", "width": 0.35, "height": 0.35, "depth": 0.35, "at": [-1.25, 1.0, 0.1], "size": 1.0},
-        {"id": "crate2", "type": "box", "color": "#e0762a", "width": 0.35, "height": 0.35, "depth": 0.35, "at": [-1.0, 1.0, 0.1], "size": 1.0},
-        {"id": "crate3", "type": "box", "color": "#e0762a", "width": 0.35, "height": 0.35, "depth": 0.35, "at": [-0.75, 1.0, 0.1], "size": 1.0}
-      ],
-      "actions": [
-        {"at": "like a", "do": "move", "prop": "bus", "to": [0.4, 0, 0], "until": {"phrase": "stops", "edge": "start"}, "ease": "out"},
-        {"at": "like a", "do": "move", "prop": "crate1", "to": [0.15, 1.0, 0.1], "until": {"phrase": "stops", "edge": "start"}, "ease": "out"},
-        {"at": "like a", "do": "move", "prop": "crate2", "to": [0.4, 1.0, 0.1], "until": {"phrase": "stops", "edge": "start"}, "ease": "out"},
-        {"at": "like a", "do": "move", "prop": "crate3", "to": [0.65, 1.0, 0.1], "until": {"phrase": "stops", "edge": "start"}, "ease": "out"},
-        {"at": "but everything", "do": "move", "prop": "crate1", "to": [0.95, 1.0, 0.1], "over": 1.0, "ease": "in"},
-        {"at": "but everything", "do": "move", "prop": "crate2", "to": [1.2, 1.0, 0.1], "over": 1.0, "ease": "in"},
-        {"at": "but everything", "do": "move", "prop": "crate3", "to": [1.45, 1.0, 0.1], "over": 1.0, "ease": "in"},
-        {"at": "flying forward", "do": "glow", "prop": "crate2", "to": 0.5, "over": 0.6}
-      ]
-    },
-    {
-      "id": "calm",
-      "start": "Earth's slow",
-      "env": {"type": "space", "nebula": "blue"},
-      "transition": "dip",
-      "camera": {"focus": ["home"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "pull_out", "amount": 0.3},
-      "props": [
-        {"id": "home", "type": "planet", "look": "earth", "at": "center", "size": 1.3, "turn": 0.05, "atmosphere": {"dial": "calm", "to": [0.9, 0.55]}},
-        {"id": "star2", "type": "sun", "at": [-1.15, 0.35, -0.8], "size": 0.5, "brightness": {"dial": "calm", "to": [1.7, 1.0]}}
-      ],
-      "actions": [
-        {"at": "our oceans", "do": "glow", "prop": "home", "to": 0.12, "over": 1.0},
-        {"at": "our days", "do": "scale", "prop": "star2", "to": 1.3, "over": 1.2}
-      ]
-    },
-    {
-      "id": "question",
-      "start": "If you had",
+      "id": "instant",
+      "start": "But the push",
       "continue": true,
-      "camera": {"focus": ["home"], "framing": "medium", "fill": 1.05, "angle": "front", "move": "push_in", "amount": 0.3, "glide": 1.0},
+      "camera": {"framing": "medium", "fill": 1.05, "angle": "front", "move": "drift", "amount": 0.3, "glide": 1.2},
       "actions": [
-        {"at": "If you had", "do": "glow", "prop": "home", "to": 0.3, "over": 1.5},
-        {"at": "where on Earth", "do": "scale", "prop": "star2", "to": 1.0, "over": 1.0},
-        {"at": "Comment your", "do": "glow", "prop": "home", "to": 0.45, "over": 3.0}
+        {"at": "bulb lights", "do": "glow", "prop": "bat", "to": 0.3, "over": 0.8}
+      ]
+    },
+    {
+      "id": "filament",
+      "start": "Inside the bulb",
+      "transition": "dive",
+      "env": {"type": "lab", "color": {"dial": "heat", "colors": ["#10161c", "#3a1f0c", "#5a3a10"]}},
+      "camera": {"focus": ["bulb2", "therm"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "push_in", "amount": 0.3},
+      "props": [
+        {"id": "bulb2", "type": "lightbulb", "at": [-0.2, 0, 0], "size": 2, "on": {"dial": "heat"}, "glow": {"dial": "heat", "to": [0, 1]}},
+        {"id": "therm", "type": "thermometer", "at": [1.5, 0, 0], "size": 1.3, "level": {"dial": "heat", "to": [0.05, 1]}},
+        {"id": "elec2", "type": "particles", "shape": "stream", "count": 60, "look": "dots", "dot": 0.08, "color": "#7fd4ff", "at": [-0.2, 1.1, 0.3], "size": 1.1, "spread": 0.4, "speed": 1.5}
+      ],
+      "actions": [
+        {"at": "electrons must", "do": "appear", "prop": "elec2", "style": "grow", "over": 0.6},
+        {"at": "hair-thin", "do": "label", "prop": "bulb2", "text": "FILAMENT", "until": "It is"}
+      ]
+    },
+    {
+      "id": "crash",
+      "start": "It is so narrow",
+      "continue": true,
+      "camera": {"focus": ["bulb2", "therm"], "framing": "medium", "fill": 1.05, "angle": "three-quarter", "move": "push_in", "amount": 0.3, "glide": 1.0},
+      "actions": [
+        {"at": "crash into", "do": "set", "prop": "elec2", "param": "spread", "to": 1.2, "over": 1.0}
+      ]
+    },
+    {
+      "id": "hot",
+      "start": "Each crash",
+      "continue": true,
+      "camera": {"focus": ["bulb2", "therm"], "framing": "medium", "fill": 1.1, "angle": "front", "move": "drift", "amount": 0.3, "glide": 1.0},
+      "actions": [
+        {"at": "Each crash", "do": "color", "prop": "elec2", "to": "#ffb347", "over": 1.2}
+      ]
+    },
+    {
+      "id": "glows",
+      "start": "Hot metal",
+      "continue": true,
+      "camera": {"focus": ["bulb2", "therm"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "pull_out", "amount": 0.4, "glide": 1.0},
+      "actions": [
+        {"at": "light you", "do": "color", "prop": "elec2", "to": "#ffffff", "over": 0.8}
+      ]
+    },
+    {
+      "id": "chain",
+      "start": "Think of",
+      "transition": "dip",
+      "env": {"type": "lab", "color": {"dial": "chain", "colors": ["#0f1a26", "#23304a"]}},
+      "camera": {"focus": ["gear", "bat2", "bulb3"], "framing": "medium", "fill": 0.95, "angle": "front", "move": "drift", "amount": 0.3},
+      "props": [
+        {"id": "gear", "type": "gear", "count": 3, "at": [0, 0, 0], "size": 1.5, "color": {"dial": "chain", "colors": ["#4a8fd9", "#ffd24a"]}, "glow": {"dial": "chain", "to": [0, 0.9]}},
+        {"id": "bat2", "type": "battery", "at": [-2.0, 0, 0], "size": 1.0, "charge": 0.8},
+        {"id": "bulb3", "type": "lightbulb", "at": [2.0, 0, 0], "size": 1.0, "on": {"dial": "chain"}}
+      ],
+      "actions": [
+        {"at": "Think of", "do": "appear", "prop": "gear", "style": "grow", "over": 0.8},
+        {"at": "Pedal at", "do": "appear", "prop": "bat2", "style": "pop"},
+        {"at": "wheel at", "do": "appear", "prop": "bulb3", "style": "pop"}
+      ]
+    },
+    {
+      "id": "pedal-wheel",
+      "start": "The battery is",
+      "continue": true,
+      "camera": {"focus": ["gear", "bat2", "bulb3"], "framing": "medium", "fill": 1.0, "angle": "front", "move": "push_in", "amount": 0.3, "glide": 1.0},
+      "actions": [
+        {"at": "pedal", "do": "label", "prop": "bat2", "text": "PEDAL", "until": "and the bulb"},
+        {"at": "wheel", "do": "label", "prop": "bulb3", "text": "WHEEL"}
+      ]
+    },
+    {
+      "id": "break",
+      "start": "Break the",
+      "transition": "dip",
+      "env": {"type": "lab", "color": {"dial": "lit", "colors": ["#0f1a26", "#33290f"]}},
+      "camera": {"framing": "medium", "fill": 1.0, "angle": "front", "move": "push_in", "amount": 0.3},
+      "props": [
+        {"id": "bat3", "type": "battery", "at": [-0.9, 0, 0], "size": 1.2, "charge": 0.7},
+        {"id": "bulb4", "type": "lightbulb", "at": [0.9, 0, 0], "size": 1.2, "on": {"dial": "lit"}},
+        {"id": "wiretop2", "type": "wire", "from": [-0.9, 0.95, 0], "to": [0.9, 1.2, 0], "lift": 0.7, "width": 0.07, "current": {"dial": "flow"}},
+        {"id": "wireret2", "type": "wire", "from": [-0.9, 0.04, 0.45], "to": [0.9, 0.04, 0.45], "lift": 0, "width": 0.07, "current": {"dial": "flow"}}
+      ],
+      "actions": [
+        {"at": "anywhere", "do": "disappear", "prop": "wiretop2", "style": "fade", "over": 0.4}
+      ]
+    },
+    {
+      "id": "ask",
+      "start": "Which part",
+      "continue": true,
+      "camera": {"framing": "medium", "fill": 1.0, "angle": "front", "move": "pull_out", "amount": 0.3, "glide": 0.8},
+      "actions": [
+        {"at": "Which part", "do": "appear", "prop": "wiretop2", "style": "fade", "over": 0.5}
       ]
     }
   ]
 }
 
-ERRORS FROM THE CHECKER (path: problem. hint). Errors whose path starts with "story." mean the picture does not follow the words. For "story.sentences" and "story.stillness": add a dial key or a real action (set, move, scale, color, glow, appear...) inside that sentence or stretch, on a prop that is on screen. For "story.scenes", "story.subject" and "story.dial": follow that error's own hint (join shots with "continue", keep one subject on screen, bind one dial to two or more things). Do not fix them with labels, icons or camera moves. Errors whose path starts with "storyboard." mean the show does not build the approved storyboard: add the missing prop or text, or turn the wire or arrow around, as that error says.
-- story.subject: no prop stays on screen for 30% of the video (the longest is "sea" in the scene starting at shot "drain": 15.50 s of 53.81 s, 29%). Keep one subject on screen across several shots with "continue": true, and change it with each sentence (actions or a dial).
+ERRORS FROM THE CHECKER (path: problem. hint). Errors whose path starts with "story." mean the picture does not follow the words. For "story.sentences" and "story.stillness": add a dial key or a real action (set, move, scale, color, glow, appear...) inside that sentence or stretch, on a prop that is on screen. For "story.scenes", "story.subject" and "story.dial": follow that error's own hint (join shots with "continue", keep one subject on screen, bind one dial to two or more things). Do not fix them with labels, icons or camera moves.
+- shots[1].props[0].on.to: "to" is required: [value at the low end, value at the high end] (allowed: 0..1).
+- shots[1].props[1].current.to: "to" is required: [value at the low end, value at the high end] (allowed: 0..1).
+- shots[1].props[2].current.to: "to" is required: [value at the low end, value at the high end] (allowed: 0..1).
+- shots[4].props[0].on.to: "to" is required: [value at the low end, value at the high end] (allowed: 0..1).
+- shots[8].props[2].on.to: "to" is required: [value at the low end, value at the high end] (allowed: 0..1).
+- shots[10].props[1].on.to: "to" is required: [value at the low end, value at the high end] (allowed: 0..1).
+- shots[10].props[2].current.to: "to" is required: [value at the low end, value at the high end] (allowed: 0..1).
+- shots[10].props[3].current.to: "to" is required: [value at the low end, value at the high end] (allowed: 0..1).
