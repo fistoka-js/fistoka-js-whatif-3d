@@ -116,6 +116,8 @@ export function makeShotState(shot, catalog, prev = null) {
       rotation: [p.rotate[0] + rot[0], p.rotate[1] + rot[1], p.rotate[2] + rot[2]],
       color: bound(p, 'color', t) ?? at('color', base.color), glow: bound(p, 'glow', t) ?? at('glow', base.glow), params,
       points: pointsOf(p, t),
+      // Where the ground is, in the prop's own units from its centre (null without a ground); lets rain/hail fall to it.
+      floor: shot.env && shot.env.ground && !p.stageSpace ? -position[1] / Math.max(p.size * scale, 1e-4) : null,
     };
   }
 
@@ -142,6 +144,9 @@ export function makeShotState(shot, catalog, prev = null) {
   // Points (with radius) a prop covers at t, for framing.
   function extentOf(id, t) {
     const p = props.get(id);
+    // A bolt between two points (lightning from/to) covers its ends, not its own `at`.
+    const bolt = catalog.props[p.type].meta.spansPoints ? Object.values(pointsOf(p, t)) : [];
+    if (bolt.length === 2) return bolt.map(q => ({ at: q.at, r: q.radius }));
     if (!p.stageSpace) { const st = propAt(id, t, true); return [{ at: st.position, r: 0.5 * p.size * st.scale }]; }
     const ends = Object.values(pointsOf(p, t));
     const pts = ends.map(q => ({ at: q.at, r: 0, free: true }));

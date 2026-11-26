@@ -11,7 +11,7 @@ export const meta = {
   floats: true,
   params: {
     color: { type: 'color', default: '#f4a0b5', doc: 'brain colour' },
-    glow: { type: 'color', default: 'gold', doc: 'colour of the activity pulses' },
+    pulse: { type: 'color', default: 'gold', doc: 'colour of the activity pulses' },
   },
   animatable: {
     activity: { min: 0, max: 1, default: 0.4, doc: 'brain activity: 0 = calm, 1 = pulses firing everywhere' },
@@ -60,7 +60,7 @@ export function build(params, ctx) {
   stem.position.set(0, -0.3, -0.08); stem.rotation.x = -0.35; group.add(stem);
 
   // Pulse lights: soft glow dots resting on the folded surface, seeded.
-  const gcol = new THREE.Color(ctx.color(params.glow));
+  const gcol = new THREE.Color(ctx.color(params.pulse));
   const dots = [];
   for (let i = 0; i < 18; i++) {
     const lobe = lobes[i % 2];

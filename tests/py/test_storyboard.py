@@ -798,3 +798,81 @@ def test_show_prompt_carries_the_repeat_the_label_rule(tmp_path):
     fake_voice(SCRIPT, tmp_path, None)
     p = writer.show_user_prompt("t", words_of(tmp_path), SCRIPT, None, writer.normalise_storyboard(Board()(tmp_path)))
     assert "repeat the same label or text at the start of the next shot" in p
+
+
+# ---------------------------------------------------------------- code fixes and the code-check budget
+
+SHORT_TEXT = lambda b, w: b["sentences"][1].update(texts=[{"words": "1/3", "starts": "a third", "ends": 3}])
+
+
+def test_a_too_short_text_gets_a_later_end_in_code(tmp_path):
+    fake_voice(SCRIPT, tmp_path, None)
+    words = words_of(tmp_path)
+    cat = writer.catalog_text.load_catalog()
+    board = writer.normalise_storyboard(Board(SHORT_TEXT)(tmp_path))
+    fixed = writer.fix_text_ends(board, words)
+    assert len(fixed) == 1 and fixed[0].startswith('S2 text "1/3": "ends" 3 -> ')
+    new = board["sentences"][1]["texts"][0]["ends"]
+    assert new == "end" or new > 3
+    assert not any("on screen only" in p for p in writer.storyboard_problems(board, words, cat))
+    assert writer.fix_text_ends(board, words) == []                     # long enough now: nothing more to fix
+    ok = writer.normalise_storyboard(Board()(tmp_path))
+    assert writer.fix_text_ends(ok, words) == []
+
+
+def test_text_end_fix_never_crowds_the_screen_with_a_third_text(tmp_path):
+    fake_voice(SCRIPT, tmp_path, None)
+    words = words_of(tmp_path)
+    cat = writer.catalog_text.load_catalog()
+    def crowd(b, w):
+        b["sentences"][1]["texts"] = [{"words": "1/3", "starts": "a third", "ends": 3}]
+        b["sentences"][2]["texts"] = [{"words": "wobble", "starts": "tilt would", "ends": "end"},
+                                      {"words": "tilt", "starts": "wobble", "ends": "end"}]
+    board = writer.normalise_storyboard(Board(crowd)(tmp_path))
+    assert writer.fix_text_ends(board, words) == []                       # extending it would make 3 texts at once
+    assert board["sentences"][1]["texts"][0]["ends"] == 3                 # nothing shortened or changed silently
+    assert any("on screen only" in p for p in writer.storyboard_problems(board, words, cat))   # left for the repair budget
+    # the same board with a free screen is still fixed
+    board["sentences"][2]["texts"] = board["sentences"][2]["texts"][:1]
+    assert len(writer.fix_text_ends(board, words)) == 1
+    # three long texts together are reported as a code-check problem
+    board["sentences"][2]["texts"] = [{"words": w, "starts": "tilt would", "ends": "end"} for w in ("a", "b", "c")]
+    assert any("at the same time" in p for p in writer.storyboard_problems(board, words, cat))
+
+
+def test_a_too_short_text_costs_no_repair_call(tmp_path):
+    code, folder, fake = run_sb(tmp_path, {"storyboard": [Board(SHORT_TEXT)], "storyboard-review": [REVIEW_PASS],
+                                           "show": [good_show], "repair": [good_show] * 3})
+    # (the show misses the board's text, so show repairs follow; only the storyboard calls matter here)
+    assert fake.purposes[2:5] == ["storyboard", "storyboard-review", "show"]
+    saved = json.loads((folder / "storyboard.json").read_text(encoding="utf-8"))
+    assert saved["sentences"][1]["texts"][0]["ends"] != 3               # the saved board has the fixed end
+
+
+def test_code_check_problems_do_not_use_the_review_repair(tmp_path):
+    def bad(b, words):
+        b["sentences"][0]["objects"][0]["prop"] = "rockett"
+    # Default storyboard_repairs (1): the code-check repair is free, so the reviewer's problems still get their round.
+    code, folder, fake = run_sb(tmp_path, {"storyboard": [Board(bad)], "storyboard-repair": [Board(), Board()],
+                                           "storyboard-review": [REVIEW_BAD, REVIEW_PASS], "show": [good_show]})
+    assert code == 0
+    assert fake.purposes[2:8] == ["storyboard", "storyboard-repair1", "storyboard-review", "storyboard-repair2",
+                                  "storyboard-review", "show"]
+    assert result(folder)["storyboard"]["repairs"] == 2
+
+
+def test_zero_repairs_means_no_code_check_repair_either(tmp_path):
+    def bad(b, words):
+        b["sentences"][0]["objects"][0]["prop"] = "rockett"
+    code, folder, fake = run_sb(tmp_path, {"storyboard": [Board(bad)]}, settings={"storyboard_repairs": 0})
+    assert code == 1 and not [p for p in fake.purposes if p.startswith("storyboard-repair")]
+
+
+def test_code_check_problems_have_a_capped_budget_of_their_own(tmp_path):
+    def bad(b, words):
+        b["sentences"][0]["objects"][0]["prop"] = "rockett"
+    n = writer.CODE_CHECK_REPAIRS + 1                                   # then the one review repair is used too
+    code, folder, fake = run_sb(tmp_path, {"storyboard": [Board(bad)], "storyboard-repair": [Board(bad)] * n})
+    assert code == 1 and fake.purposes.count("storyboard-review") == 0
+    assert fake.purposes.count(f"storyboard-repair{n}") == 1 and f"storyboard-repair{n + 1}" not in fake.purposes
+    assert f"after {n} repair round(s)" in result(folder)["error"]

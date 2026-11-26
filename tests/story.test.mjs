@@ -9,7 +9,7 @@ import { execFileSync } from 'node:child_process';
 import { resolveShow } from '../kit/engine/show.js';
 import { catalog } from '../kit/engine/registry.js';
 import { storyRules, sentencesOf, changeEvents, STORY_RULES_DEFAULT } from '../tools/lib/story-rules.mjs';
-import { REPO } from './helpers.mjs';
+import { REPO, miniShow, resolveMini } from './helpers.mjs';
 
 const FIX = path.join(REPO, 'tests/fixtures/story');
 function fixture(name) {
@@ -44,6 +44,34 @@ test('mechanism fixture passes every story rule (one subject, a dial bound to it
   assert.equal(r.measured.uncovered, 0);
   assert.equal(r.measured.scenes, 1);
   assert.ok(r.measured.longestStill.seconds < 2.5);
+});
+
+test('ground life in a space shot is an error, once per scene, also in a continuing shot; a person is fine', () => {
+  const envErrors = edit => { const raw = miniShow(); edit(raw); const r = resolveMini(raw); assert.deepEqual(r.errors, []); return storyRules(r.show, catalog).errors.filter(e => e.path === 'story.env'); };
+  assert.deepEqual(envErrors(() => {}), []);
+  assert.deepEqual(envErrors(raw => raw.shots[0].props.push({ id: 'pilot', type: 'person' })), [], 'astronauts are fine');
+  const dino = envErrors(raw => raw.shots[0].props.push({ id: 'rex', type: 'dinosaur' }));
+  assert.equal(dino.length, 1);
+  assert.match(dino[0].message, /prop "rex" \(dinosaur\) is in shot "one", whose environment is "space"/);
+  // Shot two continues shot one: it has the space env and the dinosaur without naming them, and is reported once.
+  const cont = envErrors(raw => { raw.shots[0].props.push({ id: 'rex', type: 'dinosaur' }); raw.shots[1] = { id: 'two', start: 'What if sunlight', continue: true, props: [{ id: 'oak', type: 'tree' }] }; });
+  assert.deepEqual(cont.map(e => e.message.match(/"(\w+)"/)[1]), ['rex', 'oak']);
+  assert.deepEqual(envErrors(raw => raw.shots[1].props.push({ id: 'rex', type: 'dinosaur' })), [], 'the studio is not space');
+});
+
+test('a ground prop that starts hidden and never appears in a space shot is not reported', () => {
+  const envErrors = edit => { const raw = miniShow(); edit(raw); const r = resolveMini(raw); assert.deepEqual(r.errors, []); return storyRules(r.show, catalog).errors.filter(e => e.path === 'story.env'); };
+  assert.deepEqual(envErrors(raw => raw.shots[0].props.push({ id: 'rex', type: 'dinosaur', hidden: true })), []);
+  assert.equal(envErrors(raw => raw.shots[0].props.push({ id: 'rex', type: 'dinosaur' })).length, 1);
+});
+
+test('ship, car, city, plane, submarine and crowd in space are only a warning; dinosaur, tree, house, fish, bird stay errors', () => {
+  const run = type => { const raw = miniShow(); raw.shots[0].props.push({ id: 'x', type }); const r = resolveMini(raw); assert.deepEqual(r.errors, []); const s = storyRules(r.show, catalog); return { e: s.errors.filter(q => q.path === 'story.env'), w: s.warnings.filter(q => q.path === 'story.env') }; };
+  for (const type of ['dinosaur', 'tree', 'house', 'fish', 'bird']) { const r = run(type); assert.equal(r.e.length, 1, type); assert.equal(r.w.length, 0, type); }
+  for (const type of ['ship', 'car', 'city', 'plane', 'submarine', 'crowd']) {
+    const r = run(type); assert.equal(r.e.length, 0, type); assert.equal(r.w.length, 1, type);
+    assert.match(r.w[0].message, new RegExp(`prop "x" \\(${type}\\) is in shot "one", whose environment is "space"`));
+  }
 });
 
 test('a dial that no visible prop follows does not count as a change', () => {
@@ -93,4 +121,21 @@ test('CLI: --story-rules adds the story errors with the usual JSON shape; --no-s
     assert.equal(run([tmp, '--no-story-rules']).code, 0);
     assert.equal(run([tmp]).code, STORY_RULES_DEFAULT ? 1 : 0);
   } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
+});
+
+test('an earthbound prop the narration names is a thought experiment: a warning, not an error', () => {
+  const run = (type, words) => {
+    const raw = miniShow(); raw.shots[0].props.push({ id: 'x', type });
+    const r = resolveMini(raw); assert.deepEqual(r.errors, []);
+    if (words) r.show.words = r.show.words.map((w, i) => (i === 0 ? { ...w, text: words } : w));
+    const s = storyRules(r.show, catalog);
+    return { e: s.errors.filter(q => q.path === 'story.env'), w: s.warnings.filter(q => q.path === 'story.env') };
+  };
+  const named = run('bird', 'Could a bird fly');
+  assert.equal(named.e.length, 0); assert.equal(named.w.length, 1);
+  const other = run('bird', 'Could a plane fly');
+  assert.equal(other.e.length, 1); assert.equal(other.w.length, 0);
+  assert.equal(run('dinosaur', 'Dinosaurs').e.length, 0, 'plural');
+  assert.match(named.w[0].message, /the narration names the bird.*check it is intended/);
+  assert.equal(run('house', 'our home planet').e.length, 1, '"home" does not name a house');
 });

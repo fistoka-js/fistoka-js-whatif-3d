@@ -429,6 +429,7 @@
         {
           "id": "berg",
           "type": "iceberg",
+          "tank": true,
           "at": "center",
           "size": 1.5
         }

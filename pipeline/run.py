@@ -194,10 +194,20 @@ class Show:
         code = run_cmd([node(), "tools/qa.mjs", self.slug, "--video", self.final, "--json"], self.log, self.root)
         if code not in (0, 1):          # 1 = QA found a failure; the report is still written
             raise StepFailed(f"qa could not run (exit {code})")
+        if not fresh(self.qa_json, [self.final]):
+            raise StepFailed(f"qa wrote no new qa.json for this video (exit {code})")
         return "done"
 
     def qa_result(self):
         return (read_json(self.qa_json, {}) or {}).get("result", "unknown")
+
+    def qa_checked_final(self):
+        """True when qa.json says it measured this very final video (qa.mjs --video writes measured.video.file)."""
+        f = (((read_json(self.qa_json, {}) or {}).get("measured") or {}).get("video") or {}).get("file")
+        try:
+            return bool(f) and Path(f).resolve() == self.final.resolve()
+        except (OSError, ValueError):
+            return False
 
     def step_review(self):
         qa = read_json(self.qa_json, {}) or {}
@@ -210,7 +220,7 @@ class Show:
             f"- Final video: `{self.final.as_posix()}`",
             f"- Length: {video.get('videoSeconds', '?')} s, loudness: {video.get('lufs', '?')} LUFS",
             f"- Picture check: **{qa.get('result', 'not run')}** ({len(qa.get('findings') or [])} findings, see `out/qa.json` and `out/qa-sheet.jpg`)",
-            f"- Writer status: {w.get('status', '?')}",
+            f"- Writer status: {w.get('status', '?')}" + (" (its own picture check could not run)" if w.get("qa_not_run") else ""),
             f"- Upload: {('private, https://youtu.be/' + up['id']) if up else 'not uploaded'}",
             REVIEW_MARK[1], "",
         ]
@@ -235,6 +245,12 @@ class Show:
             raise StepFailed(f"the show is a fallback ({w['fallback_note']}), so it is never uploaded")
         if self.qa_result() == "fail":
             raise StepFailed("the picture check failed, so the video is not uploaded (see out/qa.json)")
+        # Only a final picture check of this very video that ran and passed (pass or warn) lets it out, whatever the
+        # writer's own check said: a crashed qa.mjs writes no qa.json (or leaves an old one), so the file must exist
+        # and be newer than the video.
+        if not (fresh(self.qa_json, [self.final]) and self.qa_result() in ("pass", "warn") and self.qa_checked_final()):
+            raise StepFailed("there is no fresh passing final picture check of this video "
+                             "(out/qa.json), so it is not uploaded")
         from . import upload
         try:
             vid = upload.upload_video(self.final, w.get("title") or self.topic, w.get("description", ""), w.get("tags", []),

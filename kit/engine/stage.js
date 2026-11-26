@@ -60,6 +60,13 @@ export function buildProp(p, shot, catalog, accent, scale = 1) {
   return { p, inst, wrapper, normaliser, halfHeight, footprint, localBox };
 }
 
+// Where a prop really is for a "point" param naming it: its drawn centre (a flat prop on a ground sits lower than the
+// centre of its unit box) and its half-height, so a bolt can end on its top (see lightning). ts = its state at t.
+export function propEndpoint(tp, ts, ground) {
+  const k = tp.p.size * ts.scale, drop = ground && !tp.p.floats ? (0.5 - tp.halfHeight) * k : 0;
+  return { at: [ts.position[0], ts.position[1] - drop, ts.position[2]], half: tp.halfHeight * k };
+}
+
 export function buildStage(show, catalog, renderer) {
   const camera = new THREE.PerspectiveCamera(40, 9 / 16, 0.05, 2000);
   // One THREE scene per scene of the show (a shot plus the "continue" shots after it, SPEC §13), built at its first shot.
@@ -131,6 +138,11 @@ export function buildStage(show, catalog, renderer) {
       mat.setOpacity(pr.inst.object, st.opacity);
       if (pr.inst.setColor) pr.inst.setColor(st.color); else mat.setColor(pr.inst.object, st.color);
       if (pr.inst.setGlow) pr.inst.setGlow(st.glow); else mat.setGlow(pr.inst.object, st.glow);
+      // a "point" param naming a prop also gets that prop's half-height, so a bolt can end on its top (see lightning)
+      for (const [name, q] of Object.entries(st.points || {})) {
+        const tp = typeof pr.p.params[name] === 'string' && s.props.find(x => x.p.id === pr.p.params[name]);
+        if (tp && !tp.p.stageSpace) Object.assign(q, propEndpoint(tp, s.state.propAt(tp.p.id, t), s.shot.env.ground));
+      }
       if (pr.inst.update) pr.inst.update(tl, st);
       if (pr.shadow) {
         const k = pr.p.size * st.scale;
@@ -181,14 +193,19 @@ export function buildStage(show, catalog, renderer) {
   }
 
   // Screen rectangle of a prop in the current frame: { x, y, w, h } in pixels, or null if hidden.
-  function propRect(id) {
+  // World box of a visible prop (the same box propRect projects), or null.
+  function propWorldBox(id) {
     const pr = current && current.byId.get(id);
     // Hidden (by the state, or by the prop itself, e.g. a beam that has not started) means no box.
     if (!pr || !pr.wrapper.visible || !pr.inst.object.visible) return null;
-    let box;
-    if (pr.localBox) box = pr.localBox.clone().applyMatrix4(pr.wrapper.matrixWorld);
-    else box = measure(pr.inst);
-    if (box.isEmpty()) return null;
+    const box = pr.localBox && !pr.inst.liveBounds ? pr.localBox.clone().applyMatrix4(pr.wrapper.matrixWorld) : measure(pr.inst);
+    return box.isEmpty() ? null : box;
+  }
+
+  function propRect(id) {
+    const pr = current && current.byId.get(id);
+    const box = propWorldBox(id);
+    if (!box) return null;
     let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
     for (let i = 0; i < 8; i++) {
       const q = project([(i & 1) ? box.max.x : box.min.x, (i & 2) ? box.max.y : box.min.y, (i & 4) ? box.max.z : box.min.z]);
@@ -248,5 +265,5 @@ export function buildStage(show, catalog, renderer) {
     for (let i = 0; i < shots.length; i++) render(shots[i].shot.start + 0.01);
   }
 
-  return { render, shotIndexAt, project, propRect, propShapeRect, dipAt, warmUp, camera, shots };
+  return { render, shotIndexAt, project, propRect, propWorldBox, propShapeRect, dipAt, warmUp, camera, shots };
 }

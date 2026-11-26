@@ -37,6 +37,7 @@ All numbers in boxes are pixels of the 540x960 sampling size.
 | `text-overlap` | FAIL / WARN | two of label, text, counter, icon, caption overlap by 20% or more of the smaller box: FAIL if seen in 2+ samples, else WARN; 2% to 20%: WARN. Tilted `stamp` texts are shrunk to their real shape first |
 | `text-outside` | FAIL / WARN | more than 5% of a text box is outside the frame (FAIL if seen in 2+ samples). The engine shrinks long text to fit, so this rarely fires |
 | `label-covers-prop` | WARN | a label covers more than 35% of the prop it belongs to |
+| `prop-overlap` | FAIL / WARN | the real shapes (clipped to their boxes) of two visible solid props (catalogue `inside: solid` from `tools/catalog.mjs`, except fire, cloud and an iceberg with `tank`) overlap by 25% or more of the smaller one: FAIL if seen in 2+ samples of the shot, else WARN. Not judged: see-through, cutaway, open and line props, hidden props, a prop under 15% of the other's area (an attachment; not when its 3D box lies deep inside the big one's, in its middle 60%: a moon swallowed by a planet), a prop still flying in/out (appear/disappear + 0.3 s), and a pair one of which a `move` in the same shot is carrying (until 0.3 s after the move ends; a pair still fused after that is judged). Two round props whose boxes only touch at a corner reach about 9% |
 | `idle` | WARN | a shot with camera `still` or `drift` has no action for more than 7 s (a pulse or shake does not end the quiet stretch) |
 | `too-many-overlays` | WARN | more than 3 labels/texts/counters/icons visible at once |
 | `video-length` | FAIL | video length differs from `voice.mp3` length plus the tail (the ending after the last word) by more than 0.5 s |
@@ -53,6 +54,7 @@ With `--story-rules` (default: `STORY_RULES_DEFAULT` in `tools/lib/story-rules.m
 |---|---|---|
 | `story-coverage` | FAIL | a spoken sentence (`. ? !`; under 1 s joined to the next) in which no prop state change starts and no dial bound to a visible prop moves |
 | `story-stillness` | FAIL / WARN | a stretch of the narration over 3.5 s (FAIL) or 2.5 s (WARN) in which no prop changes (camera, spin, bob, orbit, pulse, shake and overlays do not count) |
+| `story-env` | FAIL (WARN for ship, car, city, plane, submarine, crowd: `EARTHBOUND_WARN`) | a ground-life prop (dinosaur, tree, house, fish, bird; `EARTHBOUND` in `tools/lib/story-rules.mjs`) in a shot whose environment (also inherited through `"continue"`) is `space`; once per scene and prop. A person (astronaut) is fine |
 | `story-subject` | WARN | more than 6 scenes (shots without `"continue"`), or no prop on screen for 30% of the video |
 
 Example (the committed sky-blue sample): `FAIL shot "violet" at 24.8 s: the sentence "Then why isn't the sky violet?" (24.81-26.39 s) has no visible change ...`.

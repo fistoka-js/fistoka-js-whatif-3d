@@ -6,7 +6,7 @@
 // Always writes shows/<slug>/out/qa.json and shows/<slug>/out/qa-sheet.jpg (one tile per shot).
 // Exit codes: 0 pass or warn, 1 fail (or the show cannot play), 2 bad command.
 // The rules and all thresholds are in tools/lib/qa-rules.mjs (see docs/QA.md). The story rules (tools/lib/story-rules.mjs, no
-// browser) are reported here too when on (default: STORY_RULES_DEFAULT): codes story-coverage, story-stillness, story-subject.
+// browser) are reported here too when on (default: STORY_RULES_DEFAULT): codes story-coverage, story-stillness, story-env, story-subject.
 
 import fs from 'node:fs';
 import path from 'node:path';
@@ -18,10 +18,14 @@ import { probeVideo, probeSeconds, measureLoudness } from './lib/qa-video.mjs';
 import { makeQaSheet } from './lib/qa-sheet.mjs';
 import { storyRules, STORY_RULES_DEFAULT } from './lib/story-rules.mjs';
 import { catalog } from '../kit/engine/registry.js';
+import { solidForOverlap } from './catalog.mjs';
 import {
-  T, toGray, meanLuma, brightFraction, meanAbsDiff, blackFindings, frozenFindings, framingFindings, textFindings, pacingFindings,
-  videoFindings, mergeFindings, worstLevel,
+  T, toGray, meanLuma, brightFraction, meanAbsDiff, blackFindings, frozenFindings, framingFindings, textFindings, overlapFindings,
+  pacingFindings, videoFindings, mergeFindings, worstLevel,
 } from './lib/qa-rules.mjs';
+
+// Solid props for the prop-overlap rule: derived from the catalogue source (tools/catalog.mjs), never a stale kit/catalog.json.
+const isSolid = solidForOverlap;
 
 const USAGE = 'node tools/qa.mjs <slug> [--video path] [--json] [--step 0.5] [--story-rules | --no-story-rules]';
 
@@ -128,7 +132,8 @@ export function checkVideo(slug, dir, show, videoArg) {
 // The story rules as QA findings: their errors are FAIL, their warnings WARN.
 export function storyFindings(show) {
   const r = storyRules(show, catalog);
-  const code = p => (p.path.startsWith('story.sentences') ? 'story-coverage' : p.path === 'story.stillness' ? 'story-stillness' : 'story-subject');
+  const code = p => (p.path.startsWith('story.sentences') ? 'story-coverage' : p.path === 'story.stillness' ? 'story-stillness'
+    : p.path === 'story.env' ? 'story-env' : 'story-subject');
   const shotAt = t => (t === null ? null : [...show.shots].reverse().find(s => t >= s.start) || show.shots[0]);
   const mk = (level, p) => { const shot = shotAt(p.time); return { level, code: code(p), shot: shot ? shot.id : null, time: p.time, what: p.message.replace(/.$/, ''), measured: r.measured, fix: p.hint, hits: 1, key: `${code(p)}|${p.path}|${p.time}` }; };
   return [...r.errors.map(p => mk('FAIL', p)), ...r.warnings.map(p => mk('WARN', p))];
@@ -162,6 +167,7 @@ export async function runQa(slugArg, { video = null, step = T.STEP, session: giv
       ...frozenFindings(show, got.pairs),
       ...framingFindings(show, got.samples, got.frame),
       ...textFindings(show, got.samples, got.frame, namer(show)),
+      ...overlapFindings(show, got.samples, isSolid),
       ...pacingFindings(show, got.samples),
     ];
     if (story) all.push(...storyFindings(show));

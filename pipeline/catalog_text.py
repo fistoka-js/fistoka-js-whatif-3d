@@ -80,7 +80,7 @@ def prop_line(name, p):
     if p.get("stageSpace"):
         flags.append("STAGE-SPACE")
     elif p.get("floats"):
-        flags.append("floats")
+        flags.append("floats" if not p.get("floatsNote") else p["floatsNote"])
     params = ", ".join(_param(k, v) for k, v in p.get("params", {}).items())
     anim = ", ".join(f"{k} {_num(a['min'])}..{_num(a['max'])} [starts {_num(a['default'])}]"
                      for k, a in p.get("animatable", {}).items())

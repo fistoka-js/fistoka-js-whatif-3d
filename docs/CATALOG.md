@@ -87,7 +87,9 @@ Animatable with `set` (also usable as a starting value):
 
 ### particles
 
-A cloud of small balls or glowing dots in a box, sphere, ring or stream (molecules, dust, atoms).
+A cloud of small balls or glowing dots in a box, sphere, ring or stream (molecules, atoms, gas flow).
+
+Notes: Only for things too small to see as objects: molecules, electrons, air or gas flow, eruption spray. For dust or smoke use haze, rock bits debris, hail hail, sparks or embers sparks.
 
 Floats: yes
 
@@ -344,12 +346,16 @@ Animatable with `set` (also usable as a starting value):
 
 ### lightning
 
-A jagged glowing lightning bolt, top to bottom. Animate "flash" 0..1 for the strike.
+A jagged glowing lightning bolt, alone or from one point/prop to another. Animate "flash" 0..1 for the strike.
+
+Notes: To strike from a cloud to the ground set from (the cloud id) and to (a prop id such as the house, or a point [x, 0, z] on the ground, or center/left/right; there is no "ground" slot and the bottom slots lie under the floor): the bolt runs from the underside of the cloud to the top of the target (a few wide zigzags with thin side forks). Points are never drawn below the ground. Without from/to it is a fixed bolt placed at "at" (it will float).
 
 Floats: yes
 
 | field | type | what |
 |---|---|---|
+| `from` | point: a slot, [x, y, z], or the id of a prop in this shot | optional: where the bolt starts (slot, [x,y,z] or prop id, e.g. the cloud); use with to |
+| `to` | point: a slot, [x, y, z], or the id of a prop in this shot | optional: where it strikes (a prop id, or [x, 0, z] on the ground, or center/left/right); use with from |
 | `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#9fd0ff" | glow colour (the core stays near white) |
 | `seed` | whole number 0..999; default 8 | which jagged shape |
 
@@ -411,7 +417,7 @@ Floats: no (stands on the ground)
 
 Animatable with `set` (also usable as a starting value):
 
-- `glow` 0..1, default 0: warm light in the windows (0 = off)
+- `lit` 0..1, default 0: warm light in the windows (0 = off)
 
 ### rock
 
@@ -439,13 +445,16 @@ Floats: no (stands on the ground)
 
 ### iceberg
 
-An iceberg: small white tip above water, big blue bulk below. Animate "melt" to shrink it. Climate stories.
+An iceberg: all ice above the surface without tank; tank true shows tip above, bulk below. "melt" shrinks it.
+
+Notes: Without tank, only the ice is drawn (an angular peak standing on the surface, all of it above the water) with a ripple round its base; melt shrinks it down onto the water. For "most of it is below" set tank true: a see-through water block shows the tip above the waterline and the big bulk below it (cutaway).
 
 Floats: no (stands on the ground)
 
 | field | type | what |
 |---|---|---|
-| `water` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#2f9be0" | colour of the water block |
+| `tank` | true or false; default false | true = a see-through water block round the ice: tip above the waterline, big bulk below it (a cutaway, to put particles in); false = just the ice, all of it above the surface |
+| `water` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#2f9be0" | colour of the water block (tank) or the ripple at the waterline |
 | `seed` | whole number 0..999; default 1 | which variant of the shape |
 
 Animatable with `set` (also usable as a starting value):
@@ -547,7 +556,7 @@ Floats: yes
 | field | type | what |
 |---|---|---|
 | `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#f4a0b5" | brain colour |
-| `glow` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "gold" | colour of the activity pulses |
+| `pulse` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "gold" | colour of the activity pulses |
 
 Animatable with `set` (also usable as a starting value):
 
@@ -887,12 +896,15 @@ Animatable with `set` (also usable as a starting value):
 
 ### lattice
 
-3D grid of glowing balls joined by faint lines. Animate spacing, shake, tilt. Crystals, solids.
+Glowing balls joined by faint lines, cubic grid or hexagonal rings. Animate spacing, shake, tilt. Crystals, solids, ice.
 
-Floats: yes
+Notes: arrangement "cubic" (default) is a square grid: salt, metals. Use "hex" for ice, snow, graphite and other hexagonal crystals (hexagon rings facing the camera, 2 layers, rods between the balls); on a ground the hex block stands on it at any spacing (cubic floats; put it up with "at").
+
+Floats: cubic floats; hex stands on the ground
 
 | field | type | what |
 |---|---|---|
+| `arrangement` | one of: cubic \| hex; default "cubic" | cubic = square grid (salt, metal); hex = layered hexagon rings (ice, snow, graphite) |
 | `count` | whole number 3..5; default 4 | balls per side |
 | `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#35c6e8" | ball colour |
 
@@ -987,6 +999,86 @@ Animatable with `set` (also usable as a starting value):
 - `fill` 0..1, default 0.5: 0 = dim chamber, 1 = magma fills the vent to the crater
 - `heat` 0..1, default 0.5: 0 = dull dark red, 1 = near-white yellow core
 - `eruption` 0..1, default 0: lava spurts from the crater (needs fill near 1)
+
+### haze
+
+A soft translucent puff cloud: dust, smoke, ash, fog. Animate density to thicken or thin it, spread to billow out.
+
+Notes: Use this for dust, smoke, ash, steam and fog (shaded puffs); particles are for tiny things only. Place it at the thing that is dusty or smoking (at = the cloud centre, size about 1.5-2.5 covers a house or planet; it floats there and hides what it covers at high density). Animate density 0 -> 0.7 for it to build up, back to 0 to clear.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `count` | whole number 4..120; default 36 | how many overlapping puffs |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#b9ad9a" | colour of the dust or smoke (light grey-brown dust by default; dark grey for smoke, white for steam) |
+| `puff` | number 0.1..0.8; default 0.4 | size of one puff (fraction of the cloud) |
+| `rise` | number 0..1; default 0.15 | how much the cloud drifts upward (0 = hangs, 1 = billows up) |
+
+Animatable with `set` (also usable as a starting value):
+
+- `density` 0..1, default 0.6: how thick (0 = clear, 1 = nearly opaque)
+- `spread` 0.1..3, default 1: how widely the cloud is spread (1 = fills its box)
+- `drift` 0..2, default 0.3: how fast it swirls
+
+### debris
+
+Jagged rock chunks: a heap that flies apart and lands scattered. Animate "fly" 0..1. Impacts, blasts, rubble.
+
+Notes: Use for rock bits, rubble and fragments after an impact or blast (particles are for tiny things). It stands on the ground in ground envs (studio and sky have one; at = where its base rests) and floats at "at" only in envs without a ground (e.g. space). fly 0 is a low heap, 0.5 chunks in the air above the heap area, 1 landed scattered around it.
+
+Floats: no (stands on the ground)
+
+| field | type | what |
+|---|---|---|
+| `count` | whole number 3..120; default 28 | how many chunks |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#6e5f52" | rock colour (each chunk is a little lighter or darker) |
+| `chunk` | number 0.02..0.3; default 0.12 | typical chunk size (fraction of the whole spread); the prop "size" scales the whole heap |
+
+Animatable with `set` (also usable as a starting value):
+
+- `fly` 0..1, default 0: 0 = heap at rest, 0.5 = flying, 1 = landed scattered
+- `spread` 0.2..2, default 1: how far they scatter (1 = to the edge of its box)
+
+### hail
+
+Falling glassy blue-white hailstones. Animate "amount" 0..1 to start or stop it. Hailstorms, ice falling.
+
+Notes: Use for hail and icy pellets (not particles). Put it under a storm cloud: set at.y about half its size below the cloud underside, so the top of its box meets the cloud; it falls from the top of its box to the bottom, over and over. Animate amount 0 -> 1 when the hail starts. Stones start at the top of the box. In an env with a ground they fall to the ground (even below the box) and then start again at the top; in an env without a ground (space, empty) they stop at the bottom of the box and start again at the top.
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `count` | whole number 5..300; default 90 | how many hailstones |
+| `stone` | number 0.01..0.15; default 0.03 | size of one stone (fraction of the box); the prop "size" scales the whole hailstorm |
+| `speed` | number 0..3; default 1 | fall speed (0 = hanging in the air) |
+| `slant` | number -1..1; default 0.15 | sideways lean of the fall (wind): 0 straight down |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#a9d2f5" | colour of the ice (pale glassy blue by default) |
+| `streak` | number 0..1; default 0.6 | length of the faint falling streak behind each stone (0 = none; only while it falls, speed above 0) |
+
+Animatable with `set` (also usable as a starting value):
+
+- `amount` 0..1, default 1: share of the stones showing (0 = none, 1 = all)
+
+### sparks
+
+Glowing streaks flying outward and fading: sparks, embers, hot bits. Animate "burst" 0..1.
+
+Notes: Use for sparks and embers (not particles). burst 0 = just lit, about 0.3 = full spray, 1 = gone. Animate burst 0 -> 1 over about a second for one burst: the outward spray only happens while burst moves (a fixed burst just hangs and flickers in place, so always animate it).
+
+Floats: yes
+
+| field | type | what |
+|---|---|---|
+| `count` | whole number 5..300; default 70 | how many sparks |
+| `color` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#ff6a14" | colour of the glow (orange-red embers; the hot core of each head is bright yellow-white) |
+| `length` | number 0.03..0.5; default 0.13 | length of each streak (fraction of the box) |
+| `bias` | number 0..1; default 0.35 | how much they favour flying upward (0 = every way equally) |
+
+Animatable with `set` (also usable as a starting value):
+
+- `burst` 0..1, default 0.3: 0 = just lit, 0.3 = full spray, 1 = faded away
 
 ## Environments
 

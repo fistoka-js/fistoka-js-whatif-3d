@@ -37,6 +37,7 @@ def test_floating_and_stage_space_props_are_marked():
     assert "- plane [floats]" in text
     assert "- beam [STAGE-SPACE]" in text
     assert "- car (" in text            # a ground prop has no flag
+    assert "- lattice [cubic floats; hex stands on the ground]" in text
 
 
 def test_dials_bindings_continue_fill_glide_until_are_taught():
@@ -64,7 +65,7 @@ def test_size_stays_compact():
     # 600 tokens for the dials, bindings and continuing-shots text (round 2).
     cat = CT.load_catalog()
     tokens = len(CT.catalog_text(cat)) / 4
-    assert tokens < 3500 * len(cat["props"]) / 61 * 1.2 + 600 + 200 + 330 + 300   # ~5% headroom; +200 tokens: writer-facing prop notes; +330: see-through/cutaway/solid tag on each prop
+    assert tokens < 3500 * len(cat["props"]) / 61 * 1.2 + 600 + 200 + 330 + 300 + 400   # ~5% headroom; +400 tokens: haze/debris/hail/sparks, from/to on lightning, hex lattice, tank; +200 tokens: writer-facing prop notes; +330: see-through/cutaway/solid tag on each prop
 
 
 def test_every_prop_line_carries_its_inside_tag():

@@ -1582,3 +1582,68 @@ def test_a_rewrite_after_a_shorten_below_the_floor_is_rejected_and_the_shortened
 def test_a_voice_of_62_004_s_is_accepted_with_the_note(tmp_path):
     code, folder, fake = _run_with_voice_seconds(tmp_path, _one_sentence(writer.WORD_FLOOR), 62.004)
     assert code == 0 and "62.00 s is over the 60 s limit" in result(folder)["voice_note"]
+
+
+# ---------------------------------------------------------------- picture check that cannot run
+
+LOW_RAM = {"result": "not_run", "reason": "QA ERROR: only 1.1 GB of memory is free; browser jobs need 2 GB.", "findings": []}
+
+
+class SeqQa:
+    """Fake picture check: gives the listed results in order (the last one repeats)."""
+    def __init__(self, *results):
+        self.results, self.calls = list(results), 0
+
+    def __call__(self, slug):
+        self.calls += 1
+        return self.results.pop(0) if len(self.results) > 1 else self.results[0]
+
+
+def _run_qa(tmp_path, qa):
+    waits = []
+    folder = tmp_path / "moon"
+    fake = FakeLLM(folder, {"script": [script_reply()], "audit": [audit_reply(GOOD_CLAIM)], "show": [good_show]})
+    code = writer.write("What if the Moon vanished?", "moon", mode="api", settings=dict(OLD_DEFAULTS), complete=fake,
+                        voice_fn=fake_voice, qa_fn=qa, shows_dir=tmp_path, sleep_fn=waits.append)
+    return code, folder, waits
+
+
+def test_low_memory_qa_is_tried_again_and_a_later_pass_counts(tmp_path):
+    qa = SeqQa(LOW_RAM, {"result": "pass", "findings": []})
+    code, folder, waits = _run_qa(tmp_path, qa)
+    assert code == 0 and qa.calls == 2 and waits == [writer.QA_RETRY_WAIT]
+    r = result(folder)
+    assert r["qa"] == "pass" and r["qa_not_run"] is False
+
+
+def test_qa_that_never_runs_is_flagged_not_passed(tmp_path):
+    qa = SeqQa(LOW_RAM)
+    code, folder, waits = _run_qa(tmp_path, qa)
+    assert qa.calls == writer.QA_TRIES and waits == [writer.QA_RETRY_WAIT] * (writer.QA_TRIES - 1)
+    r = result(folder)
+    assert r["qa"] == "not_run" and r["qa_not_run"] is True
+
+
+def test_qa_not_run_for_another_reason_is_flagged_without_waiting(tmp_path):
+    qa = SeqQa({"result": "not_run", "reason": "no output", "findings": []})
+    code, folder, waits = _run_qa(tmp_path, qa)
+    assert qa.calls == 1 and waits == [] and result(folder)["qa_not_run"] is True
+
+
+def test_low_memory_line_is_found_anywhere_in_a_long_stderr(monkeypatch):
+    noise = "(node:1) ExperimentalWarning: something long\n" * 20
+    err = "QA ERROR: only 1.1 GB of memory is free; browser jobs need 2 GB. Close something and try again.\n" + noise
+    monkeypatch.setattr(writer, "node_json", lambda args, timeout=600: (1, None, err))
+    qa = writer.run_qa("moon")
+    assert qa["result"] == "not_run" and "of memory is free" in qa["reason"]
+    waits = []
+    seq = SeqQa(qa, {"result": "pass", "findings": []})
+    assert writer._qa_with_retry(seq, "moon", waits.append)["result"] == "pass" and waits == [writer.QA_RETRY_WAIT]
+    monkeypatch.setattr(writer, "node_json", lambda args, timeout=600: (1, None, "boom\n" * 100))
+    assert "of memory is free" not in writer.run_qa("moon")["reason"]
+
+
+def test_qa_off_in_settings_is_not_flagged(tmp_path):
+    code, folder, fake = run_writer(tmp_path, {"script": [script_reply()], "audit": [audit_reply(GOOD_CLAIM)],
+                                               "show": [good_show]}, settings={"qa": False})
+    assert code == 0 and result(folder)["qa_not_run"] is False

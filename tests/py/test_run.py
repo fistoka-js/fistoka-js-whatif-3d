@@ -43,8 +43,10 @@ def env(tmp_path, monkeypatch):
         elif "pipeline.mix" in joined:
             open(cmd[cmd.index("--out") + 1], "w").write("final")
         elif "qa.mjs" in joined:
+            if behaviour.get("qa_crash"):
+                return 1                 # like a crash of qa.mjs: exit 1 and no qa.json written
             (tmp_path / "shows" / out_slug / "out" / "qa.json").write_text(json.dumps(
-                {"result": "pass", "findings": [], "measured": {"video": {"videoSeconds": 50.0, "lufs": -16.0}}}))
+                {"result": "pass", "findings": [], "measured": {"video": {"videoSeconds": 50.0, "lufs": -16.0, "file": cmd[cmd.index("--video") + 1]}}}))
         return 0
 
     uploads = []
@@ -190,6 +192,89 @@ def test_upload_refuses_a_writer_json_with_a_fallback_note(env):
     w.write_text(json.dumps(dict(json.loads(w.read_text()), fallback_note="fallback: not good enough to publish")))
     assert go(root, "--topic", "Topic one", "--slug", "topic-one") == run.EXIT_FAILED
     assert uploads == []
+
+
+def test_writer_qa_not_run_needs_a_fresh_passing_final_check(env):
+    import os
+    root, q, calls, beh, uploads = env
+    q.add("Topic one")
+    assert go(root, "--no-upload") == run.EXIT_OK
+    d = root / "shows" / "topic-one"
+    w = d / "writer.json"
+    w.write_text(json.dumps(dict(json.loads(w.read_text()), qa_not_run=True)))
+    # The final check of this video crashes (no new qa.json): the old passing qa.json is older than the video.
+    qa_json, final = d / "out" / "qa.json", d / "out" / "topic-one-final.mp4"
+    os.utime(qa_json, (final.stat().st_mtime - 100, final.stat().st_mtime - 100))
+    beh["qa_crash"] = True
+    assert go(root, "--topic", "Topic one", "--slug", "topic-one") == run.EXIT_FAILED
+    assert uploads == []
+    # A fresh, passing final check lets it out.
+    beh["qa_crash"] = False
+    assert go(root, "--topic", "Topic one", "--slug", "topic-one") == run.EXIT_OK
+    assert uploads == ["Title topic-one"]
+
+
+def test_upload_needs_a_fresh_passing_final_check_even_without_the_qa_not_run_flag(env):
+    import os
+    root, q, calls, beh, uploads = env
+    q.add("Topic one")
+    assert go(root, "--no-upload") == run.EXIT_OK
+    d = root / "shows" / "topic-one"
+    assert not json.loads((d / "writer.json").read_text()).get("qa_not_run")     # the writer's own check is not flagged
+    qa_json, final = d / "out" / "qa.json", d / "out" / "topic-one-final.mp4"
+    beh["qa_crash"] = True                                                          # qa.mjs crashes: exit 1, writes nothing
+    os.utime(qa_json, (final.stat().st_mtime - 100, final.stat().st_mtime - 100))   # stale passing qa.json
+    assert go(root, "--topic", "Topic one", "--slug", "topic-one") == run.EXIT_FAILED
+    qa_json.unlink()                                                                # and no qa.json at all
+    assert go(root, "--topic", "Topic one", "--slug", "topic-one") == run.EXIT_FAILED
+    assert uploads == []
+    beh["qa_crash"] = False
+    assert go(root, "--topic", "Topic one", "--slug", "topic-one") == run.EXIT_OK   # a new, passing check lets it out
+    assert uploads == ["Title topic-one"]
+
+
+def _gate_show(tmp_path, monkeypatch, qa, age=0):
+    """A Show with a final video, writer.json and (optionally) a qa.json `qa`; upload is faked. age > 0 makes qa.json older."""
+    import os
+    from types import SimpleNamespace
+    d = tmp_path / "shows" / "s"
+    (d / "out").mkdir(parents=True)
+    (d / "writer.json").write_text(json.dumps({"title": "T", "qa_not_run": True}))
+    sh = run.Show("s", "topic", SimpleNamespace(no_upload=False), {}, root=tmp_path)
+    sh.final.write_text("v")
+    if qa is not None:
+        sh.qa_json.write_text(json.dumps(qa))
+        t = sh.final.stat().st_mtime + (5 if not age else -age)
+        os.utime(sh.qa_json, (t, t))
+    sent = []
+    monkeypatch.setattr(upload, "upload_video", lambda *a, **k: sent.append(a[0]) or "VID")
+    return sh, sent
+
+
+def test_step_upload_gate_refuses_stale_missing_and_wrong_video_qa(tmp_path, monkeypatch):
+    for qa, age in [({"result": "pass", "measured": {"video": {"file": "x"}}}, 100), (None, 0)]:     # stale / missing
+        sh, sent = _gate_show(tmp_path / f"a{age}", monkeypatch, qa, age)
+        with pytest.raises(run.StepFailed):
+            sh.step_upload()
+        assert sent == []
+    # fresh and passing, but it never looked at the final video (no video file, or another one)
+    for measured in ({}, {"video": {"file": str(tmp_path / "other.mp4")}}):
+        sh, sent = _gate_show(tmp_path / f"b{len(measured)}", monkeypatch, {"result": "pass", "measured": measured})
+        with pytest.raises(run.StepFailed):
+            sh.step_upload()
+        assert sent == []
+
+
+def test_step_upload_gate_lets_a_fresh_pass_on_the_final_video_out(tmp_path, monkeypatch):
+    sh, sent = _gate_show(tmp_path, monkeypatch, None)
+    sh.qa_json.write_text(json.dumps({"result": "warn", "measured": {"video": {"file": str(sh.final)}}}))
+    assert sh.step_upload() == "done" and len(sent) == 1
+
+
+def test_review_reports_qa_not_run(tmp_path, monkeypatch):
+    sh, _ = _gate_show(tmp_path, monkeypatch, {"result": "pass", "measured": {}})
+    sh.step_review()
+    assert "could not run" in sh.review.read_text(encoding="utf-8")
 
 
 def test_from_step_forces_rerun(env):

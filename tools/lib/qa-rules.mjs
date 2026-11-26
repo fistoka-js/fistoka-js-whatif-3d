@@ -1,6 +1,6 @@
 // QA rules: pure functions (no browser, no files) that turn measurements into findings.
 // Exports: T (all thresholds), rect helpers, toGray/meanLuma/meanAbsDiff, and the rule functions
-//   blackFindings, frozenFindings, framingFindings, textFindings, pacingFindings, videoFindings, mergeFindings, worstLevel.
+//   blackFindings, frozenFindings, framingFindings, textFindings, overlapFindings, pacingFindings, videoFindings, mergeFindings, worstLevel.
 // A finding is { level:'FAIL'|'WARN', code, shot (id or null), time (s or null), what, measured:{}, fix, hits, key }.
 // Samples (made by tools/qa.mjs) look like { t, shotIndex, kinds:Set<'grid'|'mid'|'edge'|'action'>, luma (0..255), boxes:[__boxes rows],
 //   (a prop row may carry shape: {x,y,w,h}, its real shape; the framing rule uses it for "outside" and "in the captions"),
@@ -24,6 +24,9 @@ export const T = {
   TEXT_OVERLAP_MIN: 0.02,    // overlaps smaller than this fraction are ignored (rounding noise)
   TEXT_OUTSIDE_MAX: 0.05,    // FAIL when a text box has more than this fraction of its area outside the frame
   LABEL_COVER_MAX: 0.35,     // WARN when a label covers more than this fraction of the prop it belongs to
+  PROP_OVERLAP_FAIL: 0.25,   // FAIL when the shapes of two solid props overlap by this fraction of the smaller one or more
+                             //   (two round props whose shape boxes overlap at a corner without touching reach about 9%)
+  PROP_ATTACH_MAX: 0.15,     // ...unless the smaller one's shape is under this fraction of the larger's (a small attachment)
   MIN_HITS_FOR_FAIL: 2,      // a text problem must show in this many samples to FAIL (a one-sample flash is only a WARN)
   IDLE_SECONDS: 7,           // WARN when a shot with a still/drift camera has no action for longer than this
   MAX_OVERLAYS: 3,           // WARN when more than this many labels/texts/counters/icons are visible at once
@@ -338,6 +341,82 @@ export function textFindings(show, samples, frame, names = b => b.kind) {
     const strong = f.code === 'text-outside' || f.ratio >= T.TEXT_OVERLAP_FAIL;
     const fail = !f.warnOnly && strong && f.hits >= T.MIN_HITS_FOR_FAIL;
     const o = mk(fail ? 'FAIL' : 'WARN', f.code, f.shot, f.t, f.what, f.measured, f.fix, key);
+    o.hits = f.hits;
+    out.push(o);
+  }
+  return out;
+}
+
+// ---- 4b. solid props drawn over each other ----
+// Two solid props (catalogue "inside": "solid") whose real shapes cover each other on screen look like a mistake (a sun
+// drawn through a planet). Only props visible in the sample are in s.boxes (hidden ones have no box); a prop that is
+// still flying in or out (appear/disappear plus 0.3 s) is not judged. A much smaller prop (a person on a planet) is an
+// attachment and is not judged either (unless its 3D box is deep inside the big one's: a moon swallowed by a planet). Props separated in depth (a house in front of a mountain backdrop, a moon in front
+// of a planet) are not judged: the two world boxes (the engine's prop boxes, sample box.world) must touch too. Nor is a pair while the show "move"s one of the two in this same shot (until 0.3 s after the move ends): that
+// is a meant contact (an asteroid moved into a planet, a spacecraft into an asteroid). Moves in earlier shots of the
+// scene do not count (scenes often re-place their props, and the overlap then left standing is the mistake).
+// A pair still fused after the move has ended (t > t0 + over + 0.3) is judged like any other.
+// isSolid(type, params) -> true for solid catalogue props (tools/qa.mjs uses solidForOverlap from tools/catalog.mjs).
+// Do two world boxes ({min:[x,y,z], max:[x,y,z]}) overlap or nearly touch (gap under 0.05 stage units)? A missing box
+// (old samples) counts as touching, so the screen overlap alone decides.
+// World boxes are loose (the prop's whole unit box, much emptier than the shape at the corners), so each is shrunk to
+// 80% per axis around its centre first; otherwise a car a little in front of a house counts as inside it.
+const TOUCH_GAP = 0.05;
+const BOX_SHRINK = 0.8;
+function touching3d(a, b) {
+  if (!a || !b) return true;
+  const lo = (x, i) => (x.min[i] + x.max[i]) / 2 - (x.max[i] - x.min[i]) / 2 * BOX_SHRINK;
+  const hi = (x, i) => (x.min[i] + x.max[i]) / 2 + (x.max[i] - x.min[i]) / 2 * BOX_SHRINK;
+  return [0, 1, 2].every(i => lo(a, i) <= hi(b, i) + TOUCH_GAP && lo(b, i) <= hi(a, i) + TOUCH_GAP);
+}
+
+// Is the small world box deep inside the big one: wholly within its middle 60% on every axis? (A moon in the middle of a
+// planet; a rock lying on the surface is not.) false when a box is missing.
+const DEEP = 0.6;
+function deepInside(small, big) {
+  if (!small || !big) return false;
+  return [0, 1, 2].every(i => {
+    const c = (big.min[i] + big.max[i]) / 2, h = (big.max[i] - big.min[i]) / 2 * DEEP;
+    return small.min[i] >= c - h && small.max[i] <= c + h;
+  });
+}
+
+export function overlapFindings(show, samples, isSolid) {
+  const raw = new Map();
+  const moving = (shot, id, t) => shot.actions.some(a => TRANSITIONAL.includes(a.do) && a.prop === id && t >= a.t0 - 0.05 && t <= a.t0 + (a.over || 0) + 0.3);
+  const moved = (shot, ids, t) => shot.actions.some(a => a.do === 'move' && ids.includes(a.prop) && a.t0 <= t && t <= a.t0 + (a.over || 0) + 0.3);
+  for (const s of samples) {
+    const shot = show.shots[s.shotIndex];
+    const solid = [];
+    for (const box of s.boxes) {
+      if (box.kind !== 'prop') continue;
+      const p = propIn(shot, box.id);
+      if (!p || p.stageSpace || !isSolid(p.type, p.params) || moving(shot, p.id, s.t)) continue;
+      const clip = box.shape ? intersect(box, box.shape) : null; // the real shape, as the framing check uses it
+      solid.push({ p, r: clip && area(clip) > 0 ? clip : box, world: box.world });
+    }
+    for (let i = 0; i < solid.length; i++) for (let j = i + 1; j < solid.length; j++) {
+      const [a, b] = [solid[i], solid[j]].sort((x, y) => x.p.id.localeCompare(y.p.id));
+      const small = Math.min(area(a.r), area(b.r)), big = Math.max(area(a.r), area(b.r));
+      if (small <= 0) continue;
+      const [sm, bg] = area(a.r) <= area(b.r) ? [a, b] : [b, a];
+      if (small < T.PROP_ATTACH_MAX * big && !deepInside(sm.world, bg.world)) continue;
+      const ratio = area(intersect(a.r, b.r)) / small;
+      if (ratio < T.PROP_OVERLAP_FAIL || moved(shot, [a.p.id, b.p.id], s.t)) continue;
+      if (!touching3d(a.world, b.world)) continue; // in front of / behind each other: a normal picture
+      const key = `prop-overlap|${shot.id}|${a.p.id}|${b.p.id}`;
+      const old = raw.get(key);
+      if (old) { old.hits++; if (ratio > old.ratio) { old.ratio = ratio; old.t = s.t; } continue; }
+      raw.set(key, { shot, a: a.p, b: b.p, ratio, t: s.t, hits: 1 });
+    }
+  }
+  const out = [];
+  for (const [key, f] of raw) {
+    const o = mk(f.hits >= T.MIN_HITS_FOR_FAIL ? 'FAIL' : 'WARN', 'prop-overlap', f.shot, f.t,
+      `props "${f.a.id}" (${f.a.type}) and "${f.b.id}" (${f.b.type}) are drawn over each other: their shapes overlap by ${pct(f.ratio)} of the smaller one`,
+      { props: [f.a.id, f.b.id], overlapPct: Math.round(f.ratio * 100) },
+      `move them apart ("${f.a.id}" was placed at ${JSON.stringify(f.a.at)} and "${f.b.id}" at ${JSON.stringify(f.b.at)}; change one "at" in the shot that adds it), make one smaller ("size"), or "disappear" one before the other "appear"s. Props stay on screen in the shots that "continue" this one.`,
+      key);
     o.hits = f.hits;
     out.push(o);
   }

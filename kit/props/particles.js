@@ -6,7 +6,8 @@ import * as THREE from 'three';
 
 export const meta = {
   name: 'particles',
-  summary: 'A cloud of small balls or glowing dots in a box, sphere, ring or stream (molecules, dust, atoms).',
+  summary: 'A cloud of small balls or glowing dots in a box, sphere, ring or stream (molecules, atoms, gas flow).',
+  notes: 'Only for things too small to see as objects: molecules, electrons, air or gas flow, eruption spray. For dust or smoke use haze, rock bits debris, hail hail, sparks or embers sparks.',
   tags: ['basic', 'science'],
   floats: true,
   params: {

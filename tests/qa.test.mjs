@@ -13,7 +13,7 @@ import { runQa, planSamples, formatFinding } from '../tools/qa.mjs';
 import { resolveMini, miniShow } from './helpers.mjs';
 import {
   area, intersect, insideFraction, unionFraction, toGray, meanLuma, brightFraction, meanAbsDiff,
-  blackFindings, frozenFindings, framingFindings, textFindings, pacingFindings, videoFindings, mergeFindings, worstLevel,
+  blackFindings, frozenFindings, framingFindings, textFindings, overlapFindings, pacingFindings, videoFindings, mergeFindings, worstLevel,
 } from '../tools/lib/qa-rules.mjs';
 import { parseEbur128, probeVideo, measureLoudness } from '../tools/lib/qa-video.mjs';
 
@@ -121,6 +121,43 @@ test('text rules: overlap 20% FAIL (needs 2 samples), under 20% WARN, outside fr
   assert.equal(out[0].code, 'text-outside'); assert.equal(out[0].level, 'FAIL'); assert.match(out[0].what, /outside the frame/);
   const cover = textFindings(show, two(box('s:p0', 100, 100, 200, 100, 'label'), box('ball', 100, 120, 200, 100)), frame);
   assert.ok(cover.some(x => x.code === 'label-covers-prop' && x.level === 'WARN'));
+});
+
+test('prop overlap: two solid props drawn over each other FAIL (2 samples); see-through, small, moved, flying-in and apart do not', () => {
+  const isSolid = t => ['planet', 'sun', 'person'].includes(t);
+  const show = showWith([P('earth', { type: 'planet' }), P('star', { type: 'sun' }), P('bulb', { type: 'lightbulb' }), P('man', { type: 'person' })]);
+  const two = boxes => [3, 3.5].map(t => sample(t, boxes, ['grid']));
+  const earth = box('earth', 100, 300, 300, 300);
+  // The real shape (clipped to the box) is what is judged: the boxes overlap 75%, the shapes 67%.
+  const star = { ...box('star', 250, 300, 200, 200), shape: { x: 300, y: 350, w: 150, h: 150 } };
+  const f = overlapFindings(show, two([earth, star]), isSolid);
+  assert.equal(f.length, 1);
+  assert.equal(f[0].level, 'FAIL'); assert.equal(f[0].code, 'prop-overlap'); assert.equal(f[0].shot, 's'); assert.equal(f[0].hits, 2);
+  assert.match(f[0].what, /"earth" \(planet\) and "star" \(sun\).*overlap by 67% of the smaller/);
+  assert.match(f[0].fix, /"at"/);
+  assert.equal(overlapFindings(show, [sample(3, [earth, star], ['grid'])], isSolid)[0].level, 'WARN', 'seen once only');
+  assert.equal(overlapFindings(show, two([earth, box('star', 360, 300, 200, 200)]), isSolid).length, 0, 'a corner touch (20%) is under 25%');
+  assert.equal(overlapFindings(show, two([earth, box('bulb', 150, 350, 200, 200)]), isSolid).length, 0, 'see-through props are not judged');
+  assert.equal(overlapFindings(show, two([earth, box('man', 200, 350, 100, 100)]), isSolid).length, 0, 'an attachment under 15% of the other');
+  assert.equal(overlapFindings(show, two([earth]), isSolid).length, 0, 'a hidden prop has no box');
+  const flying = showWith(show.shots[0].props, [{ do: 'appear', prop: 'star', t0: 2.8, over: 0.5, path: 'a' }]);
+  assert.equal(overlapFindings(flying, two([earth, star]), isSolid).length, 0, 'still flying in');
+  const moving = showWith(show.shots[0].props, [{ do: 'move', prop: 'star', t0: 1, over: 2.5, path: 'm' }]);
+  assert.equal(overlapFindings(moving, two([earth, star]), isSolid).length, 0, 'still moving into it (until 0.3 s after the move ends)');
+  const moved = showWith(show.shots[0].props, [{ do: 'move', prop: 'star', t0: 1, over: 1, path: 'm' }]);
+  assert.equal(overlapFindings(moved, two([earth, star]), isSolid).length, 1, 'fused after the move ended: the mistake');
+});
+
+test('prop overlap: props apart in depth pass, props touching in 3D still FAIL', () => {
+  const isSolid = t => ['planet', 'sun'].includes(t);
+  const show = showWith([P('earth', { type: 'planet' }), P('star', { type: 'sun' })]);
+  const two = boxes => [3, 3.5].map(t => sample(t, boxes, ['grid']));
+  const w = (min, max) => ({ world: { min, max } });
+  const earth = { ...box('earth', 100, 300, 300, 300), ...w([-0.75, -0.75, -0.75], [0.75, 0.75, 0.75]) };
+  const front = { ...box('star', 150, 350, 200, 200), ...w([-0.3, -0.3, 1.5], [0.3, 0.3, 2.1]) };   // same picture spot, 0.75 in front
+  assert.equal(overlapFindings(show, two([earth, front]), isSolid).length, 0, 'a moon in front of a planet');
+  const touching = { ...front, ...w([-0.3, -0.3, 0.5], [0.3, 0.3, 1.1]) };
+  assert.equal(overlapFindings(show, two([earth, touching]), isSolid).length, 1, 'boxes overlap in 3D');
 });
 
 test('pacing: long idle stretch with a still camera, too many overlays', () => {
@@ -264,4 +301,42 @@ test('warnings: a prop in the caption zone and a tiny subject WARN but do not FA
   const tiny = await qa('tiny');
   assert.equal(tiny.result, 'warn');
   assert.ok(codes(tiny).includes('subject-small'), codes(tiny).join());
+});
+
+test('prop overlap: depth-staggered normal scenes pass (loose world boxes are shrunk), a sun poking out of a planet still FAILs', () => {
+  const isSolid = t => ['planet', 'sun', 'house', 'car', 'tree', 'dinosaur', 'mountain'].includes(t);
+  const w = (min, max) => ({ world: { min, max } });
+  const two = boxes => [3, 3.5].map(t => sample(t, boxes, ['grid']));
+  const pair = (ta, a, tb, b) => showWith([P(a.id, { type: ta }), P(b.id, { type: tb })]);
+  // World boxes measured from real scenes (tools/qa.mjs): the screen boxes overlap a lot, the depth gap is small.
+  const cases = [
+    ['house', { ...box('house', 100, 300, 400, 400), ...w([-0.75, 0, -0.6], [0.75, 1.29, 0.6]) }, 'car', { ...box('car', 200, 500, 300, 200), ...w([-0.25, 0, 0.51], [0.65, 0.56, 1.09]) }],
+    ['tree', { ...box('tree', 100, 300, 400, 400), ...w([-0.56, 0, -0.76], [0.56, 1.4, 0.16]) }, 'dinosaur', { ...box('dino', 200, 400, 300, 200), ...w([-0.4, 0, 0.26], [0.8, 0.64, 0.54]) }],
+    ['planet', { ...box('earth', 100, 300, 300, 300), ...w([-0.75, -0.75, -0.75], [0.75, 0.75, 0.75]) }, 'planet', { ...box('moon', 200, 350, 150, 150), ...w([0.35, 0.05, 0.75], [0.85, 0.55, 1.25]) }],
+  ];
+  for (const [ta, a, tb, b] of cases) assert.equal(overlapFindings(pair(ta, a, tb, b), two([a, b]), isSolid).length, 0, `${a.id} and ${b.id} stagger in depth`);
+  // The asteroid show's "recover" shot: sun star2 (z -0.85..-0.15) pokes out of planet earth3 (z -0.75..0.75).
+  const earth3 = { ...box('earth3', 100, 300, 300, 300), ...w([-0.3, -0.75, -0.75], [1.2, 0.75, 0.75]) };
+  const star2 = { ...box('star2', 250, 300, 200, 200), ...w([0.65, 0.45, -0.85], [1.35, 1.15, -0.15]) };
+  assert.equal(overlapFindings(pair('planet', earth3, 'sun', star2), two([earth3, star2]), isSolid).length, 1);
+});
+
+test('prop overlap: a small prop swallowed by a big one is judged, a small one on its surface is an attachment', () => {
+  const isSolid = t => ['planet', 'person'].includes(t);
+  const show = showWith([P('big', { type: 'planet' }), P('moon', { type: 'planet' }), P('man', { type: 'person' })]);
+  const two = boxes => [3, 3.5].map(t => sample(t, boxes, ['grid']));
+  const w = (min, max) => ({ world: { min, max } });
+  const big = { ...box('big', 0, 0, 800, 800), ...w([-1, -1, -1], [1, 1, 1]) };
+  const swallowed = { ...box('moon', 300, 300, 100, 100), ...w([-0.1, -0.1, -0.1], [0.1, 0.1, 0.1]) };
+  assert.equal(overlapFindings(show, two([big, swallowed]), isSolid).length, 1, 'a moon inside a planet');
+  const onTop = { ...box('man', 300, 300, 100, 100), ...w([0.9, 0.9, -0.1], [1.1, 1.1, 0.1]) };
+  assert.equal(overlapFindings(show, two([big, onTop]), isSolid).length, 0, 'a person on its surface');
+});
+
+test('solidForOverlap: fire, cloud and a tank iceberg are not judged; a plain iceberg and a house are', async () => {
+  const { solidForOverlap } = await import('../tools/catalog.mjs');
+  for (const t of ['house', 'planet', 'dinosaur']) assert.equal(solidForOverlap(t, {}), true, t);
+  assert.equal(solidForOverlap('iceberg', {}), true);
+  assert.equal(solidForOverlap('iceberg', { tank: true }), false);
+  for (const t of ['fire', 'cloud', 'lightbulb', 'terrain']) assert.equal(solidForOverlap(t, {}), false, t);
 });

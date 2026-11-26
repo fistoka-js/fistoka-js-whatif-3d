@@ -5,6 +5,6 @@
 - liquid (S6): many small balls tumbling; speed up on "tumble around", spread down on "pack closely".
 - hexagon (S7): a title "FREEZING" on "water freezes" (until the label comes); a ring of molecules seen from the top (angle "top") grows in on "lock into"; label, then a question icon placed in the empty middle.
 - density (S8): a two-bar chart grows on "open pattern"; a count to 9 on "nine percent".
-- iceberg (S9): the iceberg prop shows the hidden bulk by itself; one label.
+- iceberg (S9): an iceberg with tank true shows the small tip above the waterline and the big bulk below it by itself; one label.
 - lake (S10-S11): fish under an ice lid that drops in on "top down"; heart icon on the fish on "keeping fish alive".
 - outro (S12): the channel mascot changes colour; title text.

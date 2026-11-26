@@ -1,6 +1,6 @@
 // Story rules (SPEC §14): does the picture follow the words? Computed from the resolved show alone (no browser).
 // They fail a "slideshow": a new object per sentence that then sits still while the narrator talks.
-// Exports: STORY_RULES_DEFAULT (on or off when no flag is given), STORY (thresholds), sentencesOf(words),
+// Exports: STORY_RULES_DEFAULT (on or off when no flag is given), STORY (thresholds), EARTHBOUND, sentencesOf(words),
 //          changeEvents(show, catalog), storyRules(show, catalog) -> { errors, warnings, measured }.
 // errors/warnings are { path, message, hint, time } (time: seconds or null). validate.mjs drops "time" so its JSON keeps
 // the validator's { path, message, hint } shape and the problems flow into the writer's repair loop; qa.mjs uses it.
@@ -27,6 +27,15 @@ const NOT_A_CHANGE = new Set(['label', 'text', 'icon', 'count', 'focus', 'sfx'])
 const IDLE = new Set(['spin', 'bob', 'orbit']);
 // Emphasis only: a swell or a shake is never "the change" of a sentence (overused, they read as bouncing).
 const EMPHASIS = new Set(['pulse', 'shake']);
+// Ground life and its things: never in a "space" environment. Not person (astronauts) and not chameleon (the approved
+// chameleon video ends with one in space on purpose).
+export const EARTHBOUND = new Set(['dinosaur', 'tree', 'house', 'fish', 'bird']);
+// Things that are usually on the ground but have real uses in space (a ship or car launched, a city seen from orbit,
+// a crowd or plane in a thought experiment): a warning, not an error.
+// What the narration may call each earthbound prop ("Could a bird fly in space?" names the bird: then it is meant).
+const NAMES = { dinosaur: 'dinosaur|dino|t-?rex', tree: 'tree|oak|pine', house: 'house|cottage', fish: 'fish|goldfish|shark', bird: 'bird|eagle|pigeon|sparrow' };
+const narrationNames = (type, text) => new RegExp(`\\b(?:${NAMES[type] || type})s?\\b`, 'i').test(text);
+export const EARTHBOUND_WARN = new Set(['ship', 'car', 'city', 'plane', 'submarine', 'crowd']);
 
 // Spoken sentences (split after a word ending in . ? or !), each { text, start, end, words }. `end` is where the next
 // sentence starts (the pause belongs to the sentence before it). Very short sentences are joined to the next one.
@@ -154,6 +163,34 @@ export function storyRules(show, catalog) {
       message: `no prop stays on screen for ${Math.round(STORY.HERO_SHARE * 100)}% of the video${hero.key ? ` (the longest is "${id}" in the scene starting at shot "${scene}": ${fmt(hero.seconds)} s of ${fmt(show.duration)} s, ${Math.round(share * 100)}%)` : ''}.`,
       hint: 'Keep one subject on screen across several shots with "continue": true, and change it with each sentence (actions or a dial).',
     });
+  }
+
+  // 4. Ground life does not float in space: an earthbound prop (an ERROR; a warning for ship, car, city ...) in a shot whose environment is "space". A continuing
+  // shot has its scene's env and props (resolved by kit/engine/show.js), so each scene/prop pair is reported once.
+  // A prop that starts hidden and never appears while this space shot plays is not on screen, so it does not count.
+  const onScreen = new Set();
+  for (const g of grid) { const si = shotIndexAt(g.t); for (const p of show.shots[si].props) if (states[si].propAt(p.id, g.t).visible) onScreen.add(`${si}/${p.id}`); }
+  const told = new Set();
+  for (const shot of show.shots) {
+    if (!shot.env || shot.env.type !== 'space') continue;
+    for (const p of shot.props) {
+      if (!onScreen.has(`${shot.index}/${p.id}`)) continue;
+      const key = `${shot.scene ? shot.scene.first : shot.index}/${p.id}`;
+      // Narration of this scene (all its shots) that names the thing makes it a thought experiment: a warning, not an error.
+      const first = shot.scene ? shot.scene.first : shot.index;
+      const sceneShots = show.shots.filter(q => (q.scene ? q.scene.first : q.index) === first);
+      const t0 = Math.min(...sceneShots.map(q => q.start)), t1 = Math.max(...sceneShots.map(q => q.end));
+      const said = show.words.filter(w => w.start >= t0 - 0.01 && w.start < t1).map(w => w.text).join(' ');
+      const hard = EARTHBOUND.has(p.type) && !narrationNames(p.type, said);
+      if (!(EARTHBOUND.has(p.type) || EARTHBOUND_WARN.has(p.type)) || told.has(key)) continue;
+      told.add(key);
+      const named = EARTHBOUND.has(p.type) && !hard;
+      (hard ? errors : warnings).push({
+        path: 'story.env', time: shot.start,
+        message: `prop "${p.id}" (${p.type}) is in shot "${shot.id}", whose environment is "space"; ${named ? `the narration names the ${p.type}, so this may be a thought experiment: check it is intended.` : `a ${p.type} cannot float in space.`}`,
+        hint: `Show it in a scene with a ground ("planet_surface", "sky", "underwater", "studio" or "lab"), or show the planet itself (a "planet" prop) when the point is the whole Earth.`,
+      });
+    }
   }
 
   const measured = {

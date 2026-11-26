@@ -23,8 +23,8 @@ test('catalog.json lists every prop, env, action and camera option with params, 
   assert.ok(d.camera.move.options.push_in);
   for (const a of Object.values(d.actions)) assert.ok(a.doc);
   // Compact enough to paste into a prompt.
-  // Raised from 40000 to 50000 (mechanism props, dials/bindings/continue docs), then to 52000 (writer-facing prop notes); the prompt uses catalog_text.py's shorter text.
-  assert.ok(JSON.stringify(d).length < 55500);
+  // Raised from 40000 to 50000 (mechanism props, dials/bindings/continue docs), then to 52000 (writer-facing prop notes), then to 61000 (haze, debris, hail, sparks, lattice/lightning/iceberg options); the prompt uses catalog_text.py's shorter text.
+  assert.ok(JSON.stringify(d).length < 61000);
   assert.ok(d.transitions.dive && d.dials && d.bindings && d.continue && d.dialKeyFields.at);
   assert.deepEqual(d.envs.studio.dialParams, ['color']);
 });

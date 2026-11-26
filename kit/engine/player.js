@@ -86,7 +86,9 @@ async function boot() {
     for (const pr of s.props) {
       const r = stage.propRect(pr.p.id);
       const sh = r ? stage.propShapeRect(pr.p.id) : null;
-      if (r) out.push({ kind: 'prop', id: pr.p.id, x: r.x, y: r.y, w: r.w, h: r.h, ...(sh ? { shape: sh } : {}) });
+      const wb = r ? stage.propWorldBox(pr.p.id) : null; // world box, for the prop-overlap check (3D contact)
+      if (r) out.push({ kind: 'prop', id: pr.p.id, x: r.x, y: r.y, w: r.w, h: r.h, ...(sh ? { shape: sh } : {}),
+        ...(wb ? { world: { min: wb.min.toArray(), max: wb.max.toArray() } } : {}) });
     }
     out.push(...overlay.boxes());
     const cap = $('cap').querySelector('.line');

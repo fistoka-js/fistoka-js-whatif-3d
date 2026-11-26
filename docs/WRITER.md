@@ -71,15 +71,19 @@ Tests: `tests/py/test_writer.py`, `test_storyboard.py`, `test_fact_check.py`, `t
      the board uses (or a central gap's name); every ending field filled; objects on every sentence (at most 2
      in the first shot); a "change" on every sentence; catalogue prop names (and gap stand-ins); text 1 to 40
      characters, its phrases found in their sentence, on screen at least 2.5 s (`TEXT_MIN_SECONDS`); each
-     flow has "from" and "to" (catalogue props or props on the board) and a catalogue prop in "by". Problems
-     here go straight to a repair, with no review call.
+     flow has "from" and "to" (catalogue props or props on the board) and a catalogue prop in "by". Before
+     this check the code fixes what is mechanical (`fix_text_ends`): a text on screen under 2.5 s gets the
+     first later "ends" that keeps it up long enough ("end" at the latest), with no model call. Problems
+     left here go straight to a repair, with no review call. These code-check repairs have their own budget
+     (`CODE_CHECK_REPAIRS`, 2; then they use `storyboard_repairs`), so they never use up the repair the
+     reviewer's problems need.
    - `storyboard-review` call (`storyboard_review_system.md`, `storyboard_review_user.md`): a separate,
      skeptical story editor checks (a) that each sentence's picture matches its words and the pictures alone
      tell the same story, (b) that the hook question is answered, (c) every named object is shown or a gap,
      (d) flow directions, (e) text kept long enough, (f) variety (S1 limit, no 3 sentences in a row with the same picture; no prop quota), (g) the ending, (h) central gaps, (i) the picture matches the words, sentence by sentence. It
      replies `{"verdict": "pass" | "problems", "problems": [{"sentence", "kind", "what", "fix"}]}`. "pass"
      wins even when it lists points: they are kept as notes.
-   - Problems: up to `storyboard_repairs` repairs (`storyboard-repair1`, a new review, and so on; default 1; `storyboard_repair_user.md`). Still problems: the run fails (exit 1,
+   - Review problems (or an unreadable reply): up to `storyboard_repairs` repairs (`storyboard-repair1`, a new review, and so on; default 1; `storyboard_repair_user.md`); the repairs are numbered in order across both budgets. Still problems: the run fails (exit 1,
      status `failed`, `error` lists the problems left).
    - A gap with `"central": true` in the approved storyboard stops the run like a `feasible: false` script
      (NEEDS-PROPS.md, exit 3, the runner queues the topic in `queue/needs-props/`); so does a last
@@ -125,7 +129,10 @@ Tests: `tests/py/test_writer.py`, `test_storyboard.py`, `test_fact_check.py`, `t
 6. **Picture check.** `node tools/qa.mjs <slug>` draws the show. If the result is `fail`, the model gets one
    repair round with the findings; the new show is validated and checked again, and the better of the
    two is kept. Still failing: the run is marked `qa: fail` (the runner decides what to do). If Chrome or
-   2 GB of free memory is missing, QA is `not_run`.
+   2 GB of free memory is missing, QA is `not_run`. Lack of memory is tried again (`QA_TRIES` 3 tries,
+   `QA_RETRY_WAIT` 60 s apart). A check that was tried and still did not run is never a pass: `writer.json`
+   says `"qa_not_run": true`, and the runner's upload step then needs a final check of the video
+   (`out/qa.json`, newer than the video) that ran and passed (`pass` or `warn`).
 7. **Fallback.** If no reply validated, `pipeline/fallback.py` builds a plain show from the words alone
    (one shot per sentence or two, rotating environments and safe props, a prop the words name when the
    catalogue has it, 1-3 key words as text). It validates for any script (tested on 50 random scripts),
@@ -183,7 +190,7 @@ missing uses the default). The writer reads only these keys:
 | `rate` | `+12%` | Edge speaking rate |
 | `fallback_seed` | `0` | which variant of the fallback show |
 | `storyboard` | `true` | plan and review every sentence's picture before the show call (step 4); `false` gives the old steps exactly |
-| `storyboard_repairs` | `1` | storyboard repair rounds after a failed review or code check; still failing ends the run (exit 1); only a whole number counts (anything else gives 1), below 0 gives 0 |
+| `storyboard_repairs` | `1` | storyboard repair rounds after a failed review (or an unreadable reply); code-check problems first use their own 2 (`CODE_CHECK_REPAIRS`); still failing ends the run (exit 1); only a whole number counts (anything else gives 1), below 0 gives 0; `0` means no repair calls at all, so the code-check repairs are 0 too |
 
 ## Exit codes
 
@@ -201,6 +208,7 @@ missing uses the default). The writer reads only these keys:
 {"slug": "moon-gone", "topic": "...", "status": "ok | fallback | needs_props | failed",
  "title": "...", "description": "...", "tags": ["..."],
  "show": "llm | fallback | none", "repairs": 0, "qa": "pass | warn | fail | not_run",
+ "qa_not_run": false,
  "fallback_note": "fallback: not good enough to publish (only when show is fallback, else null)",
  "beats": [{"sentence": "...", "subject": "lattice", "change": "crystals spread apart", "dial": "gap"}],
  "beat_rewrite": false,

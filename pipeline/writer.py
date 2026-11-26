@@ -14,12 +14,15 @@ Steps (docs/WRITER.md explains each in plain words):
      (its script is beat-checked and fact-audited, "audit-shorten", before it is voiced), then voice again.
   4. Storyboard (setting "storyboard", on by default): a "storyboard" call plans every sentence's picture
      (storyboard.json, storyboard.md), a code check and a separate "storyboard-review" call judge it, and
-     up to "storyboard_repairs" (setting, default 1) "storyboard-repairN" calls fix it. Still failing -> exit 1.
+     up to "storyboard_repairs" (setting, default 1) "storyboard-repairN" calls fix the review's problems.
+     Code-check problems: mechanical ones are fixed in code (fix_text_ends), the rest get their own
+     CODE_CHECK_REPAIRS repairs first. Still failing -> exit 1.
      A "central" gap -> NEEDS-PROPS.md, exit 3.
   5. Show call (gets the beat list and the storyboard) -> shows/<slug>/show.json -> node tools/validate.mjs
      --story-rules. Errors, the story.scenes / story.subject warnings, no dial bound to two or more things,
      or a storyboard prop, text or flow direction the show misses -> up to 3 repair rounds.
   6. Picture check (node tools/qa.mjs). fail -> one repair round, then check again; keep the best.
+     Not run for lack of memory -> tried again (QA_TRIES); still not run -> writer.json "qa_not_run": true.
   7. No valid show at all -> pipeline/fallback.py builds a plain one, marked
      "fallback: not good enough to publish" (it is checked without the story rules).
   8. review.md (for the human) and writer.json (for the pipeline runner).
@@ -34,6 +37,7 @@ import math
 import re
 import subprocess
 import sys
+import time
 import unicodedata
 from collections import Counter
 from datetime import datetime, timezone
@@ -74,6 +78,9 @@ SCRIPT_MAX_TOKENS = 16000          # a cap, not a cost: thinking (always on) plu
 SHOW_MAX_TOKENS = 16000
 STORYBOARD_MAX_TOKENS = 16000
 TEXT_MIN_SECONDS = 2.5             # on-screen text and key numbers stay up at least this long (storyboard prompts say so)
+CODE_CHECK_REPAIRS = 2             # storyboard repairs for code-check problems only; they do not use "storyboard_repairs"
+QA_TRIES = 3                       # picture check runs at most this often when it cannot start for lack of memory
+QA_RETRY_WAIT = 60                 # seconds between those tries (so at most 2 minutes of waiting)
 TEXT_START_TOLERANCE = 1.5         # coverage check: the show's text may start this far from the storyboard's phrase
 TEXT_END_TOLERANCE = 0.5           # coverage check: ... and may go away this much before the storyboard says
 FLOW_PROPS = ("wire", "arrow", "beam")   # drawn from "from" to "to", so their direction can be checked
@@ -478,7 +485,10 @@ def run_qa(slug):
     except (OSError, subprocess.TimeoutExpired) as e:
         return {"result": "not_run", "reason": str(e)[:300], "findings": []}
     if data is None or "result" not in data:
-        return {"result": "not_run", "reason": (err.strip() or "no output")[-300:], "findings": []}
+        # The low-memory line may sit anywhere in a long stderr (node warnings after it): keep that line whole,
+        # so the retry in _qa_with_retry still finds it.
+        low = next((ln.strip() for ln in err.splitlines() if "of memory is free" in ln), None)
+        return {"result": "not_run", "reason": (low or err.strip() or "no output")[-300:], "findings": []}
     return data
 
 
@@ -510,6 +520,7 @@ class Run:
         self.repairs = 0
         self.history = []                # one line per show attempt
         self.qa = {"result": "not_run", "reason": "no show", "findings": []}
+        self.qa_not_run = False          # the picture check was tried but could not run (see qa_step)
         # The storyboard step (None when it is off): the board, the reviewer's last verdict and notes, repairs.
         self.storyboard = None
         self.props_wanted = []           # non-central gaps: drawn with a stand-in, listed for prop building
@@ -985,6 +996,51 @@ def _text_window(t, n, sents, words):
     return start, end
 
 
+MAX_TEXTS_AT_ONCE = 2             # the storyboard and show prompts allow at most 2 texts on screen together
+
+
+def _most_at_once(windows):
+    """The most (start, end) windows on screen at the same moment (a window ends the instant the next starts)."""
+    return max((sum(1 for s, e in windows if s <= a < e) for a, _ in windows), default=0)
+
+
+def _text_windows(board, words, sents, skip=None):
+    """The usable (start, end) windows of every text in the board except `skip`."""
+    out = []
+    for n, s in enumerate(board["sentences"][:len(sents)], 1):
+        for t in s["texts"]:
+            if t is skip:
+                continue
+            start, end = _text_window(t, n, sents, words)
+            if start is not None and end is not None:
+                out.append((start, end))
+    return out
+
+
+def fix_text_ends(board, words):
+    """Code fix, no model call: a text that would be on screen under TEXT_MIN_SECONDS gets the first later "ends"
+    that keeps it up long enough ("end" at the latest, which always is), unless that would put more than
+    MAX_TEXTS_AT_ONCE texts on screen together: then it is left as it is (storyboard_problems reports it, and the
+    code-check repair budget deals with it). Returns one line per text changed."""
+    sents = sentences(words)
+    fixed = []
+    for n, (s, _) in enumerate(zip(board["sentences"], sents), 1):
+        for t in s["texts"]:
+            start, end = _text_window(t, n, sents, words)
+            if start is None or end is None or end - start >= TEXT_MIN_SECONDS - 0.05:
+                continue                 # unusable phrases and ends stay for the model; long enough needs nothing
+            later = [e for e in range(n + 1, len(sents) + 1) if sents[e - 1][0]["start"] - start >= TEXT_MIN_SECONDS - 0.05]
+            new = later[0] if later else "end"
+            old = t["ends"]
+            t["ends"] = new
+            _, new_end = _text_window(t, n, sents, words)
+            if _most_at_once(_text_windows(board, words, sents, skip=t) + [(start, new_end)]) > MAX_TEXTS_AT_ONCE:
+                t["ends"] = old          # would crowd the screen: not ours to fix
+                continue
+            fixed.append(f'S{n} text "{t["words"]}": "ends" {old} -> {new}')
+    return fixed
+
+
 def storyboard_gaps(board):
     """[(sentence number, gap object)] for every object written as a gap."""
     return [(n, o) for n, s in enumerate((board or {}).get("sentences", []), 1) for o in s["objects"] if o["missing"]]
@@ -1057,6 +1113,9 @@ def storyboard_problems(board, words, cat):
                 if f[end] and f[end].lower() not in ends:
                     out.append(f"{quote}: flow {end} '{f[end]}' is not a prop; use a catalogue prop name such as "
                                f"{next(iter(props), 'battery')}")
+    if _most_at_once(_text_windows(board, words, sents)) > MAX_TEXTS_AT_ONCE:
+        out.append(f"more than {MAX_TEXTS_AT_ONCE} texts are on screen at the same time: give one of them an earlier "
+                   f'"ends" (each stays at least {TEXT_MIN_SECONDS:g} s) or drop the least important')
     return out
 
 
@@ -1178,9 +1237,12 @@ def storyboard_step(run, complete, cat, words):
     rounds = run.settings.get("storyboard_repairs")
     # Only a real whole number counts (not a bool, string or float); anything else is the default 1. Below 0 is 0.
     rounds = max(0, rounds) if isinstance(rounds, int) and not isinstance(rounds, bool) else 1
+    # Two budgets: "rounds" for repairs after a review (or an unreadable reply), CODE_CHECK_REPAIRS for repairs of
+    # code-check problems only, so a wrong prop name cannot use up the round the reviewer's problems need.
+    ai_left, code_left = rounds, (CODE_CHECK_REPAIRS if rounds > 0 else 0)   # 0 repairs setting = no repair calls at all
     try:
-        for attempt in range(rounds + 1):
-            text = ""
+        while True:
+            text, kind = "", "ai"
             try:
                 text = _ask(run, complete, system, user, purpose, STORYBOARD_MAX_TOKENS)
                 board = normalise_storyboard(parse_loose_json(text))
@@ -1194,9 +1256,13 @@ def storyboard_step(run, complete, cat, words):
                 sb["fresh"] = False
                 sb["history"].append(f"{purpose}: {reason.replace('the reply is ', '', 1)}")
             else:
+                fixes = fix_text_ends(board, words)    # before the check, the review and the saved board see it
+                if fixes:
+                    sb["history"].append(f"{purpose}: code fixed {len(fixes)} text end(s): " + "; ".join(fixes))
                 sb["board"], previous, sb["fresh"] = board, storyboard_text(board), True
                 problems = storyboard_problems(board, words, cat)
                 if problems:
+                    kind = "code"
                     sb["history"].append(f"{purpose}: {len(problems)} problem(s) found by the code check (no review call)")
                 else:
                     review_user = fill(read_prompt("storyboard_review_user.md"), TOPIC=run.topic, SENTENCES=lines,
@@ -1219,18 +1285,24 @@ def storyboard_step(run, complete, cat, words):
             if sb["fresh"]:
                 real = problems          # (an unreadable round keeps the earlier real problems)
             _save_storyboard(run, words)
+            # Code-check problems use their own budget first, then the review budget.
+            last = ai_left == 0 and (kind == "ai" or code_left == 0)
             # Only the board of the LAST reply decides a central gap, and only when that reply parsed (fresh): a
             # board left over from an earlier round must not make the run stop for props.
-            if (attempt == rounds and sb["fresh"]
+            if (last and sb["fresh"]
                     and any(o["central"] for _, o in storyboard_gaps(sb["board"]))):
                 break                        # it cannot be built anyway: stop for props below, not a failure
-            if attempt == rounds:
-                raise RuntimeError(f"the storyboard still has problems after {rounds} repair round(s): "
+            if last:
+                raise RuntimeError(f"the storyboard still has problems after {sb['repairs']} repair round(s): "
                                    + "; ".join(problems))
+            if kind == "code" and code_left:
+                code_left -= 1
+            else:
+                ai_left -= 1
             user = fill(read_prompt("storyboard_repair_user.md"), ORIGINAL=original, PREVIOUS=previous,
                         PROBLEMS="\n".join(f"- {p}" for p in problems))
-            purpose = f"storyboard-repair{attempt + 1}"
-            sb["repairs"] = attempt + 1
+            sb["repairs"] += 1
+            purpose = f"storyboard-repair{sb['repairs']}"
     except Exception:
         # Any failure (LlmError, OSError, ...) still leaves the files for a person to read, even when no board
         # ever parsed (the files then say so).
@@ -1460,14 +1532,29 @@ def _count_fails(qa):
     return sum(1 for f in qa.get("findings", []) if str(f.get("level", "")).lower() == "fail")
 
 
-def qa_step(run, complete, validate_fn, qa_fn, cat, words, show):
-    """Picture check; on fail one repair round, then check again and keep the better version."""
+def _qa_with_retry(qa_fn, slug, sleep_fn):
+    """The picture check, tried again (QA_TRIES in all, QA_RETRY_WAIT s apart) while it cannot start for lack of
+    memory (tools/lib/browser.mjs: "only X GB of memory is free")."""
+    qa = qa_fn(slug)
+    for _ in range(QA_TRIES - 1):
+        if qa.get("result") != "not_run" or "of memory is free" not in str(qa.get("reason", "")):
+            break
+        sleep_fn(QA_RETRY_WAIT)
+        qa = qa_fn(slug)
+    return qa
+
+
+def qa_step(run, complete, validate_fn, qa_fn, cat, words, show, sleep_fn=time.sleep):
+    """Picture check; on fail one repair round, then check again and keep the better version. A check that
+    did not run (after the retries) is never a pass: writer.json then says "qa_not_run" and the upload step
+    of pipeline/run.py needs a fresh passing final check."""
     if not run.settings["qa"]:
         run.qa = {"result": "not_run", "reason": "qa is off in settings", "findings": []}
         return show
     folder = run.folder
-    qa = qa_fn(run.slug)
+    qa = _qa_with_retry(qa_fn, run.slug, sleep_fn)
     run.qa = qa
+    run.qa_not_run = qa.get("result") == "not_run"
     if qa.get("result") != "fail" or not run.settings["qa_repair"] or run.show_source != "llm":
         return show
     fails = _count_fails(qa)
@@ -1490,7 +1577,7 @@ def qa_step(run, complete, validate_fn, qa_fn, cat, words, show):
     if not check.get("ok") or story_problems(new, check, board, words):
         keep_old("the repaired show did not pass the checker and story checks")
         return show
-    qa2 = qa_fn(run.slug)
+    qa2 = _qa_with_retry(qa_fn, run.slug, sleep_fn)
     fails2 = _count_fails(qa2)
     if qa2.get("result") == "not_run" or fails2 > fails:
         keep_old(f"picture check after repair: {qa2.get('result')} ({fails2} fails)")
@@ -1701,6 +1788,9 @@ def writer_json(run):
         "beats_note": beats_note(reported_beat_problems(run)),
         "beat_problems": reported_beat_problems(run),
         "qa": run.qa.get("result"),
+        # True when the picture check was tried but never ran: pipeline/run.py then uploads only after a fresh,
+        # passing final check of the video.
+        "qa_not_run": run.qa_not_run,
         "needs_fact_check": run.fact["needs_fact_check"],
         "voice_seconds": run.voice_stats["duration"] if run.voice_stats else None,
         "voice_note": run.voice_note,
@@ -1724,7 +1814,7 @@ def finish(run, code):
 
 
 def write(topic, slug, *, mode=None, settings=None, complete=None, voice_fn=None, validate_fn=None,
-          qa_fn=None, shows_dir=None):
+          qa_fn=None, shows_dir=None, sleep_fn=time.sleep):
     """Run the whole writer. Returns the exit code. Every collaborator can be replaced (tests)."""
     settings = dict(settings or load_settings())
     mode = mode or settings["mode"]
@@ -1760,7 +1850,7 @@ def write(topic, slug, *, mode=None, settings=None, complete=None, voice_fn=None
                 raise RuntimeError("the fallback show did not validate (a bug in pipeline/fallback.py)")
             run.show_source = "fallback"
             run.history.append(f"fallback show used ({FALLBACK_NOTE})")
-        qa_step(run, complete, validate_fn, qa_fn, cat, words, show)
+        qa_step(run, complete, validate_fn, qa_fn, cat, words, show, sleep_fn)
         run.status = "ok" if run.show_source == "llm" else "fallback"
         return finish(run, EXIT_OK)
     except NotFeasible:

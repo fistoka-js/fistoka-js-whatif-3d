@@ -12,7 +12,7 @@ export const meta = {
     color: { type: 'color', default: '#f4e3c3', doc: 'wall colour' },
     roof: { type: 'color', default: '#d6513f', doc: 'roof colour' },
   },
-  animatable: { glow: { min: 0, max: 1, default: 0, doc: 'warm light in the windows (0 = off)' } },
+  animatable: { lit: { min: 0, max: 1, default: 0, doc: 'warm light in the windows (0 = off)' } },
 };
 
 export function build(params, ctx) {
@@ -48,7 +48,7 @@ export function build(params, ctx) {
   return {
     object: group,
     update(t, state) {
-      const g = state.params.glow;
+      const g = state.params.lit;
       glass.emissiveIntensity = g * (1.4 + 0.05 * Math.sin(t * 3));
       glass.color.setHex(0x9fd4ff).lerp(new THREE.Color(0xffd070), g);
     },

@@ -302,6 +302,11 @@ function resolveProps(list, path, catalog, errors, opts) {
       const target = out.find(o => o.raw.id === p[k]) || earlier.filter(q => q.id === p[k]).map(q => ({ raw: q, meta: catalog.props[q.type].meta }))[0];
       if (target && target.meta.stageSpace) problems.push(problem(`${pp}.${k}`, `"${p[k]}" is a ${target.raw.type}, which has no single position; point at a slot, [x, y, z] or a solid prop.`));
     }
+    // An optional from/to pair (lightning) works only with both ends: one end alone would silently be ignored.
+    if (!meta.stageSpace && own.from && own.to && own.from.type === 'point' && own.to.type === 'point') {
+      const has = k => plain[k] !== undefined && plain[k] !== null;
+      if (has('from') !== has('to')) problems.push(problem(`${pp}.${has('from') ? 'to' : 'from'}`, `"${p.type}" needs both "from" and "to", or neither; only "${has('from') ? 'from' : 'to'}" is set, so it would be ignored. Add "${has('from') ? 'to' : 'from'}" (a slot, [x, y, z] or a prop id) or remove "${has('from') ? 'from' : 'to'}".`));
+    }
     errors.push(...problems);
     const params = withDefaults(own, plain);
     // Build-time values of bound fields: their value when the prop joins the scene (the state follows the dial after that).
@@ -314,7 +319,7 @@ function resolveProps(list, path, catalog, errors, opts) {
       size: bind.size ? Math.max(...bind.size.to) : (typeof plain.size === 'number' ? plain.size : 1),
       rotate: Array.isArray(p.rotate) && p.rotate.length === 3 ? p.rotate.slice() : [0, 0, 0],
       glow: bind.glow ? now(bind.glow) : (typeof plain.glow === 'number' ? plain.glow : 0),
-      hidden: p.hidden === true, floats: !!meta.floats, stageSpace: !!meta.stageSpace, params,
+      hidden: p.hidden === true, floats: typeof meta.floats === 'function' ? !!meta.floats(params) : !!meta.floats, stageSpace: !!meta.stageSpace, params,
       bind, since: opts.t0, declaredIn: opts.shotId,
     };
   });
