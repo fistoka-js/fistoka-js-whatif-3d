@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { catalogData, catalogMarkdown } from '../tools/catalog.mjs';
+import { catalogData, catalogMarkdown, INSIDE } from '../tools/catalog.mjs';
 import { buildTimeline } from '../tools/timeline.mjs';
 import { catalog } from '../kit/engine/registry.js';
 import { resolve, demoShow, REPO, SFX_FILES } from './helpers.mjs';
@@ -24,7 +24,7 @@ test('catalog.json lists every prop, env, action and camera option with params, 
   for (const a of Object.values(d.actions)) assert.ok(a.doc);
   // Compact enough to paste into a prompt.
   // Raised from 40000 to 50000 (mechanism props, dials/bindings/continue docs), then to 52000 (writer-facing prop notes); the prompt uses catalog_text.py's shorter text.
-  assert.ok(JSON.stringify(d).length < 52000);
+  assert.ok(JSON.stringify(d).length < 55500);
   assert.ok(d.transitions.dive && d.dials && d.bindings && d.continue && d.dialKeyFields.at);
   assert.deepEqual(d.envs.studio.dialParams, ['color']);
 });
@@ -71,4 +71,11 @@ test('sfx action: "rise" replaces nearby sounds; "none" silences them', () => {
   assert.ok(tl.events.some(e => e.t === 11.52 && e.sfx === 'rise'));
   // "pinball" (27.36): the photon's appear pop is silenced by the sfx "none" there.
   assert.ok(!tl.events.some(e => Math.abs(e.t - 27.36) <= 0.25));
+});
+
+test('every prop is tagged see-through, cutaway or solid for the writer', () => {
+  const d = catalogData();
+  for (const [k, v] of Object.entries(d.props)) assert.match(v.inside, /^(see-through|open|solid( .+)?|cutaway: .+)$/, k);
+  for (const k of Object.keys(INSIDE)) assert.ok(d.props[k], `stale INSIDE key ${k}`);
+  assert.match(d.props.magma_chamber.inside, /^cutaway/);
 });

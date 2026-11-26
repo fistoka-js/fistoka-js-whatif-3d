@@ -37,12 +37,29 @@ function field(spec) {
 }
 const fields = specs => Object.fromEntries(Object.entries(specs).map(([k, v]) => [k, field(v)]));
 
+// What the writer can see INTO (read from each prop's materials and geometry). Particles go inside only a see-through
+// prop or the open part of a cutaway; inside a solid prop they are hidden. open = nothing to put inside.
+const S = 'see-through', X = 'solid';
+export const INSIDE = {
+  ...Object.fromEntries(['particles', 'atom', 'lattice', 'lightbulb', 'thermometer', 'cell', 'shield_dome'].map(k => [k, S])),
+  ...Object.fromEntries(['arrow', 'beam', 'wire', 'wave', 'light_wave', 'lightning', 'ring', 'galaxy', 'dna', 'crowd', 'scale_balance', 'molecule', 'bomb_blast'].map(k => [k, 'open'])),
+  layer_stack: 'cutaway: top 3 slabs are glassy (particles show through), bottom 2 are solid; keep particles in the top 3',
+  iceberg: 'cutaway: the ice is solid; put particles in the see-through water volume',
+  terrain: 'cutaway: only the soil edge shows; put particles on or just above the surface',
+  volcano: 'cutaway: only the crater at the top shows; start particles in the crater',
+  magma_chamber: 'cutaway: cut face shows chamber and vent; put particles on or just in front of the face (z a little above 0), never behind it',
+  ...Object.fromEntries(['ball', 'box', 'planet', 'sun', 'magnet', 'black_hole', 'asteroid', 'comet', 'rocket', 'satellite', 'cloud', 'tree', 'city',
+    'house', 'rock', 'island', 'fire', 'water_drop', 'crystal', 'person', 'chameleon', 'brain', 'heart', 'eye', 'virus', 'fish', 'bird',
+    'skeleton_bone', 'dinosaur', 'car', 'plane', 'ship', 'submarine', 'battery', 'clock', 'bars', 'gauge', 'coin_stack', 'phone', 'gear', 'tuner',
+    'mountain', 'marshmallow'].map(k => [k, X])),
+};
+
 export function catalogData() {
   const props = {}, envs = {}, actions = {};
   for (const [name, mod] of Object.entries(catalog.props)) {
     const m = mod.meta;
     props[name] = {
-      summary: m.summary, ...(m.notes ? { notes: m.notes } : {}), floats: !!m.floats, ...(m.stageSpace ? { stageSpace: true } : {}),
+      summary: m.summary, ...(INSIDE[name] ? { inside: INSIDE[name] } : {}), ...(m.notes ? { notes: m.notes } : {}), floats: !!m.floats, ...(m.stageSpace ? { stageSpace: true } : {}),
       params: fields(m.params),
       animatable: Object.fromEntries(Object.entries(m.animatable || {}).map(([k, a]) => [k, { min: a.min, max: a.max, default: a.default, doc: a.doc }])),
     };

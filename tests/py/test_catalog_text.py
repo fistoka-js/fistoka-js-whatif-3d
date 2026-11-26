@@ -64,4 +64,13 @@ def test_size_stays_compact():
     # 600 tokens for the dials, bindings and continuing-shots text (round 2).
     cat = CT.load_catalog()
     tokens = len(CT.catalog_text(cat)) / 4
-    assert tokens < 3500 * len(cat["props"]) / 61 * 1.2 + 600 + 200   # +200 tokens: writer-facing prop notes
+    assert tokens < 3500 * len(cat["props"]) / 61 * 1.2 + 600 + 200 + 330 + 300   # ~5% headroom; +200 tokens: writer-facing prop notes; +330: see-through/cutaway/solid tag on each prop
+
+
+def test_every_prop_line_carries_its_inside_tag():
+    cat = CT.load_catalog()
+    lines = {l.split(" ")[1]: l for l in CT.catalog_text(cat).splitlines() if l.startswith("- ")}
+    for name in cat["props"]:
+        assert re.search(r"inside: (see-through|cutaway|solid|open)", lines[name]), name
+    assert "cutaway: cut face shows chamber" in lines["magma_chamber"]
+    assert "see-through" in lines["lightbulb"] and "solid" in lines["car"]

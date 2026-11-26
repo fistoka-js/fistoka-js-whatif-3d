@@ -73,6 +73,13 @@ def test_inside_a_prop_rules():
     once(BOARD, 'when the sentence says something happens "inside" a prop')
 
 
+def test_solid_props_hide_particles_rule():
+    once(SHOW, "Inside a solid prop they are hidden")
+    once(SHOW, "never a solid prop")
+    once(BOARD, "use INSIDE only for a prop tagged see-through")
+    once(writer.read_prompt("storyboard_review_system.md"), "tags solid: it would be hidden")
+
+
 def test_wire_rules():
     once(SHOW, 'never both wires "to" the bulb')
     once(SHOW, "electrons leave the battery's negative (−) end")

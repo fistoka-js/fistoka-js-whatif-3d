@@ -89,6 +89,7 @@ def prop_line(name, p):
     if anim:
         out += f" anim: {anim}"
     out += f" -- {_summary(p)}"
+    out += f" inside: {p['inside']}." if p.get("inside") else ""
     return out + (f" notes: {p['notes']}" if p.get("notes") else "")
 
 
