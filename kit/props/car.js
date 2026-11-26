@@ -9,6 +9,7 @@ export const meta = {
   summary: 'A chunky toy car, truck or bus with turning wheels. For traffic, transport, fuel, speed, commuting.',
   tags: ['machine', 'vehicle'],
   floats: false,
+  notes: "Move the bus and its cargo together with an ease out. The bus is a solid opaque body with no cutaway: cargo meant to be inside starts hidden inside the body toward the front at body height, exits through the front after the stop (never over the roof) and lands on the ground clear of the bus with gaps between pieces, inside the frame.",
   params: {
     color: { type: 'color', default: 'red', doc: 'paint colour' },
     style: { type: 'enum', values: ['car', 'truck', 'bus'], default: 'car', doc: 'which vehicle' },

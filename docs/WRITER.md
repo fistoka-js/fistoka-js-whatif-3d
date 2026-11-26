@@ -62,9 +62,9 @@ Tests: `tests/py/test_writer.py`, `test_storyboard.py`, `test_fact_check.py`, `t
    - `storyboard` call (`storyboard_system.md`, `storyboard_user.md`): gets the voiced sentences with their
      start and end times, the beat list and the prop and environment names. It replies with JSON: the hook
      question, the one-sentence answer, the hero prop, a plain summary, the scenes, and for EVERY sentence its
-     scene, the objects on screen (catalogue prop, look, place, what it stands for), the change, the camera,
-     on-screen texts (`words`, the phrase that `starts` it, the sentence at whose start it `ends`, at least
-     2.5 s on screen) and flows (`what`, `by` which prop, `from` and `to` prop names), plus the ending (closing
+     scene, the objects on screen (catalogue prop, look, place, what it stands for), the change (a visible event on a named object: it appears, moves, breaks, flips, fills), the camera,
+     on-screen texts (`words`, the phrase that `starts` it, the sentence at whose start it `ends`: kept until the idea changes, at least
+     2.5 s, the minimum always wins) and flows (`what`, `by` which prop, `from` and `to` prop names), plus the ending (closing
      question, comment line, what the picture does in the 2.5 s tail). An object the catalogue cannot draw well
      is a gap: `{"missing", "stand_in", "central"}`.
    - A code check (`storyboard_problems`): one entry per sentence; hook and answer not empty; hero is a prop
@@ -76,11 +76,10 @@ Tests: `tests/py/test_writer.py`, `test_storyboard.py`, `test_fact_check.py`, `t
    - `storyboard-review` call (`storyboard_review_system.md`, `storyboard_review_user.md`): a separate,
      skeptical story editor checks (a) that each sentence's picture matches its words and the pictures alone
      tell the same story, (b) that the hook question is answered, (c) every named object is shown or a gap,
-     (d) flow directions, (e) text kept long enough, (f) supporting props, (g) the ending, (h) central gaps. It
+     (d) flow directions, (e) text kept long enough, (f) variety (S1 limit, no 3 sentences in a row with the same picture; no prop quota), (g) the ending, (h) central gaps, (i) the picture matches the words, sentence by sentence. It
      replies `{"verdict": "pass" | "problems", "problems": [{"sentence", "kind", "what", "fix"}]}`. "pass"
      wins even when it lists points: they are kept as notes.
-   - Problems: `storyboard-repair1`, then a new review, then `storyboard-repair2` and a review
-     (`storyboard_repairs`, default 2; `storyboard_repair_user.md`). Still problems: the run fails (exit 1,
+   - Problems: up to `storyboard_repairs` repairs (`storyboard-repair1`, a new review, and so on; default 1; `storyboard_repair_user.md`). Still problems: the run fails (exit 1,
      status `failed`, `error` lists the problems left).
    - A gap with `"central": true` in the approved storyboard stops the run like a `feasible: false` script
      (NEEDS-PROPS.md, exit 3, the runner queues the topic in `queue/needs-props/`); so does a last
@@ -98,7 +97,7 @@ Tests: `tests/py/test_writer.py`, `test_storyboard.py`, `test_fact_check.py`, `t
    hero prop that stays, at least one dial bound to two or more things, cause and effect in the same
    frame, labels that only name parts, and nothing unchanged for more than 3.5 s. Pulse and shake are
    emphasis only (at most 3 pulses and 2 shakes in the video, a camera shake counts), particle clouds
-   hold still between the words that need a change, and each scene adds 1 or 2 supporting props.
+   hold still between the words that need a change, and a second prop is added only when the sentence names it or something visibly happens to it (a single hero is fine).
    Its reply is written to `show.json` and checked with
    `node tools/validate.mjs --story-rules` (SPEC section 14: every sentence needs a change, no still
    stretch over 3.5 s). The writer accepts a show only with no errors, neither of the checker's
@@ -106,7 +105,7 @@ Tests: `tests/py/test_writer.py`, `test_storyboard.py`, `test_fact_check.py`, `t
    the video) and at least one dial bound to two or more things in one scene (`story.dial`, checked in
    `writer.py`). With a storyboard it is also checked against it (`coverage_problems`, tolerant on
    purpose): every storyboard prop type (or a gap's stand-in) is in the show; every storyboard text is a
-   label, text or count that shows it. The PROMPTS ask for a text held until the next sentence for every
+   label, text or count that shows it. The PROMPTS ask for a text kept until the idea changes (at least {{TEXT_SECONDS}} s) for every
    spoken number with a unit, and a count only for a number without a unit. The CHECKER is more tolerant
    and also accepts a count. For example "2000 °C" is covered by the text "2000 °C" or "2000", or by a
    count to 2000 with unit "°C" or " degrees" (see `_overlay_tokens` and `text_covers` in `writer.py`).
@@ -146,7 +145,7 @@ Tests: `tests/py/test_writer.py`, `test_storyboard.py`, `test_fact_check.py`, `t
   can make a video with his Claude subscription: a Claude Code agent reads each prompt file and writes the
   reply file. Purposes in order: `script`, (`script-rewrite`), `audit`, (`script-redraft`,
   (`script-rewrite`), `audit-redraft`), (`shorten`, (`script-rewrite`), `audit-shorten`), `storyboard`,
-  `storyboard-review`, (`storyboard-repair1`, `storyboard-review`, `storyboard-repair2`, `storyboard-review`),
+  `storyboard-review`, (`storyboard-repair1`, `storyboard-review`; `storyboard-repair2` and a review only if `storyboard_repairs` is raised),
   `show`, (`repair1`..`repair3`), (`qa-repair`); `script-rewrite` happens at most once; a storyboard repair
   whose code check fails is followed by the next repair, not a review; with `storyboard: false` the four
   storyboard purposes never appear. The file names start with a two-digit call
@@ -184,7 +183,7 @@ missing uses the default). The writer reads only these keys:
 | `rate` | `+12%` | Edge speaking rate |
 | `fallback_seed` | `0` | which variant of the fallback show |
 | `storyboard` | `true` | plan and review every sentence's picture before the show call (step 4); `false` gives the old steps exactly |
-| `storyboard_repairs` | `2` | storyboard repair rounds after a failed review or code check; still failing ends the run (exit 1); only a whole number counts (anything else gives 2), below 0 gives 0 |
+| `storyboard_repairs` | `1` | storyboard repair rounds after a failed review or code check; still failing ends the run (exit 1); only a whole number counts (anything else gives 1), below 0 gives 0 |
 
 ## Exit codes
 
@@ -235,7 +234,7 @@ All model-facing text is in `pipeline/prompts/`. Edit it there; no code change i
   beats plus the corrections).
 - `show_system.md`: the heart. How the engine works, a "how to think" procedure (the chain and the hero ->
   2-4 scenes -> dials -> a change in every sentence -> emphasis only (pulse, shake) -> clouds hold still
-  -> variety (supporting props) -> cause and effect together -> JSON), the checker's
+  -> variety (a second prop only when the words name it) -> cause and effect together -> JSON), the checker's
   rules (story rules included), picture rules, a short "good to know" list (ring radius and tilt, flat
   particle rings, bars, the planet's own turn, circuit wires, particles inside a prop, a held text for
   every unit number), a checklist.
@@ -286,7 +285,7 @@ million tokens; Haiku 5.5 $0.10 / $0.50 (cache rates assumed 0.1x and 1.25x).
 | typical (show valid first time, no rewrite, no redraft): script with beats ~$0.035, audit ~$0.02, show ~$0.12; plus the storyboard step below (on by default) | **about $0.18**, about $0.28 with the storyboard | about $0.009, about $0.014 with the storyboard |
 | the one script rewrite (a sentence with no showable change) | about +$0.03 | about +$0.002 |
 | each extra repair round (system read from cache, previous show + errors resent) | about +$0.10 | about +$0.005 |
-| worst case (rewrite + redraft + 2nd audit + shorten + audit-shorten + 3 repairs + QA repair) | about $0.70 without the storyboard step; about $0.95 with it (estimate: storyboard + review + 2 repairs with 2 more reviews, about +$0.25) | about $0.035; about $0.05 with it |
+| worst case (rewrite + redraft + 2nd audit + shorten + audit-shorten + 3 repairs + QA repair) | about $0.70 without the storyboard step; about $0.90 with it (estimate: storyboard + review + 1 repair with 1 more review, about +$0.20) | about $0.035; about $0.05 with it |
 | the storyboard step (2 calls when the first review passes, 4 with one repair (storyboard, review, repair1, review): storyboard ~$0.06, review ~$0.03, the storyboard in the show prompt ~$0.004) | about +$0.10 | about +$0.005 |
 | each storyboard repair (repair + another review) | about +$0.08 | about +$0.004 |
 

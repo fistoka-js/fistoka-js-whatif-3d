@@ -33,6 +33,8 @@ Floats: no (stands on the ground)
 
 A rounded box in any colour and proportions (block, crate, bumper, wall).
 
+Notes: Size is the longest side. Beside a vehicle use about 0.2 x the vehicle size.
+
 Floats: no (stands on the ground)
 
 | field | type | what |
@@ -47,6 +49,8 @@ Floats: no (stands on the ground)
 ### planet
 
 A planet or moon: earth, moon, mars, gas, ice, lava. Optional rings, air glow, a movable ocean bump.
+
+Notes: The ocean bump reads as a swell only near the centre of the disc facing the camera (planet size 1.3, camera angle front): keep ocean_lon and ocean_lat within about 14 degrees of centre (east and north positive), ocean_lat at -7 or higher (the south turns dark); a large value shows as a dark lens at the rim. A turning planet carries the bump out of view: use turn 0 and no spin, or show the ocean after the stop. After a spin stops the planet stays at the frozen angle (spin speed x seconds x 360, added over several spins); set ocean_lon to the wanted on-screen longitude minus that angle (mod 360). To move the bump after a stop, set ocean_lon over 0.1 s, and set ocean to 0.8 if it was 0. Declaring the planet again in a new shot resets the angle to 0. Keep the glow param at or below 0.05 or the continents fade; atmosphere only thickens the rim.
 
 Floats: yes
 
@@ -171,6 +175,8 @@ Floats: no (stands on the ground)
 ### volcano
 
 A volcano cone with a glowing crater. Animate "eruption" for a lava fountain, smoke and lava streaks.
+
+Notes: The eruption column (particles, shape stream, rotated to flow upward) starts inside the crater and, with its cloud, stays within about 1.3 x the volcano height above its top, or the camera shrinks the volcano.
 
 Floats: no (stands on the ground)
 
@@ -661,6 +667,8 @@ Floats: no (stands on the ground)
 
 A chunky toy car, truck or bus with turning wheels. For traffic, transport, fuel, speed, commuting.
 
+Notes: Move the bus and its cargo together with an ease out. The bus is a solid opaque body with no cutaway: cargo meant to be inside starts hidden inside the body toward the front at body height, exits through the front after the stop (never over the roof) and lands on the ground clear of the bus with gaps between pieces, inside the frame.
+
 Floats: no (stands on the ground)
 
 | field | type | what |
@@ -704,6 +712,8 @@ Floats: yes
 
 A glass lightbulb that can light up. For ideas, electricity, energy use, efficiency, brightness.
 
+Notes: On the ground it is exactly its size tall; the filament is about 0.65 x its size high. Particles inside the bulb go at the bulb x and z at the filament height, smaller than the glass.
+
 Floats: no (stands on the ground)
 
 | field | type | what |
@@ -718,6 +728,8 @@ Animatable with `set` (also usable as a starting value):
 
 A cylinder battery with a charge window that fills and turns red to green. For energy, power, charging.
 
+Notes: On the ground it is 0.79 x its size tall to the top of its cap. The − end is at the base, the + end at the top cap. Frame a battery-bulb circuit medium, about 1.25 fill, focused on the battery and bulb, with a gentle push-in (amount 0.5 or less), or the picture check flags subject-small.
+
 Floats: no (stands on the ground)
 
 | field | type | what |
@@ -731,6 +743,8 @@ Animatable with `set` (also usable as a starting value):
 ### thermometer
 
 A thermometer whose liquid rises and turns blue to red. For temperature, heat, cold, fever, climate.
+
+Notes: As a side prop it stays clear of the hero, not touching or overlapping it, with its outer edge at most about a quarter of the hero size past the hero side; keep a side prop's z between -0.5 and 0.5.
 
 Floats: no (stands on the ground)
 
@@ -1039,11 +1053,13 @@ Can follow a dial: `color`
 
 The surface of another world: ground, low horizon, big sky with stars and an optional moon or ringed planet.
 
+Notes: A big grey moon hangs in the sky by default; set companion none to remove it.
+
 | field | type | what |
 |---|---|---|
 | `ground` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#b5593a" | ground colour (Mars red, Moon grey, ...) |
 | `sky` | colour (#rrggbb or a name: red, orange, yellow, green, teal, cyan, blue, indigo, purple, pink, white, grey, black, brown, gold, accent); default "#e0a070" | sky colour at the horizon |
-| `companion` | one of: none \| moon \| ringed; default "moon" | a big body hanging in the sky |
+| `companion` | one of: none \| moon \| ringed; default "moon" | a big body hanging in the sky (a grey moon by default; "none" removes it) |
 
 ## Actions
 

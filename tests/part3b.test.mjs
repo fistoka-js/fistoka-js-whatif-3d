@@ -611,23 +611,28 @@ test('wire: the glow action raises the emissive, and the dots fade with the prop
   assert.ok(w.dots.every(d => Math.abs(d.material.opacity - 0.5) < 1e-9));
 });
 
-// The prompt tells the writer where a battery and a bulb top out; build the real props and check those numbers.
-test('prompt: the "0.79 x size" battery and "exactly its size" bulb claims match the real props', () => {
-  const prompt = readFileSync(new URL('../pipeline/prompts/show_system.md', import.meta.url), 'utf8');
-  const claim = prompt.match(/a "battery" is ([\d.]+) x its size tall.*?"lightbulb" exactly its size tall/s);
-  assert.ok(claim, 'the prompt line about battery and bulb heights is missing');
-  // The real stage places the prop on the floor; the top is the highest solid mesh (the bulb's halo sprite does not count).
-  const topOf = (type, size) => {
+// The battery and lightbulb prop docs tell the writer their heights; build the real props and check those numbers.
+test('prop docs: battery "0.79 x its size", bulb "exactly its size" and filament "0.65 x" match the real props', () => {
+  const doc = name => JSON.stringify(JSON.parse(readFileSync(new URL('../kit/catalog.json', import.meta.url), 'utf8')).props[name].notes);
+  const bat = doc('battery').match(/is ([\d.]+) x its size tall/);
+  const bulb = doc('lightbulb').match(/exactly its size tall; the filament is about ([\d.]+) x its size high/);
+  assert.ok(bat && bulb, 'the battery or lightbulb doc lost its height facts');
+  const wrapOf = (type, size) => {
     const s = { format: 1, title: 'T', voice: { audio: 'voice.mp3', words: 'words.json' },
       shots: [{ id: 'one', env: { type: 'studio' }, props: [{ id: 'p', type, size }] }] };
     const stage = buildStage(resolved(s), catalog, fakeRenderer());
     stage.render(1);
     const wrap = stage.shots[0].byId.get('p').wrapper;
     wrap.updateMatrixWorld(true);
-    let top = -Infinity; const box = new THREE.Box3();
-    wrap.traverse(o => { if (o.isMesh && !o.isSprite) top = Math.max(top, box.setFromObject(o).max.y); });
-    return top;
+    return wrap;
   };
-  close(topOf('battery', 1.2) / 1.2, Number(claim[1]), 0.01); // 0.79 x size
-  close(topOf('lightbulb', 1), 1, 0.01);
+  // the top is the highest solid mesh (the bulb's halo sprite does not count)
+  const topOf = (wrap) => { let top = -Infinity; const box = new THREE.Box3();
+    wrap.traverse(o => { if (o.isMesh && !o.isSprite) top = Math.max(top, box.setFromObject(o).max.y); }); return top; };
+  close(topOf(wrapOf('battery', 1.2)) / 1.2, Number(bat[1]), 0.01);
+  const b = wrapOf('lightbulb', 1);
+  close(topOf(b), 1, 0.01);
+  let fil = null; const box = new THREE.Box3();
+  b.traverse(o => { if (o.isMesh && o.geometry.type === 'TubeGeometry') fil = box.setFromObject(o).getCenter(new THREE.Vector3()).y; });
+  close(fil, Number(bulb[1]), 0.03);
 });

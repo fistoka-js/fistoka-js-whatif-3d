@@ -88,14 +88,16 @@ def prop_line(name, p):
     out = f"- {head} ({params})"
     if anim:
         out += f" anim: {anim}"
-    return out + f" -- {_summary(p)}"
+    out += f" -- {_summary(p)}"
+    return out + (f" notes: {p['notes']}" if p.get("notes") else "")
 
 
 def env_line(name, e):
     params = ", ".join(_param(k, v) for k, v in e.get("params", {}).items())
     ground = ENV_GROUND.get(name, "UNKNOWN ground")
     dial = f" [can follow a dial (dialParams): {', '.join(e['dialParams'])}]" if e.get("dialParams") else ""
-    return f"- {name} ({params}) [{ground}]{dial} -- {e['summary']}"
+    notes = f" notes: {e['notes']}" if e.get("notes") else ""
+    return f"- {name} ({params}) [{ground}]{dial} -- {e['summary']}{notes}"
 
 
 def dial_key_line(name, spec):

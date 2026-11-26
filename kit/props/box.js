@@ -9,6 +9,7 @@ export const meta = {
   summary: 'A rounded box in any colour and proportions (block, crate, bumper, wall).',
   tags: ['basic'],
   floats: false,
+  notes: "Size is the longest side. Beside a vehicle use about 0.2 x the vehicle size.",
   params: {
     color: { type: 'color', default: 'orange', doc: 'main colour' },
     finish: { type: 'enum', values: ['matte', 'glossy', 'metal'], default: 'matte', doc: 'surface' },

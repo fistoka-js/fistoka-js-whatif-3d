@@ -64,4 +64,4 @@ def test_size_stays_compact():
     # 600 tokens for the dials, bindings and continuing-shots text (round 2).
     cat = CT.load_catalog()
     tokens = len(CT.catalog_text(cat)) / 4
-    assert tokens < 3500 * len(cat["props"]) / 61 * 1.2 + 600
+    assert tokens < 3500 * len(cat["props"]) / 61 * 1.2 + 600 + 200   # +200 tokens: writer-facing prop notes

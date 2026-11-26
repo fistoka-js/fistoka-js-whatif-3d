@@ -9,6 +9,7 @@ export const meta = {
   summary: 'A thermometer whose liquid rises and turns blue to red. For temperature, heat, cold, fever, climate.',
   tags: ['machine', 'everyday', 'info'],
   floats: false,
+  notes: "As a side prop it stays clear of the hero, not touching or overlapping it, with its outer edge at most about a quarter of the hero size past the hero side; keep a side prop's z between -0.5 and 0.5.",
   params: { color: { type: 'color', default: '#f3f5f9', doc: 'backplate colour' } },
   animatable: { level: { min: 0, max: 1, default: 0.5, doc: 'temperature (0 = cold blue, low; 1 = hot red, high)' } },
 };

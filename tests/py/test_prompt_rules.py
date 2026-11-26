@@ -47,14 +47,12 @@ def test_unit_number_rules_in_show_prompt():
     once(SHOW, 'Use a "text" action of at most 40 characters, with style "number" for a big figure, never a "label"')
     once(SHOW, "A spoken number with a unit")
     once(SHOW, 'count" for a number WITHOUT a unit')
-    once(SHOW, "give the text action an \"until\" that is the first 1 to 6 words of that sentence")
-    once(SHOW, "so the text stays to the end of its shot (the end of the video only if it is in the last shot)")
-    once(SHOW, "until the start of the FIRST later sentence that starts at least {{TEXT_SECONDS}} seconds after the text appears")
-    once(SHOW, "or if no later sentence is long enough, also leave")
+    once(SHOW, "give the text action an \"until\" that is the first 1 to 6 words of the sentence where it should go away")
     once(SHOW, "3 or more unit numbers")
     once(SHOW, 'put one at "pos" "top" and the other at "pos" "middle"')
     once(SHOW, "has priority over a label when the limit of 2 overlays")
-    once(SHOW, "every spoken number with a unit has a text held to the next sentence")
+    once(SHOW, "every spoken number with a unit has a text kept until the idea changes")
+    once(SHOW, "stays on screen until the idea changes, at least {{TEXT_SECONDS}} seconds (that minimum wins even if the scene moves on sooner")
     assert "a temperature, speed, distance, time" in SHOW and "a temperature, speed, distance, time" in BOARD
 
 
@@ -64,76 +62,23 @@ def test_unit_number_rules_in_storyboard_prompt():
     once(BOARD, 'gets a text entry whose "words" are the number and its unit')
     assert "style" not in BOARD.split("EVERY number with a unit")[1].split("Use []")[0]
     once(BOARD, "3 or more numbers with units")
-    once(BOARD, "its own sentence number plus 1")
-    once(BOARD, 'or no later sentence is long enough, use "end"')
-    once(BOARD, "the FIRST later sentence that starts at least {{TEXT_SECONDS}} seconds after the text appears")
+    once(BOARD, "Keep it on screen until the idea changes, at least {{TEXT_SECONDS}} seconds (that minimum always wins")
+    assert "plus 1" not in BOARD
 
 
 def test_inside_a_prop_rules():
     once(SHOW, "To show something INSIDE a prop")
     once(SHOW, "exempt from BOTH size minimums (size 1 and size 0.6)")
     once(SHOW, "(same z, never nearer the camera)")
-    once(SHOW, "about 0.65 x its size above the ground")
-    once(SHOW, 'a size 1.2 bulb at [0.9, 0, 0] gets particles "at" [0.9, 0.8, 0] with "size" 0.4')
     once(BOARD, 'when the sentence says something happens "inside" a prop')
 
 
 def test_wire_rules():
     once(SHOW, 'never both wires "to" the bulb')
     once(SHOW, "electrons leave the battery's negative (−) end")
-    once(SHOW, "wire 1, the out wire, from [-0.35, 0.2, 0.1]")
     once(SHOW, '("arrow", "beam", "wire", "light_wave") have')
     once(SHOW, "beam, arrow or light_wave")
     once(BOARD, "Keep the same direction in every sentence that shows the loop")
-
-
-def test_planet_ocean_placement_rules():
-    once_everywhere('reads as a swell only when the bump sits near the centre of the planet\'s disc as the camera sees it, measured at planet size 1.3 and camera angle "front"')
-    once_everywhere('That centre is screen longitude 0 and screen latitude 0')
-    once_everywhere('East and north are positive.')
-    once_everywhere('Keep "ocean_lon" and "ocean_lat" each between -14 and 14, and judge each one on its own')
-    once_everywhere('"ocean_lon" 14 with "ocean_lat" 14 is the limit at the corner')
-    once_everywhere('"ocean_lon" 20 with "ocean_lat" 20 sticks out as a dark lens at the edge of the planet')
-    once_everywhere('so keep "ocean_lat" at -7 or higher')
-    once_everywhere('These limits are where the bump sits ON SCREEN')
-    once_everywhere('the value to write in "ocean_lon" is a different number, given by the offset rule below')
-    once_everywhere('This holds for the "spin" action around its default axis "y"')
-    once_everywhere('A turning planet carries the bump round the globe and out of view, so the bump cannot be held in view while the planet turns')
-    once_everywhere('place the planet with "turn": 0 and no "spin", or put the ocean after the stop as described next')
-    once_everywhere('If the planet must keep turning in that shot, do not show the ocean bump in that shot')
-    once_everywhere('A planet that spun and then stopped with "spin" speed 0 stays frozen at the angle it reached')
-    once_everywhere('the speed times 360 times the seconds it spun')
-    once_everywhere('if there were several spins, add their angles together')
-    once_everywhere('lasts for the rest of the scene, in the same shot as the spin or in a continuing shot ("continue": true)')
-    once_everywhere('move the bump with the "set" action on "ocean_lon" with "over": 0.1, and also on "ocean" to 0.8 if it was 0')
-    once_everywhere('The value for "ocean_lon" is the wanted on-screen longitude minus the frozen angle in degrees, so for the bump at the centre of the disc it is minus the frozen angle')
-    once_everywhere('Add or subtract 360 to stay between -180 and 180')
-    once_everywhere('South of the equator it turns dark early')
-    once_everywhere('"spin" speed 0.1 for 3 seconds turns the planet 108 degrees, so "ocean_lon" -108')
-    once_everywhere('If you re-declare the planet in a new scene instead, "ocean_lon" counts from rotation 0 again, so do not subtract the angle')
-
-
-def test_earth_video_lessons():
-    once_everywhere('sharp with its "glow" (the param or the action) at about 0.05 or lower')
-    once_everywhere('At 0.1 a bluish veil is already visible over the surface, and from 0.2 up the continents fade into a pale haze')
-    once_everywhere('This was seen on a planet of "size" 1.3 at "angle" "front" with the default lighting.')
-    once_everywhere('Its "atmosphere" only thickens the blue rim and the surface stays readable up to 0.9 when "glow" is low, so "glow" is the value to keep small')
-    once_everywhere('Write the environment as an object with "companion": "none" to remove it.')
-    once_everywhere('so a box at "size" 1 is 1 unit along its longest side however small those numbers are')
-    once_everywhere('Beside a vehicle give a crate a "size" of about 0.2 x the vehicle\'s "size"')
-    once_everywhere('is a solid, opaque body with no cutaway')
-    once_everywhere('must start hidden inside the body, toward the front, at body height')
-    once_everywhere('come out through the front after the stop, never over the roof')
-    once_everywhere('with an "ease" "out" so the slowing reads as a stop')
-    once_everywhere('arc it down to "at" y 0 because a prop that does not float stands with its bottom at its "at" height')
-    once_everywhere('land the pieces clear of the bus front with gaps between them and well inside the frame')
-    # all 4 earth-video bullets must exist (a changed prefix fails here) and hold no semicolons
-    prefixes = ('- A planet keeps its continents', '- The "planet_surface" environment hangs',
-                '- A "box" "size" sets its longest side', '- The "car" with "style": "bus"')
-    lines = [ln for ln in SHOW.splitlines() if ln.startswith(prefixes)]
-    assert len(lines) == 4, lines
-    for line in lines:
-        assert ';' not in line, line[:60]
 
 
 def test_no_bullet_glued_onto_a_sentence():
@@ -147,61 +92,58 @@ def test_no_bullet_glued_onto_a_sentence():
 def test_show_prompt_fills_the_text_seconds_number():
     filled = writer.show_system_prompt()
     assert "{{TEXT_SECONDS}}" not in filled
-    assert f"less than {writer.TEXT_MIN_SECONDS:g} seconds after the text appears" in filled
+    assert f"at least {writer.TEXT_MIN_SECONDS:g} seconds (that minimum wins even if the scene moves on sooner" in filled
 
 
-def test_circuit_framing_bullet():
-    """A battery-bulb-wire circuit is told to be big: sizes, positions, medium framing with fill 1.25."""
-    once_everywhere('use a battery "size" 1.6 at [-0.8, 0, 0] and a bulb "size" 1.5 at [0.8, 0, 0]')
-    once_everywhere('"framing": "medium" with "fill": 1.25 (about 85% of the frame width')
-    assert any(ln.startswith('- To make a battery, bulb and wire circuit fill the frame') for ln in SHOW.splitlines())
+def test_one_video_recipes_are_gone():
+    """No exact coordinates for the eruption, the battery circuit or the ocean bump; no prop quota."""
+    for gone in ('ocean_lon', 'ocean_lat', '[0.27, 1.64, 0]', '[-0.8, 0, 0]', '"size" 1.6', '0.79 x', 'fill": 1.25',
+                 '0.05 or lower', 'companion', 'z 0.9'):
+        assert gone not in SHOW, gone
+    for phrase in ('Beside a vehicle give a crate', 'cargo meant to be inside it', 'the bus front', 'An eruption starts at the hero',
+                   'an ash cloud centred at y', 'rotate" [0, 0, 90]'):
+        assert phrase not in SHOW, phrase
+    assert 'rim at y' not in SHOW
+    once(SHOW, "electrons leave the battery's negative (−) end")
+    once(SHOW, 'Separate props never touch or overlap unless one is inside the other')
+    once(SHOW, 'a clear gap')
 
 
-def bullet(start):
-    """The one show-prompt line that starts with this text."""
-    lines = [ln for ln in SHOW.splitlines() if ln.startswith(start)]
-    assert len(lines) == 1, start
-    return lines[0]
+def test_planet_surface_moon_note_lives_in_the_catalogue():
+    cat = (writer.PROMPTS.parents[1] / "kit" / "catalog.json").read_text(encoding="utf-8")
+    assert '\\"none\\" removes it' in cat and "companion" not in SHOW
 
 
-def test_side_prop_placement_bullet():
-    """Side props: outer edge at most a quarter of hero size past its side, z -0.5 to 0.5."""
-    once_everywhere('Measure it by its outer edge: its "at" x plus half its "size"')
-    once_everywhere("may reach no more than a quarter of the hero's \"size\" past the hero's side")
-    once_everywhere('Its "at" z is between -0.5 and 0.5.')
-    once_everywhere('This is a rule of thumb, not what the engine measures')
-    once_everywhere('so the rule errs on the safe side.')
-    once_everywhere('A ground prop toward the camera (z 0.9) sinks into the captions.')
-    # Read the worked example from the prompt and check it against the rule it states.
-    line = bullet('- A side prop beside a wide hero')
-    hero = re.search(r'beside a hero of "size" ([\d.]+) at x ([\d.-]+) \(side at x ([\d.]+), limit x ([\d.]+)\)', line)
-    size, x = float(hero[1]), float(hero[2])
-    side, limit = float(hero[3]), float(hero[4])
-    assert side == round(x + size / 2, 2) and limit == round(x + size / 2 + size / 4, 2)
-    good = re.search(r'a thermometer of "size" ([\d.]+) at x ([\d.]+) \(outer edge ([\d.]+)\) is fine', line)
-    bad = re.search(r'but one at x ([\d.]+) \(outer edge ([\d.]+)\) breaks the rule', line)
-    prop = float(good[1])
-    assert float(good[3]) == round(float(good[2]) + prop / 2, 2) <= limit
-    assert float(bad[2]) == round(float(bad[1]) + prop / 2, 2) > limit
+def test_no_prop_quota():
+    review = writer.read_prompt("storyboard_review_system.md")
+    for name, text in (("show", SHOW), ("board", BOARD), ("review", review)):
+        assert "supporting props" not in text.replace("do not ask for supporting props", ""), name
+        assert "1 or 2 supporting" not in text, name
+    ask = "Add a second prop only when the sentence names it or something visibly happens to it. A single hero alone is fine. Never add a prop the words do not name or clearly imply; stand-ins and the analogy's own objects are allowed."
+    once(BOARD, ask)
+    assert "Add a second prop only when the sentence names it" in SHOW
 
 
-def test_eruption_column_and_cloud_bullet():
-    """Eruption starts at the crater, cloud above it; all within 1.3 x hero height of its top."""
-    once_everywhere("- An eruption starts at the hero's crater: its column may start a little below")
-    once_everywhere('A cloud above it sits higher, over the eruption.')
-    once_everywhere("within about 1.3 times the hero's height above the hero's top")
-    once_everywhere('so it starts inside the crater with no gap')
-    once_everywhere('"at" [0.27, 1.64, 0] with "rotate" [0, 0, 65] and "at" [-0.27, 1.64, 0]')
-    # Read the worked example from the prompt and check it against the rule it states.
-    line = bullet("- An eruption starts at the hero's crater")
-    k = float(re.search(r"within about ([\d.]+) times the hero's height", line)[1])
-    m = re.search(r'\(([\d.]+) tall, rim at y ([\d.]+), so everything stays below y ([\d.]+)\)', line)
-    height, rim, top = float(m[1]), float(m[2]), float(m[3])
-    assert round(rim + k * height, 2) == top
-    col = re.search(r'from y ([\d.]+) to ([\d.]+), so it starts inside the crater', line)
-    assert float(col[1]) < rim < float(col[2]) <= top
-    fan = re.search(r'\("size" ([\d.]+), "at" \[([\d.]+), ([\d.]+), 0\] with "rotate" \[0, 0, (\d+)\]', line)
-    half, y, angle = float(fan[1]) / 2, float(fan[3]), math.radians(float(fan[4]))
-    assert y - half * math.sin(angle) < rim and y + half * math.sin(angle) <= top
-    cloud = re.search(r'an ash cloud centred at y ([\d.]+) \(top about y ([\d.]+)\)', line)
-    assert float(cloud[1]) > rim and float(cloud[2]) <= top
+def test_storyboard_change_is_an_event():
+    once(BOARD, "the visible EVENT on a named object")
+    once(BOARD, "Do not let 3 sentences in a row show the same objects in the same state")
+    once(BOARD, "An analogy gets its own picture.")
+    assert "A glow or a needle alone" in BOARD
+
+
+def test_review_checks_picture_matches_words():
+    review = writer.read_prompt("storyboard_review_system.md")
+    once(review, "(i) PICTURE MATCHES WORDS: for EACH sentence write what the words say and what the picture shows")
+    assert "shows something the words do not mention" in review and "misses something the words name" in review
+
+
+
+def test_catalogue_text_carries_the_relocated_facts():
+    """The facts moved out of the show prompt reach the model through the catalogue notes."""
+    from pipeline import catalog_text
+    text = catalog_text.catalog_text()
+    for fact in ("0.79 x its size tall", "The − end is at the base", "0.65 x its size high", "dark lens",
+                 "opaque body", "never over the roof", "within about 14 degrees", "-7 or higher",
+                 "frozen angle", "resets the angle to 0", "glow param at or below 0.05", "1.3 x the volcano height",
+                 "set companion none", "0.2 x the vehicle size", "quarter of the hero size", "subject-small"):
+        assert text.count(fact) == 1, fact

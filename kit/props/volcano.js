@@ -10,6 +10,7 @@ export const meta = {
   summary: 'A volcano cone with a glowing crater. Animate "eruption" for a lava fountain, smoke and lava streaks.',
   tags: ['nature', 'earth'],
   floats: false,
+  notes: "The eruption column (particles, shape stream, rotated to flow upward) starts inside the crater and, with its cloud, stays within about 1.3 x the volcano height above its top, or the camera shrinks the volcano.",
   params: {
     color: { type: 'color', default: '#9a6448', doc: 'rock colour of the cone' },
     seed: { type: 'int', min: 0, max: 999, default: 1, doc: 'which variant of the shape' },

@@ -9,6 +9,7 @@ export const meta = {
   summary: 'A cylinder battery with a charge window that fills and turns red to green. For energy, power, charging.',
   tags: ['machine', 'energy', 'everyday'],
   floats: false,
+  notes: "On the ground it is 0.79 x its size tall to the top of its cap. The − end is at the base, the + end at the top cap. Frame a battery-bulb circuit medium, about 1.25 fill, focused on the battery and bulb, with a gentle push-in (amount 0.5 or less), or the picture check flags subject-small.",
   params: { color: { type: 'color', default: '#2d6ed6', doc: 'body colour' } },
   animatable: { charge: { min: 0, max: 1, default: 0.6, doc: 'charge level: window fill and colour (0 = empty red, 1 = full green)' } },
 };

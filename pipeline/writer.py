@@ -14,7 +14,7 @@ Steps (docs/WRITER.md explains each in plain words):
      (its script is beat-checked and fact-audited, "audit-shorten", before it is voiced), then voice again.
   4. Storyboard (setting "storyboard", on by default): a "storyboard" call plans every sentence's picture
      (storyboard.json, storyboard.md), a code check and a separate "storyboard-review" call judge it, and
-     up to "storyboard_repairs" (setting, default 2) "storyboard-repairN" calls fix it. Still failing -> exit 1.
+     up to "storyboard_repairs" (setting, default 1) "storyboard-repairN" calls fix it. Still failing -> exit 1.
      A "central" gap -> NEEDS-PROPS.md, exit 3.
   5. Show call (gets the beat list and the storyboard) -> shows/<slug>/show.json -> node tools/validate.mjs
      --story-rules. Errors, the story.scenes / story.subject warnings, no dial bound to two or more things,
@@ -64,7 +64,7 @@ DEFAULTS = {
     "rate": "+12%",
     "fallback_seed": 0,
     "storyboard": True,           # plan and review every sentence's picture before the show call
-    "storyboard_repairs": 2,      # storyboard repair rounds after a failed review
+    "storyboard_repairs": 1,      # storyboard repair rounds after a failed review
 }
 TAIL_SECONDS = fallback.TAIL      # quiet seconds after the last word (same default as kit/engine/show.js)
 WORD_FLOOR = 180                   # the script prompt asks for 180 to 195 words; a shorten never goes below this
@@ -1176,8 +1176,8 @@ def storyboard_step(run, complete, cat, words):
     user, purpose = original, "storyboard"
     real = []                            # the real problems (code check or reviewer) of the last readable round
     rounds = run.settings.get("storyboard_repairs")
-    # Only a real whole number counts (not a bool, string or float); anything else is the default 2. Below 0 is 0.
-    rounds = max(0, rounds) if isinstance(rounds, int) and not isinstance(rounds, bool) else 2
+    # Only a real whole number counts (not a bool, string or float); anything else is the default 1. Below 0 is 0.
+    rounds = max(0, rounds) if isinstance(rounds, int) and not isinstance(rounds, bool) else 1
     try:
         for attempt in range(rounds + 1):
             text = ""

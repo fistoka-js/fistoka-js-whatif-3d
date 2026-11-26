@@ -12,10 +12,11 @@ export const meta = {
   name: 'planet_surface',
   summary: 'The surface of another world: ground, low horizon, big sky with stars and an optional moon or ringed planet.',
   ground: true,
+  notes: "A big grey moon hangs in the sky by default; set companion none to remove it.",
   params: {
     ground: { type: 'color', default: '#b5593a', doc: 'ground colour (Mars red, Moon grey, ...)' },
     sky: { type: 'color', default: '#e0a070', doc: 'sky colour at the horizon' },
-    companion: { type: 'enum', values: ['none', 'moon', 'ringed'], default: 'moon', doc: 'a big body hanging in the sky' },
+    companion: { type: 'enum', values: ['none', 'moon', 'ringed'], default: 'moon', doc: 'a big body hanging in the sky (a grey moon by default; "none" removes it)' },
   },
 };
 

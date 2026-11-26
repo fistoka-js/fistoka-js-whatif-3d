@@ -9,6 +9,7 @@ export const meta = {
   summary: 'A glass lightbulb that can light up. For ideas, electricity, energy use, efficiency, brightness.',
   tags: ['machine', 'energy', 'everyday'],
   floats: false,
+  notes: "On the ground it is exactly its size tall; the filament is about 0.65 x its size high. Particles inside the bulb go at the bulb x and z at the filament height, smaller than the glass.",
   params: { color: { type: 'color', default: '#ffd36b', doc: 'colour of the light when on' } },
   animatable: { on: { min: 0, max: 1, default: 0, doc: 'brightness (0 = off, 1 = glowing)' } },
 };

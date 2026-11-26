@@ -66,7 +66,7 @@ def run_sb(tmp_path, replies, settings=None):
 # ---------------------------------------------------------------- settings and prompts
 
 def test_storyboard_is_on_by_default_and_settings_can_turn_it_off(tmp_path):
-    assert writer.DEFAULTS["storyboard"] is True and writer.DEFAULTS["storyboard_repairs"] == 2
+    assert writer.DEFAULTS["storyboard"] is True and writer.DEFAULTS["storyboard_repairs"] == 1
     f = tmp_path / "settings.yaml"
     f.write_text("writer:\n  storyboard: false\n  storyboard_repairs: 1\n", encoding="utf-8")
     s = writer.load_settings(f)
@@ -89,8 +89,6 @@ def test_planning_facts_are_the_same_in_the_storyboard_and_show_prompts():
     board, show = writer.read_prompt("storyboard_system.md"), writer.read_prompt("show_system.md")
     for fact in ('+x is right, +y is up, +z is toward the viewer.',
                  'A wire\'s charge dots run from its "from" end to its "to" end; an arrow points at its "to".',
-                 'On the ground, a "battery" is 0.79 x its size tall to the top of its cap and a "lightbulb" exactly '
-                 'its size tall (a size 1.2 battery tops out at y 0.95, a size 1.0 bulb at y 1.0)',
                  '"planet" turns by itself (its "turn" param, default 0.02 turns/s, clouds faster); to show it '
                  'stopping or starting, place it with "turn": 0 and drive all turning with "spin" (speed 0 stops it).'):
         assert fact in board and fact in show, fact
@@ -149,7 +147,8 @@ def test_review_problems_then_repair_then_pass(tmp_path):
 
 def test_still_failing_after_two_repairs_fails_cleanly(tmp_path):
     code, folder, fake = run_sb(tmp_path, {"storyboard": [Board()], "storyboard-repair": [Board(), Board()],
-                                           "storyboard-review": [REVIEW_BAD] * 3})
+                                           "storyboard-review": [REVIEW_BAD] * 3},
+                                   settings={"storyboard_repairs": 2})
     assert code == 1
     assert fake.purposes == ["script", "audit", "storyboard", "storyboard-review", "storyboard-repair1",
                              "storyboard-review", "storyboard-repair2", "storyboard-review"]
@@ -416,7 +415,7 @@ def test_a_non_integer_storyboard_repairs_uses_the_default(tmp_path):
     for bad in ("3", True, 1.0):
         code, folder, fake = run_sb(tmp_path / str(bad), {"storyboard": ["not json"], "storyboard-repair": ["not json"] * 2},
                                     settings={"storyboard_repairs": bad})
-        assert code == 1 and sum(p.startswith("storyboard") for p in fake.purposes) == 3   # 1 + the default 2
+        assert code == 1 and sum(p.startswith("storyboard") for p in fake.purposes) == 2   # 1 + the default 1
 
 
 def test_an_unusable_review_reply_costs_a_repair_instead_of_crashing(tmp_path):
@@ -445,7 +444,7 @@ def test_no_usable_storyboard_at_all_still_writes_the_files(tmp_path):
 def test_a_failed_last_repair_never_lets_an_older_central_gap_decide(tmp_path):
     code, folder, fake = run_sb(tmp_path, {"storyboard": [Board(gap(True))],
                                            "storyboard-repair": [Board(gap(True)), "not json"],
-                                           "storyboard-review": [REVIEW_BAD] * 2})
+                                           "storyboard-review": [REVIEW_BAD] * 2}, settings={"storyboard_repairs": 2})
     assert code == 1 and result(folder)["status"] == "failed"      # not 3: the central gap is from an older reply
     saved = json.loads((folder / "storyboard.json").read_text(encoding="utf-8"))
     assert saved["review"]["last_reply_unusable"] is True and saved["hook"]
@@ -752,7 +751,8 @@ def test_negative_or_zero_sentence_number_means_whole_video():
 
 def test_repair_after_an_unreadable_reply_shows_the_last_good_board(tmp_path):
     code, folder, fake = run_sb(tmp_path, {"storyboard": [Board()], "storyboard-review": [REVIEW_BAD, REVIEW_PASS],
-                                           "storyboard-repair": ["BROKEN-REPLY-XYZ", Board()], "show": [good_show]})
+                                           "storyboard-repair": ["BROKEN-REPLY-XYZ", Board()], "show": [good_show]},
+                                  settings={"storyboard_repairs": 2})
     assert code == 0
     assert fake.purposes[4:6] == ["storyboard-repair1", "storyboard-repair2"]
     second = fake.calls[5].user
@@ -768,7 +768,8 @@ def test_null_storyboard_repairs_uses_the_default(tmp_path):
 
 def test_unreadable_repair_keeps_the_real_problems(tmp_path):
     code, folder, fake = run_sb(tmp_path, {"storyboard": [Board()], "storyboard-review": [REVIEW_BAD, REVIEW_PASS],
-                                           "storyboard-repair": ["BROKEN", Board()], "show": [good_show]})
+                                           "storyboard-repair": ["BROKEN", Board()], "show": [good_show]},
+                                  settings={"storyboard_repairs": 2})
     second = fake.calls[5].user
     assert code == 0 and "the tides are not shown" in second and "your last reply could not be read" in second
     assert second.count("the reply is not valid JSON") == 1

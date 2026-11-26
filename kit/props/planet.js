@@ -14,6 +14,7 @@ export const meta = {
   summary: 'A planet or moon: earth, moon, mars, gas, ice, lava. Optional rings, air glow, a movable ocean bump.',
   tags: ['space'],
   floats: true,
+  notes: "The ocean bump reads as a swell only near the centre of the disc facing the camera (planet size 1.3, camera angle front): keep ocean_lon and ocean_lat within about 14 degrees of centre (east and north positive), ocean_lat at -7 or higher (the south turns dark); a large value shows as a dark lens at the rim. A turning planet carries the bump out of view: use turn 0 and no spin, or show the ocean after the stop. After a spin stops the planet stays at the frozen angle (spin speed x seconds x 360, added over several spins); set ocean_lon to the wanted on-screen longitude minus that angle (mod 360). To move the bump after a stop, set ocean_lon over 0.1 s, and set ocean to 0.8 if it was 0. Declaring the planet again in a new shot resets the angle to 0. Keep the glow param at or below 0.05 or the continents fade; atmosphere only thickens the rim.",
   params: {
     look: { type: 'enum', values: LOOKS, default: 'earth', doc: 'surface style' },
     color: { type: 'color', default: null, doc: 'tint the surface (default: natural colours)' },
