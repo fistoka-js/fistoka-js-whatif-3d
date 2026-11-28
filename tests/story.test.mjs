@@ -46,8 +46,8 @@ test('mechanism fixture passes every story rule (one subject, a dial bound to it
   assert.ok(r.measured.longestStill.seconds < 2.5);
 });
 
-test('ground life in a space shot is an error, once per scene, also in a continuing shot; a person is fine', () => {
-  const envErrors = edit => { const raw = miniShow(); edit(raw); const r = resolveMini(raw); assert.deepEqual(r.errors, []); return storyRules(r.show, catalog).errors.filter(e => e.path === 'story.env'); };
+test('ground life in a space shot is a warning, once per scene, also in a continuing shot; a person is fine', () => {
+  const envErrors = edit => { const raw = miniShow(); edit(raw); const r = resolveMini(raw); assert.deepEqual(r.errors, []); return storyRules(r.show, catalog).warnings.filter(e => e.path === 'story.env'); };
   assert.deepEqual(envErrors(() => {}), []);
   assert.deepEqual(envErrors(raw => raw.shots[0].props.push({ id: 'pilot', type: 'person' })), [], 'astronauts are fine');
   const dino = envErrors(raw => raw.shots[0].props.push({ id: 'rex', type: 'dinosaur' }));
@@ -60,18 +60,14 @@ test('ground life in a space shot is an error, once per scene, also in a continu
 });
 
 test('a ground prop that starts hidden and never appears in a space shot is not reported', () => {
-  const envErrors = edit => { const raw = miniShow(); edit(raw); const r = resolveMini(raw); assert.deepEqual(r.errors, []); return storyRules(r.show, catalog).errors.filter(e => e.path === 'story.env'); };
+  const envErrors = edit => { const raw = miniShow(); edit(raw); const r = resolveMini(raw); assert.deepEqual(r.errors, []); return storyRules(r.show, catalog).warnings.filter(e => e.path === 'story.env'); };
   assert.deepEqual(envErrors(raw => raw.shots[0].props.push({ id: 'rex', type: 'dinosaur', hidden: true })), []);
   assert.equal(envErrors(raw => raw.shots[0].props.push({ id: 'rex', type: 'dinosaur' })).length, 1);
 });
 
-test('ship, car, city, plane, submarine and crowd in space are only a warning; dinosaur, tree, house, fish, bird stay errors', () => {
+test('earthbound things in a space shot are only a warning (the picture critic judges them)', () => {
   const run = type => { const raw = miniShow(); raw.shots[0].props.push({ id: 'x', type }); const r = resolveMini(raw); assert.deepEqual(r.errors, []); const s = storyRules(r.show, catalog); return { e: s.errors.filter(q => q.path === 'story.env'), w: s.warnings.filter(q => q.path === 'story.env') }; };
-  for (const type of ['dinosaur', 'tree', 'house', 'fish', 'bird']) { const r = run(type); assert.equal(r.e.length, 1, type); assert.equal(r.w.length, 0, type); }
-  for (const type of ['ship', 'car', 'city', 'plane', 'submarine', 'crowd']) {
-    const r = run(type); assert.equal(r.e.length, 0, type); assert.equal(r.w.length, 1, type);
-    assert.match(r.w[0].message, new RegExp(`prop "x" \\(${type}\\) is in shot "one", whose environment is "space"`));
-  }
+  for (const type of ['dinosaur', 'tree', 'house', 'fish', 'bird', 'ship', 'car', 'city', 'plane', 'submarine', 'crowd']) { const r = run(type); assert.equal(r.e.length, 0, type); assert.equal(r.w.length, 1, type); }
 });
 
 test('a dial that no visible prop follows does not count as a change', () => {
@@ -134,8 +130,8 @@ test('an earthbound prop the narration names is a thought experiment: a warning,
   const named = run('bird', 'Could a bird fly');
   assert.equal(named.e.length, 0); assert.equal(named.w.length, 1);
   const other = run('bird', 'Could a plane fly');
-  assert.equal(other.e.length, 1); assert.equal(other.w.length, 0);
+  assert.equal(other.e.length, 0); assert.equal(other.w.length, 1); assert.match(other.w[0].message, /cannot float in space/);
   assert.equal(run('dinosaur', 'Dinosaurs').e.length, 0, 'plural');
   assert.match(named.w[0].message, /the narration names the bird.*check it is intended/);
-  assert.equal(run('house', 'our home planet').e.length, 1, '"home" does not name a house');
+  assert.equal(run('house', 'our home planet').w[0].message.includes('cannot float'), true, '"home" does not name a house');
 });

@@ -85,8 +85,11 @@ def reply_cost(reply, price_model=None):
 
 # ---------------------------------------------------------------- files mode
 
-def prompt_text(system, user):
+def prompt_text(system, user, images=()):
     """The exact text a person or agent reads in files mode: the system part, then the user part."""
+    if images:                              # files mode cannot embed pictures: list them for the reader
+        listing = "\n".join(str(i) for i in images)
+        user = user.rstrip() + "\n\n=== IMAGES (open each file and look at it) ===\n\n" + listing
     return ("<!-- One LLM call. Read all of it as your instructions, then write ONLY your answer into the "
             "matching .reply.md file (same name, .reply.md instead of .prompt.md). -->\n\n"
             "=== SYSTEM ===\n\n" + system.rstrip() + "\n\n=== USER ===\n\n" + user.rstrip() + "\n")
@@ -99,12 +102,12 @@ class FilesLlm:
         self.folder = Path(folder) / "llm"
         self.count = 0
 
-    def complete(self, system, user, *, purpose, max_tokens=16000):
+    def complete(self, system, user, *, purpose, max_tokens=16000, images=()):
         self.count += 1
         stem = f"{self.count:02d}-{purpose}"
         prompt_path = self.folder / f"{stem}.prompt.md"
         reply_path = self.folder / f"{stem}.reply.md"
-        text = prompt_text(system, user)
+        text = prompt_text(system, user, images)
         if reply_path.exists():
             # Replay an answer given earlier. The prompt file is left as it was answered.
             answer = reply_path.read_text(encoding="utf-8-sig")
@@ -136,8 +139,13 @@ class ApiLlm:
             self._client = anthropic.Anthropic(api_key=key, max_retries=2)
         return self._client
 
-    def _create(self, system, user, max_tokens):
+    def _create(self, system, user, max_tokens, images=()):
         client = self._get_client()
+        if images:                          # jpg paths -> image blocks, then the text
+            import base64
+            user = [{"type": "image", "source": {"type": "base64", "media_type": "image/jpeg",
+                                                 "data": base64.b64encode(Path(i).read_bytes()).decode()}}
+                    for i in images] + [{"type": "text", "text": user}]
         kwargs = dict(
             model=self.model,
             max_tokens=max_tokens,
@@ -150,11 +158,11 @@ class ApiLlm:
             kwargs["system"] = [{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}]
         return client.messages.create(**kwargs)
 
-    def complete(self, system, user, *, purpose, max_tokens=16000):
+    def complete(self, system, user, *, purpose, max_tokens=16000, images=()):
         wait = 5
         for attempt in range(RETRIES + 1):
             try:
-                msg = self._create(system, user, max_tokens)
+                msg = self._create(system, user, max_tokens, images)
                 break
             except Exception as e:           # only overload / rate limit are retried
                 name = type(e).__name__

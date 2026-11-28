@@ -582,11 +582,11 @@ def test_a_ten_scene_scale_slideshow_is_not_accepted(tmp_path):
                                                "audit": [audit_reply(TEN_CLAIM)], "show": bad[:1], "repair": bad[1:]})
     assert fake.purposes == ["script", "audit", "show", "repair1", "repair2", "repair3"]
     repair_prompt = fake.calls[3].user
-    for path in ("- story.scenes:", "- story.subject:", "- story.dial:"):
+    for path in ("- story.scenes:", "- story.dial:"):
         assert path in repair_prompt, path
     r = result(folder)
     assert code == 0 and r["status"] == "fallback" and r["show"] == "fallback"
-    assert "show: 0 validator error(s), 3 story problem(s)" in (folder / "review.md").read_text(encoding="utf-8")
+    assert "show: 0 validator error(s), 2 story problem(s)" in (folder / "review.md").read_text(encoding="utf-8")
 
 
 def test_dial_reach_counts_bindings_in_one_scene():

@@ -6,7 +6,7 @@
 A writer result that is only the fallback show ("fallback: not good enough to publish") fails the topic,
 unless --allow-fallback is given (local testing only: it is rendered, but never uploaded).
 
-Steps (in order): writer, timeline, render, mix, qa, review, upload.
+Steps (in order): writer, timeline, render, mix, qa, critic, review, upload.
 Each step is skipped when its output file exists and is newer than its inputs, so a failed run
 resumes where it stopped. --from-step NAME forces NAME and every step after it to run again.
 
@@ -15,7 +15,7 @@ Exit codes:
   1  every topic tried failed (see queue/failed/ and shows/<slug>/out/run.log)
   2  bad command line
   3  every topic tried needed props the catalogue does not have (queue/needs-props/)
-  4  files mode: the writer waits for a reply file; run the same command again afterwards
+  4  files mode: the writer or the critic waits for a reply file; run the same command again afterwards
   5  nothing to do: the queue is empty
   6  upload refused by the channel guard or the login (topic put back in pending; fix settings, run again)
 """
@@ -29,10 +29,12 @@ import sys
 import time
 from pathlib import Path
 
+from . import critic as critic_mod
+from . import llm
 from . import queue as queue_mod
 from .settings import ROOT, load_settings
 
-STEPS = ["writer", "timeline", "render", "mix", "qa", "review", "upload"]
+STEPS = ["writer", "timeline", "render", "mix", "qa", "critic", "review", "upload"]
 EXIT_OK, EXIT_FAILED, EXIT_USAGE, EXIT_NEEDS_PROPS, EXIT_WAITING, EXIT_EMPTY, EXIT_GUARD = 0, 1, 2, 3, 4, 5, 6
 REVIEW_MARK = ("<!-- pipeline-run:start -->", "<!-- pipeline-run:end -->")
 
@@ -132,6 +134,8 @@ class Show:
         self.final = self.out / f"{slug}-final.mp4"
         self.timeline = self.out / "timeline.json"
         self.qa_json = self.out / "qa.json"
+        self.critic_json = self.out / "critic" / "critic.json"
+        self.complete = None  # the LLM call function; made on first use (tests set it)
         self.review = self.dir / "review.md"
         self.uploaded = self.dir / "upload.json"
         self.forced = False  # becomes True at --from-step
@@ -209,6 +213,36 @@ class Show:
         except (OSError, ValueError):
             return False
 
+    def step_critic(self):
+        """Judge a frame per sentence, repair the show once if some fail, render again (see pipeline/critic.py).
+        Never fails the topic for a bad verdict; the owner reads it in review.md."""
+        if not self.settings.get("critic", True):
+            return "skipped (critic: false)"
+        state = read_json(self.critic_json, {}) or {}
+        if state.get("done") and fresh(self.critic_json, [self.final]) and not self.forced:
+            return "skipped"
+        # no unlink when forced: critic_step restarts a finished state itself and resumes an unfinished one
+        from . import writer
+        if self.complete is None:
+            ws = writer.load_settings(self.root / "settings.yaml")
+            self.complete = llm.make_complete(self.args.llm or self.settings["llm_mode"], self.dir,
+                                              model=ws["model"], effort=ws["effort"])
+
+        def rebuild():
+            for step in (self.step_timeline, self.step_render, self.step_mix, self.step_qa):
+                step()
+            self.forced = False     # --from-step forces the re-render once, not on every rebuild
+        try:
+            state = critic_mod.critic_step(self.dir, self.final, self.complete, writer.validate_show, rebuild,
+                                           repairs=int(self.settings.get("critic_repairs", 1)),
+                                           qa_ok=lambda: self.qa_result() != "fail")
+        except llm.WaitingForReply as e:
+            raise WaitingForReply(f"the critic is waiting for a reply file: {e.reply_path}")
+        if not state.get("done"):
+            raise WaitingForReply(f"the critic reply could not be read ({state.get('error')}); "
+                                  "fix the reply file and run the same command again")
+        return "done"
+
     def step_review(self):
         qa = read_json(self.qa_json, {}) or {}
         video = (qa.get("measured") or {}).get("video") or {}
@@ -221,6 +255,7 @@ class Show:
             f"- Length: {video.get('videoSeconds', '?')} s, loudness: {video.get('lufs', '?')} LUFS",
             f"- Picture check: **{qa.get('result', 'not run')}** ({len(qa.get('findings') or [])} findings, see `out/qa.json` and `out/qa-sheet.jpg`)",
             f"- Writer status: {w.get('status', '?')}" + (" (its own picture check could not run)" if w.get("qa_not_run") else ""),
+            *(critic_mod.review_lines(read_json(self.critic_json)) if self.settings.get("critic", True) else []),
             f"- Upload: {('private, https://youtu.be/' + up['id']) if up else 'not uploaded'}",
             REVIEW_MARK[1], "",
         ]
@@ -266,6 +301,8 @@ class Show:
             raise StepFailed(f"{name} exited with code {code}")
 
     def run(self, from_step=None):
+        if from_step == "writer":       # a new show: drop any old critic state and show.before.json
+            shutil.rmtree(self.dir / "out" / "critic", ignore_errors=True)
         for i, name in enumerate(STEPS, 1):
             if from_step and name == from_step:
                 self.forced = True

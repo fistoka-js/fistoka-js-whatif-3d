@@ -174,6 +174,16 @@ def catalog_text(cat=None):
     return "\n".join(lines) + "\n"
 
 
+def props_text(cat=None):
+    """Only the prop and environment lines of catalog_text (for the storyboard prompt: what each thing is, its
+    notes, its inside tag and what can vary, without the actions, slots and camera the show call needs)."""
+    cat = cat or load_catalog()
+    lines = [prop_line(n, p) for n, p in cat["props"].items()]
+    lines += ["", "ENVIRONMENTS (name (params) [ground or not] -- what it is)"]
+    lines += [env_line(n, e) for n, e in cat["envs"].items()]
+    return "\n".join(lines) + "\n"
+
+
 def main():
     text = catalog_text()
     sys.stdout.reconfigure(encoding="utf-8")

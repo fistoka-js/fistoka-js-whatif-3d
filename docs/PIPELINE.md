@@ -15,8 +15,17 @@ Takes the oldest topic in `queue/pending/` (or `--topic`), makes a video, option
 | 3 | render | `tools/render.mjs` | `out/<slug>.mp4` (picture + raw voice) |
 | 4 | mix | `python -m pipeline.mix` | `out/<slug>-final.mp4` (sound effects, optional music, loudness) |
 | 5 | qa | `tools/qa.mjs --video` | `out/qa.json`, `out/qa-sheet.jpg` |
-| 6 | review | the runner | a "Pipeline run" block in `review.md` (length, loudness, QA, upload) |
-| 7 | upload | `pipeline/upload.py` | `upload.json` (private video id) |
+| 6 | critic | `pipeline/critic.py` (below) | `out/critic/` (frames `s01.jpg`..., `t01.jpg`..., `critic.json`, `show.before.json` after a repair) |
+| 7 | review | the runner | a "Pipeline run" block in `review.md` (length, loudness, QA, picture critic, upload) |
+| 8 | upload | `pipeline/upload.py` | `upload.json` (private video id) |
+
+## The picture critic (step `critic`, after qa)
+
+Every video is checked picture by sentence before the owner sees it. From the final mp4 the step grabs one frame at the middle of each spoken sentence (sentences = words ending `.` `?` `!`) and one frame 0.15 s after each shot start (540 px wide jpgs in `out/critic/`), and makes ONE LLM call with the frames (api mode attaches the images; files mode writes `llm/NN-critic.prompt.md` listing the frame files, and waits for `llm/NN-critic.reply.md`, exit 4, like the writer). The prompt is `pipeline/prompts/critic_system.md` (six rules: MATCH, REAL THING, CHANGE, PHYSICAL, SIZE, CLEAN, plus leftovers on transitions) and the owner's standing notes in `pipeline/prompts/critic_rubric_notes.md` (edit that file to change the owner's taste). The reply is JSON per sentence `{n, verdict pass|fail, problems[]}` plus `transitions[]`.
+
+If any sentence fails: one repair call (`critic-repair`: the show prompt's catalogue, `show.json`, the failing sentences with their problems, the notes) writes a new `show.json`; it must pass `validate.mjs --story-rules` and the story checks or the old show is kept (`critic.json` says why). Then timeline, render, mix and qa run again and the critic looks once more (`critic-after`, no second repair). The old show is saved as `out/critic/show.before.json`. Settings (`settings.yaml`): `critic: false` turns the step off; `critic_repairs: 0` judges without repairing (default 1; one round is the most). The verdict never blocks the upload: QA still gates it, the owner reads the "Picture critic" lines in `review.md` (failed sentences before and after the repair).
+
+The two story warnings `story.subject` (no prop on screen 30% of the time) and `story.env` (ground life in space) no longer force a writer repair; the critic judges them.
 
 Music: if `assets/music/LEDGER.csv` lists mp3 files that exist, one is picked by a fixed choice from the slug; otherwise no music.
 A picture check of `fail` stops the upload (the video is kept). `warn` is allowed; look at `out/qa-sheet.jpg`.
@@ -25,7 +34,7 @@ One log per show: `out/run.log`. The console shows one line per step.
 
 ## Resuming
 
-A step is skipped when its output exists and is newer than its inputs. So after a failure, fix the cause and run again; it continues at the step that failed. To redo a step and everything after it: `--from-step render` (names: writer, timeline, render, mix, qa, review, upload). Upload is never repeated once `upload.json` exists; delete that file only if you deleted the video on YouTube.
+A step is skipped when its output exists and is newer than its inputs. So after a failure, fix the cause and run again; it continues at the step that failed. To redo a step and everything after it: `--from-step render` (names: writer, timeline, render, mix, qa, critic, review, upload). Upload is never repeated once `upload.json` exists; delete that file only if you deleted the video on YouTube.
 
 ## Queue folders (`queue/`)
 

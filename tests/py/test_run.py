@@ -9,7 +9,7 @@ from pipeline.queue import Queue
 
 @pytest.fixture
 def env(tmp_path, monkeypatch):
-    (tmp_path / "settings.yaml").write_text('channel_id: "UCgood"\nllm_mode: files\n')
+    (tmp_path / "settings.yaml").write_text('channel_id: "UCgood"\nllm_mode: files\ncritic: false\n')   # the critic has its own tests (test_critic.py)
     q = Queue(tmp_path / "queue")
     calls = []
     behaviour = {"writer": 0, "render": 0, "status": "ok"}

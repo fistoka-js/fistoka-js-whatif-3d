@@ -54,7 +54,7 @@ With `--story-rules` (default: `STORY_RULES_DEFAULT` in `tools/lib/story-rules.m
 |---|---|---|
 | `story-coverage` | FAIL | a spoken sentence (`. ? !`; under 1 s joined to the next) in which no prop state change starts and no dial bound to a visible prop moves |
 | `story-stillness` | FAIL / WARN | a stretch of the narration over 3.5 s (FAIL) or 2.5 s (WARN) in which no prop changes (camera, spin, bob, orbit, pulse, shake and overlays do not count) |
-| `story-env` | FAIL (WARN for ship, car, city, plane, submarine, crowd: `EARTHBOUND_WARN`) | a ground-life prop (dinosaur, tree, house, fish, bird; `EARTHBOUND` in `tools/lib/story-rules.mjs`) in a shot whose environment (also inherited through `"continue"`) is `space`; once per scene and prop. A person (astronaut) is fine |
+| `story-env` | WARN (the picture critic judges it) | a ground-life prop (dinosaur, tree, house, fish, bird; `EARTHBOUND` in `tools/lib/story-rules.mjs`) in a shot whose environment (also inherited through `"continue"`) is `space`; once per scene and prop. A person (astronaut) is fine |
 | `story-subject` | WARN | more than 6 scenes (shots without `"continue"`), or no prop on screen for 30% of the video |
 
 Example (the committed sky-blue sample): `FAIL shot "violet" at 24.8 s: the sentence "Then why isn't the sky violet?" (24.81-26.39 s) has no visible change ...`.

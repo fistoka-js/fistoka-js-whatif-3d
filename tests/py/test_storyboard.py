@@ -78,7 +78,8 @@ def test_storyboard_prompts_take_their_numbers_from_the_code():
     for name in ("storyboard_system.md", "storyboard_review_system.md"):
         raw = writer.read_prompt(name)
         # The seconds are filled from the constants, never written by hand, so they cannot drift.
-        assert "{{TEXT_SECONDS}}" in raw and "{{TAIL}}" in raw and "{{CATALOG_NAMES}}" in raw, name
+        key = "{{CATALOG}}" if name == "storyboard_system.md" else "{{CATALOG_NAMES}}"   # the planner sees the full prop lines
+        assert "{{TEXT_SECONDS}}" in raw and "{{TAIL}}" in raw and key in raw, name
         assert "2.5" not in raw, name
     show = writer.read_prompt("show_system.md")
     assert "2 to 4 main scenes" in writer.read_prompt("storyboard_system.md") and "2 to 4 main scenes" in show

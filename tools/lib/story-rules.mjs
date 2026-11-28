@@ -185,7 +185,7 @@ export function storyRules(show, catalog) {
       if (!(EARTHBOUND.has(p.type) || EARTHBOUND_WARN.has(p.type)) || told.has(key)) continue;
       told.add(key);
       const named = EARTHBOUND.has(p.type) && !hard;
-      (hard ? errors : warnings).push({
+      warnings.push({ // only a warning: the picture critic judges it (it is no longer an error that forces a repair)
         path: 'story.env', time: shot.start,
         message: `prop "${p.id}" (${p.type}) is in shot "${shot.id}", whose environment is "space"; ${named ? `the narration names the ${p.type}, so this may be a thought experiment: check it is intended.` : `a ${p.type} cannot float in space.`}`,
         hint: `Show it in a scene with a ground ("planet_surface", "sky", "underwater", "studio" or "lab"), or show the planet itself (a "planet" prop) when the point is the whole Earth.`,

@@ -1,0 +1,9 @@
+- When a temperature rises or falls, show a thermometer.
+- A slowly orbiting camera to show a thing from several angles is good.
+- A process shown inside a cutaway of the object is better than a separate abstract clip.
+- Put things on grassy or real ground instead of floating in a void.
+- No generic sphere for a rock or a bullet.
+- No water box or cube around an iceberg.
+- Ground props should span the frame from side to side.
+- Charges and particles go only inside see-through or cutaway props.
+- A mechanism prop must visibly change while the words describe the change.

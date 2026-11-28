@@ -34,7 +34,7 @@ Tests: `tests/py/test_writer.py`, `test_storyboard.py`, `test_fact_check.py`, `t
    - If no prop can show the topic's central mechanism changing, the model answers `feasible: false` and
      one paragraph in `mechanism_prop` (what the needed prop looks like and what varies). Icons and bar
      charts are not allowed as a stand-in for the mechanism. The writer writes `NEEDS-PROPS.md` with that
-     paragraph and the `missing` list, and stops with exit code 3; the runner then moves the topic to
+     paragraph, the `missing` list and a build plan per missing prop (what it must look like, the params it needs, what it must change, the sentences that need it; the storyboard gap carries `params` and `must_change` for it; nothing is built until the owner approves), and stops with exit code 3; the runner then moves the topic to
      `queue/needs-props/`. This also applies when the beat rewrite (after the first script, the redraft or
      a shorten) answers `feasible: false`. Then `review.md` says which call stopped the run, that no show
      was made and no voice is used, and shows the last script the run accepted (never an unchecked redraft
@@ -105,8 +105,8 @@ Tests: `tests/py/test_writer.py`, `test_storyboard.py`, `test_fact_check.py`, `t
    Its reply is written to `show.json` and checked with
    `node tools/validate.mjs --story-rules` (SPEC section 14: every sentence needs a change, no still
    stretch over 3.5 s). The writer accepts a show only with no errors, neither of the checker's
-   subject warnings (`story.scenes`: more than 6 scenes; `story.subject`: no prop on screen for 30% of
-   the video) and at least one dial bound to two or more things in one scene (`story.dial`, checked in
+   subject warning (`story.scenes`: more than 6 scenes; `story.subject`, the 30% rule, is only a warning now: the picture critic judges it
+   ) and at least one dial bound to two or more things in one scene (`story.dial`, checked in
    `writer.py`). With a storyboard it is also checked against it (`coverage_problems`, tolerant on
    purpose): every storyboard prop type (or a gap's stand-in) is in the show; every storyboard text is a
    label, text or count that shows it. The PROMPTS ask for a text kept until the idea changes (at least {{TEXT_SECONDS}} s) for every

@@ -523,6 +523,7 @@ class Run:
         self.qa_not_run = False          # the picture check was tried but could not run (see qa_step)
         # The storyboard step (None when it is off): the board, the reviewer's last verdict and notes, repairs.
         self.storyboard = None
+        self.gap_plans = []              # build plan per central gap (NEEDS-PROPS.md), see gap_plans()
         self.props_wanted = []           # non-central gaps: drawn with a stand-in, listed for prop building
         self.status = "failed"
         self.error = None
@@ -824,7 +825,7 @@ def _finding_lines(findings, limit=30):
 
 # Story warnings that a model-written show may not have (the checker only warns, so that hand-made
 # shows and the fallback stay valid; the writer treats them like errors and sends them to the repair).
-BLOCKING_WARNINGS = ("story.scenes", "story.subject")
+BLOCKING_WARNINGS = ("story.scenes",)   # story.subject (30%) and story.env are judged by the picture critic now
 
 
 def dial_reach(show):
@@ -939,7 +940,8 @@ def normalise_storyboard(obj):
     for s in _dicts(obj.get("sentences")):
         objects = [{"prop": _text(o.get("prop")), "look": _text(o.get("look")), "place": _text(o.get("place")),
                     "stands_for": _text(o.get("stands_for")), "missing": _text(o.get("missing")),
-                    "stand_in": _text(o.get("stand_in")), "central": o.get("central") is True}
+                    "stand_in": _text(o.get("stand_in")), "central": o.get("central") is True,
+                    "params": _text(o.get("params")), "must_change": _text(o.get("must_change"))}
                    for o in _dicts(s.get("objects"))]
         sents.append({"scene": _text(s.get("scene")), "objects": objects, "change": _text(s.get("change")),
                       "camera": _text(s.get("camera")),
@@ -961,7 +963,7 @@ def storyboard_text(board):
     j = lambda v: json.dumps(v, ensure_ascii=False)
     head = [f"  {j(k)}: {j(v)}," for k, v in board.items() if k != "sentences"]
     def plain(o):
-        return o if o["missing"] else {k: v for k, v in o.items() if k not in ("missing", "stand_in", "central")}
+        return o if o["missing"] else {k: v for k, v in o.items() if k not in ("missing", "stand_in", "central", "params", "must_change")}
     rows = [f"    {j(dict(s, objects=[plain(o) for o in s['objects']]))}" for s in board["sentences"]]
     return "{\n" + "\n".join(head) + '\n  "sentences": [\n' + ",\n".join(rows) + "\n  ]\n}"
 
@@ -1226,7 +1228,7 @@ def storyboard_step(run, complete, cat, words):
     sb = run.storyboard = {"board": None, "verdict": None, "notes": [], "repairs": 0, "history": [], "fresh": False}
     names = catalog_names(cat)
     nums = dict(TEXT_SECONDS=f"{TEXT_MIN_SECONDS:g}", TAIL=f"{TAIL_SECONDS:g}")
-    system = fill(read_prompt("storyboard_system.md"), CATALOG_NAMES=names, **nums)
+    system = fill(read_prompt("storyboard_system.md"), CATALOG=catalog_text.props_text(cat).strip(), **nums)
     review_system = fill(read_prompt("storyboard_review_system.md"), CATALOG_NAMES=names, **nums)
     lines = sentence_lines(words)
     original = fill(read_prompt("storyboard_user.md"), TITLE=run.draft.get("title") or run.topic, TOPIC=run.topic,
@@ -1323,6 +1325,7 @@ def storyboard_step(run, complete, cat, words):
             run.props_wanted.append({"missing": o["missing"], "stand_in": o["stand_in"] or "none", "sentence": n})
     if central:
         # The same stop as a "feasible": false script reply: NEEDS-PROPS.md, exit 3, topic queued for props.
+        run.gap_plans = gap_plans(gaps, words)
         para = " ".join(f"{o['missing']}" + (f" (it stands for {o['stands_for']})" if o["stands_for"] else "") + "."
                         for o in central)
         _stop_not_feasible(run, {"feasible": False, "mechanism_prop": para,
@@ -1589,6 +1592,39 @@ def qa_step(run, complete, validate_fn, qa_fn, cat, words, show, sleep_fn=time.s
     return new
 
 
+def gap_plans(gaps, words):
+    """One build plan per central gap (same "missing" text = one prop): what it must look like, the params it
+    needs, what it must change, and the sentences (number and words) that need it."""
+    sents, plans = sentences(words), {}
+    for n, o in gaps:
+        if not o["central"]:
+            continue
+        p = plans.setdefault(o["missing"].lower(), {"missing": o["missing"], "stand_in": o["stand_in"], "sentences": [],
+                                                    "look": [], "params": [], "must_change": [], "stands_for": []})
+        for key in ("look", "params", "must_change", "stands_for"):
+            if o[key] and o[key] not in p[key]:
+                p[key].append(o[key])
+        p["sentences"].append((n, " ".join(w["text"] for w in sents[n - 1]) if n <= len(sents) else ""))
+    return list(plans.values())
+
+
+def _plan_text(plans):
+    out = ["## Build plan per missing prop", "",
+           "Nothing is built until the owner approves this plan (see docs/AUTHORING.md and docs/PROP-BRIEF.md).", ""]
+    none = "(the planner did not say)"
+    for p in plans:
+        out += [f"### {p['missing']}", "",
+                f"- Must look like: {'; '.join(p['look']) or none}",
+                f"- Params it needs: {'; '.join(p['params']) or none}",
+                f"- Must be able to change: {'; '.join(p['must_change']) or none}",
+                f"- Stands for: {'; '.join(p['stands_for']) or none}",
+                f"- Stand-in until it exists: {p['stand_in'] or 'none'}",
+                "- Sentences that need it:"]
+        out += [f"  - S{n}: {t}" for n, t in p["sentences"]]
+        out.append("")
+    return "\n".join(out) + "\n"
+
+
 def write_needs_props(run):
     mechanism = str(run.draft.get("mechanism_prop") or "").strip() or "(the model did not describe it)"
     missing = as_list(run.draft.get("missing")) or ["(the model did not say)"]
@@ -1596,7 +1632,12 @@ def write_needs_props(run):
             f"topic's central mechanism changing, and icons or bar charts are not an honest stand-in.\n\n"
             f"## The mechanism prop that is needed\n\n{mechanism}\n\n"
             f"## Missing\n\n" + "\n".join(f"- {m}" for m in missing) + "\n\n"
-            "Add the props (see docs/AUTHORING.md), or pick another topic.\n")
+            + (_plan_text(run.gap_plans) if run.gap_plans else
+               # the script step stopped before any storyboard: one plan per missing item from what the script step said
+               _plan_text([{"missing": m, "stand_in": "", "look": [mechanism], "params": [], "must_change": [mechanism],
+                            "stands_for": [], "sentences": [(0, "(the whole script: the stop came before the storyboard)")]}
+                           for m in missing]))
+            + "Add the props (see docs/AUTHORING.md) once the owner approves the plan, or pick another topic.\n")
     (run.folder / "NEEDS-PROPS.md").write_text(text, encoding="utf-8")
 
 

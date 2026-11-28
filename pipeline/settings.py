@@ -10,6 +10,8 @@ DEFAULTS = {
     "synthetic_voice_note": False,    # add the note below to the video description
     "synthetic_voice_note_text": "The narration in this video is synthetic (computer-generated) speech.",
     "max_topics_per_run": 3,
+    "critic": True,                   # picture critic after the picture check (false = off), see docs/PIPELINE.md
+    "critic_repairs": 1,              # repair rounds when the critic fails a sentence (0 = judge only)
 }
 
 

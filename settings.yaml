@@ -15,3 +15,8 @@ synthetic_voice_note_text: "The narration in this video is synthetic (computer-g
 
 # Most topics one run will try (a topic that fails or cannot be shown does not stop the next one).
 max_topics_per_run: 3
+
+# The picture critic looks at one frame per spoken sentence of the finished video and repairs the show once if
+# some fail (docs/PIPELINE.md). critic: false turns it off; critic_repairs: 0 judges without repairing.
+critic: true
+critic_repairs: 1
